@@ -28,7 +28,7 @@ local user_opts = {
 	hidetimeout = 2500,             -- duration in ms until OSC hides if no mouse movement
 	fadeduration = 150,             -- duration of fade out in ms, 0 = no fade
 	minmousemove = 0,               -- amount of pixels the mouse has to move for OSC to show
-	scrollingSpeed = 40,            -- the speed of scrolling text in menus
+
 	showonpause = true,             -- whether to show to osc when paused
 	donttimeoutonpause = true,      -- whether to disable the hide timeout on pause
 	bottomhover = true,             -- if the osc should only display when hovering at the bottom
@@ -40,10 +40,10 @@ local user_opts = {
 	persistentprogresstoggle = true,-- enable toggling the persistentprogress bar
 
 	-- title and chapter settings --
-	showtitle = true,               -- show title in OSC
+	showtitle = true,               -- show title in OSC (above seekbar)
 	showwindowtitle = true,         -- show window title in borderless/fullscreen mode
-	titleBarStrip = true,           -- whether to make the title bar a singular bar instead of a black fade
-	title = '${media-title}',       -- title shown on OSC - turn off dynamictitle for this option to apply
+	titleBarStrip = false,          -- whether to make the title bar a singular bar instead of a black fade
+	title = '${media-title}',       -- title shown on OSC
     font = 'mpv-osd-symbols',       -- mpv-osd-symbols = default osc font (or the one set in mpv.conf)
 	titlefontsize = 30,             -- the font size of the title text
 	chapterformat = 'Chapter: %s',  -- chapter print format for seekbar-hover. "no" to disable
@@ -53,19 +53,17 @@ local user_opts = {
 	boxalpha = 75,                  -- alpha of the window title bar
 
 	-- seekbar settings --
-	seekbarfg_color = '#429CE3',    -- color of the seekbar progress and handle, in Hex color format
+	seekbarfg_color = '#BE4D25',    -- color of the seekbar progress and handle, in Hex color format
 	seekbarbg_color = '#FFFFFF',    -- color of the remaining seekbar, in Hex color format
 	seekbarkeyframes = false,       -- use keyframes when dragging the seekbar
-	automatickeyframemode = true,   -- set seekbarkeyframes based on video length to prevent laggy scrubbing on long videos 
-	automatickeyframelimit = 600,   -- videos of above this length (in seconds) will have seekbarkeyframes on
 	seekbarhandlesize = 0.8,        -- size ratio of the slider handle, range 0 ~ 1
 	seekrange = true,               -- show seekrange overlay
 	seekrangealpha = 150,           -- transparency of seekranges
 	iconstyle = 'round',            -- icon style, 'solid' or 'round'
 	hovereffect = true,             -- whether buttons have a glowing effect when hovered over
-	
-	showthumbnails = true,         -- If thumbfast is found, run it and show thumbnails? This is useful for auto-profiles
-	                                -- For example, disabling it based on a file extension condition
+
+	automatickeyframemode = true,   -- set seekbarkeyframes based on video length to prevent laggy scrubbing on long videos 
+	automatickeyframelimit = 600,   -- videos of above this length (in seconds) will have seekbarkeyframes on
 
 	-- button settings --
 	timetotal = true,               -- display total time instead of remaining time by default
@@ -77,7 +75,7 @@ local user_opts = {
 	volumecontrol = true,           -- whether to show mute button and volume slider
 	volumecontroltype = 'linear',   -- use 'linear' or 'log' (logarithmic) volume scale
 	showjump = true,                -- show "jump forward/backward 5 seconds" buttons 
-	showskip = false,               -- show the skip back and forward (chapter) buttons
+	showskip = true,                -- show the skip back and forward (chapter) buttons
 	compactmode = true,             -- replace the jump buttons with the chapter buttons, clicking the
                                     -- buttons will act as jumping, and shift clicking will act as
                                     -- skipping a chapter
@@ -114,8 +112,6 @@ local icons = {
 	loopoff = '',
 	loopon = '', 
 	info = '\239\135\183',
-	download = '\239\136\160',
-	downloading = '\239\134\185',
 	ontopon = '\239\142\150',
 	ontopoff = '\239\142\149',
 	screenshot = ''
@@ -294,7 +290,7 @@ local thumbfast = {
 }
 
 local window_control_box_width = 138
-local tick_delay = 1 / 60 -- 100FPS
+local tick_delay = 1 / 60
 
 local is_december = os.date("*t").month == 12
 
@@ -1104,6 +1100,16 @@ function get_playlist()
             (v.current and '●' or '○'), title)
     end
     return message
+end
+
+function startupevents()
+    if user_opts.automatickeyframemode then
+        if mp.get_property_number("duration", 0) > user_opts.automatickeyframelimit then
+            user_opts.seekbarkeyframes = true
+        else
+            user_opts.seekbarkeyframes = false
+        end
+    end
 end
 
 function get_chapterlist()
@@ -2877,6 +2883,7 @@ end
 
 validate_user_opts()
 
+mp.register_event("file-loaded", startupevents)
 mp.observe_property('track-list', 'native', request_init)
 mp.observe_property('playlist', 'native', request_init)
 mp.observe_property('chapter-list', 'native', function(_, list) -- chapter list changes
