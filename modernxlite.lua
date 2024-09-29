@@ -44,7 +44,7 @@ local user_opts = {
 	showwindowtitle = true,         -- show window title in borderless/fullscreen mode
 	titleBarStrip = false,          -- whether to make the title bar a singular bar instead of a black fade
 	title = '${media-title}',       -- title shown on OSC
-    font = 'mpv-osd-symbols',       -- mpv-osd-symbols = default osc font (or the one set in mpv.conf)
+	font = 'mpv-osd-symbols',       -- mpv-osd-symbols = default osc font (or the one set in mpv.conf)
 	titlefontsize = 30,             -- the font size of the title text
 	chapterformat = 'Chapter: %s',  -- chapter print format for seekbar-hover. "no" to disable
 
@@ -99,7 +99,7 @@ local icons = {
 	next = '\239\142\180',
 	play = '\239\142\170',
 	pause = '\239\142\167',
-	replay = '', -- copied private use character
+	replay = '',
 	backward = '\239\142\160',
 	forward = '\239\142\159',
 	audio = '\239\142\183',
@@ -205,9 +205,13 @@ local language = {
 
 -- apply lang opts
 local texts = language[user_opts.language]
-local osc_param = {       -- calculated by osc_init()
-	playresy = 0,         -- canvas size Y
-	playresx = 0,         -- canvas size X
+
+-- calculated by osc_init()
+-- playresy - canvas size Y
+-- playresx - canvas size X
+local osc_param = {
+	playresy = 0,
+	playresx = 0,
 	display_aspect = 1,
 	unscaled_y = 0,
 	areas = {},
@@ -278,8 +282,8 @@ local state = {
 	fulltime = user_opts.timems,
 	chapter_list = {},                      -- sorted by time
 	looping = false,
-    scrolledlines = 25,
-    persistentprogresstoggle = user_opts.persistentprogress,
+	scrolledlines = 25,
+	persistentprogresstoggle = user_opts.persistentprogress,
 }
 
 local thumbfast = {
