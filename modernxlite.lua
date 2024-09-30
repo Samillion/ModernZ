@@ -82,11 +82,11 @@ local user_opts = {
 	compactmode = false,            -- replace the jump buttons with the chapter buttons, clicking the
                                     -- buttons will act as jumping, and shift clicking will act as
                                     -- skipping a chapter
+	showinfo = false,               -- show the info button
 	showloop = true,                -- show the loop button
 	loopinpause = true,             -- activate looping by right clicking pause
 	showontop = true,               -- show window on top button
-	showinfo = false,               -- show the info button
-	screenshotbutton = true         -- show screenshot button
+	screenshotbutton = false        -- show screenshot button
 }
 
 -- Icons for jump button depending on jumpamount 
@@ -1585,7 +1585,7 @@ layouts = function ()
     lo.style = osc_styles.Ctrl3
     lo.visible = (osc_param.playresx >= 700 - outeroffset)
 
-    -- Fullscreen/Info/Pin/Loop/Screenshot
+    -- Fullscreen/Info/Loop/Pin/Screenshot
     lo = add_layout('tog_fs')
     lo.geometry = {x = osc_geo.w - 37, y = refY - 40, an = 5, w = 24, h = 24}
     lo.style = osc_styles.Ctrl3
@@ -1595,28 +1595,28 @@ layouts = function ()
 		lo = add_layout('tog_info')
 		lo.geometry = {x = osc_geo.w - 82, y = refY - 40, an = 5, w = 24, h = 24}
 		lo.style = osc_styles.Ctrl3
+		lo.visible = (osc_param.playresx >= 300 - outeroffset)
+	end
+	
+	if showloop then
+		lo = add_layout('tog_loop')
+		lo.geometry = {x = osc_geo.w - 127 + (showinfo and 0 or 45), y = refY - 40, an = 5, w = 24, h = 24}
+		lo.style = osc_styles.Ctrl3
 		lo.visible = (osc_param.playresx >= 500 - outeroffset)
 	end
 
 	if showontop then
 		lo = add_layout('tog_ontop')
-		lo.geometry = {x = osc_geo.w - 127 + (showinfo and 0 or 45), y = refY - 40, an = 5, w = 24, h = 24}
-		lo.style = osc_styles.Ctrl3
-		lo.visible = (osc_param.playresx >= 700 - outeroffset)
-	end
-
-	if showloop then
-		lo = add_layout('tog_loop')
-		lo.geometry = {x = osc_geo.w - 172 + (showontop and 0 or 45) + (showinfo and 0 or 45), y = refY - 40, an = 5, w = 24, h = 24}
+		lo.geometry = {x = osc_geo.w - 172 + (showloop and 0 or 45) + (showinfo and 0 or 45), y = refY - 40, an = 5, w = 24, h = 24}
 		lo.style = osc_styles.Ctrl3
 		lo.visible = (osc_param.playresx >= 600 - outeroffset)
 	end
 
 	if showscreenshot then
 		lo = add_layout('screenshot')
-		lo.geometry = {x = osc_geo.w - 217 + (showloop and 0 or 45) + (showontop and 0 or 45) + (showinfo and 0 or 45), y = refY - 40, an = 5, w = 24, h = 24}
+		lo.geometry = {x = osc_geo.w - 217 + (showontop and 0 or 45) + (showloop and 0 or 45) + (showinfo and 0 or 45), y = refY - 40, an = 5, w = 24, h = 24}
 		lo.style = osc_styles.Ctrl3
-		lo.visible = (osc_param.playresx >= 300 - outeroffset)
+		lo.visible = (osc_param.playresx >= 700 - outeroffset)
 	end
 
 end
@@ -1637,6 +1637,18 @@ function validate_user_opts()
                 user_opts.volumecontroltype .. "\". Ignoring.")
         user_opts.volumecontroltype = "linear"
     end
+	
+	if user_opts.showinfo then 
+		local statslua_path = mp.command_native({"expand-path", "~~/scripts/stats.lua"})
+
+		local statslua_file = io.open(statslua_path, "r")
+		if not statslua_file then
+			msg.warn("stats.lua not found in /scripts folder, disabling showinfo button.")
+			user_opts.showinfo = false
+		else
+			io.close(statslua_file)
+		end
+	end
 	
     local colors = {
 		user_opts.osc_color, user_opts.seekbarfg_color, user_opts.seekbarbg_color, 
