@@ -86,6 +86,7 @@ local user_opts = {
 	showloop = true,                -- show the loop button
 	loopinpause = true,             -- activate looping by right clicking pause
 	showontop = true,               -- show window on top button
+	ontopnoborder = true,           -- If you pin the window, remove window border?
 	screenshotbutton = false        -- show screenshot button
 }
 
@@ -1640,8 +1641,8 @@ function validate_user_opts()
 	
 	if user_opts.showinfo then 
 		local statslua_path = mp.command_native({"expand-path", "~~/scripts/stats.lua"})
-
 		local statslua_file = io.open(statslua_path, "r")
+
 		if not statslua_file then
 			msg.warn("stats.lua not found in /scripts folder, disabling showinfo button.")
 			user_opts.showinfo = false
@@ -1653,6 +1654,7 @@ function validate_user_opts()
     local colors = {
 		user_opts.osc_color, user_opts.seekbarfg_color, user_opts.seekbarbg_color, 
     }
+
     for _, color in pairs(colors) do
         if color:find("^#%x%x%x%x%x%x$") == nil then
             msg.warn("'" .. color .. "' is not a valid color")
@@ -2110,10 +2112,9 @@ function osc_init()
     ne.eventresponder['mbtn_left_up'] =
         function () 
             mp.commandv('cycle', 'ontop') 
-            if (state.initialborder == 'yes') then
-                if (mp.get_property('ontop') == 'yes') then
+            if state.initialborder == 'yes' and user_opts.ontopnoborder then
+                if mp.get_property('ontop') == 'yes' then
                     mp.commandv('set', 'border', "no")
-
                 else
                     mp.commandv('set', 'border', "yes")
                 end
