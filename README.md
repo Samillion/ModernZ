@@ -53,24 +53,6 @@ conf/mpv
 An example of `modernxlite.conf` with default values: (For a full list, see `user_opts` in `modernxlite.lua`)
 
 ```properties
-# show the mpv 'play files' screen upon open
-welcomescreen=yes
-
-# whether to show OSC window controls, 'auto', 'yes' or 'no'
-windowcontrols=auto
-
-# show OSC when windowed?
-showwindowed=yes
-
-# show OSC when fullscreen?
-showfullscreen=yes
-
-# disable santa hat in December?
-noxmas=no
-
-# register keybindings i.e. chapter scrubbing, pinning window
-keybindings=no
-    
 # whether to scale the controller with the video
 vidscale=yes
 
@@ -92,26 +74,17 @@ raisesubswithosc=yes
 # always show a small progress line at the bottom of the screen
 persistentprogress=no
 
-# on web videos, show the buffer on the persistent progress line
-persistentbuffer=no
-
 # show title in OSC (above seekbar)
 showtitle=yes
 
 # title shown on OSC (above seekbar), ${media-title} or ${filename}
 title=${media-title}
 
-# the font size of the title text
-titlefontsize=30
-
 # accent of the OSC and the title bar, in Hex color format
 osc_color=#000000
 
 # color of the seekbar progress and handle, in Hex color format
 seekbarfg_color=#B7410E
-
-# color of the remaining seekbar, in Hex color format
-seekbarbg_color=#FFFFFF
 
 # icon style, 'solid' or 'round'
 iconstyle=round
@@ -152,7 +125,7 @@ ontopnoborder=yes
 loopinpause=yes
 
 # show screenshot button
-screenshotbutton=yes
+screenshotbutton=no
 ```
 
 ## Credits
