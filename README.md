@@ -145,11 +145,14 @@ showloop=yes
 # show window on top button
 showontop=yes
 
+# if you pin the window, remove window border?
+ontopnoborder=yes
+
 # activate looping by right clicking pause
 loopinpause=yes
 
 # show screenshot button
-screenshotbutton=no
+screenshotbutton=yes
 ```
 
 ## Credits
