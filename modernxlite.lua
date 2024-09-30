@@ -79,7 +79,7 @@ local user_opts = {
 	volumecontroltype = 'linear',   -- use 'linear' or 'log' (logarithmic) volume scale
 	showjump = true,                -- show "jump forward/backward 5 seconds" buttons 
 	showskip = false,               -- show the skip back and forward (chapter) buttons
-	compactmode = true,             -- replace the jump buttons with the chapter buttons, clicking the
+	compactmode = false,            -- replace the jump buttons with the chapter buttons, clicking the
                                     -- buttons will act as jumping, and shift clicking will act as
                                     -- skipping a chapter
 	showloop = true,                -- show the loop button
@@ -1585,39 +1585,40 @@ layouts = function ()
     lo.style = osc_styles.Ctrl3
     lo.visible = (osc_param.playresx >= 700 - outeroffset)
 
-    -- Fullscreen/Loop/Info
+    -- Fullscreen/Info/Pin/Loop/Screenshot
     lo = add_layout('tog_fs')
     lo.geometry = {x = osc_geo.w - 37, y = refY - 40, an = 5, w = 24, h = 24}
     lo.style = osc_styles.Ctrl3
-    lo.visible = (osc_param.playresx >= 250 - outeroffset)    
+    lo.visible = (osc_param.playresx >= 250 - outeroffset) 
 
-    if showontop then
-        lo = add_layout('tog_ontop')
-        lo.geometry = {x = osc_geo.w - 127 + (showloop and 0 or 45), y = refY - 40, an = 5, w = 24, h = 24}
-        lo.style = osc_styles.Ctrl3
-        lo.visible = (osc_param.playresx >= 700 - outeroffset)
-    end
+	if showinfo then
+		lo = add_layout('tog_info')
+		lo.geometry = {x = osc_geo.w - 82, y = refY - 40, an = 5, w = 24, h = 24}
+		lo.style = osc_styles.Ctrl3
+		lo.visible = (osc_param.playresx >= 500 - outeroffset)
+	end
 
-    if showloop then
-        lo = add_layout('tog_loop')
-        lo.geometry = {x = osc_geo.w - 82, y = refY - 40, an = 5, w = 24, h = 24}
-        lo.style = osc_styles.Ctrl3
-        lo.visible = (osc_param.playresx >= 600 - outeroffset)    
-    end
+	if showontop then
+		lo = add_layout('tog_ontop')
+		lo.geometry = {x = osc_geo.w - 127 + (showinfo and 0 or 45), y = refY - 40, an = 5, w = 24, h = 24}
+		lo.style = osc_styles.Ctrl3
+		lo.visible = (osc_param.playresx >= 700 - outeroffset)
+	end
 
-    if showinfo then
-        lo = add_layout('tog_info')
-        lo.geometry = {x = osc_geo.w - 172 + (showloop and 0 or 45) + (showontop and 0 or 45), y = refY - 40, an = 5, w = 24, h = 24}
-        lo.style = osc_styles.Ctrl3
-        lo.visible = (osc_param.playresx >= 500 - outeroffset)
-    end
+	if showloop then
+		lo = add_layout('tog_loop')
+		lo.geometry = {x = osc_geo.w - 172 + (showontop and 0 or 45) + (showinfo and 0 or 45), y = refY - 40, an = 5, w = 24, h = 24}
+		lo.style = osc_styles.Ctrl3
+		lo.visible = (osc_param.playresx >= 600 - outeroffset)
+	end
 
-    if showscreenshot then
-        lo = add_layout('screenshot')
-        lo.geometry = {x = osc_geo.w - 217 + (showloop and 0 or 45) + (showontop and 0 or 45) + (showinfo and 0 or 45), y = refY - 40, an = 5, w = 24, h = 24}
-        lo.style = osc_styles.Ctrl3
-        lo.visible = (osc_param.playresx >= 300 - outeroffset)
-    end
+	if showscreenshot then
+		lo = add_layout('screenshot')
+		lo.geometry = {x = osc_geo.w - 217 + (showloop and 0 or 45) + (showontop and 0 or 45) + (showinfo and 0 or 45), y = refY - 40, an = 5, w = 24, h = 24}
+		lo.style = osc_styles.Ctrl3
+		lo.visible = (osc_param.playresx >= 300 - outeroffset)
+	end
+
 end
 
 -- Validate string type user options
