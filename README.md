@@ -57,28 +57,37 @@ An example of `modernxlite.conf` with default values: (For a full list, see `use
 vidscale=yes
 
 # duration in ms until OSC hides if no mouse movement
-hidetimeout=2500
+hidetimeout=2000
+
+# duration of fade out in ms, 0 = no fade
+fadeduration=250
 
 # whether to show to osc when paused
 showonpause=yes
 
 # whether to disable the hide timeout on pause
-donttimeoutonpause=yes
+onpausenotimeout=yes
 
 # if the osc should only display when hovering at the bottom
 bottomhover=yes
 
 # whether to raise subtitles above the osc when it's shown
-raisesubswithosc=yes
+raisesubs=yes
 
 # always show a small progress line at the bottom of the screen
 persistentprogress=no
+
+# on web videos, show the buffer on the persistent progress line
+persistentbuffer=no
 
 # show title in OSC (above seekbar)
 showtitle=yes
 
 # title shown on OSC (above seekbar), ${media-title} or ${filename}
 title=${media-title}
+
+# the font size of the title text
+titlefontsize=30
 
 # accent of the OSC and the title bar, in Hex color format
 osc_color=#000000
