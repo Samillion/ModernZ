@@ -1,5 +1,8 @@
--- ModernX-Lite by Samillion - https://github.com/Samillion/ModernX-Lite
--- forked from zydezu - https://github.com/zydezu/ModernX
+-- ModernX-Lite forked by Samillion - https://github.com/Samillion/ModernX-Lite
+--- forked from zydezu/ModernX - https://github.com/zydezu/ModernX
+---- forked from dexeonify - https://github.com/dexeonify/mpv-config/blob/main/scripts/modernx.lua
+----- forked from cyl0 - https://github.com/cyl0/ModernX
+------ forked from maoiscat - https://github.com/maoiscat/mpv-osc-modern
 
 local assdraw = require 'mp.assdraw'
 local msg = require 'mp.msg'
@@ -43,7 +46,7 @@ local user_opts = {
 	showtitle = true,               -- show title in OSC (above seekbar)
 	showwindowtitle = true,         -- show window title in borderless/fullscreen mode
 	titleBarStrip = false,          -- whether to make the title bar a singular bar instead of a black fade
-	title = '${media-title}',       -- title shown on OSC
+	title = '${media-title}',       -- title shown on OSC (above seekbar). ${media-title} or ${filename}
 	font = 'mpv-osd-symbols',       -- mpv-osd-symbols = default osc font (or the one set in mpv.conf)
 	titlefontsize = 30,             -- the font size of the title text
 	chapterformat = 'Chapter: %s',  -- chapter print format for seekbar-hover. "no" to disable
@@ -75,7 +78,7 @@ local user_opts = {
 	volumecontrol = true,           -- whether to show mute button and volume slider
 	volumecontroltype = 'linear',   -- use 'linear' or 'log' (logarithmic) volume scale
 	showjump = true,                -- show "jump forward/backward 5 seconds" buttons 
-	showskip = true,                -- show the skip back and forward (chapter) buttons
+	showskip = false,               -- show the skip back and forward (chapter) buttons
 	compactmode = true,             -- replace the jump buttons with the chapter buttons, clicking the
                                     -- buttons will act as jumping, and shift clicking will act as
                                     -- skipping a chapter
@@ -99,7 +102,7 @@ local icons = {
 	next = '\239\142\180',
 	play = '\239\142\170',
 	pause = '\239\142\167',
-	replay = '',
+	replay = '\239\142\178',
 	backward = '\239\142\160',
 	forward = '\239\142\159',
 	audio = '\239\142\183',
@@ -109,12 +112,12 @@ local icons = {
 	sub = '\239\140\164',
 	minimize = '\239\133\172',
 	fullscreen = '\239\133\173',  
-	loopoff = '',
-	loopon = '', 
+	loopoff = '\239\134\181',
+	loopon = '\239\134\183',
 	info = '\239\135\183',
 	ontopon = '\239\142\150',
 	ontopoff = '\239\142\149',
-	screenshot = ''
+	screenshot = '\239\135\168'
 }
 
 -- Localization
@@ -138,6 +141,8 @@ local language = {
 		ontopdisable = 'Unpin window',
 		loopenable = 'Enable looping',
 		loopdisable = 'Disable looping',
+		screenshot = 'Screenshot',
+		statsinfo = 'Information',
 	},
 	['chs'] = {
 		welcome = '{\\fs24\\1c&H0&\\1c&HFFFFFF&}将文件或URL放在这里播放',  -- this text appears when mpv starts
@@ -158,6 +163,8 @@ local language = {
 		ontopdisable = '禁用停留在顶层的窗口',  -- please check these translations
 		loopenable = '启用循环功能',
 		loopdisable = '禁用循环功能',
+		screenshot = '截屏',
+		statsinfo = '信息',
 	},
 	['pl'] = {
 		welcome = '{\\fs24\\1c&H0&\\1c&HFFFFFF&}Upuść plik lub łącze URL do odtworzenia.',  -- this text appears when mpv starts
@@ -178,6 +185,8 @@ local language = {
 		ontopdisable = 'Odepnij okno od góry',
 		loopenable = 'Włączenie zapętlenia',
 		loopdisable = 'Wyłączenie zapętlenia',
+		screenshot = 'Zrzut ekranu',
+		statsinfo = 'Informacja',
 	},
 	['jp'] = {
 		welcome = '{\\fs24\\1c&H0&\\1c&HFFFFFF&}ファイルやURLのリンクをここにドロップすると再生されます。',  -- this text appears when mpv starts
@@ -198,6 +207,8 @@ local language = {
 		ontopdisable = 'ウィンドウを上からアンピンする',
 		loopenable = 'ループON',
 		loopdisable = 'ループOFF',
+		screenshot = 'スクリーンショット',
+		statsinfo = '情報',
 	}
 }
 -- read options from config and command-line
@@ -1473,6 +1484,7 @@ layouts = function ()
         user_opts.showjump = false
         showjump = false
     end
+
     local offset = showjump and 60 or 0
     local outeroffset = (showskip and 0 or 100) + (showjump and 0 or 100)
 
@@ -2044,6 +2056,8 @@ function osc_init()
     --screenshot
     ne = new_element('screenshot', 'button')
     ne.content = icons.screenshot
+    ne.tooltip_style = osc_styles.Tooltip
+    ne.tooltipF = texts.screenshot
     ne.visible = (osc_param.playresx >= 900 - outeroffset - (user_opts.showloop and 0 or 100) - (user_opts.showontop and 0 or 100) - (user_opts.showinfo and 0 or 100))
     ne.eventresponder['mbtn_left_up'] =
         function ()
@@ -2056,6 +2070,8 @@ function osc_init()
     --tog_info
     ne = new_element('tog_info', 'button')
     ne.content = icons.info
+    ne.tooltip_style = osc_styles.Tooltip
+    ne.tooltipF = texts.statsinfo
     ne.visible = (osc_param.playresx >= 800 - outeroffset - (user_opts.showloop and 0 or 100) - (user_opts.showontop and 0 or 100))
     ne.eventresponder['mbtn_left_up'] =
         function () mp.commandv('script-binding', 'stats/display-stats-toggle') end
