@@ -28,14 +28,14 @@ local user_opts = {
 	scaleforcedwindow = 1.0,        -- scaling when rendered on a forced window
 
 	-- interface settings --
-	hidetimeout = 2500,             -- duration in ms until OSC hides if no mouse movement
-	fadeduration = 150,             -- duration of fade out in ms, 0 = no fade
+	hidetimeout = 2000,             -- duration in ms until OSC hides if no mouse movement
+	fadeduration = 250,             -- duration of fade out in ms, 0 = no fade
 	minmousemove = 0,               -- amount of pixels the mouse has to move for OSC to show
 
 	showonpause = true,             -- whether to show to osc when paused
-	donttimeoutonpause = true,      -- whether to disable the hide timeout on pause
+	onpausenotimeout = true,        -- whether to disable the hide timeout on pause
 	bottomhover = true,             -- if the osc should only display when hovering at the bottom
-	raisesubswithosc = true,        -- whether to raise subtitles above the osc when it's shown
+	raisesubs = true,               -- whether to raise subtitles above the osc when it's shown
 	thumbnailborder = 2,            -- the width of the thumbnail border
 	persistentprogress = true,      -- always show a small progress line at the bottom of the screen
 	persistentprogressheight = 17,  -- the height of the persistentprogress bar
@@ -1205,13 +1205,6 @@ function destroyscrollingkeys()
     unbind_keys("ESC MBTN_RIGHT", "close")
     unbind_keys("LEFT", "comments_left")
     unbind_keys("RIGHT", "comments_right")
-end
-
-
-function resetDescTimer()
-    state.message_hide_timer:kill()
-    state.message_hide_timer.timeout = duration
-    state.message_hide_timer:resume()
 end
 
 function render_message(ass)
@@ -2437,7 +2430,7 @@ function osc_visible(visible)
 end
 
 function adjustSubtitles(visible)
-    if visible and user_opts.raisesubswithosc and state.osc_visible == true and (state.fullscreen == false or user_opts.showfullscreen) then
+    if visible and user_opts.raisesubs and state.osc_visible == true and (state.fullscreen == false or user_opts.showfullscreen) then
         local w, h = mp.get_osd_size()
         if h > 0 then
             local subpos = math.floor((osc_param.playresy - 175)/osc_param.playresy*100)
@@ -2446,7 +2439,7 @@ function adjustSubtitles(visible)
             end
             mp.commandv('set', 'sub-pos', subpos) -- percentage
         end
-    elseif user_opts.raisesubswithosc then
+    elseif user_opts.raisesubs then
         mp.commandv('set', 'sub-pos', 100)
     end
 end
@@ -2666,7 +2659,7 @@ function render()
         local timeout = state.showtime + (get_hidetimeout()/1000) - now
         if timeout <= 0 then
             if (state.active_element == nil) and (user_opts.bottomhover or not (mouse_over_osc)) then
-                if (not (state.paused and user_opts.donttimeoutonpause)) then
+                if (not (state.paused and user_opts.onpausenotimeout)) then
                     hide_osc()
                 end
             end
@@ -2994,6 +2987,7 @@ mp.observe_property('fullscreen', 'bool', function(name, val)
 end)
 mp.observe_property('mute', 'bool', function(name, val)
 	state.mute = val
+	request_tick()
 end)
 -- ensure compatibility with auto looping scripts (eg: a script that sets videos under 2 seconds to loop by default)
 mp.observe_property('loop-file', 'bool', function(name, val)
@@ -3077,7 +3071,11 @@ end
 -- mode can be auto/always/never/cycle
 -- the modes only affect internal variables and not stored on its own.
 function visibility_mode(mode)
-    enable_osc(true)
+	if mode == 'never' then
+		enable_osc(false)
+	else
+		enable_osc(true)
+	end 
 
     mp.set_property_native("user-data/osc/visibility", mode)
 
