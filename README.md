@@ -52,7 +52,7 @@ conf/mpv
 ## Configuration File
 An example of `modernxlite.conf` with default values: (For a full list, see `user_opts` in `modernxlite.lua`)
 
-```INI
+```properties
 # show the mpv 'play files' screen upon open
 welcomescreen=yes
 
@@ -108,7 +108,7 @@ titlefontsize=30
 osc_color=#000000
 
 # color of the seekbar progress and handle, in Hex color format
-seekbarfg_color=#BE4D25
+seekbarfg_color=#B7410E
 
 # color of the remaining seekbar, in Hex color format
 seekbarbg_color=#FFFFFF
@@ -136,20 +136,20 @@ showskip=no
 # skipping a chapter
 compactmode=no
 
+# show the info button
+showinfo=yes
+
 # show the loop button
 showloop=yes
-
-# activate looping by right clicking pause
-loopinpause=yes
 
 # show window on top button
 showontop=yes
 
-# show the info button
-showinfo=no
+# activate looping by right clicking pause
+loopinpause=yes
 
 # show screenshot button
-screenshotbutton=yes
+screenshotbutton=no
 ```
 
 ## Credits
