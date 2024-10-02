@@ -19,7 +19,7 @@ local user_opts = {
 	showwindowed = true,            -- show OSC when windowed?
 	showfullscreen = true,          -- show OSC when fullscreen?
 	noxmas = false,                 -- disable santa hat in December
-	keybindings = true,             -- register keybindings i.e. chapter scrubbing, pinning window
+	keybindings = false,             -- register keybindings i.e. chapter scrubbing, pinning window
     
 	-- scaling settings --
 	vidscale = true,                -- whether to scale the controller with the video
@@ -28,19 +28,19 @@ local user_opts = {
 	scaleforcedwindow = 1.0,        -- scaling when rendered on a forced window
 
 	-- interface settings --
-	hidetimeout = 2000,             -- duration in ms until OSC hides if no mouse movement
-	fadeduration = 250,             -- duration of fade out in ms, 0 = no fade
-	minmousemove = 0,               -- amount of pixels the mouse has to move for OSC to show
+	hidetimeout = 2000,               -- duration in ms until OSC hides if no mouse movement
+	fadeduration = 250,               -- duration of fade out in ms, 0 = no fade
+	minmousemove = 0,                 -- amount of pixels the mouse has to move for OSC to show
 
-	showonpause = true,             -- whether to show to osc when paused
-	onpausenotimeout = true,        -- whether to disable the hide timeout on pause
-	bottomhover = true,             -- if the osc should only display when hovering at the bottom
-	raisesubs = true,               -- whether to raise subtitles above the osc when it's shown
-	thumbnailborder = 2,            -- the width of the thumbnail border
-	persistentprogress = true,      -- always show a small progress line at the bottom of the screen
-	persistentprogressheight = 17,  -- the height of the persistentprogress bar
-	persistentbuffer = false,       -- on web videos, show the buffer on the persistent progress line
-	persistentprogresstoggle = true,-- enable toggling the persistentprogress bar
+	showonpause = true,               -- whether to show to osc when paused
+	onpausenotimeout = true,          -- whether to disable the hide timeout on pause
+	bottomhover = true,               -- if the osc should only display when hovering at the bottom
+	raisesubs = true,                 -- whether to raise subtitles above the osc when it's shown
+	thumbnailborder = 2,              -- the width of the thumbnail border
+	persistentprogress = false,       -- always show a small progress line at the bottom of the screen
+	persistentprogressheight = 17,    -- the height of the persistentprogress bar
+	persistentbuffer = false,         -- on web videos, show the buffer on the persistent progress line
+	persistentprogresstoggle = false, -- enable toggling the persistentprogress bar
 
 	-- title and chapter settings --
 	showtitle = true,               -- show title in OSC (above seekbar)
@@ -74,7 +74,7 @@ local user_opts = {
 	timetotal = true,               -- display total time instead of remaining time by default
 	timems = false,                 -- show time as milliseconds by default
 	timefontsize = 18,              -- the font size of the time
-	jumpamount = 5,                 -- change the jump amount (in seconds by default)
+	jumpamount = 10,                -- change the jump amount (in seconds by default)
 	jumpiconnumber = true,          -- show different icon when jumpamount is 5, 10, or 30
 	jumpmode = 'relative',          -- seek mode for jump buttons - https://mpv.io/manual/stable/#command-interface-seek-%3Ctarget%3E-[%3Cflags%3E]
 	volumecontrol = true,           -- whether to show mute button and volume slider
