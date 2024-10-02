@@ -9,7 +9,7 @@ A lite version of [zydezu/ModernX OSC](https://github.com/zydezu/ModernX) for mp
 ## What makes this lite?
 The one I forked from has many great additional features, mostly relating to online videos, which for my use case is not really needed. So I decided to create a lite version.
 
-### Initial changes: ([commit](https://github.com/Samillion/ModernX-Lite/commit/1fd04350069c20f0b1faa568e97c51b3e2907795))
+### Major changes: (commits: [initial](https://github.com/Samillion/ModernX-Lite/commit/1fd04350069c20f0b1faa568e97c51b3e2907795) & [major](https://github.com/Samillion/ModernX-Lite/commit/9dbc3fe04914317df9a7e979ed756bb344ef3ed5))
 - Removed youtube dislikes
 - Removed youtube description
 - Removed youtube comments
@@ -18,9 +18,17 @@ The one I forked from has many great additional features, mostly relating to onl
 - Removed altering window title
 - Removed all unused functions, variables and parameters
 - Applied relative patches from [mpv/osc.lua](https://github.com/mpv-player/mpv/blob/master/player/lua/osc.lua), going far back as mid 2022
-- Started fixing indentations, gradually and periodically to avoid unexpected breakage
+
+These changes might introduce bugs or even fatal errors. It shouldn't, but it's always possible. If found, please open an issue.
 
 For a full list of changes [click here](https://github.com/Samillion/ModernX-Lite/commits/main/modernxlite.lua) [work in progress, always changing]
+
+### To do list:
+- [ ] Re-organize the functions and variables so the order makes sense and not just random
+- [ ] Ensure all included functions and variables are actually used and not remnants of the past
+- [ ] Improve button placements
+- [ ] Include more customization options for colors
+- [ ] Backward compatibility for mpv v0.36 and below
 
 ## How to install
 Simply place `modernxlite.lua` in the corresponding mpv scripts folder of your operating system:
