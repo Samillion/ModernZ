@@ -37,7 +37,7 @@ For a full list [click here](https://github.com/Samillion/ModernX-Lite/commits/m
 
 **Configuration**: To adjust some attributes, such as seek color, place `modernxlite.conf` in the `script-opts` folder
 
-**Thumbfast**: This OSC supports `thumfast.lua`. No additional steps needed, just place it in the `scripts` folder.
+**Thumbfast**: This OSC supports [thumbfast](https://github.com/po5/thumbfast). No additional steps needed, just place it in the `scripts` folder.
 
 ```
 conf/mpv
@@ -55,14 +55,16 @@ conf/mpv
 ```
 
 > [!TIP]
-> More information about files locations can be found  [here](https://mpv.io/manual/master/#files)
+> More information about files locations can be found [here](https://mpv.io/manual/master/#files)
 
 ## Configuration File
-To customize options or colors, you can add `modernxlite.conf` in the `script-opts`, then add and change the options in there as you like.
+To customize options or colors, you can add `modernxlite.conf` in the `script-opts` folder, then add and change the options in there as you like.
 
-An example of a `modernxlite.conf` file: (see `user_opts` in [modernxlite.lua](./modernxlite.lua))
+An example of a `modernxlite.conf` file:
 
 ```properties
+# For a full list of options, see user_opts in modernxlite.lua
+
 # if the osc should only display when hovering at the bottom
 bottomhover=yes
 
