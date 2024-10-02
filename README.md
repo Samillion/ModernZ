@@ -4,7 +4,8 @@ A lite version of [zydezu/ModernX OSC](https://github.com/zydezu/ModernX) for mp
 > [!CAUTION]
 > This is still a work in progress.
 
-![Preview](https://github.com/user-attachments/assets/f43d4c34-2746-40f8-9068-3cbea538a0bd)
+![Preview](https://github.com/user-attachments/assets/514399b3-f1c6-493f-ac7e-66c5a7ac083a)
+
 
 ## What makes this lite?
 The one I forked from has many great additional features, mostly relating to online videos, which for my use case is not really needed. So I decided to create a lite version.
