@@ -67,6 +67,7 @@ local user_opts = {
 
 	automatickeyframemode = true,   -- set seekbarkeyframes based on video length to prevent laggy scrubbing on long videos 
 	automatickeyframelimit = 600,   -- videos of above this length (in seconds) will have seekbarkeyframes on
+	unicodeminus = false,           -- whether to use the Unicode minus sign character
 
 	-- button settings --
 	timetotal = true,               -- display total time instead of remaining time by default
@@ -309,12 +310,6 @@ local window_control_box_width = 138
 local tick_delay = 1 / 60
 
 local is_december = os.date("*t").month == 12
-
---- Automatically disable OSC
-local builtin_osc_enabled = mp.get_property_native('osc')
-if builtin_osc_enabled then
-	mp.set_property_native('osc', false)
-end
 
 --
 -- Helperfunctions
@@ -1662,6 +1657,8 @@ function update_options(list)
     request_init()
 end
 
+local UNICODE_MINUS = string.char(0xe2, 0x88, 0x92)  -- UTF-8 for U+2212 MINUS SIGN
+
 -- OSC INIT
 function osc_init()
     msg.debug('osc_init')
@@ -2351,14 +2348,15 @@ function osc_init()
     ne = new_element('tc_right', 'button')
     ne.visible = (mp.get_property_number("duration", 0) > 0)
     ne.content = function ()
-        if (mp.get_property_number('duration', 0) <= 0) then return '--:--:--' end
-        if (state.rightTC_trem) then
-        if (state.fulltime) then
-            return ('-'..mp.get_property_osd('playtime-remaining/full'))
-        else
-            return ('-'..mp.get_property_osd('playtime-remaining'))
-        end
-        else
+		if (mp.get_property_number('duration', 0) <= 0) then return '--:--:--' end
+		if (state.rightTC_trem) then
+			local minus = user_opts.unicodeminus and UNICODE_MINUS or "-"
+			if (state.fulltime) then
+				return (minus..mp.get_property_osd('playtime-remaining/full'))
+			else
+				return (minus..mp.get_property_osd('playtime-remaining'))
+			end
+		else
         if (state.fulltime) then
             return (mp.get_property_osd('duration/full'))
         else
@@ -2911,6 +2909,11 @@ end
 validate_user_opts()
 
 mp.register_event("file-loaded", startupevents)
+mp.observe_property("osc", "bool", function(name, value)
+    if value == true then
+        mp.set_property("osc", "no")
+    end
+end)
 mp.observe_property('track-list', 'native', request_init)
 mp.observe_property('playlist', 'native', request_init)
 mp.observe_property('chapter-list', 'native', function(_, list) -- chapter list changes
