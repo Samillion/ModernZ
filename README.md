@@ -61,21 +61,6 @@ conf/mpv
 An example of `modernxlite.conf` with default values: (For a full list, see `user_opts` in `modernxlite.lua`)
 
 ```properties
-# whether to scale the controller with the video
-vidscale=yes
-
-# duration in ms until OSC hides if no mouse movement
-hidetimeout=2000
-
-# duration of fade out in ms, 0 = no fade
-fadeduration=250
-
-# whether to show to osc when paused
-showonpause=yes
-
-# whether to disable the hide timeout on pause
-onpausenotimeout=yes
-
 # if the osc should only display when hovering at the bottom
 bottomhover=yes
 
@@ -85,20 +70,11 @@ raisesubs=yes
 # always show a small progress line at the bottom of the screen
 persistentprogress=no
 
-# on web videos, show the buffer on the persistent progress line
-persistentbuffer=no
-
 # show title in OSC (above seekbar)
 showtitle=yes
 
 # title shown on OSC (above seekbar), ${media-title} or ${filename}
 title=${media-title}
-
-# the font size of the title text
-titlefontsize=30
-
-# accent of the OSC and the title bar, in Hex color format
-osc_color=#000000
 
 # color of the seekbar progress and handle, in Hex color format
 seekbarfg_color=#B7410E
@@ -108,9 +84,6 @@ iconstyle=round
 
 # whether buttons have a glowing effect when hovered over
 hovereffect=yes
-
-# change the jump amount (in seconds by default)
-jumpamount=10
 
 # show different icon when jumpamount is 5, 10, or 30
 jumpiconnumber=yes
@@ -137,9 +110,6 @@ showontop=yes
 
 # if you pin the window, remove window border?
 ontopnoborder=yes
-
-# activate looping by right clicking pause
-loopinpause=yes
 
 # show screenshot button
 screenshotbutton=no
