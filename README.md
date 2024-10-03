@@ -22,10 +22,10 @@ The one I forked from has many great additional features, mostly relating to onl
 
 These changes might introduce bugs. It shouldn't, but it's always possible. If found, please open an issue.
 
-For a full list [click here](https://github.com/Samillion/ModernX-Lite/commits/main/modernxlite.lua)
+For a full list [click here](https://github.com/Samillion/ModernX-Lite/commits/main/modernxlite.lua) and [here](https://github.com/Samillion/ModernZ/commits/main/modernz.lua)
 
 ### To do list:
-- [x] Re-organize the functions and variables so the order makes sense and not just random [[commit](https://github.com/Samillion/ModernX-Lite/commit/ff980c8a31a5306f8832ab03b51024deb1feb94a)]
+- [x] Re-organize the functions and variables so the order makes sense and not just random
 - [ ] Ensure all included functions and variables are actually used and not remnants of the past
 - [ ] Match mpv's `osc.lua` standards and functionality, where relative, to ensure compatibility and stability.
 - [ ] Improve button placements
@@ -36,7 +36,7 @@ For a full list [click here](https://github.com/Samillion/ModernX-Lite/commits/m
 
 **Fonts**: Place `Material-Design-Iconic-Font.ttf` and `Material-Design-Iconic-Round.ttf` in the `fonts` folder.
 
-**Configuration**: To adjust some attributes, such as seek color, place `modernz.conf` in the `script-opts` folder
+**Configuration**: To adjust options, such as seek color, place `modernz.conf` in the `script-opts` folder
 
 **Thumbfast**: This OSC supports [thumbfast](https://github.com/po5/thumbfast). No additional steps needed, just place it in the `scripts` folder.
 
@@ -52,14 +52,14 @@ conf/mpv
 │
 └───scripts
         modernz.lua
-        thumbfast.lua
+        thumbfast.lua (optional)
 ```
 
 > [!TIP]
 > More information about files locations can be found [here](https://mpv.io/manual/master/#files)
 
 ## Configuration File
-To customize options or colors, you can add `modernz.conf` in the `script-opts` folder, then add and change the options in there as you like.
+To customize options or colors, you can add `modernz.conf` in the `script-opts` folder, then add the options in there as you like.
 
 An example of a `modernz.conf` file:
 
@@ -99,11 +99,6 @@ showjump=yes
 # show the skip back and forward (chapter) buttons
 showskip=no
 
-# replace the jump buttons with the chapter buttons, clicking the
-# buttons will act as jumping, and shift clicking will act as
-# skipping a chapter
-compactmode=no
-
 # show the info button
 showinfo=yes
 
@@ -120,12 +115,12 @@ ontopborder=no
 showscreenshot=no
 ```
 
-## Credits & History
-- Samillion/ModernZ: https://github.com/Samillion/ModernZ
-	- forked from zydezu/ModernX: https://github.com/zydezu/ModernX
-		- forked from dexeonify/ModernX: https://github.com/dexeonify/mpv-config/blob/main/scripts/modernx.lua
-			- forked from cyl0/ModernX: https://github.com/cyl0/ModernX
-				- forked from maoiscat/mpv-osc-modern: https://github.com/maoiscat/mpv-osc-modern
+## History
+- [Samillion/ModernZ](https://github.com/Samillion/ModernZ)
+	- forked from [zydezu/ModernX](https://github.com/zydezu/ModernX)
+		- forked from [dexeonify/ModernX](https://github.com/dexeonify/mpv-config/blob/main/scripts/modernx.lua)
+			- forked from [cyl0/ModernX](https://github.com/cyl0/ModernX)
+				- forked from [maoiscat/mpv-osc-modern](https://github.com/maoiscat/mpv-osc-modern)
 
 Looking at the fork history of `ModernX`, I asked myself:
 > Since you forked this, doesn't that mean you stripped it back down to be a near match of the original?
@@ -134,6 +129,6 @@ Absolutely, yes. :stuck_out_tongue_closed_eyes:
 
 The caviat here is that I only asked myself that after the fact.
 
-I convinced myself: The one I forked is the most recently maintained one, compared to the original. That means less work, even though I had to apply `mpv/osc.lua` patches as far back as 2022.
+After arguing with myself, I concluded: The main idea is to re-do the project to keep mpv's OSC standards for functionality and compatibility. It's a nice side project that is teaching me a lot about mpv and lua.
 
 Still, all the people there deserve credit for their great work.
