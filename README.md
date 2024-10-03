@@ -120,12 +120,12 @@ ontopborder=no
 showscreenshot=no
 ```
 
-## Credits
-- ModernX-Lite forked by Samillion: https://github.com/Samillion/ModernZ
+## Credits & History
+- Samillion/ModernZ: https://github.com/Samillion/ModernZ
 	- forked from zydezu/ModernX: https://github.com/zydezu/ModernX
-		- forked from dexeonify: https://github.com/dexeonify/mpv-config/blob/main/scripts/modernx.lua
-			- forked from cyl0: https://github.com/cyl0/ModernX
-				- forked from maoiscat: https://github.com/maoiscat/mpv-osc-modern
+		- forked from dexeonify/ModernX: https://github.com/dexeonify/mpv-config/blob/main/scripts/modernx.lua
+			- forked from cyl0/ModernX: https://github.com/cyl0/ModernX
+				- forked from maoiscat/mpv-osc-modern: https://github.com/maoiscat/mpv-osc-modern
 
 Looking at the fork history of `ModernX`, I asked myself:
 > Since you forked this, doesn't that mean you stripped it back down to be a near match of the original?
