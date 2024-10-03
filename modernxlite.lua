@@ -89,8 +89,8 @@ local user_opts = {
 	showloop = true,                -- show the loop button
 	loopinpause = true,             -- activate looping by right clicking pause
 	showontop = true,               -- show window on top button
-	ontopnoborder = true,           -- If you pin the window, remove window border?
-	screenshotbutton = false        -- show screenshot button
+	ontopborder = false,            -- If you pin the window, keep window border?
+	showscreenshot = false          -- show screenshot button
 }
 
 local osc_param = {      -- calculated by osc_init()
@@ -470,15 +470,6 @@ end
 -- get value at current mouse position
 local function get_slider_value(element)
     return get_slider_value_at(element, get_virt_mouse_pos())
-end
-
--- Samillion
--- align:  -1 .. +1
--- frame:  size of the containing area
--- obj:    size of the object that should be positioned inside the area
--- margin: min. distance from object to frame (as long as -1 <= align <= +1)
-local function get_align(align, frame, obj, margin)
-    return (frame / 2) + (((frame / 2) - margin - (obj / 2)) * align)
 end
 
 -- multiplies two alpha values, formular can probably be improved
@@ -1501,7 +1492,7 @@ layouts = function ()
     local showloop = user_opts.showloop
     local showinfo = user_opts.showinfo
     local showontop = user_opts.showontop
-    local showscreenshot = user_opts.screenshotbutton
+    local showscreenshot = user_opts.showscreenshot
 
     if user_opts.compactmode then
         user_opts.showjump = false
@@ -2083,7 +2074,7 @@ local function osc_init()
     ne.eventresponder['mbtn_left_up'] =
         function () 
             mp.commandv('cycle', 'ontop') 
-            if state.initialborder == 'yes' and user_opts.ontopnoborder then
+            if state.initialborder == 'yes' and not user_opts.ontopborder then
                 if mp.get_property('ontop') == 'yes' then
                     mp.commandv('set', 'border', "no")
                 else
