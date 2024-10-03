@@ -1,4 +1,4 @@
--- ModernX-Lite forked by Samillion - https://github.com/Samillion/ModernX-Lite
+-- ModernZ forked by Samillion - https://github.com/Samillion/ModernZ
 --- forked from zydezu/ModernX - https://github.com/zydezu/ModernX
 ---- forked from dexeonify - https://github.com/dexeonify/mpv-config/blob/main/scripts/modernx.lua
 ----- forked from cyl0 - https://github.com/cyl0/ModernX
@@ -11,7 +11,7 @@ local utils = require 'mp.utils'
 
 -- Parameters
 -- default user option values
--- change them using modernxlite.conf
+-- change them using modernz.conf
 local user_opts = {
 	language = 'en',                       -- en:English, chs:Chinese, pl:Polish, jp:Japanese
 	idlescreen = true,                     -- show mpv logo on idle
@@ -532,6 +532,9 @@ local function ass_draw_rr_h_ccw(ass, x0, y0, x1, y1, r1, hexagon, r2)
 end
 
 local function get_hidetimeout()
+    if user_opts.visibility == "always" then
+        return -1 -- disable autohide
+    end
     return user_opts.hidetimeout
 end
 
@@ -1419,7 +1422,7 @@ local function window_controls()
 end
 
 --
--- ModernX-Lite Layout
+-- ModernZ Layout
 --
 
 local layouts = {}
@@ -3176,7 +3179,7 @@ local function validate_user_opts()
 end
 
 -- read options from config and command-line
-opt.read_options(user_opts, "modernxlite", function(changed)
+opt.read_options(user_opts, "modernz", function(changed)
     validate_user_opts()
 	set_time_styles(changed.timetotal, changed.timems)
     if changed.tick_delay or changed.tick_delay_follow_display_fps then
