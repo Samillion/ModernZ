@@ -3005,7 +3005,17 @@ mp.observe_property('idle-active', 'bool', function(name, val)
 	state.idle = val
 	request_tick()
 end)
-mp.observe_property('pause', 'bool', pause_state)
+mp.observe_property('pause', 'bool', function(name, enabled)
+	if user_opts.showonpause then
+		if enabled then
+			visibility_mode("always", true)
+			show_osc()
+		else
+			visibility_mode("auto", true)
+		end
+	end
+	pause_state(name, enabled)
+end)
 mp.observe_property('demuxer-cache-state', 'native', cache_state)
 mp.observe_property('vo-configured', 'bool', request_tick)
 mp.observe_property('playback-time', 'number', request_tick)
