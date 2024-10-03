@@ -2866,46 +2866,9 @@ local function visibility_mode(mode, no_osd)
     request_tick()
 end
 
-local function startupevents()
-    if user_opts.automatickeyframemode then
-        if mp.get_property_number("duration", 0) > user_opts.automatickeyframelimit then
-            user_opts.seekbarkeyframes = true
-        else
-            user_opts.seekbarkeyframes = false
-        end
-    end
-end
-
-local function bind_keys(keys, name, func, opts)
-    if not keys then
-        mp.add_forced_key_binding(keys, name, func, opts)
-        return
-    end
-    local i = 1
-    for key in keys:gmatch("[^%s]+") do
-        local prefix = i == 1 and '' or i
-        mp.add_forced_key_binding(key, name .. prefix, func, opts)
-        i = i + 1
-    end
-end
-
-local function unbind_keys(keys, name)
-    if not keys then
-        mp.remove_key_binding(name)
-        return
-    end
-    local i = 1
-    for key in keys:gmatch("[^%s]+") do
-        local prefix = i == 1 and '' or i
-        mp.remove_key_binding(name .. prefix)
-        i = i + 1
-    end
-end
-
 --
 -- Other important stuff
 --
-mp.register_event("file-loaded", startupevents)
 mp.observe_property("osc", "bool", function(name, value)
     if value == true then
         mp.set_property("osc", "no")
@@ -3097,6 +3060,14 @@ local function validate_user_opts()
 			user_opts.showinfo = false
 		else
 			io.close(statslua_file)
+		end
+	end
+	
+	if user_opts.automatickeyframemode then
+		if mp.get_property_number("duration", 0) > user_opts.automatickeyframelimit then
+			user_opts.seekbarkeyframes = true
+		else
+			user_opts.seekbarkeyframes = false
 		end
 	end
 	
