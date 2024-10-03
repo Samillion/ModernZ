@@ -25,7 +25,7 @@ These changes might introduce bugs. It shouldn't, but it's always possible. If f
 For a full list [click here](https://github.com/Samillion/ModernX-Lite/commits/main/modernxlite.lua)
 
 ### To do list:
-- [ ] Re-organize the functions and variables so the order makes sense and not just random
+- [x] Re-organize the functions and variables so the order makes sense and not just random [[commit](https://github.com/Samillion/ModernX-Lite/commit/ff980c8a31a5306f8832ab03b51024deb1feb94a)]
 - [ ] Ensure all included functions and variables are actually used and not remnants of the past
 - [ ] Improve button placements
 - [ ] Include more customization options for colors
@@ -113,11 +113,11 @@ showloop=yes
 # show window on top button
 showontop=yes
 
-# if you pin the window, remove window border?
-ontopnoborder=yes
+# if you pin the window, keep window border?
+ontopborder=no
 
 # show screenshot button
-screenshotbutton=no
+showscreenshot=no
 ```
 
 ## Credits
