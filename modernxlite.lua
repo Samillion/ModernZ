@@ -19,7 +19,7 @@ local user_opts = {
 	showwindowed = true,            -- show OSC when windowed?
 	showfullscreen = true,          -- show OSC when fullscreen?
 	noxmas = false,                 -- disable santa hat in December
-	keybindings = false,             -- register keybindings i.e. chapter scrubbing, pinning window
+	keybindings = false,            -- register keybindings i.e. chapter scrubbing, pinning window
     
 	-- scaling settings --
 	vidscale = true,                -- whether to scale the controller with the video
@@ -309,7 +309,6 @@ local state = {
 	fulltime = user_opts.timems,
 	chapter_list = {},                      -- sorted by time
 	looping = false,
-	scrolledlines = 25,
 	persistentprogresstoggle = user_opts.persistentprogress,
 }
 
@@ -1228,17 +1227,6 @@ local function unbind_keys(keys, name)
     end
 end
 
-local function destroyscrollingkeys()
-    state.scrolledlines = 25
-    show_message("",0.01) -- dirty way to clear text
-    unbind_keys("UP WHEEL_UP", "move_up")
-    unbind_keys("DOWN WHEEL_DOWN", "move_down")
-    unbind_keys("ENTER MBTN_LEFT", "select")
-    unbind_keys("ESC MBTN_RIGHT", "close")
-    unbind_keys("LEFT", "comments_left")
-    unbind_keys("RIGHT", "comments_right")
-end
-
 local function render_message(ass)
     if state.message_hide_timer and state.message_hide_timer:is_enabled() and state.message_text then
         local _, lines = string.gsub(state.message_text, '\\N', '')
@@ -1921,12 +1909,10 @@ local function osc_init()
     ne.eventresponder['mbtn_left_up'] =
         function ()
             mp.commandv('playlist-prev', 'weak')
-            destroyscrollingkeys()
         end
     ne.eventresponder['enter'] =
         function ()
             mp.commandv('playlist-prev', 'weak')
-            destroyscrollingkeys()
             show_message(get_playlist()) 
         end
     ne.eventresponder['mbtn_right_up'] =
@@ -1941,13 +1927,11 @@ local function osc_init()
     ne.enabled = (have_pl and (pl_pos < pl_count)) or (loop ~= 'no')
     ne.eventresponder['mbtn_left_up'] =
         function () 
-            mp.commandv('playlist-next', 'weak') 
-            destroyscrollingkeys()
+            mp.commandv('playlist-next', 'weak')
         end
     ne.eventresponder['enter'] =
         function () 
             mp.commandv('playlist-next', 'weak')
-            destroyscrollingkeys()
             show_message(get_playlist())
         end
     ne.eventresponder['mbtn_right_up'] =
@@ -3022,11 +3006,9 @@ if user_opts.keybindings then
 
     mp.add_key_binding("CTRL+LEFT", "prevfile", function()
         mp.commandv('playlist-prev', 'weak')
-        destroyscrollingkeys()
     end);
     mp.add_key_binding("CTRL+RIGHT", "nextfile", function()
         mp.commandv('playlist-next', 'weak')
-        destroyscrollingkeys()
     end);
     mp.add_key_binding("SHIFT+LEFT", "prevchapter", function()
         changeChapter(-1)
