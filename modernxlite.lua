@@ -13,84 +13,81 @@ local utils = require 'mp.utils'
 -- default user option values
 -- change them using modernxlite.conf
 local user_opts = {
-	-- general settings --
-	language = 'en',                -- en:English, chs:Chinese, pl:Polish, jp:Japanese
-	welcomescreen = true,           -- show the mpv 'play files' screen upon open
-	windowcontrols = 'auto',        -- whether to show OSC window controls, 'auto', 'yes' or 'no'
-	showwindowed = true,            -- show OSC when windowed?
-	showfullscreen = true,          -- show OSC when fullscreen?
-	noxmas = false,                 -- disable santa hat in December
-	keybindings = false,            -- register keybindings i.e. chapter scrubbing, pinning window
-    
-	-- scaling settings --
-	vidscale = true,                -- whether to scale the controller with the video
-	scalewindowed = 1.0,            -- scaling of the controller when windowed
-	scalefullscreen = 1.0,          -- scaling of the controller when fullscreen
-	scaleforcedwindow = 1.0,        -- scaling when rendered on a forced window
+	language = 'en',                       -- en:English, chs:Chinese, pl:Polish, jp:Japanese
+	idlescreen = true,                     -- show mpv logo on idle
+	windowcontrols = 'auto',               -- whether to show OSC window controls, 'auto', 'yes' or 'no'
+	showwindowed = true,                   -- show OSC when windowed?
+	showfullscreen = true,                 -- show OSC when fullscreen?
+	noxmas = false,                        -- disable santa hat in December
+	keybindings = false,                   -- register keybindings i.e. chapter scrubbing, pinning window
 
-	-- interface settings --
-	hidetimeout = 2000,               -- duration in ms until OSC hides if no mouse movement
-	fadeduration = 250,               -- duration of fade out in ms, 0 = no fade
-	minmousemove = 0,                 -- amount of pixels the mouse has to move for OSC to show
+	vidscale = true,                       -- whether to scale the controller with the video
+	scalewindowed = 1.0,                   -- scaling of the controller when windowed
+	scalefullscreen = 1.0,                 -- scaling of the controller when fullscreen
+	scaleforcedwindow = 1.0,               -- scaling when rendered on a forced window
 
-	showonpause = true,               -- whether to show to osc when paused
-	onpausenotimeout = true,          -- whether to disable the hide timeout on pause
-	bottomhover = true,               -- if the osc should only display when hovering at the bottom
-	raisesubs = true,                 -- whether to raise subtitles above the osc when it's shown
-	thumbnailborder = 2,              -- the width of the thumbnail border
-	persistentprogress = false,       -- always show a small progress line at the bottom of the screen
-	persistentprogressheight = 17,    -- the height of the persistentprogress bar
-	persistentbuffer = false,         -- on web videos, show the buffer on the persistent progress line
-	persistentprogresstoggle = false, -- enable toggling the persistentprogress bar
+	hidetimeout = 2000,                    -- duration in ms until OSC hides if no mouse movement
+	fadeduration = 250,                    -- duration of fade out in ms, 0 = no fade
+	minmousemove = 0,                      -- amount of pixels the mouse has to move for OSC to show
 
-	-- title and chapter settings --
-	showtitle = true,               -- show title in OSC (above seekbar)
-	showwindowtitle = true,         -- show window title in borderless/fullscreen mode
-	titleBarStrip = false,          -- whether to make the title bar a singular bar instead of a black fade
-	title = '${media-title}',       -- title shown on OSC (above seekbar). ${media-title} or ${filename}
-	font = 'mpv-osd-symbols',       -- mpv-osd-symbols = default osc font (or the one set in mpv.conf)
-	titlefontsize = 30,             -- the font size of the title text
-	chapterformat = 'Chapter: %s',  -- chapter print format for seekbar-hover. "no" to disable
+	showonpause = true,                    -- whether to show to osc when paused
+	onpausenotimeout = true,               -- whether to disable the hide timeout on pause
+	bottomhover = true,                    -- if the osc should only display when hovering at the bottom
+	raisesubs = true,                      -- whether to raise subtitles above the osc when it's shown
+	thumbnailborder = 2,                   -- the width of the thumbnail border
+	persistentprogress = false,            -- always show a small progress line at the bottom of the screen
+	persistentprogressheight = 17,         -- the height of the persistentprogress bar
+	persistentbuffer = false,              -- on web videos, show the buffer on the persistent progress line
+	persistentprogresstoggle = false,      -- enable toggling the persistentprogress bar
 
-	osc_color = '#000000',          -- accent of the OSC and the title bar, in Hex color format
-	OSCfadealpha = 150,             -- alpha of the background box for the OSC
-	boxalpha = 75,                  -- alpha of the window title bar
+	showtitle = true,                      -- show title in OSC (above seekbar)
+	showwindowtitle = true,                -- show window title in borderless/fullscreen mode
+	titleBarStrip = false,                 -- whether to make the title bar a singular bar instead of a black fade
+	title = '${media-title}',              -- title shown on OSC (above seekbar). ${media-title} or ${filename}
+	font = 'mpv-osd-symbols',              -- mpv-osd-symbols = default osc font (or the one set in mpv.conf)
+	titlefontsize = 30,                    -- the font size of the title text
+	chapterformat = 'Chapter: %s',         -- chapter print format for seekbar-hover. "no" to disable
 
-	-- seekbar settings --
-	seekbarfg_color = '#BE4D25',    -- color of the seekbar progress and handle, in Hex color format
-	seekbarbg_color = '#FFFFFF',    -- color of the remaining seekbar, in Hex color format
-	seekbarkeyframes = false,       -- use keyframes when dragging the seekbar
-	seekbarhandlesize = 0.8,        -- size ratio of the slider handle, range 0 ~ 1
-	seekrange = true,               -- show seekrange overlay
-	seekrangealpha = 150,           -- transparency of seekranges
-	iconstyle = 'round',            -- icon style, 'solid' or 'round'
-	hovereffect = true,             -- whether buttons have a glowing effect when hovered over
+	osc_color = '#000000',                 -- accent of the OSC and the title bar, in Hex color format
+	OSCfadealpha = 150,                    -- alpha of the background box for the OSC
+	boxalpha = 75,                         -- alpha of the window title bar
 
-	automatickeyframemode = true,   -- set seekbarkeyframes based on video length to prevent laggy scrubbing on long videos 
-	automatickeyframelimit = 600,   -- videos of above this length (in seconds) will have seekbarkeyframes on
-	unicodeminus = false,           -- whether to use the Unicode minus sign character
-	visibility = "auto",            -- only used at init to set visibility_mode(...)
+	seekbarfg_color = '#BE4D25',           -- color of the seekbar progress and handle, in Hex color format
+	seekbarbg_color = '#FFFFFF',           -- color of the remaining seekbar, in Hex color format
+	seekbarkeyframes = false,              -- use keyframes when dragging the seekbar
+	seekbarhandlesize = 0.8,               -- size ratio of the slider handle, range 0 ~ 1
+	seekrange = true,                      -- show seekrange overlay
+	seekrangealpha = 150,                  -- transparency of seekranges
+	iconstyle = 'round',                   -- icon style, 'solid' or 'round'
+	hovereffect = true,                    -- whether buttons have a glowing effect when hovered over
 
-	-- button settings --
-	timetotal = true,               -- display total time instead of remaining time by default
-	timems = false,                 -- show time as milliseconds by default
-	timefontsize = 18,              -- the font size of the time
-	jumpamount = 10,                -- change the jump amount (in seconds by default)
-	jumpiconnumber = true,          -- show different icon when jumpamount is 5, 10, or 30
-	jumpmode = 'relative',          -- seek mode for jump buttons - https://mpv.io/manual/stable/#command-interface-seek-%3Ctarget%3E-[%3Cflags%3E]
-	volumecontrol = true,           -- whether to show mute button and volume slider
-	volumecontroltype = 'linear',   -- use 'linear' or 'log' (logarithmic) volume scale
-	showjump = true,                -- show "jump forward/backward 5 seconds" buttons 
-	showskip = false,               -- show the skip back and forward (chapter) buttons
-	compactmode = false,            -- replace the jump buttons with the chapter buttons, clicking the
-                                    -- buttons will act as jumping, and shift clicking will act as
-                                    -- skipping a chapter
-	showinfo = false,               -- show the info button
-	showloop = true,                -- show the loop button
-	loopinpause = true,             -- activate looping by right clicking pause
-	showontop = true,               -- show window on top button
-	ontopborder = false,            -- If you pin the window, keep window border?
-	showscreenshot = false          -- show screenshot button
+	automatickeyframemode = true,          -- set seekbarkeyframes based on video length to prevent laggy scrubbing on long videos 
+	automatickeyframelimit = 600,          -- videos of above this length (in seconds) will have seekbarkeyframes on
+	unicodeminus = false,                  -- whether to use the Unicode minus sign character
+	visibility = "auto",                   -- only used at init to set visibility_mode(...)
+
+	timetotal = true,                      -- display total time instead of remaining time by default
+	timems = false,                        -- show time as milliseconds by default
+	timefontsize = 18,                     -- the font size of the time
+	jumpamount = 10,                       -- change the jump amount (in seconds by default)
+	jumpiconnumber = true,                 -- show different icon when jumpamount is 5, 10, or 30
+	jumpmode = 'relative',                 -- seek mode for jump buttons
+	volumecontrol = true,                  -- whether to show mute button and volume slider
+	volumecontroltype = 'linear',          -- use 'linear' or 'log' (logarithmic) volume scale
+	showjump = true,                       -- show "jump forward/backward 5 seconds" buttons 
+	showskip = false,                      -- show the skip back and forward (chapter) buttons
+	compactmode = false,                   -- replace the jump buttons with the chapter buttons, clicking the
+                                           -- buttons will act as jumping, and shift clicking will act as
+                                           -- skipping a chapter
+	showinfo = false,                      -- show the info button
+	showloop = true,                       -- show the loop button
+	loopinpause = true,                    -- activate looping by right clicking pause
+	showontop = true,                      -- show window on top button
+	ontopborder = false,                   -- If you pin the window, keep window border?
+	showscreenshot = false,                -- show screenshot button
+
+    tick_delay = 1 / 60,                   -- minimum interval between OSC redraws in seconds
+    tick_delay_follow_display_fps = false  -- use display fps as the minimum interval
 }
 
 local osc_param = {      -- calculated by osc_init()
@@ -268,43 +265,44 @@ local osc_styles = {
 
 -- internal states, do not touch
 local state = {
-	showtime,                               -- time of last invocation (last mouse move)
+	showtime = nil,                         -- time of last invocation (last mouse move)
 	osc_visible = false,
-	anistart,                               -- time when the animation started
-	anitype,                                -- current type of animation
-	animation,                              -- current animation alpha
+	anistart = nil,                         -- time when the animation started
+	anitype = nil,                          -- current type of animation
+	animation = nil,                        -- current animation alpha
 	mouse_down_counter = 0,                 -- used for softrepeat
 	active_element = nil,                   -- nil = none, 0 = background, 1+ = see elements[]
 	active_event_source = nil,              -- the 'button' that issued the current event
-	touchingprogressbar = false,                 -- if the mouse is touching the progress bar
 	rightTC_trem = not user_opts.timetotal, -- if the right timecode should display total or remaining time
-	mp_screen_sizeX, mp_screen_sizeY,       -- last screen-resolution, to detect resolution changes to issue reINITs
+	tc_ms = user_opts.timems,               -- Should the timecodes display their time with milliseconds
+	screen_sizeX = nil, screen_sizeY = nil, -- last screen-resolution, to detect resolution changes to issue reINITs
 	initREQ = false,                        -- is a re-init request pending?
-	last_mouseX, last_mouseY,               -- last mouse position, to detect significant mouse movement
-	sliderpos = 0,
+	last_mouseX = nil, last_mouseY = nil,   -- last mouse position, to detect significant mouse movement
 	mouse_in_window = false,
-	message_text,
-	message_hide_timer,
+	message_text = nil,
+	message_hide_timer = nil,
 	fullscreen = false,
 	tick_timer = nil,
 	tick_last_time = 0,                     -- when the last tick() was run
-	initialborder = mp.get_property('border'),
 	hide_timer = nil,
 	cache_state = nil,
 	idle = false,
-	playingWhilstSeeking = false,
-	playingWhilstSeekingWaitingForEnd = false,
 	enabled = true,
 	input_enabled = true,
 	showhide_enabled = false,
 	windowcontrols_buttons = false,
+    windowcontrols_title = false,
 	border = true,
 	maximized = false,
 	osd = mp.create_osd_overlay('ass-events'),
-	mute = false,
-	fulltime = user_opts.timems,
 	chapter_list = {},                      -- sorted by time
+	mute = false,
 	looping = false,
+	sliderpos = 0,
+	touchingprogressbar = false,            -- if the mouse is touching the progress bar
+	initialborder = mp.get_property('border'),
+	playingWhilstSeeking = false,
+	playingWhilstSeekingWaitingForEnd = false,
 	persistentprogresstoggle = user_opts.persistentprogress,
 }
 
@@ -354,6 +352,15 @@ local function set_osd(res_x, res_y, text, z)
     state.osd.data = text
     state.osd.z = z
     state.osd:update()
+end
+
+local function set_time_styles(timetotal_changed, timems_changed)
+    if timetotal_changed then
+        state.rightTC_trem = not user_opts.timetotal
+    end
+    if timems_changed then
+        state.tc_ms = user_opts.timems
+    end
 end
 
 -- scale factor for translating between real and virtual ASS coordinates
@@ -2305,14 +2312,14 @@ local function osc_init()
     -- tc_left (current pos)
     ne = new_element('tc_left', 'button')
     ne.content = function ()
-    if (state.fulltime) then
+    if (state.tc_ms) then
         return mp.get_property_osd('playback-time/full'):gsub('-', '')
     else
         return mp.get_property_osd('playback-time'):gsub('-', '')
     end
     end
     ne.eventresponder["mbtn_left_up"] = function ()
-        state.fulltime = not state.fulltime
+        state.tc_ms = not state.tc_ms
         request_init()
     end
 
@@ -2323,13 +2330,13 @@ local function osc_init()
 		if (mp.get_property_number('duration', 0) <= 0) then return '--:--:--' end
 		if (state.rightTC_trem) then
 			local minus = user_opts.unicodeminus and UNICODE_MINUS or "-"
-			if (state.fulltime) then
+			if (state.tc_ms) then
 				return (minus..mp.get_property_osd('playtime-remaining/full'))
 			else
 				return (minus..mp.get_property_osd('playtime-remaining'))
 			end
 		else
-        if (state.fulltime) then
+        if (state.tc_ms) then
             return (mp.get_property_osd('duration/full'))
         else
             return (mp.get_property_osd('duration'))
@@ -2556,13 +2563,13 @@ local function render()
     local now = mp.get_time()
 
     -- check if display changed, if so request reinit
-    if not (state.mp_screen_sizeX == current_screen_sizeX
-        and state.mp_screen_sizeY == current_screen_sizeY) then
+    if not (state.screen_sizeX == current_screen_sizeX
+        and state.screen_sizeY == current_screen_sizeY) then
 
         request_init_resize()
 
-        state.mp_screen_sizeX = current_screen_sizeX
-        state.mp_screen_sizeY = current_screen_sizeY
+        state.screen_sizeX = current_screen_sizeX
+        state.screen_sizeY = current_screen_sizeY
     end
 
     -- init management
@@ -2758,7 +2765,7 @@ tick = function()
 
         local ass = assdraw.ass_new()
         -- mpv logo
-        if user_opts.welcomescreen then
+        if user_opts.idlescreen then
             for _, line in ipairs(logo_lines) do
                 ass:new_event()
                 ass:append(line_prefix .. line)
@@ -2766,14 +2773,14 @@ tick = function()
         end
 
         -- Santa hat
-        if is_december and user_opts.welcomescreen and not user_opts.noxmas then
+        if is_december and user_opts.idlescreen and not user_opts.noxmas then
             for _, line in ipairs(santa_hat_lines) do
                 ass:new_event()
                 ass:append(line_prefix .. line)
             end
         end
 
-        if user_opts.welcomescreen then
+        if user_opts.idlescreen then
             ass:new_event()
             ass:pos(display_w / 2, icon_y + 65)
             ass:an(8)
@@ -2814,75 +2821,117 @@ tick = function()
     end
 end
 
-local function always_on(val)
-    if state.enabled then
-        if val then
-            show_osc()
+local function shutdown()
+    mp.del_property("user-data/osc")
+end
+
+-- duration is observed for the sole purpose of updating chapter markers
+-- positions. live streams with chapters are very rare, and the update is also
+-- expensive (with request_init), so it's only observed when we have chapters
+-- and the user didn't disable the livemarkers option (update_duration_watch).
+local function on_duration() request_init() end
+
+local duration_watched = false
+local function update_duration_watch()
+    local want_watch = user_opts.livemarkers and
+                       (mp.get_property_number("chapters", 0) or 0) > 0 and
+                       true or false  -- ensure it's a boolean
+
+    if want_watch ~= duration_watched then
+        if want_watch then
+            mp.observe_property("duration", "native", on_duration)
         else
-            hide_osc()
+            mp.unobserve_property(on_duration)
         end
+        duration_watched = want_watch
     end
 end
 
--- mode can be auto/always/never/cycle
--- the modes only affect internal variables and not stored on its own.
-local function visibility_mode(mode, no_osd)
-    if mode == "cycle" then
-        if not state.enabled then
-            mode = "auto"
-        elseif user_opts.visibility ~= "always" then
-            mode = "always"
-        else
-            mode = "never"
-        end
-    end
-	
-    if mode == "auto" then
-        always_on(false)
-        enable_osc(true)
-    elseif mode == "always" then
-        enable_osc(true)
-        always_on(true)
-    elseif mode == "never" then
-        enable_osc(false)
-    else
-        msg.warn("Ignoring unknown visibility mode '" .. mode .. "'")
+local function set_tick_delay(_, display_fps)
+    -- may be nil if unavailable or 0 fps is reported
+    if not display_fps or not user_opts.tick_delay_follow_display_fps then
+        tick_delay = user_opts.tick_delay
         return
     end
-
-    user_opts.visibility = mode
-    mp.set_property_native("user-data/osc/visibility", mode)
-
-    if not no_osd and tonumber(mp.get_property("osd-level")) >= 1 then
-        mp.osd_message("OSC visibility: " .. mode)
-    end
-
-    -- Reset the input state on a mode change. The input state will be
-    -- recalculated on the next render cycle, except in 'never' mode where it
-    -- will just stay disabled.
-    mp.disable_key_bindings('input')
-    mp.disable_key_bindings('window-controls')
-    state.input_enabled = false
-    request_tick()
+    tick_delay = 1 / display_fps
 end
 
---
--- Other important stuff
---
 mp.observe_property("osc", "bool", function(name, value)
     if value == true then
         mp.set_property("osc", "no")
     end
 end)
+
+mp.register_event("shutdown", shutdown)
+mp.register_event("start-file", request_init)
 mp.observe_property('track-list', 'native', request_init)
 mp.observe_property('playlist', 'native', request_init)
 mp.observe_property('chapter-list', 'native', function(_, list) -- chapter list changes
     list = list or {}  -- safety, shouldn't return nil
     table.sort(list, function(a, b) return a.time < b.time end)
     state.chapter_list = list
+	update_duration_watch()
     request_init()
 end)
+
+mp.register_script_message("osc-message", show_message)
+mp.register_script_message("osc-chapterlist", function(dur)
+    show_message(get_chapterlist(), dur)
+end)
+mp.register_script_message("osc-playlist", function(dur)
+    show_message(get_playlist(), dur)
+end)
+mp.register_script_message("osc-tracklist", function(dur)
+    local message = {}
+    for k in pairs(nicetypes) do
+        table.insert(message, get_tracklist(k))
+    end
+    show_message(table.concat(message, '\n\n'), dur)
+end)
+
 mp.observe_property('seeking', 'native', reset_timeout)
+mp.observe_property('fullscreen', 'bool', function(name, val)
+    state.fullscreen = val
+    state.marginsREQ = true
+    request_init_resize()
+end)
+mp.observe_property('border', 'bool', function(name, val)
+	state.border = val
+	request_init_resize()
+end)
+mp.observe_property('window-maximized', 'bool', function(name, val)
+	state.maximized = val
+	request_init_resize()
+end)
+mp.observe_property('idle-active', 'bool', function(name, val)
+	state.idle = val
+	request_tick()
+end)
+
+mp.observe_property("display-fps", "number", set_tick_delay)
+mp.observe_property("demuxer-cache-state", "native", cache_state)
+mp.observe_property("vo-configured", "bool", request_tick)
+mp.observe_property("playback-time", "number", request_tick)
+mp.observe_property("osd-dimensions", "native", function()
+    -- (we could use the value instead of re-querying it all the time, but then
+    --  we might have to worry about property update ordering)
+    request_init_resize()
+end)
+mp.observe_property('osd-scale-by-window', 'native', request_init_resize)
+
+mp.observe_property('mute', 'bool', function(name, val)
+	state.mute = val
+	request_tick()
+end)
+
+-- ensure compatibility with auto looping scripts (eg: a script that sets videos under 2 seconds to loop by default)
+mp.observe_property('loop-file', 'bool', function(name, val)
+	if (val == nil) then
+		state.looping = true
+	else 
+		state.looping = false
+	end
+end)
 
 if user_opts.keybindings then
     -- chapter scrubbing
@@ -2940,35 +2989,120 @@ if user_opts.keybindings then
     mp.add_key_binding(nil, 'show_osc', function() show_osc() end)
 end
 
-mp.observe_property('fullscreen', 'bool', function(name, val)
-	state.fullscreen = val
-	request_init_resize()
-end)
-mp.observe_property('mute', 'bool', function(name, val)
-	state.mute = val
-	request_tick()
-end)
--- ensure compatibility with auto looping scripts (eg: a script that sets videos under 2 seconds to loop by default)
-mp.observe_property('loop-file', 'bool', function(name, val)
-	if (val == nil) then
-		state.looping = true
-	else 
-		state.looping = false
-	end
-end)
-mp.observe_property('border', 'bool', function(name, val)
-	state.border = val
-	request_init_resize()
-end)
-mp.observe_property('window-maximized', 'bool', function(name, val)
-	state.maximized = val
-	request_init_resize()
-end)
-mp.observe_property('idle-active', 'bool', function(name, val)
-	state.idle = val
-	request_tick()
-end)
+-- mouse show/hide bindings
+mp.set_key_bindings({
+    {"mouse_move",              function() process_event("mouse_move", nil) end},
+    {"mouse_leave",             mouse_leave},
+}, "showhide", "force")
+mp.set_key_bindings({
+    {"mouse_move",              function() process_event("mouse_move", nil) end},
+    {"mouse_leave",             mouse_leave},
+}, "showhide_wc", "force")
+do_enable_keybindings()
+
+--mouse input bindings
+mp.set_key_bindings({
+    {"mbtn_left",           function() process_event("mbtn_left", "up") end,
+                            function() process_event("mbtn_left", "down")  end},
+    {"shift+mbtn_left",     function() process_event("shift+mbtn_left", "up") end,
+                            function() process_event("shift+mbtn_left", "down")  end},
+    {"mbtn_right",          function() process_event("mbtn_right", "up") end,
+                            function() process_event("mbtn_right", "down")  end},
+    -- alias to shift_mbtn_left for single-handed mouse use
+    {"mbtn_mid",            function() process_event("shift+mbtn_left", "up") end,
+                            function() process_event("shift+mbtn_left", "down")  end},
+    {"wheel_up",            function() process_event("wheel_up", "press") end},
+    {"wheel_down",          function() process_event("wheel_down", "press") end},
+    {"mbtn_left_dbl",       "ignore"},
+    {"shift+mbtn_left_dbl", "ignore"},
+    {"mbtn_right_dbl",      "ignore"},
+}, "input", "force")
+mp.enable_key_bindings("input")
+
+mp.set_key_bindings({
+    {"mbtn_left",           function() process_event("mbtn_left", "up") end,
+                            function() process_event("mbtn_left", "down")  end},
+}, "window-controls", "force")
+mp.enable_key_bindings("window-controls")
+
+local function always_on(val)
+    if state.enabled then
+        if val then
+            show_osc()
+        else
+            hide_osc()
+        end
+    end
+end
+
+-- mode can be auto/always/never/cycle
+-- the modes only affect internal variables and not stored on its own.
+local function visibility_mode(mode, no_osd)
+    if mode == "cycle" then
+        if not state.enabled then
+            mode = "auto"
+        elseif user_opts.visibility ~= "always" then
+            mode = "always"
+        else
+            mode = "never"
+        end
+    end
+	
+    if mode == "auto" then
+        always_on(false)
+        enable_osc(true)
+    elseif mode == "always" then
+        enable_osc(true)
+        always_on(true)
+    elseif mode == "never" then
+        enable_osc(false)
+    else
+        msg.warn("Ignoring unknown visibility mode '" .. mode .. "'")
+        return
+    end
+
+    user_opts.visibility = mode
+    mp.set_property_native("user-data/osc/visibility", mode)
+
+    if not no_osd and tonumber(mp.get_property("osd-level")) >= 1 then
+        mp.osd_message("OSC visibility: " .. mode)
+    end
+
+    -- Reset the input state on a mode change. The input state will be
+    -- recalculated on the next render cycle, except in 'never' mode where it
+    -- will just stay disabled.
+    mp.disable_key_bindings('input')
+    mp.disable_key_bindings('window-controls')
+    state.input_enabled = false
+    request_tick()
+end
+
+local function idlescreen_visibility(mode, no_osd)
+    if mode == "cycle" then
+        if user_opts.idlescreen then
+            mode = "no"
+        else
+            mode = "yes"
+        end
+    end
+
+    if mode == "yes" then
+        user_opts.idlescreen = true
+    else
+        user_opts.idlescreen = false
+    end
+
+    mp.set_property_native("user-data/osc/idlescreen", user_opts.idlescreen)
+
+    if not no_osd and tonumber(mp.get_property("osd-level")) >= 1 then
+        mp.osd_message("OSC logo visibility: " .. tostring(mode))
+    end
+
+    request_tick()
+end
+
 mp.observe_property('pause', 'bool', function(name, enabled)
+	pause_state(name, enabled)
 	if user_opts.showonpause then
 		if enabled then
 			visibility_mode("always", true)
@@ -2977,54 +3111,13 @@ mp.observe_property('pause', 'bool', function(name, enabled)
 			visibility_mode("auto", true)
 		end
 	end
-	pause_state(name, enabled)
 end)
-mp.observe_property('demuxer-cache-state', 'native', cache_state)
-mp.observe_property('vo-configured', 'bool', request_tick)
-mp.observe_property('playback-time', 'number', request_tick)
-mp.observe_property('osd-dimensions', 'native', function(name, val)
-    -- (we could use the value instead of re-querying it all the time, but then
-    --  we might have to worry about property update ordering)
-    request_init_resize()
-end)
--- mouse show/hide bindings
-mp.set_key_bindings({
-    {'mouse_move',              function(e) process_event('mouse_move', nil) end},
-    {'mouse_leave',             mouse_leave},
-}, 'showhide', 'force')
-mp.set_key_bindings({
-    {'mouse_move',              function(e) process_event('mouse_move', nil) end},
-    {'mouse_leave',             mouse_leave},
-}, 'showhide_wc', 'force')
-do_enable_keybindings()
 
---mouse input bindings
-mp.set_key_bindings({
-    {"mbtn_left",           function(e) process_event("mbtn_left", "up") end,
-                            function(e) process_event("mbtn_left", "down")  end},
-    {"shift+mbtn_left",     function(e) process_event("shift+mbtn_left", "up") end,
-                            function(e) process_event("shift+mbtn_left", "down")  end},
-    {"shift+mbtn_right",    function(e) process_event("shift+mbtn_right", "up") end,
-                            function(e) process_event("shift+mbtn_right", "down")  end},
-    {"mbtn_right",          function(e) process_event("mbtn_right", "up") end,
-                            function(e) process_event("mbtn_right", "down")  end},
-    -- alias to shift_mbtn_left for single-handed mouse use
-    {"mbtn_mid",            function(e) process_event("shift+mbtn_left", "up") end,
-                            function(e) process_event("shift+mbtn_left", "down")  end},
-    {"wheel_up",            function(e) process_event("wheel_up", "press") end},
-    {"wheel_down",          function(e) process_event("wheel_down", "press") end},
-    {"mbtn_left_dbl",       "ignore"},
-    {"shift+mbtn_left_dbl", "ignore"},
-    {"mbtn_right_dbl",      "ignore"},
-}, "input", "force")
-mp.enable_key_bindings('input')
+mp.register_script_message("osc-visibility", visibility_mode)
+mp.register_script_message("osc-show", show_osc)
+mp.add_key_binding(nil, "visibility", function() visibility_mode("cycle") end)
 
-mp.set_key_bindings({
-    {'mbtn_left',           function(e) process_event('mbtn_left', 'up') end,
-                            function(e) process_event('mbtn_left', 'down')  end},
-}, 'window-controls', 'force')
-mp.enable_key_bindings('window-controls')
-
+mp.register_script_message("osc-idlescreen", idlescreen_visibility)
 mp.register_script_message("thumbfast-info", function(json)
 	local data = utils.parse_json(json)
 	if type(data) ~= "table" or not data.width or not data.height then
@@ -3083,15 +3176,23 @@ local function validate_user_opts()
 end
 
 -- read options from config and command-line
-opt.read_options(user_opts, "modernxlite", function()
+opt.read_options(user_opts, "modernxlite", function(changed)
     validate_user_opts()
+	set_time_styles(changed.timetotal, changed.timems)
+    if changed.tick_delay or changed.tick_delay_follow_display_fps then
+        set_tick_delay("display_fps", mp.get_property_number("display_fps"))
+    end
     request_tick()
     visibility_mode(user_opts.visibility, true)
+	update_duration_watch()
     request_init()
 end)
 
 validate_user_opts()
+set_time_styles(true, true)
+set_tick_delay("display_fps", mp.get_property_number("display_fps"))
 visibility_mode(user_opts.visibility, true)
+update_duration_watch()
 
 set_virt_mouse_area(0, 0, 0, 0, 'input')
 set_virt_mouse_area(0, 0, 0, 0, 'window-controls')
