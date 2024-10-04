@@ -13,9 +13,9 @@ local utils = require 'mp.utils'
 -- default user option values
 -- do not touch, change them in modernz.conf
 local user_opts = {
-	language = 'en',                       -- en:English, chs:Chinese, pl:Polish, jp:Japanese
+	language = "en",                       -- en:English, chs:Chinese, pl:Polish, jp:Japanese
 	idlescreen = true,                     -- show mpv logo on idle
-	windowcontrols = 'auto',               -- whether to show OSC window controls, 'auto', 'yes' or 'no'
+	windowcontrols = "auto",               -- whether to show OSC window controls, 'auto', 'yes' or 'no'
 	showwindowed = true,                   -- show OSC when windowed?
 	showfullscreen = true,                 -- show OSC when fullscreen?
 	noxmas = false,                        -- disable santa hat in December
@@ -43,22 +43,22 @@ local user_opts = {
 	showtitle = true,                      -- show title in OSC (above seekbar)
 	showwindowtitle = true,                -- show window title in borderless/fullscreen mode
 	titleBarStrip = false,                 -- whether to make the title bar a singular bar instead of a black fade
-	title = '${media-title}',              -- title shown on OSC (above seekbar). ${media-title} or ${filename}
-	font = 'mpv-osd-symbols',              -- mpv-osd-symbols = default osc font (or the one set in mpv.conf)
+	title = "${media-title}",              -- title shown on OSC (above seekbar). ${media-title} or ${filename}
+	font = "mpv-osd-symbols",              -- mpv-osd-symbols = default osc font (or the one set in mpv.conf)
 	titlefontsize = 30,                    -- the font size of the title text
-	chapterformat = 'Chapter: %s',         -- chapter print format for seekbar-hover. "no" to disable
+	chapterformat = "Chapter: %s",         -- chapter print format for seekbar-hover. "no" to disable
 
-	osc_color = '#000000',                 -- accent of the OSC and the title bar, in Hex color format
+	osc_color = "#000000",                 -- accent of the OSC and the title bar, in Hex color format
 	OSCfadealpha = 150,                    -- alpha of the background box for the OSC
 	boxalpha = 75,                         -- alpha of the window title bar
 
-	seekbarfg_color = '#BE4D25',           -- color of the seekbar progress and handle, in Hex color format
-	seekbarbg_color = '#FFFFFF',           -- color of the remaining seekbar, in Hex color format
+	seekbarfg_color = "#BE4D25",           -- color of the seekbar progress and handle, in Hex color format
+	seekbarbg_color = "#FFFFFF",           -- color of the remaining seekbar, in Hex color format
 	seekbarkeyframes = false,              -- use keyframes when dragging the seekbar
 	seekbarhandlesize = 0.8,               -- size ratio of the slider handle, range 0 ~ 1
 	seekrange = true,                      -- show seekrange overlay
 	seekrangealpha = 150,                  -- transparency of seekranges
-	iconstyle = 'round',                   -- icon style, 'solid' or 'round'
+	iconstyle = "round",                   -- icon style, 'solid' or 'round'
 	hovereffect = true,                    -- whether buttons have a glowing effect when hovered over
 
 	automatickeyframemode = true,          -- set seekbarkeyframes based on video length to prevent laggy scrubbing on long videos 
@@ -71,9 +71,9 @@ local user_opts = {
 	timefontsize = 18,                     -- the font size of the time
 	jumpamount = 10,                       -- change the jump amount (in seconds by default)
 	jumpiconnumber = true,                 -- show different icon when jumpamount is 5, 10, or 30
-	jumpmode = 'relative',                 -- seek mode for jump buttons
+	jumpmode = "relative",                 -- seek mode for jump buttons
 	volumecontrol = true,                  -- whether to show mute button and volume slider
-	volumecontroltype = 'linear',          -- use 'linear' or 'log' (logarithmic) volume scale
+	volumecontroltype = "linear",          -- use 'linear' or 'log' (logarithmic) volume scale
 	showjump = true,                       -- show "jump forward/backward 5 seconds" buttons 
 	showskip = false,                      -- show the skip back and forward (chapter) buttons
 	compactmode = false,                   -- replace the jump buttons with the chapter buttons, clicking the
@@ -100,124 +100,124 @@ local osc_param = {      -- calculated by osc_init()
 
 -- Icons for jump button depending on jumpamount 
 local jumpicons = { 
-	[5] = {'\239\142\177', '\239\142\163'}, 
-	[10] = {'\239\142\175', '\239\142\161'}, 
-	[30] = {'\239\142\176', '\239\142\162'}, 
-	default = {'\239\142\178    ', '\239\142\178'}, -- second icon is mirrored in layout() 
+	[5] = {"\239\142\177", "\239\142\163"}, 
+	[10] = {"\239\142\175", "\239\142\161"}, 
+	[30] = {"\239\142\176", "\239\142\162"}, 
+	default = {"\239\142\178    ", "\239\142\178"}, -- second icon is mirrored in layout() 
 } 
 
 local icons = {
-	previous = '\239\142\181',
-	next = '\239\142\180',
-	play = '\239\142\170',
-	pause = '\239\142\167',
-	replay = '\239\142\178',
-	backward = '\239\142\160',
-	forward = '\239\142\159',
-	audio = '\239\142\183',
-	volume = '\239\142\188',
-	volumelow = '\239\142\185',
-	volumemute = '\239\142\187',
-	sub = '\239\140\164',
-	minimize = '\239\133\172',
-	fullscreen = '\239\133\173',  
-	loopoff = '\239\134\181',
-	loopon = '\239\134\183',
-	info = '\239\135\183',
-	ontopon = '\239\142\150',
-	ontopoff = '\239\142\149',
-	screenshot = '\239\135\168'
+	previous = "\239\142\181",
+	next = "\239\142\180",
+	play = "\239\142\170",
+	pause = "\239\142\167",
+	replay = "\239\142\178",
+	backward = "\239\142\160",
+	forward = "\239\142\159",
+	audio = "\239\142\183",
+	volume = "\239\142\188",
+	volumelow = "\239\142\185",
+	volumemute = "\239\142\187",
+	sub = "\239\140\164",
+	minimize = "\239\133\172",
+	fullscreen = "\239\133\173",  
+	loopoff = "\239\134\181",
+	loopon = "\239\134\183",
+	info = "\239\135\183",
+	ontopon = "\239\142\150",
+	ontopoff = "\239\142\149",
+	screenshot = "\239\135\168"
 }
 
 -- Localization
 local language = {
-	['en'] = {
-		welcome = '{\\fs24\\1c&H0&\\1c&HFFFFFF&}Drop files or URLs to play here.',  -- this text appears when mpv starts
-		off = 'OFF',
-		na = 'n/a',
-		none = 'None available',
-		video = 'Video',
-		audio = 'Audio',
-		subtitle = 'Subtitle',
-		nosub = 'No subtitles available',
-		noaudio = 'No audio tracks available',
-		track = ' tracks:',
-		playlist = 'Playlist',
-		nolist = 'Empty playlist.',
-		chapter = 'Chapter',
-		nochapter = 'No chapters.',
-		ontop = 'Pin window',
-		ontopdisable = 'Unpin window',
-		loopenable = 'Enable looping',
-		loopdisable = 'Disable looping',
-		screenshot = 'Screenshot',
-		statsinfo = 'Information',
+	["en"] = {
+		welcome = "{\\fs24\\1c&H0&\\1c&HFFFFFF&}Drop files or URLs to play here.",  -- this text appears when mpv starts
+		off = "OFF",
+		na = "n/a",
+		none = "None available",
+		video = "Video",
+		audio = "Audio",
+		subtitle = "Subtitle",
+		nosub = "No subtitles available",
+		noaudio = "No audio tracks available",
+		track = " tracks:",
+		playlist = "Playlist",
+		nolist = "Empty playlist.",
+		chapter = "Chapter",
+		nochapter = "No chapters.",
+		ontop = "Pin window",
+		ontopdisable = "Unpin window",
+		loopenable = "Enable looping",
+		loopdisable = "Disable looping",
+		screenshot = "Screenshot",
+		statsinfo = "Information",
 	},
-	['chs'] = {
-		welcome = '{\\fs24\\1c&H0&\\1c&HFFFFFF&}将文件或URL放在这里播放',  -- this text appears when mpv starts
-		off = '关闭',
-		na = 'n/a',
-		none = '无数据',
-		video = '视频',
-		audio = '音频',
-		subtitle = '字幕',
+	["chs"] = {
+		welcome = "{\\fs24\\1c&H0&\\1c&HFFFFFF&}将文件或URL放在这里播放",  -- this text appears when mpv starts
+		off = "关闭",
+		na = "n/a",
+		none = "无数据",
+		video = "视频",
+		audio = "音频",
+		subtitle = "字幕",
 		nosub = "没有字幕", -- please check these translations
 		noaudio = "不提供音轨", -- please check these translations
-		track = '：',
-		playlist = '播放列表',
-		nolist = '无列表信息',
-		chapter = '章节',
-		nochapter = '无章节信息',
-		ontop = '启用窗口停留在顶层',  -- please check these translations
-		ontopdisable = '禁用停留在顶层的窗口',  -- please check these translations
-		loopenable = '启用循环功能',
-		loopdisable = '禁用循环功能',
-		screenshot = '截屏',
-		statsinfo = '信息',
+		track = "：",
+		playlist = "播放列表",
+		nolist = "无列表信息",
+		chapter = "章节",
+		nochapter = "无章节信息",
+		ontop = "启用窗口停留在顶层",  -- please check these translations
+		ontopdisable = "禁用停留在顶层的窗口",  -- please check these translations
+		loopenable = "启用循环功能",
+		loopdisable = "禁用循环功能",
+		screenshot = "截屏",
+		statsinfo = "信息",
 	},
-	['pl'] = {
-		welcome = '{\\fs24\\1c&H0&\\1c&HFFFFFF&}Upuść plik lub łącze URL do odtworzenia.',  -- this text appears when mpv starts
-		off = 'WYŁ.',
-		na = 'n/a',
-		none = 'nic',
-		video = 'Wideo',
-		audio = 'Audio',
-		subtitle = 'Napisy',
-		nosub = 'Brak dostępnych napisów', -- please check these translations
-		noaudio = 'Brak dostępnych ścieżek dźwiękowych', -- please check these translations
-		track = ' ścieżki:',
-		playlist = 'Lista odtwarzania',
-		nolist = 'Lista odtwarzania pusta.',
-		chapter = 'Rozdział',
-		nochapter = 'Brak rozdziałów.',
-		ontop = 'Przypnij okno do góry',
-		ontopdisable = 'Odepnij okno od góry',
-		loopenable = 'Włączenie zapętlenia',
-		loopdisable = 'Wyłączenie zapętlenia',
-		screenshot = 'Zrzut ekranu',
-		statsinfo = 'Informacja',
+	["pl"] = {
+		welcome = "{\\fs24\\1c&H0&\\1c&HFFFFFF&}Upuść plik lub łącze URL do odtworzenia.",  -- this text appears when mpv starts
+		off = "WYŁ.",
+		na = "n/a",
+		none = "nic",
+		video = "Wideo",
+		audio = "Audio",
+		subtitle = "Napisy",
+		nosub = "Brak dostępnych napisów", -- please check these translations
+		noaudio = "Brak dostępnych ścieżek dźwiękowych", -- please check these translations
+		track = " ścieżki:",
+		playlist = "Lista odtwarzania",
+		nolist = "Lista odtwarzania pusta.",
+		chapter = "Rozdział",
+		nochapter = "Brak rozdziałów.",
+		ontop = "Przypnij okno do góry",
+		ontopdisable = "Odepnij okno od góry",
+		loopenable = "Włączenie zapętlenia",
+		loopdisable = "Wyłączenie zapętlenia",
+		screenshot = "Zrzut ekranu",
+		statsinfo = "Informacja",
 	},
-	['jp'] = {
-		welcome = '{\\fs24\\1c&H0&\\1c&HFFFFFF&}ファイルやURLのリンクをここにドロップすると再生されます。',  -- this text appears when mpv starts
-		off = 'OFF',
-		na = 'n/a',
-		none = 'なし',
-		video = 'ビデオ',
-		audio = 'オーディオ',
-		subtitle = 'サブタイトル',
-		nosub = '字幕はありません',
-		noaudio = 'オーディオトラックはありません',
-		track = 'トラック:',
-		playlist = 'プレイリスト',
-		nolist = '空のプレイリスト.',
-		chapter = 'チャプター',
-		nochapter = '利用可能なチャプターはありません.',
-		ontop = 'ピンウィンドウをトップに表示',
-		ontopdisable = 'ウィンドウを上からアンピンする',
-		loopenable = 'ループON',
-		loopdisable = 'ループOFF',
-		screenshot = 'スクリーンショット',
-		statsinfo = '情報',
+	["jp"] = {
+		welcome = "{\\fs24\\1c&H0&\\1c&HFFFFFF&}ファイルやURLのリンクをここにドロップすると再生されます。",  -- this text appears when mpv starts
+		off = "OFF",
+		na = "n/a",
+		none = "なし",
+		video = "ビデオ",
+		audio = "オーディオ",
+		subtitle = "サブタイトル",
+		nosub = "字幕はありません",
+		noaudio = "オーディオトラックはありません",
+		track = "トラック:",
+		playlist = "プレイリスト",
+		nolist = "空のプレイリスト.",
+		chapter = "チャプター",
+		nochapter = "利用可能なチャプターはありません.",
+		ontop = "ピンウィンドウをトップに表示",
+		ontopdisable = "ウィンドウを上からアンピンする",
+		loopenable = "ループON",
+		loopdisable = "ループOFF",
+		screenshot = "スクリーンショット",
+		statsinfo = "情報",
 	}
 }
 
@@ -240,7 +240,7 @@ local UNICODE_MINUS = string.char(0xe2, 0x88, 0x92)  -- UTF-8 for U+2212 MINUS S
 local iconfont = user_opts.iconstyle == "round" and "Material-Design-Iconic-Round" or "Material-Design-Iconic-Font"
 
 local function osc_color_convert(color)
-	return color:sub(6,7) .. color:sub(4,5) ..  color:sub(2,3)
+    return color:sub(6,7) .. color:sub(4,5) ..  color:sub(2,3)
 end
 
 local osc_styles = {
@@ -337,9 +337,9 @@ local santa_hat_lines = {
 --
 
 local function kill_animation()
-	state.anistart = nil
-	state.animation = nil
-	state.anitype = nil
+    state.anistart = nil
+    state.animation = nil
+    state.anitype =  nil
 end
 
 local function set_osd(res_x, res_y, text, z)
@@ -524,14 +524,6 @@ local function ass_draw_rr_h_cw(ass, x0, y0, x1, y1, r1, hexagon, r2)
     end
 end
 
---local function ass_draw_rr_h_ccw(ass, x0, y0, x1, y1, r1, hexagon, r2)
---    if hexagon then
---        ass:hexagon_ccw(x0, y0, x1, y1, r1, r2)
---    else
---        ass:round_rect_ccw(x0, y0, x1, y1, r1, r2)
---    end
---end
-
 local function get_hidetimeout()
     if user_opts.visibility == "always" then
         return -1 -- disable autohide
@@ -691,7 +683,7 @@ local function show_message(text, duration)
     -- may slow down massively on huge input
     text = string.sub(text, 0, 4000)
 
-	state.message_text = mp.command_native({"escape-ass", text})
+    state.message_text = mp.command_native({"escape-ass", text})
 
     if not state.message_hide_timer then
         state.message_hide_timer = mp.add_timeout(0, request_tick)
@@ -710,12 +702,12 @@ local nicetypes = {video = texts.video, audio = texts.audio, sub = texts.subtitl
 
 -- updates the OSC internal playlists, should be run each time the track-layout changes
 local function update_tracklist()
-	local tracktable = mp.get_property_native("track-list", {})
+    local tracktable = mp.get_property_native("track-list", {})
 
-	-- by osc_id
-	tracks_osc.video, tracks_osc.audio, tracks_osc.sub = {}, {}, {}
-	-- by mpv_id
-	tracks_mpv.video, tracks_mpv.audio, tracks_mpv.sub = {}, {}, {}
+    -- by osc_id
+    tracks_osc.video, tracks_osc.audio, tracks_osc.sub = {}, {}, {}
+    -- by mpv_id
+    tracks_mpv.video, tracks_mpv.audio, tracks_mpv.sub = {}, {}, {}
     for n = 1, #tracktable do
         if tracktable[n].type ~= "unknown" then
             local type = tracktable[n].type
@@ -3143,8 +3135,8 @@ local function validate_user_opts()
     if user_opts.windowcontrols ~= "auto" and
        user_opts.windowcontrols ~= "yes" and
        user_opts.windowcontrols ~= "no" then
-        msg.warn('windowcontrols cannot be \'' ..
-                user_opts.windowcontrols .. '\'. Ignoring.')
+        msg.warn("windowcontrols cannot be \"" ..
+                user_opts.windowcontrols .. "\". Ignoring.")
         user_opts.windowcontrols = "auto"
     end
 
