@@ -18,7 +18,7 @@ local user_opts = {
 	windowcontrols = "auto",               -- whether to show OSC window controls, 'auto', 'yes' or 'no'
 	showwindowed = true,                   -- show OSC when windowed?
 	showfullscreen = true,                 -- show OSC when fullscreen?
-	noxmas = false,                        -- disable santa hat in December
+	greenandgrumpy = false,                -- disable santa hat in December
 
 	vidscale = true,                       -- whether to scale the controller with the video
 	scalewindowed = 1.0,                   -- scaling of the controller when windowed
@@ -45,7 +45,7 @@ local user_opts = {
 	title = "${media-title}",              -- title shown on OSC (above seekbar). ${media-title} or ${filename}
 	font = "mpv-osd-symbols",              -- mpv-osd-symbols = default osc font (or the one set in mpv.conf)
 	titlefontsize = 30,                    -- the font size of the title text
-	chapterformat = "Chapter: %s",         -- chapter print format for seekbar-hover. "no" to disable
+	chapter_fmt = "Chapter: %s",           -- chapter print format for seekbar-hover. "no" to disable
 
 	osc_color = "#000000",                 -- accent of the OSC and the title bar, in Hex color format
 	OSCfadealpha = 150,                    -- alpha of the background box for the OSC
@@ -936,12 +936,12 @@ local function render_elements(master_ass)
     -- because thumbfast will render it above the thumbnail instead
     if thumbfast.disabled then
         local se, ae = state.slider_element, elements[state.active_element]
-        if user_opts.chapterformat ~= "no" and state.touchingprogressbar then
+        if user_opts.chapter_fmt ~= "no" and state.touchingprogressbar then
             local dur = mp.get_property_number("duration", 0)
             if dur > 0 then
                 local ch = get_chapter(state.sliderpos * dur / 100)
                 if ch and ch.title and ch.title ~= "" then
-                    state.forced_title = string.format(user_opts.chapterformat, ch.title)
+                    state.forced_title = string.format(user_opts.chapter_fmt, ch.title)
                 end
             end
         end
@@ -1084,7 +1084,7 @@ local function render_elements(master_ass)
                                 
                                 -- chapter title
                                 local se, ae = state.slider_element, elements[state.active_element]
-                                if user_opts.chapterformat ~= "no" and state.touchingprogressbar then
+                                if user_opts.chapter_fmt ~= "no" and state.touchingprogressbar then
                                     local dur = mp.get_property_number("duration", 0)
                                     if dur > 0 then
                                         local ch = get_chapter(state.sliderpos * dur / 100)
@@ -1094,7 +1094,7 @@ local function render_elements(master_ass)
                                             elem_ass:an(an)
                                             elem_ass:append(slider_lo.tooltip_style)
                                             ass_append_alpha(elem_ass, slider_lo.alpha, 0)
-                                            elem_ass:append(string.format(user_opts.chapterformat, ch.title))
+                                            elem_ass:append(string.format(user_opts.chapter_fmt, ch.title))
                                         end
                                     end
                                 end
@@ -1876,7 +1876,6 @@ local function osc_init()
     ne.eventresponder["shift+mbtn_right_down"] =
         function () show_message(get_chapterlist()) end
 
-    --
     update_tracklist()
     
     --cy_audio
@@ -2039,7 +2038,7 @@ local function osc_init()
         function ()
             local tempSubPosition = mp.get_property("sub-pos")
             mp.commandv("set", "sub-pos", 100)
-            mp.command("screenshot") -- this takes screenshots with subs, remove video to take screenshots without subs
+            mp.command("screenshot") -- or "screenshot video" to not include subtitles
             mp.commandv("set", "sub-pos", tempSubPosition)
         end
 
@@ -2764,7 +2763,7 @@ tick = function()
         end
 
         -- Santa hat
-        if is_december and user_opts.idlescreen and not user_opts.noxmas then
+        if is_december and user_opts.idlescreen and not user_opts.greenandgrumpy then
             for _, line in ipairs(santa_hat_lines) do
                 ass:new_event()
                 ass:append(line_prefix .. line)
