@@ -19,7 +19,6 @@ local user_opts = {
 	showwindowed = true,                   -- show OSC when windowed?
 	showfullscreen = true,                 -- show OSC when fullscreen?
 	noxmas = false,                        -- disable santa hat in December
-	keybindings = false,                   -- register keybindings i.e. chapter scrubbing, pinning window
 
 	vidscale = true,                       -- whether to scale the controller with the video
 	scalewindowed = 1.0,                   -- scaling of the controller when windowed
@@ -2924,62 +2923,6 @@ mp.observe_property("loop-file", "bool", function(_, val)
 		state.looping = false
 	end
 end)
-
-if user_opts.keybindings then
-    -- chapter scrubbing
-    local function changeChapter(number)
-        mp.commandv("add", "chapter", number)
-        reset_timeout()
-        show_message(get_chapterlist())
-    end
-
-    mp.add_key_binding("CTRL+LEFT", "prevfile", function()
-        mp.commandv("playlist-prev", "weak")
-    end);
-    mp.add_key_binding("CTRL+RIGHT", "nextfile", function()
-        mp.commandv("playlist-next", "weak")
-    end);
-    mp.add_key_binding("SHIFT+LEFT", "prevchapter", function()
-        changeChapter(-1)
-    end);
-    mp.add_key_binding("SHIFT+RIGHT", "nextchapter", function()
-        changeChapter(1)
-    end);
-
-    -- extra key bindings
-    mp.add_key_binding("x", "cycleaudiotracks", function()
-        set_track("audio", 1) show_message(get_tracklist("audio"))
-    end);
-
-    mp.add_key_binding("c", "cyclecaptions", function()
-        set_track("sub", 1) show_message(get_tracklist("sub"))
-    end);
-
-    if (user_opts.persistentprogresstoggle) then
-        mp.add_key_binding("b", "persistenttoggle", function()
-            state.persistentprogresstoggle = not state.persistentprogresstoggle
-            tick()
-            print("Persistent progress bar toggled")
-        end);
-    end
-
-    mp.add_key_binding("TAB", "get_chapterlist", function() show_message(get_chapterlist()) end)
-
-    mp.add_key_binding("p", "pinwindow", function()
-        mp.commandv("cycle", "ontop")
-        if (state.initialborder == "yes") then
-            if (mp.get_property("ontop") == "yes") then
-                show_message("Pinned window")
-                mp.commandv("set", "border", "no")
-            else
-                show_message("Unpinned window")
-                mp.commandv("set", "border", "yes")
-            end
-        end
-    end);
-
-    mp.add_key_binding(nil, "show_osc", function() show_osc() end)
-end
 
 -- mouse show/hide bindings
 mp.set_key_bindings({
