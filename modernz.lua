@@ -13,58 +13,40 @@ local utils = require 'mp.utils'
 -- default user option values
 -- do not touch, change them in modernz.conf
 local user_opts = {
+	-- General
 	language = "en",                       -- en:English, chs:Chinese, pl:Polish, jp:Japanese
 	idlescreen = true,                     -- show mpv logo on idle
-	windowcontrols = "auto",               -- whether to show OSC window controls, 'auto', 'yes' or 'no'
+	windowcontrols = "auto",               -- whether to show OSC window controls, "auto", "yes" or "no"
 	showwindowed = true,                   -- show OSC when windowed?
 	showfullscreen = true,                 -- show OSC when fullscreen?
 	greenandgrumpy = false,                -- disable santa hat in December
 
+	-- Colors
+	osc_color = "#000000",                 -- accent of the OSC and the title bar, in Hex color format
+	seekbarfg_color = "#BE4D25",           -- color of the seekbar progress and handle, in Hex color format
+	seekbarbg_color = "#FFFFFF",           -- color of the remaining seekbar, in Hex color format
+
+	-- Buttons
+	iconstyle = "round",                   -- icon style, "solid" or "round"
+	hovereffect = true,                    -- whether buttons have a glowing effect when hovered over
+
+	showjump = true,                       -- show "jump forward/backward 10 seconds" buttons 
+	showskip = false,                      -- show the skip back and forward (chapter) buttons
+
+	showinfo = false,                      -- show the info button
+	showloop = true,                       -- show the loop button
+
+	showontop = true,                      -- show window on top button
+	showscreenshot = false,                -- show screenshot button
+
+	-- Scaling
 	vidscale = true,                       -- whether to scale the controller with the video
 	scalewindowed = 1.0,                   -- scaling of the controller when windowed
 	scalefullscreen = 1.0,                 -- scaling of the controller when fullscreen
 	scaleforcedwindow = 1.0,               -- scaling when rendered on a forced window
 
-	hidetimeout = 2000,                    -- duration in ms until OSC hides if no mouse movement
-	fadeduration = 250,                    -- duration of fade out in ms, 0 = no fade
-	minmousemove = 0,                      -- amount of pixels the mouse has to move for OSC to show
-
-	showonpause = true,                    -- whether to show to osc when paused
-	onpausenotimeout = true,               -- whether to disable the hide timeout on pause
-	bottomhover = true,                    -- if the osc should only display when hovering at the bottom
-	raisesubs = true,                      -- whether to raise subtitles above the osc when it's shown
-	thumbnailborder = 2,                   -- the width of the thumbnail border
-	persistentprogress = false,            -- always show a small progress line at the bottom of the screen
-	persistentprogressheight = 17,         -- the height of the persistentprogress bar
-	persistentbuffer = false,              -- on web videos, show the buffer on the persistent progress line
-	persistentprogresstoggle = false,      -- enable toggling the persistentprogress bar
-
-	showtitle = true,                      -- show title in OSC (above seekbar)
-	showwindowtitle = true,                -- show window title in borderless/fullscreen mode
-	titleBarStrip = false,                 -- whether to make the title bar a singular bar instead of a black fade
-	title = "${media-title}",              -- title shown on OSC (above seekbar). ${media-title} or ${filename}
-	font = "mpv-osd-symbols",              -- mpv-osd-symbols = default osc font (or the one set in mpv.conf)
-	titlefontsize = 30,                    -- the font size of the title text
-	chapter_fmt = "Chapter: %s",           -- chapter print format for seekbar-hover. "no" to disable
-
-	osc_color = "#000000",                 -- accent of the OSC and the title bar, in Hex color format
-	OSCfadealpha = 150,                    -- alpha of the background box for the OSC
-	boxalpha = 75,                         -- alpha of the window title bar
-
-	seekbarfg_color = "#BE4D25",           -- color of the seekbar progress and handle, in Hex color format
-	seekbarbg_color = "#FFFFFF",           -- color of the remaining seekbar, in Hex color format
-	seekbarkeyframes = false,              -- use keyframes when dragging the seekbar
-	seekbarhandlesize = 0.8,               -- size ratio of the slider handle, range 0 ~ 1
-	seekrange = true,                      -- show seekrange overlay
-	seekrangealpha = 150,                  -- transparency of seekranges
-	iconstyle = "round",                   -- icon style, 'solid' or 'round'
-	hovereffect = true,                    -- whether buttons have a glowing effect when hovered over
-
-	automatickeyframemode = true,          -- set seekbarkeyframes based on video length to prevent laggy scrubbing on long videos 
-	automatickeyframelimit = 600,          -- videos of above this length (in seconds) will have seekbarkeyframes on
+	-- Time & Volume
 	unicodeminus = false,                  -- whether to use the Unicode minus sign character
-	visibility = "auto",                   -- only used at init to set visibility_mode(...)
-
 	timetotal = true,                      -- display total time instead of remaining time by default
 	timems = false,                        -- show time as milliseconds by default
 	timefontsize = 18,                     -- the font size of the time
@@ -72,18 +54,52 @@ local user_opts = {
 	jumpiconnumber = true,                 -- show different icon when jumpamount is 5, 10, or 30
 	jumpmode = "relative",                 -- seek mode for jump buttons
 	volumecontrol = true,                  -- whether to show mute button and volume slider
-	volumecontroltype = "linear",          -- use 'linear' or 'log' (logarithmic) volume scale
-	showjump = true,                       -- show "jump forward/backward 5 seconds" buttons 
-	showskip = false,                      -- show the skip back and forward (chapter) buttons
-	compactmode = false,                   -- replace the jump buttons with the chapter buttons, clicking the
-	                                       -- buttons will act as jumping, and shift clicking will act as
-	                                       -- skipping a chapter
-	showinfo = false,                      -- show the info button
-	showloop = true,                       -- show the loop button
-	loopinpause = true,                    -- activate looping by right clicking pause
-	showontop = true,                      -- show window on top button
+	volumecontroltype = "linear",          -- use "linear" or "log" (logarithmic) volume scale
+
+	-- Seeking
+	seekbarkeyframes = false,              -- use keyframes when dragging the seekbar
+	seekbarhandlesize = 0.8,               -- size ratio of the slider handle, range 0 ~ 1
+	seekrange = true,                      -- show seekrange overlay
+	seekrangealpha = 150,                  -- transparency of seekranges
+
+	automatickeyframemode = true,          -- set seekbarkeyframes based on video length to prevent laggy scrubbing on long videos 
+	automatickeyframelimit = 600,          -- videos of above this length (in seconds) will have seekbarkeyframes on
+
+	-- UI [elements]
+	showtitle = true,                      -- show title in OSC (above seekbar)
+	showwindowtitle = true,                -- show window title in borderless/fullscreen mode
+	titleBarStrip = false,                 -- whether to make the title bar a singular bar instead of a black fade
+	title = "${media-title}",              -- title shown on OSC (above seekbar). ${media-title} or ${filename}
+	font = "mpv-osd-symbols",              -- mpv-osd-symbols = default osc font (or the one set in mpv.conf)
+	titlefontsize = 30,                    -- the font size of the title text (above seekbar)
+	chapter_fmt = "Chapter: %s",           -- chapter print format for seekbar-hover. "no" to disable
+
+	persistentprogress = false,            -- always show a small progress line at the bottom of the screen
+	persistentprogressheight = 17,         -- the height of the persistentprogress bar
+	persistentbuffer = false,              -- on web videos, show the buffer on the persistent progress line
+	persistentprogresstoggle = false,      -- enable toggling the persistentprogress bar
+
+	compactmode = false,                   -- replace the jump buttons with the chapter buttons
+
+	-- UI [behavior]
+	showonpause = true,                    -- whether to show osc when paused
+	onpausenotimeout = true,               -- whether to disable the hide timeout on pause
+	bottomhover = true,                    -- if the osc should only display when hovering at the bottom
+	raisesubs = true,                      -- whether to raise subtitles above the osc when it's shown
+	thumbnailborder = 2,                   -- the width of the thumbnail border (thumbfast)
+
+	OSCfadealpha = 150,                    -- alpha of the background box for the OSC
+	boxalpha = 75,                         -- alpha of the window title bar
+
 	ontopborder = false,                   -- If you pin the window, keep window border?
-	showscreenshot = false,                -- show screenshot button
+	loopinpause = true,                    -- activate looping by right clicking pause
+	
+	visibility = "auto",                   -- only used at init to set visibility_mode(...)
+
+	-- UI [time-based]
+	hidetimeout = 2000,                    -- duration in ms until OSC hides if no mouse movement
+	fadeduration = 250,                    -- duration of fade out in ms, 0 = no fade
+	minmousemove = 0,                      -- amount of pixels the mouse has to move for OSC to show
 
 	tick_delay = 1 / 60,                   -- minimum interval between OSC redraws in seconds
 	tick_delay_follow_display_fps = false  -- use display fps as the minimum interval
