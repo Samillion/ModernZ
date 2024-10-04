@@ -242,25 +242,29 @@ local function osc_color_convert(color)
     return color:sub(6,7) .. color:sub(4,5) ..  color:sub(2,3)
 end
 
-local osc_styles = {
-	TransBg = "{\\blur100\\bord" .. user_opts.OSCfadealpha .. "\\1c&H000000&\\3c&H" .. osc_color_convert(user_opts.osc_color) .. "&}",
-	SeekbarBg = "{\\blur0\\bord0\\1c&H" .. osc_color_convert(user_opts.seekbarbg_color) .. "&}",
-	SeekbarFg = "{\\blur1\\bord1\\1c&H" .. osc_color_convert(user_opts.seekbarfg_color) .. "&}",
-	VolumebarBg = "{\\blur0\\bord0\\1c&H999999&}",
-	VolumebarFg = "{\\blur1\\bord1\\1c&HFFFFFF&}",
-	Ctrl1 = "{\\blur0\\bord0\\1c&HFFFFFF&\\3c&HFFFFFF&\\fs36\\fn" .. iconfont .. "}",
-	Ctrl2 = "{\\blur0\\bord0\\1c&HFFFFFF&\\3c&HFFFFFF&\\fs24\\fn" .. iconfont .. "}",
-	Ctrl2Flip = "{\\blur0\\bord0\\1c&HFFFFFF&\\3c&HFFFFFF&\\fs24\\fn" .. iconfont .. "\\fry180",
-	Ctrl3 = "{\\blur0\\bord0\\1c&HFFFFFF&\\3c&HFFFFFF&\\fs24\\fn" .. iconfont .. "}",
-	Time = "{\\blur0\\bord0\\1c&HFFFFFF&\\3c&H000000&\\fs" .. user_opts.timefontsize .. "\\fn" .. user_opts.font .. "}",
-	Tooltip = "{\\blur1\\bord0.5\\1c&HFFFFFF&\\3c&H000000&\\fs" .. user_opts.timefontsize .. "\\fn" .. user_opts.font .. "}",
-	Title = "{\\blur1\\bord0.5\\1c&HFFFFFF&\\3c&H0\\fs".. user_opts.titlefontsize .."\\q2\\fn" .. user_opts.font .. "}",
-	WindowTitle = "{\\blur1\\bord0.5\\1c&HFFFFFF&\\3c&H0\\fs".. 18 .."\\q2\\fn" .. user_opts.font .. "}",
-	WinCtrl = "{\\blur1\\bord0.5\\1c&HFFFFFF&\\3c&H0\\fs20\\fnmpv-osd-symbols}",
-	elementDown = "{\\1c&H999999&}",
-	elementHover = "{\\blur5\\2c&HFFFFFF&}",
-	wcBar = "{\\1c&H" .. osc_color_convert(user_opts.osc_color) .. "}",
-}
+local osc_styles
+
+local function set_osc_styles()
+	osc_styles = {
+	    TransBg = "{\\blur100\\bord" .. user_opts.OSCfadealpha .. "\\1c&H000000&\\3c&H" .. osc_color_convert(user_opts.osc_color) .. "&}",
+	    SeekbarBg = "{\\blur0\\bord0\\1c&H" .. osc_color_convert(user_opts.seekbarbg_color) .. "&}",
+	    SeekbarFg = "{\\blur1\\bord1\\1c&H" .. osc_color_convert(user_opts.seekbarfg_color) .. "&}",
+	    VolumebarBg = "{\\blur0\\bord0\\1c&H999999&}",
+	    VolumebarFg = "{\\blur1\\bord1\\1c&HFFFFFF&}",
+	    Ctrl1 = "{\\blur0\\bord0\\1c&HFFFFFF&\\3c&HFFFFFF&\\fs36\\fn" .. iconfont .. "}",
+	    Ctrl2 = "{\\blur0\\bord0\\1c&HFFFFFF&\\3c&HFFFFFF&\\fs24\\fn" .. iconfont .. "}",
+	    Ctrl2Flip = "{\\blur0\\bord0\\1c&HFFFFFF&\\3c&HFFFFFF&\\fs24\\fn" .. iconfont .. "\\fry180",
+	    Ctrl3 = "{\\blur0\\bord0\\1c&HFFFFFF&\\3c&HFFFFFF&\\fs24\\fn" .. iconfont .. "}",
+	    Time = "{\\blur0\\bord0\\1c&HFFFFFF&\\3c&H000000&\\fs" .. user_opts.timefontsize .. "\\fn" .. user_opts.font .. "}",
+	    Tooltip = "{\\blur1\\bord0.5\\1c&HFFFFFF&\\3c&H000000&\\fs" .. user_opts.timefontsize .. "\\fn" .. user_opts.font .. "}",
+	    Title = "{\\blur1\\bord0.5\\1c&HFFFFFF&\\3c&H0\\fs".. user_opts.titlefontsize .."\\q2\\fn" .. user_opts.font .. "}",
+	    WindowTitle = "{\\blur1\\bord0.5\\1c&HFFFFFF&\\3c&H0\\fs".. 18 .."\\q2\\fn" .. user_opts.font .. "}",
+	    WinCtrl = "{\\blur1\\bord0.5\\1c&HFFFFFF&\\3c&H0\\fs20\\fnmpv-osd-symbols}",
+	    elementDown = "{\\1c&H999999&}",
+	    elementHover = "{\\blur5\\2c&HFFFFFF&}",
+	    wcBar = "{\\1c&H" .. osc_color_convert(user_opts.osc_color) .. "}",
+	}
+end
 
 -- internal states, do not touch
 local state = {
@@ -3112,6 +3116,7 @@ end
 -- read options from config and command-line
 opt.read_options(user_opts, "modernz", function(changed)
     validate_user_opts()
+	set_osc_styles()
     set_time_styles(changed.timetotal, changed.timems)
     if changed.tick_delay or changed.tick_delay_follow_display_fps then
         set_tick_delay("display_fps", mp.get_property_number("display_fps"))
@@ -3123,6 +3128,7 @@ opt.read_options(user_opts, "modernz", function(changed)
 end)
 
 validate_user_opts()
+set_osc_styles()
 set_time_styles(true, true)
 set_tick_delay("display_fps", mp.get_property_number("display_fps"))
 visibility_mode(user_opts.visibility, true)
