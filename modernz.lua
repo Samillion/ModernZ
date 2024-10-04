@@ -14,7 +14,6 @@ local utils = require 'mp.utils'
 -- do not touch, change them in modernz.conf
 local user_opts = {
 	-- General
-	language = "en",                       -- en:English, chs:Chinese, pl:Polish, jp:Japanese
 	idlescreen = true,                     -- show mpv logo on idle
 	windowcontrols = "auto",               -- whether to show OSC window controls, "auto", "yes" or "no"
 	showwindowed = true,                   -- show OSC when windowed?
@@ -46,7 +45,7 @@ local user_opts = {
 	scaleforcedwindow = 1.0,               -- scaling when rendered on a forced window
 
 	-- Time & Volume
-	unicodeminus = false,                  -- whether to use the Unicode minus sign character
+	unicodeminus = false,                  -- whether to use the Unicode minus sign character in remaining time
 	timetotal = true,                      -- display total time instead of remaining time by default
 	timems = false,                        -- show time as milliseconds by default
 	timefontsize = 18,                     -- the font size of the time
@@ -61,6 +60,7 @@ local user_opts = {
 	seekbarhandlesize = 0.8,               -- size ratio of the slider handle, range 0 ~ 1
 	seekrange = true,                      -- show seekrange overlay
 	seekrangealpha = 150,                  -- transparency of seekranges
+	livemarkers = true,                    -- update seekbar chapter markers on duration change
 
 	automatickeyframemode = true,          -- set seekbarkeyframes based on video length to prevent laggy scrubbing on long videos 
 	automatickeyframelimit = 600,          -- videos of above this length (in seconds) will have seekbarkeyframes on
@@ -145,99 +145,36 @@ local icons = {
 }
 
 -- Localization
+-- To add more languages:
+-- https://github.com/Samillion/ModernZ#osc-language
 local language = {
-	["en"] = {
-		welcome = "{\\fs24\\1c&H0&\\1c&HFFFFFF&}Drop files or URLs to play here.",  -- this text appears when mpv starts
-		off = "OFF",
-		na = "n/a",
-		none = "None available",
-		video = "Video",
-		audio = "Audio",
-		subtitle = "Subtitle",
-		nosub = "No subtitles available",
-		noaudio = "No audio tracks available",
-		track = " tracks:",
-		playlist = "Playlist",
-		nolist = "Empty playlist.",
-		chapter = "Chapter",
-		nochapter = "No chapters.",
-		ontop = "Pin window",
-		ontopdisable = "Unpin window",
-		loopenable = "Enable looping",
-		loopdisable = "Disable looping",
-		screenshot = "Screenshot",
-		statsinfo = "Information",
+    ["en"] = {
+	    welcome = "{\\fs24\\1c&H0&\\1c&HFFFFFF&}Drop files or URLs to play here",
+	    off = "OFF",
+	    na = "n/a",
+	    none = "None available",
+	    video = "Video",
+	    audio = "Audio",
+	    subtitle = "Subtitle",
+	    nosub = "No subtitles available",
+	    noaudio = "No audio tracks available",
+	    track = " tracks:",
+	    playlist = "Playlist",
+	    nolist = "Empty playlist.",
+	    chapter = "Chapter",
+	    nochapter = "No chapters.",
+	    ontop = "Pin window",
+	    ontopdisable = "Unpin window",
+	    loopenable = "Enable looping",
+	    loopdisable = "Disable looping",
+	    screenshot = "Screenshot",
+	    statsinfo = "Information",
+	    playlist = "Playlist",
 	},
-	["chs"] = {
-		welcome = "{\\fs24\\1c&H0&\\1c&HFFFFFF&}将文件或URL放在这里播放",  -- this text appears when mpv starts
-		off = "关闭",
-		na = "n/a",
-		none = "无数据",
-		video = "视频",
-		audio = "音频",
-		subtitle = "字幕",
-		nosub = "没有字幕", -- please check these translations
-		noaudio = "不提供音轨", -- please check these translations
-		track = "：",
-		playlist = "播放列表",
-		nolist = "无列表信息",
-		chapter = "章节",
-		nochapter = "无章节信息",
-		ontop = "启用窗口停留在顶层",  -- please check these translations
-		ontopdisable = "禁用停留在顶层的窗口",  -- please check these translations
-		loopenable = "启用循环功能",
-		loopdisable = "禁用循环功能",
-		screenshot = "截屏",
-		statsinfo = "信息",
-	},
-	["pl"] = {
-		welcome = "{\\fs24\\1c&H0&\\1c&HFFFFFF&}Upuść plik lub łącze URL do odtworzenia.",  -- this text appears when mpv starts
-		off = "WYŁ.",
-		na = "n/a",
-		none = "nic",
-		video = "Wideo",
-		audio = "Audio",
-		subtitle = "Napisy",
-		nosub = "Brak dostępnych napisów", -- please check these translations
-		noaudio = "Brak dostępnych ścieżek dźwiękowych", -- please check these translations
-		track = " ścieżki:",
-		playlist = "Lista odtwarzania",
-		nolist = "Lista odtwarzania pusta.",
-		chapter = "Rozdział",
-		nochapter = "Brak rozdziałów.",
-		ontop = "Przypnij okno do góry",
-		ontopdisable = "Odepnij okno od góry",
-		loopenable = "Włączenie zapętlenia",
-		loopdisable = "Wyłączenie zapętlenia",
-		screenshot = "Zrzut ekranu",
-		statsinfo = "Informacja",
-	},
-	["jp"] = {
-		welcome = "{\\fs24\\1c&H0&\\1c&HFFFFFF&}ファイルやURLのリンクをここにドロップすると再生されます。",  -- this text appears when mpv starts
-		off = "OFF",
-		na = "n/a",
-		none = "なし",
-		video = "ビデオ",
-		audio = "オーディオ",
-		subtitle = "サブタイトル",
-		nosub = "字幕はありません",
-		noaudio = "オーディオトラックはありません",
-		track = "トラック:",
-		playlist = "プレイリスト",
-		nolist = "空のプレイリスト.",
-		chapter = "チャプター",
-		nochapter = "利用可能なチャプターはありません.",
-		ontop = "ピンウィンドウをトップに表示",
-		ontopdisable = "ウィンドウを上からアンピンする",
-		loopenable = "ループON",
-		loopdisable = "ループOFF",
-		screenshot = "スクリーンショット",
-		statsinfo = "情報",
-	}
 }
 
 -- apply lang opts
-local texts = language[user_opts.language]
+local texts = language["en"]
 
 local thumbfast = {
 	width = 0,
