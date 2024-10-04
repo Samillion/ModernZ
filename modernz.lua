@@ -77,8 +77,8 @@ local user_opts = {
 	showjump = true,                       -- show "jump forward/backward 5 seconds" buttons 
 	showskip = false,                      -- show the skip back and forward (chapter) buttons
 	compactmode = false,                   -- replace the jump buttons with the chapter buttons, clicking the
-                                           -- buttons will act as jumping, and shift clicking will act as
-                                           -- skipping a chapter
+	                                       -- buttons will act as jumping, and shift clicking will act as
+	                                       -- skipping a chapter
 	showinfo = false,                      -- show the info button
 	showloop = true,                       -- show the loop button
 	loopinpause = true,                    -- activate looping by right clicking pause
@@ -86,8 +86,8 @@ local user_opts = {
 	ontopborder = false,                   -- If you pin the window, keep window border?
 	showscreenshot = false,                -- show screenshot button
 
-    tick_delay = 1 / 60,                   -- minimum interval between OSC redraws in seconds
-    tick_delay_follow_display_fps = false  -- use display fps as the minimum interval
+	tick_delay = 1 / 60,                   -- minimum interval between OSC redraws in seconds
+	tick_delay_follow_display_fps = false  -- use display fps as the minimum interval
 }
 
 local osc_param = {      -- calculated by osc_init()
@@ -277,7 +277,7 @@ local state = {
 	tc_ms = user_opts.timems,               -- Should the timecodes display their time with milliseconds
 	screen_sizeX = nil, screen_sizeY = nil, -- last screen-resolution, to detect resolution changes to issue reINITs
 	initREQ = false,                        -- is a re-init request pending?
-    marginsREQ = false,                     -- is a margins update pending?
+	marginsREQ = false,                     -- is a margins update pending?
 	last_mouseX = nil, last_mouseY = nil,   -- last mouse position, to detect significant mouse movement
 	mouse_in_window = false,
 	message_text = nil,
@@ -292,7 +292,7 @@ local state = {
 	input_enabled = true,
 	showhide_enabled = false,
 	windowcontrols_buttons = false,
-    windowcontrols_title = false,
+	windowcontrols_title = false,
 	border = true,
 	maximized = false,
 	osd = mp.create_osd_overlay("ass-events"),
@@ -460,19 +460,14 @@ end
 -- translates global (mouse) coordinates to value
 local function get_slider_value_at(element, glob_pos)
 
-	if (element) then
-		local val = scale_value(
-			element.slider.min.glob_pos, element.slider.max.glob_pos,
-			element.slider.min.value, element.slider.max.value,
-			glob_pos)
+    local val = scale_value(
+        element.slider.min.glob_pos, element.slider.max.glob_pos,
+        element.slider.min.value, element.slider.max.value,
+        glob_pos)
 
-		return limit_range(
-			element.slider.min.value, element.slider.max.value,
-			val)
-	end 
-	
-	-- fall back incase of loading errors
-	return 0
+    return limit_range(
+        element.slider.min.value, element.slider.max.value,
+        val)
 end
 
 -- get value at current mouse position
@@ -600,8 +595,7 @@ local function limited_list(prop, pos)
     end
     return count, reslist
 end
- 
--- playlist and chapters --
+
 local function get_playlist()
     local pos = mp.get_property_number("playlist-pos", 0) + 1
     local count, limlist = limited_list("playlist", pos)
@@ -744,27 +738,24 @@ local function get_tracklist(type)
 end
 
 -- relatively change the track of given <type> by <next> tracks
--- (+1 -> next, -1 -> previous)
+    --(+1 -> next, -1 -> previous)
 local function set_track(type, next)
-	local current_track_mpv, current_track_osc
-	current_track_osc = 0
-	if mp.get_property(type) == "no" then
-		current_track_osc = 0
-	else
-		current_track_mpv = tonumber(mp.get_property(type))
-		if (tracks_mpv[type][current_track_mpv]) then
-			current_track_osc = tracks_mpv[type][current_track_mpv].osc_id
-		end
-	end
-	local new_track_osc = (current_track_osc + next) % (#tracks_osc[type] + 1)
-	local new_track_mpv
-	if new_track_osc == 0 then
-		new_track_mpv = "no"
-	else
-		new_track_mpv = tracks_osc[type][new_track_osc].id
-	end
+    local current_track_mpv, current_track_osc
+    if mp.get_property(type) == "no" then
+        current_track_osc = 0
+    else
+        current_track_mpv = tonumber(mp.get_property(type))
+        current_track_osc = tracks_mpv[type][current_track_mpv].osc_id
+    end
+    local new_track_osc = (current_track_osc + next) % (#tracks_osc[type] + 1)
+    local new_track_mpv
+    if new_track_osc == 0 then
+        new_track_mpv = "no"
+    else
+        new_track_mpv = tracks_osc[type][new_track_osc].id
+    end
 
-	mp.commandv("set", type, new_track_mpv)
+    mp.commandv("set", type, new_track_mpv)
     if new_track_osc == 0 then
         show_message(nicetypes[type] .. " Track: none")
     else
@@ -777,14 +768,14 @@ end
 
 -- get the currently selected track of <type>, OSC-style counted
 local function get_track(type)
-	local track = mp.get_property(type)
-	if track ~= "no" and track ~= nil then
-		local tr = tracks_mpv[type][tonumber(track)]
-		if tr then
-			return tr.osc_id
-		end
-	end
-	return 0
+    local track = mp.get_property(type)
+    if track ~= "no" and track ~= nil then
+        local tr = tracks_mpv[type][tonumber(track)]
+        if tr then
+            return tr.osc_id
+        end
+    end
+    return 0
 end
 
 -- convert slider_pos to logarithmic depending on volumecontrol user_opts
@@ -798,12 +789,12 @@ end
 
 -- WindowControl helpers
 local function window_controls_enabled()
-	val = user_opts.windowcontrols
-	if val == "auto" then
-		return (not state.border) or state.fullscreen
-	else
-		return val ~= "no"
-	end
+    local val = user_opts.windowcontrols
+    if val == "auto" then
+        return (not state.border) or state.fullscreen
+    else
+        return val ~= "no"
+    end
 end
 
 --
@@ -909,7 +900,7 @@ local function prepare_elements()
         -- style it accordingly and kill the eventresponders
         if not element.enabled then
             element.layout.alpha[1] = 215
-            if (not (element.name == "cy_sub" or element.name == "cy_audio")) then -- keep these to display tooltips
+            if not (element.name == "cy_sub" or element.name == "cy_audio") then -- keep these to display tooltips
                 element.eventresponder = nil
             end
         end
@@ -1054,7 +1045,7 @@ local function render_elements(master_ass)
                             end
                         end
 
-                        if (element.name == "seekbar") then
+                        if element.name == "seekbar" then
                             state.sliderpos = sliderpos
                         end    
                         
@@ -1065,7 +1056,7 @@ local function render_elements(master_ass)
 
                             if osd_w then
                                 local hover_sec = 0
-                                if (mp.get_property_number("duration")) then hover_sec = mp.get_property_number("duration") * sliderpos / 100 end
+                                if mp.get_property_number("duration") then hover_sec = mp.get_property_number("duration") * sliderpos / 100 end
                                 local thumbPad = user_opts.thumbnailborder
                                 local thumbMarginX = 18 / r_w
                                 local thumbMarginY = user_opts.timefontsize + thumbPad + 2 / r_h
@@ -1075,7 +1066,7 @@ local function render_elements(master_ass)
                                 thumbX = math.floor(thumbX + 0.5)
                                 thumbY = math.floor(thumbY + 0.5)
 
-                                if (state.anitype == nil) then
+                                if state.anitype == nil then
                                     elem_ass:new_event()
                                     elem_ass:pos(thumbX * r_w, ty - thumbMarginY - thumbfast.height * r_h)
                                     elem_ass:an(7)
@@ -1327,7 +1318,7 @@ local function window_controls()
         y = 30,
         an = 1,
         w = osc_param.playresx,
-        h = 30
+        h = 30,
     }
 
     local controlbox_w = window_control_box_width
@@ -1647,7 +1638,6 @@ layouts = function ()
 
 end
 
--- OSC INIT
 local function osc_init()
     msg.debug("osc_init")
 
@@ -1705,7 +1695,6 @@ local function osc_init()
     ne.content = function ()
         local title = state.forced_title or
                       mp.command_native({"expand-text", user_opts.title})
-        -- escape ASS, and strip newlines and trailing slashes
         title = title:gsub("\n", " ")
         return title ~= "" and mp.command_native({"escape-ass", title}) or "mpv"
     end
@@ -1780,7 +1769,7 @@ local function osc_init()
         end
     ne.eventresponder["mbtn_right_down"] =
         function ()
-            if (state.looping) then
+            if state.looping then
                 show_message("Looping disabled")
             else
                 show_message("Looping enabled")
@@ -2007,7 +1996,7 @@ local function osc_init()
     --tog_fs
     ne = new_element("tog_fs", "button")
     ne.content = function ()
-        if (state.fullscreen) then
+        if state.fullscreen then
             return (icons.minimize)
         else
             return (icons.fullscreen)
@@ -2020,7 +2009,7 @@ local function osc_init()
     --tog_loop
     ne = new_element("tog_loop", "button")
     ne.content = function ()
-        if (state.looping) then
+        if state.looping then
             return (icons.loopon)
         else
             return (icons.loopoff)
@@ -2217,7 +2206,7 @@ local function osc_init()
     ne.eventresponder["reset"] =
         function (element)
             element.state.lastseek = nil
-            if (state.playingWhilstSeeking) then
+            if state.playingWhilstSeeking then
                 if mp.get_property("eof-reached") == "no" then
                     mp.commandv("cycle", "pause")
                 end
