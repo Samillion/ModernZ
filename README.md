@@ -29,7 +29,7 @@ For a full list click [here](https://github.com/Samillion/ModernX-Lite/commits/m
 - [ ] Add an option to show a playlist button (`user_opts` mode: `get_playlist()` or `select.lua`)
 - [ ] Include more customization options for colors
 - [ ] Add more `user_opts` validation
-- [x] Add translations: German, French, Spanish, Arabic [[learn more](#osc-languages)]
+- [x] Add translations: German, French, Spanish, Arabic [[learn more](#osc-language)]
 - [ ] Make first release as v0.1.0
 - [ ] Stop adding things to the to do list. :P
 
