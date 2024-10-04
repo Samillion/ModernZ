@@ -1,9 +1,6 @@
 ## ModernZ
 A fork of [zydezu/ModernX OSC](https://github.com/zydezu/ModernX) for mpv. ModernZ could be considered a lite version, since it strips many web features, but also the purpose is to re-do the project and follow mpv's OSC standards, while keeping a modern look.
 
-> [!CAUTION]
-> This is still a work in progress.
-
 ![Preview](https://github.com/user-attachments/assets/514399b3-f1c6-493f-ac7e-66c5a7ac083a)
 
 
@@ -29,7 +26,10 @@ For a full list click [here](https://github.com/Samillion/ModernX-Lite/commits/m
 - [x] Ensure all included functions and variables are actually used and not remnants of the past
 - [x] Match mpv's `osc.lua` standards and functionality, where relative, to ensure compatibility and stability.
 - [ ] Improve button placements
+- [ ] Add an option to show a playlist button (`user_opts` mode: `get_playlist()` or `select.lua`)
 - [ ] Include more customization options for colors
+- [ ] Add more `user_opts` validation
+- [ ] Stop adding things to the to do list. :P
 
 ## How to install
 **OSC**: Simply place `modernz.lua` in the corresponding mpv scripts folder of your operating system:
