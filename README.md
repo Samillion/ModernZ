@@ -22,12 +22,12 @@ The one I forked from has many great additional features, mostly relating to onl
 
 These changes might introduce bugs. It shouldn't, but it's always possible. If found, please open an issue.
 
-For a full list [click here](https://github.com/Samillion/ModernX-Lite/commits/main/modernxlite.lua) and [here](https://github.com/Samillion/ModernZ/commits/main/modernz.lua)
+For a full list click [here](https://github.com/Samillion/ModernX-Lite/commits/main/modernxlite.lua) and [here](https://github.com/Samillion/ModernZ/commits/main/modernz.lua)
 
 ### To do list:
 - [x] Re-organize the functions and variables so the order makes sense and not just random
-- [ ] Ensure all included functions and variables are actually used and not remnants of the past
-- [ ] Match mpv's `osc.lua` standards and functionality, where relative, to ensure compatibility and stability.
+- [x] Ensure all included functions and variables are actually used and not remnants of the past
+- [x] Match mpv's `osc.lua` standards and functionality, where relative, to ensure compatibility and stability.
 - [ ] Improve button placements
 - [ ] Include more customization options for colors
 
@@ -122,13 +122,13 @@ showscreenshot=no
 			- forked from [cyl0/ModernX](https://github.com/cyl0/ModernX)
 				- forked from [maoiscat/mpv-osc-modern](https://github.com/maoiscat/mpv-osc-modern)
 
-Looking at the fork history of `ModernX`, I asked myself:
-> Since you forked this, doesn't that mean you stripped it back down to be a near match of the original?
+Looking at the fork history, I asked myself:
+> Doesn't that mean you stripped it back down to be a near match of the original?
 
 Absolutely, yes. :stuck_out_tongue_closed_eyes:
 
 The caviat here is that I only asked myself that after the fact.
 
-After arguing with myself, I concluded: The main idea is to re-do the project to keep mpv's OSC standards for functionality and compatibility. It's a nice side project that is teaching me a lot about mpv and lua.
+Arguing with myself, I concluded: The main idea is to re-do the project to keep mpv's OSC standards for functionality and compatibility. It's a nice side project that is teaching me a lot about mpv and lua.
 
 Still, all the people there deserve credit for their great work.
