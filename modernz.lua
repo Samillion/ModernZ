@@ -3081,19 +3081,7 @@ local function validate_user_opts()
                 user_opts.volumecontroltype .. "\". Ignoring.")
         user_opts.volumecontroltype = "linear"
     end
-	
-	if user_opts.showinfo then 
-		local statslua_path = mp.command_native({"expand-path", "~~/scripts/stats.lua"})
-		local statslua_file = io.open(statslua_path, "r")
 
-		if not statslua_file then
-			msg.warn("stats.lua not found in /scripts folder, disabling showinfo button.")
-			user_opts.showinfo = false
-		else
-			io.close(statslua_file)
-		end
-	end
-	
 	if user_opts.automatickeyframemode then
 		if mp.get_property_number("duration", 0) > user_opts.automatickeyframelimit then
 			user_opts.seekbarkeyframes = true
