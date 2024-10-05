@@ -1,24 +1,7 @@
 ## ModernZ
-A fork of [zydezu/ModernX OSC](https://github.com/zydezu/ModernX) for mpv. ModernZ could be considered a lite version, since it strips many web features, but also the purpose is to re-do the project and follow mpv's OSC standards, while keeping a modern look.
+A modern look OSC for mpv, forked from ModernX to improve functionality with more features and to maintain mpv's OSC standards.
 
 ![Preview](https://github.com/user-attachments/assets/23d91ec7-dc38-4b3f-b951-6b57cf907e60)
-
-## What's different in ModernZ?
-The one I forked from has many great additional features, mostly relating to online videos, which for my use case is not really needed. So I decided to create this version.
-
-**Changes**: (commits: [initial](https://github.com/Samillion/ModernX-Lite/commit/1fd04350069c20f0b1faa568e97c51b3e2907795) - [major](https://github.com/Samillion/ModernX-Lite/commit/9dbc3fe04914317df9a7e979ed756bb344ef3ed5))
-- Removed youtube dislikes
-- Removed youtube description
-- Removed youtube comments
-- Removed dynamic osc title (based on web video metadata)
-- Removed download video related options
-- Removed altering window title
-- Removed all unused functions, variables and parameters
-- Applied relative patches from [mpv/osc.lua](https://github.com/mpv-player/mpv/blob/master/player/lua/osc.lua), going far back as mid 2022
-
-These changes might introduce bugs. It shouldn't, but it's always possible. If found, please open an issue.
-
-For a full list click [here](https://github.com/Samillion/ModernX-Lite/commits/main/modernxlite.lua) and [here](https://github.com/Samillion/ModernZ/commits/main/modernz.lua)
 
 **To do list**:
 - [x] Re-organize the functions and variables so the order makes sense and not just random
@@ -63,57 +46,126 @@ To customize options or colors, you can add `modernz.conf` in the `script-opts` 
 
 An example of a `modernz.conf` file:
 
-```properties
-# For a full list of options, see user_opts in modernz.lua
-
-# if the osc should only display when hovering at the bottom
-bottomhover=yes
-
-# whether to raise subtitles above the osc when it's shown
-raisesubs=yes
-
-# always show a small progress line at the bottom of the screen
-persistentprogress=no
-
-# show title in OSC (above seekbar)
-showtitle=yes
-
-# title shown on OSC (above seekbar), ${media-title} or ${filename}
-title=${media-title}
-
+```
 # color of the seekbar progress and handle, in Hex color format
 seekbarfg_color=#B7410E
-
-# whether buttons have a glowing effect when hovered over
-hovereffect=yes
 
 # show playlist button? LClick: show playlist, RClick: use select.lua (if available)
 showplaylist=no
 
-# show different icon when jumpamount is 5, 10, or 30
-jumpiconnumber=yes
+# title shown on OSC (above seekbar), ${media-title} or ${filename}
+title=${media-title}
 
-# show "jump forward/backward 10 seconds" buttons 
-showjump=yes
+# scaling of the controller when windowed
+scalewindowed=1.0
 
-# show the skip back and forward (chapter) buttons
-showskip=no
-
-# show the info button
-showinfo=yes
-
-# show the loop button
-showloop=yes
-
-# show window on top button
-showontop=yes
-
-# if you pin the window, keep window border?
-ontopborder=no
-
-# show screenshot button
-showscreenshot=no
+# seek mode for jump buttons
+jumpmode=relative
 ```
+
+## User Options
+This is the full list of user options you can use in `script-opts/modernz.conf`, with their possible values and description.
+
+### General
+| Option          | Value | Description                        |
+|-----------------|-------|------------------------------------|
+| idlescreen      | yes   | show mpv logo on idle              |
+| windowcontrols  | auto  | whether to show OSC window controls."auto, yes or no |
+| showwindowed    | yes   | show OSC when windowed?            |
+| showfullscreen  | yes   | show OSC when fullscreen?          |
+| greenandgrumpy  | no    | disable santa hat in December      |
+
+### Colors
+| Option            | Value    | Description                           |
+|-------------------|----------|---------------------------------------|
+| osc_color         | #000000  | accent of the OSC and the title bar, in Hex color format |
+| seekbarfg_color   | #BE4D25  | color of the seekbar progress and handle, in Hex color format |
+| seekbarbg_color   | #FFFFFF  | color of the remaining seekbar, in Hex color format |
+
+### Buttons
+| Option           | Value | Description                                           |
+|------------------|-------|-------------------------------------------------------|
+| hovereffect      | yes   | whether buttons have a glowing effect when hovered over |
+| showplaylist     | no    | show playlist button? LClick: show playlist, RClick: use `select.lua` |
+| showjump         | yes   | show "jump forward/backward 10 seconds" buttons        |
+| showskip         | no    | show the skip back and forward (chapter) buttons       |
+| showinfo         | no    | show the info button                                   |
+| showloop         | yes   | show the loop button                                   |
+| showontop        | yes   | show window on top button                              |
+| showscreenshot   | no    | show screenshot button                                 |
+
+### Scaling
+| Option            | Value | Description                                  |
+|-------------------|-------|----------------------------------------------|
+| vidscale          | yes   | whether to scale the controller with the video |
+| scalewindowed     | 1.0   | scaling of the controller when windowed       |
+| scalefullscreen   | 1.0   | scaling of the controller when fullscreen     |
+| scaleforcedwindow | 1.0   | scaling when rendered on a forced window      |
+
+### Time & Volume
+| Option           | Value   | Description                                                    |
+|------------------|---------|----------------------------------------------------------------|
+| unicodeminus     | no      | whether to use the Unicode minus sign character in remaining time |
+| timetotal        | yes     | display total time instead of remaining time by default         |
+| timems           | no      | show time as milliseconds by default                           |
+| timefontsize     | 18      | the font size of the time                                       |
+| jumpamount       | 10      | change the jump amount (in seconds by default)                  |
+| jumpiconnumber   | yes     | show different icon when jumpamount is 5, 10, or 30             |
+| jumpmode         | relative| seek mode for jump buttons                                      |
+| volumecontrol    | yes     | whether to show mute button and volume slider                   |
+| volumecontroltype| linear  | use "linear" or "log" (logarithmic) volume scale                |
+
+### Seeking
+| Option                 | Value | Description                                            |
+|------------------------|-------|--------------------------------------------------------|
+| seekbarkeyframes        | no    | use keyframes when dragging the seekbar                |
+| seekbarhandlesize       | 0.8   | size ratio of the slider handle, range 0 ~ 1           |
+| seekrange               | yes   | show seekrange overlay                                 |
+| seekrangealpha          | 150   | transparency of seekranges                             |
+| livemarkers             | yes   | update seekbar chapter markers on duration change      |
+| osc_on_seek             | no    | show osc when seeking? or input.conf: `x script-message-to modernz osc-show` |
+| automatickeyframemode   | yes   | set seekbarkeyframes based on video length to prevent laggy scrubbing on long videos |
+| automatickeyframelimit  | 600   | videos of above this length (in seconds) will have seekbarkeyframes on |
+
+### UI [elements]
+| Option                   | Value          | Description                                         |
+|--------------------------|----------------|-----------------------------------------------------|
+| showtitle                | yes            | show title in OSC (above seekbar)                   |
+| showwindowtitle          | yes            | show window title in borderless/fullscreen mode     |
+| titleBarStrip            | no             | whether to make the title bar a singular bar instead of a black fade |
+| title                    | ${media-title} | title shown on OSC (above seekbar). ${media-title} or ${filename} |
+| font                     | mpv-osd-symbols| mpv-osd-symbols = default osc font (or the one set in mpv.conf) |
+| titlefontsize            | 30             | the font size of the title text (above seekbar)     |
+| chapter_fmt              | Chapter: %s    | chapter print format for seekbar-hover. "no" to disable |
+| persistentprogress       | no             | always show a small progress line at the bottom of the screen |
+| persistentprogressheight | 17             | the height of the persistentprogress bar            |
+| persistentbuffer         | no             | on web videos, show the buffer on the persistent progress line |
+| persistentprogresstoggle | no             | enable toggling the persistentprogress bar          |
+| compactmode              | no             | replace the jump buttons with the chapter buttons   |
+
+### UI [behavior]
+| Option              | Value | Description                                              |
+|---------------------|-------|----------------------------------------------------------|
+| showonpause         | yes   | whether to show osc when paused                          |
+| onpausenotimeout    | yes   | whether to disable the hide timeout on pause             |
+| bottomhover         | yes   | if the osc should only display when hovering at the bottom|
+| raisesubs           | yes   | whether to raise subtitles above the osc when it's shown |
+| thumbnailborder     | 2     | the width of the thumbnail border (thumbfast)            |
+| OSCfadealpha        | 150   | alpha of the background box for the OSC                  |
+| boxalpha            | 75    | alpha of the window title bar                            |
+| ontopborder         | no    | If you pin the window, keep window border?               |
+| loopinpause         | yes   | activate looping by right clicking pause                 |
+| visibility          | auto  | only used at init to set visibility_mode(...)            |
+
+### UI [time-based]
+| Option                         | Value  | Description                                       |
+|--------------------------------|--------|---------------------------------------------------|
+| hidetimeout                    | 2000   | duration in ms until OSC hides if no mouse movement|
+| fadeduration                   | 250    | duration of fade out in ms, 0 = no fade           |
+| minmousemove                   | 0      | amount of pixels the mouse has to move for OSC to show |
+| tick_delay                     | 1 / 60 | minimum interval between OSC redraws in seconds   |
+| tick_delay_follow_display_fps   | no     | use display fps as the minimum interval           | 
+
 
 ## OSC Language
 By default, the OSC is in English. However, it is relatively easy to add new languages.
