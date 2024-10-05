@@ -423,7 +423,7 @@ Looking at the fork history, I asked myself:
 
 Absolutely, yes. :stuck_out_tongue_closed_eyes:
 
-The caviat here is that I only asked myself that after the fact, and since then, many improvements and features were added.
+The caveat here is that I only asked myself that after the fact, and since then, many improvements and features were added.
 
 Arguing with myself, I concluded: The main idea was to re-do the project to keep mpv's OSC standards for functionality and compatibility. It's a nice side project that is teaching me a lot about mpv and lua.
 
