@@ -1,7 +1,7 @@
 ## ModernZ OSC
 ![Preview](https://github.com/user-attachments/assets/23d91ec7-dc38-4b3f-b951-6b57cf907e60)
 
-A modern look OSC for [mpv](https://mpv.io/), forked from ModernX to improve functionality with more features and to maintain mpv's OSC standards.
+A modern look OSC for [mpv](https://mpv.io/), forked from ModernX to improve functionality with more features while maintaining mpv's OSC standards.
 
 - [How to Install](#how-to-install)
 - [Configuration File](#configuration-file)
@@ -423,8 +423,8 @@ Looking at the fork history, I asked myself:
 
 Absolutely, yes. :stuck_out_tongue_closed_eyes:
 
-The caviat here is that I only asked myself that after the fact.
+The caviat here is that I only asked myself that after the fact, and since then, many improvements and features were added.
 
-Arguing with myself, I concluded: The main idea is to re-do the project to keep mpv's OSC standards for functionality and compatibility. It's a nice side project that is teaching me a lot about mpv and lua.
+Arguing with myself, I concluded: The main idea was to re-do the project to keep mpv's OSC standards for functionality and compatibility. It's a nice side project that is teaching me a lot about mpv and lua.
 
 Still, all the people there deserve credit for their great work.
