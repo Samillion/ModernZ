@@ -148,7 +148,6 @@ local language = {
 	    loopdisable = "Disable looping",
 	    screenshot = "Screenshot",
 	    statsinfo = "Information",
-	    playlist = "Playlist",
 	},
 }
 
@@ -183,7 +182,6 @@ The following is a list of languages you can add or use as reference:
 		loopdisable = "Désactiver la boucle",
 		screenshot = "Capture d'écran",
 		statsinfo = "Information",
-		playlist = "Liste de lecture",
 	},
   ```
 </details>
@@ -212,7 +210,6 @@ The following is a list of languages you can add or use as reference:
 		loopdisable = "Schleifen deaktivieren",
 		screenshot = "Screenshot",
 		statsinfo = "Information",
-		playlist = "Wiedergabeliste",
 	},
   ```
 </details>
@@ -241,7 +238,6 @@ The following is a list of languages you can add or use as reference:
 		loopdisable = "Desactivar bucle",
 		screenshot = "Captura de pantalla",
 		statsinfo = "Información",
-		playlist = "Lista de reproducción",
 	},
   ```
 </details>
@@ -270,7 +266,6 @@ The following is a list of languages you can add or use as reference:
 		loopdisable = "Wyłączenie zapętlenia",
 		screenshot = "Zrzut ekranu",
 		statsinfo = "Informacja",
-		playlist = "Lista odtwarzania",
 	},
   ```
 </details>
@@ -299,7 +294,6 @@ The following is a list of languages you can add or use as reference:
 		loopdisable = "ループOFF",
 		screenshot = "スクリーンショット",
 		statsinfo = "情報",
-		playlist = "プレイリスト",
 	},
   ```
 </details>
@@ -328,7 +322,6 @@ The following is a list of languages you can add or use as reference:
 	    loopdisable = "禁用循环功能",
 	    screenshot = "截屏",
 	    statsinfo = "信息",
-	    playlist = "播放列表",
 	},
   ```
 </details>
@@ -357,7 +350,6 @@ The following is a list of languages you can add or use as reference:
 		loopdisable = "تعطيل التكرار",
 		screenshot = "لقطة شاشة",
 		statsinfo = "معلومات",
-		playlist = "قائمة التشغيل",
 	},
   ```
 </details>
