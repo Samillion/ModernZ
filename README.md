@@ -1,11 +1,11 @@
 ## ModernZ
 A modern look OSC for mpv, forked from ModernX to improve functionality with more features and to maintain mpv's OSC standards.
 
-- [How to Install](./#how-to-install)
-- [Configuration File](./#configuration-file)
-- [User Options](./#user-options)
-- [OSC Language](./#osc-language)
-- [History](./#history)
+- [How to Install](#how-to-install)
+- [Configuration File](#configuration-file)
+- [User Options](#user-options)
+- [OSC Language](#osc-language)
+- [History](#history)
 
 ![Preview](https://github.com/user-attachments/assets/23d91ec7-dc38-4b3f-b951-6b57cf907e60)
 
