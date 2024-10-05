@@ -84,9 +84,6 @@ title=${media-title}
 # color of the seekbar progress and handle, in Hex color format
 seekbarfg_color=#B7410E
 
-# icon style, 'solid' or 'round'
-iconstyle=round
-
 # whether buttons have a glowing effect when hovered over
 hovereffect=yes
 
