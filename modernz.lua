@@ -26,7 +26,6 @@ local user_opts = {
 	seekbarbg_color = "#FFFFFF",           -- color of the remaining seekbar, in Hex color format
 
 	-- Buttons
-	iconstyle = "round",                   -- icon style, "solid" or "round"
 	hovereffect = true,                    -- whether buttons have a glowing effect when hovered over
 	
 	showplaylist = false,                  -- show playlist button? LClick: show playlist, RClick: use select.lua
@@ -146,7 +145,7 @@ local icons = {
 	ontopon = "\239\142\150",
 	ontopoff = "\239\142\149",
 	screenshot = "\239\135\168",
-	playlist = "\239\142\171"
+	playlist = "\239\137\135"
 }
 
 -- Localization
@@ -193,7 +192,7 @@ local tracks_mpv = {}
 local window_control_box_width = 138
 local is_december = os.date("*t").month == 12
 local UNICODE_MINUS = string.char(0xe2, 0x88, 0x92)  -- UTF-8 for U+2212 MINUS SIGN
-local iconfont = user_opts.iconstyle == "round" and "Material-Design-Iconic-Round" or "Material-Design-Iconic-Font"
+local iconfont = "Material-Design-Iconic-Round"
 
 local function osc_color_convert(color)
     return color:sub(6,7) .. color:sub(4,5) ..  color:sub(2,3)
