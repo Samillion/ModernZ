@@ -1,5 +1,5 @@
 ## ModernZ
-A modern look OSC for mpv, forked from ModernX to improve functionality with more features and to maintain mpv's OSC standards.
+A modern look OSC for [mpv](https://mpv.io/), forked from ModernX to improve functionality with more features and to maintain mpv's OSC standards.
 
 - [How to Install](#how-to-install)
 - [Configuration File](#configuration-file)
@@ -76,7 +76,7 @@ This is the full list of user options you can use in `script-opts/modernz.conf`,
 | Option          | Value | Description                        |
 |-----------------|-------|------------------------------------|
 | idlescreen      | yes   | show mpv logo on idle              |
-| windowcontrols  | auto  | whether to show OSC window controls."auto, yes or no |
+| windowcontrols  | auto  | whether to show OSC window controls. auto, yes or no |
 | showwindowed    | yes   | show OSC when windowed?            |
 | showfullscreen  | yes   | show OSC when fullscreen?          |
 | greenandgrumpy  | no    | disable santa hat in December      |
@@ -92,7 +92,7 @@ This is the full list of user options you can use in `script-opts/modernz.conf`,
 | Option           | Value | Description                                           |
 |------------------|-------|-------------------------------------------------------|
 | hovereffect      | yes   | whether buttons have a glowing effect when hovered over |
-| showplaylist     | no    | show playlist button? LClick: show playlist, RClick: use `select.lua` |
+| showplaylist     | no    | show playlist button? LClick: show playlist, RClick: use `select.lua` (if available) |
 | showjump         | yes   | show "jump forward/backward 10 seconds" buttons        |
 | showskip         | no    | show the skip back and forward (chapter) buttons       |
 | showinfo         | no    | show the info button                                   |
