@@ -1944,13 +1944,6 @@ local function osc_init()
         function () show_message(get_playlist(), 3) end
     ne.eventresponder["mbtn_right_up"] =
         function ()
-            local selectlua_path = mp.command_native({"expand-path", "~~/scripts/select.lua"})
-            local selectlua_file = io.open(selectlua_path, "r")
-            if not selectlua_file then
-                return
-            else
-                io.close(selectlua_file)
-            end
             mp.commandv("script-binding", "select/select-playlist")
         end
 
@@ -2876,7 +2869,7 @@ end)
 mp.observe_property("seeking", "native", function(_, seeking)
 	reset_timeout()
 	if seeking and user_opts.osc_on_seek then
-		mp.command('script-message osc-show')
+		mp.commandv("script-message-to", "modernz", "osc-show")
 	end
 end)
 mp.observe_property("fullscreen", "bool", function(_, val)
