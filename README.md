@@ -25,12 +25,12 @@ For a full list click [here](https://github.com/Samillion/ModernX-Lite/commits/m
 - [x] Re-organize the functions and variables so the order makes sense and not just random
 - [x] Ensure all included functions and variables are actually used and not remnants of the past
 - [x] Match mpv's `osc.lua` standards and functionality, where relative, to ensure compatibility and stability.
-- [ ] Improve button placements
-- [ ] Add an option to show a playlist button (`user_opts` mode: `get_playlist()` or `select.lua`)
+- [x] Improve button placements
+- [x] Add an option to show a playlist button (`user_opts` mode: `get_playlist()` or `select.lua`)
 - [ ] Include more customization options for colors
 - [ ] Add more `user_opts` validation
 - [x] Add translations: German, French, Spanish, Arabic [[learn more](#osc-language)]
-- [ ] Make first release as v0.1.0
+- [ ] Make first release v0.1.0
 - [ ] Stop adding things to the to do list. :P
 
 ## How to install
@@ -91,6 +91,9 @@ iconstyle=round
 
 # whether buttons have a glowing effect when hovered over
 hovereffect=yes
+
+# show playlist button? LClick: show playlist, RClick: use select.lua (if available)
+showplaylist=no
 
 # show different icon when jumpamount is 5, 10, or 30
 jumpiconnumber=yes
