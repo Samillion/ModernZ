@@ -174,7 +174,6 @@ local language = {
 	    loopdisable = "Disable looping",
 	    screenshot = "Screenshot",
 	    statsinfo = "Information",
-	    playlist = "Playlist",
 	},
 }
 
