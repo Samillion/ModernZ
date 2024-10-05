@@ -1,7 +1,7 @@
 ## ModernZ
 A fork of [zydezu/ModernX OSC](https://github.com/zydezu/ModernX) for mpv. ModernZ could be considered a lite version, since it strips many web features, but also the purpose is to re-do the project and follow mpv's OSC standards, while keeping a modern look.
 
-![Preview](https://github.com/user-attachments/assets/92e6d48f-8b79-4634-b541-f8b69248f446)
+![Preview](https://github.com/user-attachments/assets/23d91ec7-dc38-4b3f-b951-6b57cf907e60)
 
 ## What's different in ModernZ?
 The one I forked from has many great additional features, mostly relating to online videos, which for my use case is not really needed. So I decided to create this version.
