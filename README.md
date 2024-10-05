@@ -4,7 +4,7 @@ A modern look OSC for [mpv](https://mpv.io/), forked from ModernX to improve fun
 - [How to Install](#how-to-install)
 - [Configuration File](#configuration-file)
 - [User Options](#user-options)
-- [OSC Language](#osc-language)
+- [OSC Language (Translations)](#osc-language)
 - [History](#history)
 
 ![Preview](https://github.com/user-attachments/assets/23d91ec7-dc38-4b3f-b951-6b57cf907e60)
