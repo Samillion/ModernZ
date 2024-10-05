@@ -28,6 +28,8 @@ local user_opts = {
 	-- Buttons
 	iconstyle = "round",                   -- icon style, "solid" or "round"
 	hovereffect = true,                    -- whether buttons have a glowing effect when hovered over
+	
+	showplaylist = false,                  -- show playlist button? LClick: show playlist, RClick: use select.lua
 
 	showjump = true,                       -- show "jump forward/backward 10 seconds" buttons 
 	showskip = false,                      -- show the skip back and forward (chapter) buttons
@@ -61,6 +63,8 @@ local user_opts = {
 	seekrange = true,                      -- show seekrange overlay
 	seekrangealpha = 150,                  -- transparency of seekranges
 	livemarkers = true,                    -- update seekbar chapter markers on duration change
+
+	osc_on_seek = false,                   -- show osc when seeking? or input.conf: x script-message-to modernz osc-show
 
 	automatickeyframemode = true,          -- set seekbarkeyframes based on video length to prevent laggy scrubbing on long videos 
 	automatickeyframelimit = 600,          -- videos of above this length (in seconds) will have seekbarkeyframes on
@@ -141,7 +145,8 @@ local icons = {
 	info = "\239\135\183",
 	ontopon = "\239\142\150",
 	ontopoff = "\239\142\149",
-	screenshot = "\239\135\168"
+	screenshot = "\239\135\168",
+	playlist = "\239\142\171"
 }
 
 -- Localization
@@ -415,15 +420,18 @@ end
 
 -- translates global (mouse) coordinates to value
 local function get_slider_value_at(element, glob_pos)
+	if element then
+		local val = scale_value(
+			element.slider.min.glob_pos, element.slider.max.glob_pos,
+			element.slider.min.value, element.slider.max.value,
+			glob_pos)
 
-    local val = scale_value(
-        element.slider.min.glob_pos, element.slider.max.glob_pos,
-        element.slider.min.value, element.slider.max.value,
-        glob_pos)
-
-    return limit_range(
-        element.slider.min.value, element.slider.max.value,
-        val)
+		return limit_range(
+			element.slider.min.value, element.slider.max.value,
+			val)
+	end
+	-- fall back incase of loading errors
+	return 0
 end
 
 -- get value at current mouse position
@@ -1452,6 +1460,7 @@ layouts = function ()
     local showinfo = user_opts.showinfo
     local showontop = user_opts.showontop
     local showscreenshot = user_opts.showscreenshot
+	local showplaylist = user_opts.showplaylist
 
     if user_opts.compactmode then
         user_opts.showjump = false
@@ -1469,22 +1478,6 @@ layouts = function ()
                              geo.y - geo.h, geo.x + geo.w, geo.y + geo.h)
     lo.alpha[3] = 0
     lo.button.maxchars = geo.w / 11
-
-    -- Volumebar
-    lo = new_element("volumebarbg", "box")
-    lo.visible = (osc_param.playresx >= 900 - outeroffset) and user_opts.volumecontrol
-    lo = add_layout("volumebarbg")
-    lo.geometry = {x = 155, y = refY - 40, an = 4, w = 80, h = 2}
-    lo.layer = 13
-    lo.alpha[1] = 128
-    lo.style = osc_styles.VolumebarBg
-    
-    lo = add_layout("volumebar")
-    lo.geometry = {x = 155, y = refY - 40, an = 4, w = 80, h = 8}
-    lo.style = osc_styles.VolumebarFg
-    lo.slider.gap = 3
-    lo.slider.tooltip_style = osc_styles.Tooltip
-    lo.slider.tooltip_an = 2
 
     -- buttons
     lo = add_layout("pl_prev")
@@ -1542,21 +1535,47 @@ layouts = function ()
     lo.geometry = {x = osc_geo.w - 25 , y = refY -84, an = 9, w = 100, h = 20}
     lo.style = osc_styles.Time
 
-    -- Audio/Subtitle
+    -- Audio
     lo = add_layout("cy_audio")
     lo.geometry = {x = 37, y = refY - 40, an = 5, w = 24, h = 24}
     lo.style = osc_styles.Ctrl3
     lo.visible = (osc_param.playresx >= 500 - outeroffset)
 
+    -- Subtitle
     lo = add_layout("cy_sub")
     lo.geometry = {x = 82, y = refY - 40, an = 5, w = 24, h = 24}
     lo.style = osc_styles.Ctrl3
     lo.visible = (osc_param.playresx >= 600 - outeroffset)
 
+    -- Playlist
+	if showplaylist then
+		lo = add_layout("tog_pl")
+		lo.geometry = {x = 127, y = refY - 40, an = 5, w = 24, h = 24}
+		lo.style = osc_styles.Ctrl3
+		lo.visible = (osc_param.playresx >= 600 - outeroffset)
+	end
+
+    -- Volume
     lo = add_layout("vol_ctrl")
-    lo.geometry = {x = 127, y = refY - 40, an = 5, w = 24, h = 24}
+    lo.geometry = {x = 172 - (showplaylist and 0 or 45), y = refY - 40, an = 5, w = 24, h = 24}
     lo.style = osc_styles.Ctrl3
-    lo.visible = (osc_param.playresx >= 700 - outeroffset)
+    lo.visible = (osc_param.playresx >= 600 - outeroffset)
+
+    -- Volumebar
+    lo = new_element("volumebarbg", "box")
+    lo.visible = (osc_param.playresx >= 700 - outeroffset) and user_opts.volumecontrol
+    lo = add_layout("volumebarbg")
+    lo.geometry = {x = 200 - (showplaylist and 0 or 45), y = refY - 40, an = 4, w = 80, h = 2}
+    lo.layer = 13
+    lo.alpha[1] = 128
+    lo.style = osc_styles.VolumebarBg
+    
+    lo = add_layout("volumebar")
+    lo.geometry = {x = 200 - (showplaylist and 0 or 45), y = refY - 40, an = 4, w = 80, h = 8}
+    lo.style = osc_styles.VolumebarFg
+    lo.slider.gap = 3
+    lo.slider.tooltip_style = osc_styles.Tooltip
+    lo.slider.tooltip_an = 2
 
     -- Fullscreen/Info/Loop/Pin/Screenshot
     lo = add_layout("tog_fs")
@@ -1575,21 +1594,21 @@ layouts = function ()
 		lo = add_layout("tog_loop")
 		lo.geometry = {x = osc_geo.w - 127 + (showinfo and 0 or 45), y = refY - 40, an = 5, w = 24, h = 24}
 		lo.style = osc_styles.Ctrl3
-		lo.visible = (osc_param.playresx >= 500 - outeroffset)
+		lo.visible = (osc_param.playresx >= 400 - outeroffset)
 	end
 
 	if showontop then
 		lo = add_layout("tog_ontop")
 		lo.geometry = {x = osc_geo.w - 172 + (showloop and 0 or 45) + (showinfo and 0 or 45), y = refY - 40, an = 5, w = 24, h = 24}
 		lo.style = osc_styles.Ctrl3
-		lo.visible = (osc_param.playresx >= 600 - outeroffset)
+		lo.visible = (osc_param.playresx >= 500 - outeroffset)
 	end
 
 	if showscreenshot then
 		lo = add_layout("screenshot")
 		lo.geometry = {x = osc_geo.w - 217 + (showontop and 0 or 45) + (showloop and 0 or 45) + (showinfo and 0 or 45), y = refY - 40, an = 5, w = 24, h = 24}
 		lo.style = osc_styles.Ctrl3
-		lo.visible = (osc_param.playresx >= 700 - outeroffset)
+		lo.visible = (osc_param.playresx >= 600 - outeroffset)
 	end
 
 end
@@ -1916,7 +1935,27 @@ local function osc_init()
     function () set_track("sub", 1) show_message(get_tracklist("sub")) end
     ne.eventresponder["shift+mbtn_right_down"] =
         function () show_message(get_tracklist("sub")) end
-    
+
+    --tog_pl
+    ne = new_element("tog_pl", "button")
+    ne.visible = (osc_param.playresx >= 600 - outeroffset)
+    ne.content = icons.playlist
+    ne.tooltip_style = osc_styles.Tooltip
+    ne.tooltipF = texts.playlist
+    ne.eventresponder["mbtn_left_up"] = 
+        function () show_message(get_playlist(), 3) end
+    ne.eventresponder["mbtn_right_up"] =
+        function ()
+            local selectlua_path = mp.command_native({"expand-path", "~~/scripts/select.lua"})
+            local selectlua_file = io.open(selectlua_path, "r")
+            if not selectlua_file then
+                return
+            else
+                io.close(selectlua_file)
+            end
+            mp.commandv("script-binding", "select/select-playlist")
+        end
+
     -- vol_ctrl
     ne = new_element("vol_ctrl", "button")
     ne.enabled = (get_track("audio")>0)
@@ -2836,7 +2875,12 @@ mp.register_script_message("osc-tracklist", function(dur)
     show_message(table.concat(message, '\n\n'), dur)
 end)
 
-mp.observe_property("seeking", "native", reset_timeout)
+mp.observe_property("seeking", "native", function(_, seeking)
+	reset_timeout()
+	if seeking and user_opts.osc_on_seek then
+		mp.command('script-message osc-show')
+	end
+end)
 mp.observe_property("fullscreen", "bool", function(_, val)
     state.fullscreen = val
     state.marginsREQ = true
