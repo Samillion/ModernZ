@@ -1,4 +1,6 @@
-## ModernZ
+## ModernZ OSC
+![Preview](https://github.com/user-attachments/assets/23d91ec7-dc38-4b3f-b951-6b57cf907e60)
+
 A modern look OSC for [mpv](https://mpv.io/), forked from ModernX to improve functionality with more features and to maintain mpv's OSC standards.
 
 - [How to Install](#how-to-install)
@@ -6,8 +8,6 @@ A modern look OSC for [mpv](https://mpv.io/), forked from ModernX to improve fun
 - [User Options](#user-options)
 - [OSC Language (Translations)](#osc-language)
 - [History](#history)
-
-![Preview](https://github.com/user-attachments/assets/23d91ec7-dc38-4b3f-b951-6b57cf907e60)
 
 **To do list**:
 - [x] Re-organize the functions and variables so the order makes sense and not just random
