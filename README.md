@@ -35,7 +35,7 @@ For a full list click [here](https://github.com/Samillion/ModernX-Lite/commits/m
 ## How to install
 **OSC**: Simply place `modernz.lua` in the corresponding mpv scripts folder of your operating system:
 
-**Fonts**: Place `Material-Design-Iconic-Font.ttf` and `Material-Design-Iconic-Round.ttf` in the `fonts` folder.
+**Fonts**: Place `Material-Design-Iconic-Round.ttf` in the `fonts` folder.
 
 **Configuration**: To adjust options, such as seek color, place `modernz.conf` in the `script-opts` folder
 
@@ -45,7 +45,6 @@ For a full list click [here](https://github.com/Samillion/ModernX-Lite/commits/m
 conf/mpv
 │
 ├───fonts
-│       Material-Design-Iconic-Font.ttf
 │       Material-Design-Iconic-Round.ttf
 │
 ├───script-opts
