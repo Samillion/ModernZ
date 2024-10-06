@@ -1,9 +1,9 @@
 ## ModernZ OSC
 ![Preview](https://github.com/user-attachments/assets/23d91ec7-dc38-4b3f-b951-6b57cf907e60)
 
-A modern look OSC for [mpv](https://mpv.io/), forked from ModernX to improve functionality with more features while maintaining mpv's OSC standards.
+A sleek and modern OSC for [mpv](https://mpv.io/), this project is a fork of ModernX designed to enhance functionality by adding more features, all while preserving the core standards of mpv's OSC.
 
-If white buttons are not your style, you can customize [the colors](#colors) as much as you like:
+If white buttons don't suit your taste, you have the option to fully customize the [colors](#colors) to match your preferences as much as you'd like:
 
 ![colors_custom](https://github.com/user-attachments/assets/637f0c50-16ac-4d8c-a341-187e3d71d2d3)
 
