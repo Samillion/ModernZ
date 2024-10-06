@@ -13,107 +13,107 @@ local utils = require 'mp.utils'
 -- default user option values
 -- do not touch, change them in modernz.conf
 local user_opts = {
-	-- General
-	idlescreen = true,                     -- show mpv logo on idle
-	windowcontrols = "auto",               -- whether to show OSC window controls, "auto", "yes" or "no"
-	showwindowed = true,                   -- show OSC when windowed?
-	showfullscreen = true,                 -- show OSC when fullscreen?
-	greenandgrumpy = false,                -- disable santa hat in December
+    -- General
+    idlescreen = true,                     -- show mpv logo on idle
+    windowcontrols = "auto",               -- whether to show OSC window controls, "auto", "yes" or "no"
+    showwindowed = true,                   -- show OSC when windowed?
+    showfullscreen = true,                 -- show OSC when fullscreen?
+    greenandgrumpy = false,                -- disable santa hat in December
 
-	-- Colors
-	osc_color = "#000000",                 -- accent of the OSC and the title bar, in Hex color format
-	seekbarfg_color = "#BE4D25",           -- color of the seekbar progress and handle, in Hex color format
-	seekbarbg_color = "#FFFFFF",           -- color of the remaining seekbar, in Hex color format
+    -- Colors
+    osc_color = "#000000",                 -- accent of the OSC and the title bar, in Hex color format
+    seekbarfg_color = "#BE4D25",           -- color of the seekbar progress and handle, in Hex color format
+    seekbarbg_color = "#FFFFFF",           -- color of the remaining seekbar, in Hex color format
 
-	-- Buttons
-	hovereffect = true,                    -- whether buttons have a glowing effect when hovered over
+    -- Buttons
+    hovereffect = true,                    -- whether buttons have a glowing effect when hovered over
 	
-	showplaylist = false,                  -- show playlist button? LClick: show playlist, RClick: use select.lua
+    showplaylist = false,                  -- show playlist button? LClick: show playlist, RClick: use select.lua
 
-	showjump = true,                       -- show "jump forward/backward 10 seconds" buttons 
-	showskip = false,                      -- show the skip back and forward (chapter) buttons
+    showjump = true,                       -- show "jump forward/backward 10 seconds" buttons 
+    showskip = false,                      -- show the skip back and forward (chapter) buttons
 
-	showinfo = false,                      -- show the info button
-	showloop = true,                       -- show the loop button
+    showinfo = false,                      -- show the info button
+    showloop = true,                       -- show the loop button
 
-	showontop = true,                      -- show window on top button
-	showscreenshot = false,                -- show screenshot button
+    showontop = true,                      -- show window on top button
+    showscreenshot = false,                -- show screenshot button
 
-	-- Scaling
-	vidscale = true,                       -- whether to scale the controller with the video
-	scalewindowed = 1.0,                   -- scaling of the controller when windowed
-	scalefullscreen = 1.0,                 -- scaling of the controller when fullscreen
-	scaleforcedwindow = 1.0,               -- scaling when rendered on a forced window
+    -- Scaling
+    vidscale = true,                       -- whether to scale the controller with the video
+    scalewindowed = 1.0,                   -- scaling of the controller when windowed
+    scalefullscreen = 1.0,                 -- scaling of the controller when fullscreen
+    scaleforcedwindow = 1.0,               -- scaling when rendered on a forced window
 
-	-- Time & Volume
-	unicodeminus = false,                  -- whether to use the Unicode minus sign character in remaining time
-	timetotal = true,                      -- display total time instead of remaining time by default
-	timems = false,                        -- show time as milliseconds by default
-	timefontsize = 18,                     -- the font size of the time
-	jumpamount = 10,                       -- change the jump amount (in seconds by default)
-	jumpiconnumber = true,                 -- show different icon when jumpamount is 5, 10, or 30
-	jumpmode = "relative",                 -- seek mode for jump buttons
-	volumecontrol = true,                  -- whether to show mute button and volume slider
-	volumecontroltype = "linear",          -- use "linear" or "log" (logarithmic) volume scale
+    -- Time & Volume
+    unicodeminus = false,                  -- whether to use the Unicode minus sign character in remaining time
+    timetotal = true,                      -- display total time instead of remaining time?
+    timems = false,                        -- display timecodes with milliseconds?
+    timefontsize = 18,                     -- the font size of the time
+    jumpamount = 10,                       -- change the jump amount (in seconds by default)
+    jumpiconnumber = true,                 -- show different icon when jumpamount is 5, 10, or 30
+    jumpmode = "relative",                 -- seek mode for jump buttons
+    volumecontrol = true,                  -- whether to show mute button and volume slider
+    volumecontroltype = "linear",          -- use "linear" or "log" (logarithmic) volume scale
 
-	-- Seeking
-	seekbarkeyframes = false,              -- use keyframes when dragging the seekbar
-	seekbarhandlesize = 0.8,               -- size ratio of the slider handle, range 0 ~ 1
-	seekrange = true,                      -- show seekrange overlay
-	seekrangealpha = 150,                  -- transparency of seekranges
-	livemarkers = true,                    -- update seekbar chapter markers on duration change
+    -- Seeking
+    seekbarkeyframes = false,              -- use keyframes when dragging the seekbar
+    seekbarhandlesize = 0.8,               -- size ratio of the slider handle, range 0 ~ 1
+    seekrange = true,                      -- show seekrange overlay
+    seekrangealpha = 150,                  -- transparency of seekranges
+    livemarkers = true,                    -- update seekbar chapter markers on duration change
 
-	osc_on_seek = false,                   -- show osc when seeking? or input.conf: x script-message-to modernz osc-show
+    osc_on_seek = false,                   -- show osc when seeking? or input.conf: x script-message-to modernz osc-show
 
-	automatickeyframemode = true,          -- set seekbarkeyframes based on video length to prevent laggy scrubbing on long videos 
-	automatickeyframelimit = 600,          -- videos of above this length (in seconds) will have seekbarkeyframes on
+    automatickeyframemode = true,          -- set seekbarkeyframes based on video length to prevent laggy scrubbing on long videos 
+    automatickeyframelimit = 600,          -- videos of above this length (in seconds) will have seekbarkeyframes on
 
-	-- UI [elements]
-	showtitle = true,                      -- show title in OSC (above seekbar)
-	showwindowtitle = true,                -- show window title in borderless/fullscreen mode
-	titleBarStrip = false,                 -- whether to make the title bar a singular bar instead of a black fade
-	title = "${media-title}",              -- title shown on OSC (above seekbar). ${media-title} or ${filename}
-	font = "mpv-osd-symbols",              -- mpv-osd-symbols = default osc font (or the one set in mpv.conf)
-	titlefontsize = 30,                    -- the font size of the title text (above seekbar)
-	chapter_fmt = "Chapter: %s",           -- chapter print format for seekbar-hover. "no" to disable
+    -- UI [elements]
+    showtitle = true,                      -- show title in OSC (above seekbar)
+    showwindowtitle = true,                -- show window title in borderless/fullscreen mode
+    titleBarStrip = false,                 -- whether to make the title bar a singular bar instead of a black fade
+    title = "${media-title}",              -- title shown on OSC (above seekbar). ${media-title} or ${filename}
+    font = "mpv-osd-symbols",              -- mpv-osd-symbols = default osc font (or the one set in mpv.conf)
+    titlefontsize = 30,                    -- the font size of the title text (above seekbar)
+    chapter_fmt = "Chapter: %s",           -- chapter print format for seekbar-hover. "no" to disable
 
-	persistentprogress = false,            -- always show a small progress line at the bottom of the screen
-	persistentprogressheight = 17,         -- the height of the persistentprogress bar
-	persistentbuffer = false,              -- on web videos, show the buffer on the persistent progress line
-	persistentprogresstoggle = false,      -- enable toggling the persistentprogress bar
+    persistentprogress = false,            -- always show a small progress line at the bottom of the screen
+    persistentprogressheight = 17,         -- the height of the persistentprogress bar
+    persistentbuffer = false,              -- on web videos, show the buffer on the persistent progress line
+    persistentprogresstoggle = false,      -- enable toggling the persistentprogress bar
 
-	compactmode = false,                   -- replace the jump buttons with the chapter buttons
+    compactmode = false,                   -- replace the jump buttons with the chapter buttons
 
-	-- UI [behavior]
-	showonpause = true,                    -- whether to show osc when paused
-	onpausenotimeout = true,               -- whether to disable the hide timeout on pause
-	bottomhover = true,                    -- if the osc should only display when hovering at the bottom
-	raisesubs = true,                      -- whether to raise subtitles above the osc when it's shown
-	thumbnailborder = 2,                   -- the width of the thumbnail border (thumbfast)
+    -- UI [behavior]
+    showonpause = true,                    -- whether to show osc when paused
+    onpausenotimeout = true,               -- whether to disable the hide timeout on pause
+    bottomhover = true,                    -- if the osc should only display when hovering at the bottom
+    raisesubs = true,                      -- whether to raise subtitles above the osc when it's shown
+    thumbnailborder = 2,                   -- the width of the thumbnail border (thumbfast)
 
-	OSCfadealpha = 150,                    -- alpha of the background box for the OSC
-	boxalpha = 75,                         -- alpha of the window title bar
+    OSCfadealpha = 150,                    -- alpha of the background box for the OSC
+    boxalpha = 75,                         -- alpha of the window title bar
 
-	ontopborder = false,                   -- If you pin the window, keep window border?
-	loopinpause = true,                    -- activate looping by right clicking pause
-	
-	visibility = "auto",                   -- only used at init to set visibility_mode(...)
+    ontopborder = false,                   -- If you pin the window, keep window border?
+    loopinpause = true,                    -- activate looping by right clicking pause
 
-	-- UI [time-based]
-	hidetimeout = 2000,                    -- duration in ms until OSC hides if no mouse movement
-	fadeduration = 250,                    -- duration of fade out in ms, 0 = no fade
-	minmousemove = 0,                      -- amount of pixels the mouse has to move for OSC to show
+    visibility = "auto",                   -- only used at init to set visibility_mode(...)
 
-	tick_delay = 1 / 60,                   -- minimum interval between OSC redraws in seconds
-	tick_delay_follow_display_fps = false  -- use display fps as the minimum interval
+    -- UI [time-based]
+    hidetimeout = 2000,                    -- duration in ms until OSC hides if no mouse movement
+    fadeduration = 250,                    -- duration of fade out in ms, 0 = no fade
+    minmousemove = 0,                      -- amount of pixels the mouse has to move for OSC to show
+
+    tick_delay = 1 / 60,                   -- minimum interval between OSC redraws in seconds
+    tick_delay_follow_display_fps = false  -- use display fps as the minimum interval
 }
 
-local osc_param = {      -- calculated by osc_init()
-	playresy = 0,        -- canvas size Y
-	playresx = 0,        -- canvas size X
-	display_aspect = 1,
-	unscaled_y = 0,
-	areas = {},
+local osc_param = { -- calculated by osc_init()
+    playresy = 0,                           -- canvas size Y
+    playresx = 0,                           -- canvas size X
+    display_aspect = 1,
+    unscaled_y = 0,
+    areas = {},
 }
 
 -- Icons for jump button depending on jumpamount 
@@ -201,70 +201,70 @@ end
 local osc_styles
 
 local function set_osc_styles()
-	osc_styles = {
-	    TransBg = "{\\blur100\\bord" .. user_opts.OSCfadealpha .. "\\1c&H000000&\\3c&H" .. osc_color_convert(user_opts.osc_color) .. "&}",
-	    SeekbarBg = "{\\blur0\\bord0\\1c&H" .. osc_color_convert(user_opts.seekbarbg_color) .. "&}",
-	    SeekbarFg = "{\\blur1\\bord1\\1c&H" .. osc_color_convert(user_opts.seekbarfg_color) .. "&}",
-	    VolumebarBg = "{\\blur0\\bord0\\1c&H999999&}",
-	    VolumebarFg = "{\\blur1\\bord1\\1c&HFFFFFF&}",
-	    Ctrl1 = "{\\blur0\\bord0\\1c&HFFFFFF&\\3c&HFFFFFF&\\fs36\\fn" .. iconfont .. "}",
-	    Ctrl2 = "{\\blur0\\bord0\\1c&HFFFFFF&\\3c&HFFFFFF&\\fs24\\fn" .. iconfont .. "}",
-	    Ctrl2Flip = "{\\blur0\\bord0\\1c&HFFFFFF&\\3c&HFFFFFF&\\fs24\\fn" .. iconfont .. "\\fry180",
-	    Ctrl3 = "{\\blur0\\bord0\\1c&HFFFFFF&\\3c&HFFFFFF&\\fs24\\fn" .. iconfont .. "}",
-	    Time = "{\\blur0\\bord0\\1c&HFFFFFF&\\3c&H000000&\\fs" .. user_opts.timefontsize .. "\\fn" .. user_opts.font .. "}",
-	    Tooltip = "{\\blur1\\bord0.5\\1c&HFFFFFF&\\3c&H000000&\\fs" .. user_opts.timefontsize .. "\\fn" .. user_opts.font .. "}",
-	    Title = "{\\blur1\\bord0.5\\1c&HFFFFFF&\\3c&H0\\fs".. user_opts.titlefontsize .."\\q2\\fn" .. user_opts.font .. "}",
-	    WindowTitle = "{\\blur1\\bord0.5\\1c&HFFFFFF&\\3c&H0\\fs".. 18 .."\\q2\\fn" .. user_opts.font .. "}",
-	    WinCtrl = "{\\blur1\\bord0.5\\1c&HFFFFFF&\\3c&H0\\fs20\\fnmpv-osd-symbols}",
-	    elementDown = "{\\1c&H999999&}",
-	    elementHover = "{\\blur5\\2c&HFFFFFF&}",
-	    wcBar = "{\\1c&H" .. osc_color_convert(user_opts.osc_color) .. "}",
-	}
+    osc_styles = {
+        TransBg = "{\\blur100\\bord" .. user_opts.OSCfadealpha .. "\\1c&H000000&\\3c&H" .. osc_color_convert(user_opts.osc_color) .. "&}",
+        SeekbarBg = "{\\blur0\\bord0\\1c&H" .. osc_color_convert(user_opts.seekbarbg_color) .. "&}",
+        SeekbarFg = "{\\blur1\\bord1\\1c&H" .. osc_color_convert(user_opts.seekbarfg_color) .. "&}",
+        VolumebarBg = "{\\blur0\\bord0\\1c&H999999&}",
+        VolumebarFg = "{\\blur1\\bord1\\1c&HFFFFFF&}",
+        Ctrl1 = "{\\blur0\\bord0\\1c&HFFFFFF&\\3c&HFFFFFF&\\fs36\\fn" .. iconfont .. "}",
+        Ctrl2 = "{\\blur0\\bord0\\1c&HFFFFFF&\\3c&HFFFFFF&\\fs24\\fn" .. iconfont .. "}",
+        Ctrl2Flip = "{\\blur0\\bord0\\1c&HFFFFFF&\\3c&HFFFFFF&\\fs24\\fn" .. iconfont .. "\\fry180",
+        Ctrl3 = "{\\blur0\\bord0\\1c&HFFFFFF&\\3c&HFFFFFF&\\fs24\\fn" .. iconfont .. "}",
+        Time = "{\\blur0\\bord0\\1c&HFFFFFF&\\3c&H000000&\\fs" .. user_opts.timefontsize .. "\\fn" .. user_opts.font .. "}",
+        Tooltip = "{\\blur1\\bord0.5\\1c&HFFFFFF&\\3c&H000000&\\fs" .. user_opts.timefontsize .. "\\fn" .. user_opts.font .. "}",
+        Title = "{\\blur1\\bord0.5\\1c&HFFFFFF&\\3c&H0\\fs".. user_opts.titlefontsize .."\\q2\\fn" .. user_opts.font .. "}",
+        WindowTitle = "{\\blur1\\bord0.5\\1c&HFFFFFF&\\3c&H0\\fs".. 18 .."\\q2\\fn" .. user_opts.font .. "}",
+        WinCtrl = "{\\blur1\\bord0.5\\1c&HFFFFFF&\\3c&H0\\fs20\\fnmpv-osd-symbols}",
+        elementDown = "{\\1c&H999999&}",
+        elementHover = "{\\blur5\\2c&HFFFFFF&}",
+        wcBar = "{\\1c&H" .. osc_color_convert(user_opts.osc_color) .. "}",
+    }
 end
 
 -- internal states, do not touch
 local state = {
-	showtime = nil,                         -- time of last invocation (last mouse move)
+    showtime = nil,                         -- time of last invocation (last mouse move)
     touchtime = nil,                        -- time of last invocation (last touch event)
-	osc_visible = false,
-	anistart = nil,                         -- time when the animation started
-	anitype = nil,                          -- current type of animation
-	animation = nil,                        -- current animation alpha
-	mouse_down_counter = 0,                 -- used for softrepeat
-	active_element = nil,                   -- nil = none, 0 = background, 1+ = see elements[]
-	active_event_source = nil,              -- the 'button' that issued the current event
-	rightTC_trem = not user_opts.timetotal, -- if the right timecode should display total or remaining time
-	tc_ms = user_opts.timems,               -- Should the timecodes display their time with milliseconds
-	screen_sizeX = nil, screen_sizeY = nil, -- last screen-resolution, to detect resolution changes to issue reINITs
-	initREQ = false,                        -- is a re-init request pending?
-	marginsREQ = false,                     -- is a margins update pending?
-	last_mouseX = nil, last_mouseY = nil,   -- last mouse position, to detect significant mouse movement
-	mouse_in_window = false,
-	message_text = nil,
-	message_hide_timer = nil,
-	fullscreen = false,
-	tick_timer = nil,
-	tick_last_time = 0,                     -- when the last tick() was run
-	hide_timer = nil,
-	cache_state = nil,
-	idle = false,
-	enabled = true,
-	input_enabled = true,
-	showhide_enabled = false,
-	windowcontrols_buttons = false,
-	windowcontrols_title = false,
-	border = true,
-	maximized = false,
-	osd = mp.create_osd_overlay("ass-events"),
-	chapter_list = {},                      -- sorted by time
-	mute = false,
-	looping = false,
-	sliderpos = 0,
-	touchingprogressbar = false,            -- if the mouse is touching the progress bar
-	initialborder = mp.get_property("border"),
-	playingWhilstSeeking = false,
-	playingWhilstSeekingWaitingForEnd = false,
-	persistentprogresstoggle = user_opts.persistentprogress,
+    osc_visible = false,
+    anistart = nil,                         -- time when the animation started
+    anitype = nil,                          -- current type of animation
+    animation = nil,                        -- current animation alpha
+    mouse_down_counter = 0,                 -- used for softrepeat
+    active_element = nil,                   -- nil = none, 0 = background, 1+ = see elements[]
+    active_event_source = nil,              -- the "button" that issued the current event
+    rightTC_trem = not user_opts.timetotal, -- if the right timecode should display total or remaining time
+    tc_ms = user_opts.timems,               -- Should the timecodes display their time with milliseconds
+    screen_sizeX = nil, screen_sizeY = nil, -- last screen-resolution, to detect resolution changes to issue reINITs
+    initREQ = false,                        -- is a re-init request pending?
+    marginsREQ = false,                     -- is a margins update pending?
+    last_mouseX = nil, last_mouseY = nil,   -- last mouse position, to detect significant mouse movement
+    mouse_in_window = false,
+    message_text = nil,
+    message_hide_timer = nil,
+    fullscreen = false,
+    tick_timer = nil,
+    tick_last_time = 0,                     -- when the last tick() was run
+    hide_timer = nil,
+    cache_state = nil,
+    idle = false,
+    enabled = true,
+    input_enabled = true,
+    showhide_enabled = false,
+    windowcontrols_buttons = false,
+    windowcontrols_title = false,
+    border = true,
+    maximized = false,
+    osd = mp.create_osd_overlay("ass-events"),
+    chapter_list = {},                      -- sorted by time
+    mute = false,
+    looping = false,
+    sliderpos = 0,
+    touchingprogressbar = false,            -- if the mouse is touching the progress bar
+    initialborder = mp.get_property("border"),
+    playingWhilstSeeking = false,
+    playingWhilstSeekingWaitingForEnd = false,
+    persistentprogresstoggle = user_opts.persistentprogress,
 }
 
 local logo_lines = {
@@ -419,18 +419,18 @@ end
 
 -- translates global (mouse) coordinates to value
 local function get_slider_value_at(element, glob_pos)
-	if element then
-		local val = scale_value(
-			element.slider.min.glob_pos, element.slider.max.glob_pos,
-			element.slider.min.value, element.slider.max.value,
-			glob_pos)
+    if element then
+        local val = scale_value(
+            element.slider.min.glob_pos, element.slider.max.glob_pos,
+            element.slider.min.value, element.slider.max.value,
+            glob_pos)
 
-		return limit_range(
-			element.slider.min.value, element.slider.max.value,
-			val)
-	end
-	-- fall back incase of loading errors
-	return 0
+        return limit_range(
+            element.slider.min.value, element.slider.max.value,
+            val)
+    end
+    -- fall back incase of loading errors
+    return 0
 end
 
 -- get value at current mouse position
@@ -495,6 +495,7 @@ local function get_touchtimeout()
     end
     return state.touchtime + (get_hidetimeout() / 1000) - mp.get_time()
 end
+
 local tick
 -- Request that tick() is called (which typically re-renders the OSC).
 -- The tick is then either executed immediately, or rate-limited if it was
@@ -615,7 +616,9 @@ local function get_chapterlist()
 end
 
 local function render_message(ass)
-    if state.message_hide_timer and state.message_hide_timer:is_enabled() and state.message_text then
+    if state.message_hide_timer and state.message_hide_timer:is_enabled() and
+       state.message_text
+    then
         local _, lines = string.gsub(state.message_text, "\\N", "")
 
         local fontsize = tonumber(mp.get_property("options/osd-font-size"))
@@ -623,8 +626,8 @@ local function render_message(ass)
         local maxlines = math.ceil(osc_param.unscaled_y*0.75 / fontsize)
         local counterscale = osc_param.playresy / osc_param.unscaled_y
 
-		fontsize = fontsize * counterscale / math.max(0.5 + math.min(lines/maxlines, 1), 1)
-		outline = outline * counterscale / math.max(0.5 + math.min(lines/maxlines, 1)/2, 1)
+        fontsize = fontsize * counterscale / math.max(0.5 + math.min(lines/maxlines, 1), 1)
+        outline = outline * counterscale / math.max(0.5 + math.min(lines/maxlines, 1)/2, 1)
 
         local style = "{\\bord" .. outline .. "\\fs" .. fontsize .. "}"
 
@@ -688,22 +691,22 @@ end
 
 -- return a nice list of tracks of the given type (video, audio, sub)
 local function get_tracklist(type)
-	local message =  nicetypes[type] .. texts.track
-	if #tracks_osc[type] == 0 then
-		message = message .. texts.none
-	else
-		for n = 1, #tracks_osc[type] do
-			local track = tracks_osc[type][n]
-			local lang, title, selected = "unknown", "", "○"
-			if track.lang ~= nil then lang = track.lang end
-			if track.title ~= nil then title = track.title end
-			if track.id == tonumber(mp.get_property(type)) then
-				selected = "●"
-			end
-			message = message.."\n"..selected.." "..n..": ["..lang.."] "..title
-		end
-	end
-	return message
+    local message =  nicetypes[type] .. texts.track
+    if #tracks_osc[type] == 0 then
+        message = message .. texts.none
+    else
+        for n = 1, #tracks_osc[type] do
+            local track = tracks_osc[type][n]
+            local lang, title, selected = "unknown", "", "○"
+            if track.lang ~= nil then lang = track.lang end
+            if track.title ~= nil then title = track.title end
+            if track.id == tonumber(mp.get_property(type)) then
+                selected = "●"
+            end
+            message = message.."\n"..selected.." "..n..": ["..lang.."] "..title
+        end
+    end
+    return message
 end
 
 -- relatively change the track of given <type> by <next> tracks
@@ -2312,21 +2315,20 @@ local function osc_init()
     ne = new_element("tc_right", "button")
     ne.visible = (mp.get_property_number("duration", 0) > 0)
     ne.content = function ()
-		if (mp.get_property_number("duration", 0) <= 0) then return "--:--:--" end
-		if state.rightTC_trem then
-			local minus = user_opts.unicodeminus and UNICODE_MINUS or "-"
-			if state.tc_ms then
-				return (minus..mp.get_property_osd("playtime-remaining/full"))
-			else
-				return (minus..mp.get_property_osd("playtime-remaining"))
-			end
-		else
-        if state.tc_ms then
-            return (mp.get_property_osd("duration/full"))
+        if (mp.get_property_number("duration", 0) <= 0) then return "--:--:--" end
+        if state.rightTC_trem then
+            local minus = user_opts.unicodeminus and UNICODE_MINUS or "-"
+            if state.tc_ms then
+                return (minus..mp.get_property_osd("playtime-remaining/full"))
+            else
+                return (minus..mp.get_property_osd("playtime-remaining"))
+            end
         else
-            return (mp.get_property_osd("duration"))
-        end
-
+            if state.tc_ms then
+                return (mp.get_property_osd("duration/full"))
+            else
+                return (mp.get_property_osd("duration"))
+            end
         end
     end
     ne.eventresponder["mbtn_left_up"] =
@@ -2384,6 +2386,9 @@ end
 
 local function hide_osc()
     msg.trace("hide_osc")
+    if thumbfast.width ~= 0 and thumbfast.height ~= 0 then
+        mp.commandv("script-message-to", "thumbfast", "clear")
+    end
     if not state.enabled then
         -- typically hide happens at render() from tick(), but now tick() is
         -- no-op and won't render again to remove the osc, so do that manually.
@@ -2397,9 +2402,6 @@ local function hide_osc()
         end
     else
         osc_visible(false)
-    end
-    if thumbfast.available then
-        mp.commandv("script-message-to", "thumbfast", "clear")
     end
 end
 
@@ -3104,7 +3106,7 @@ end
 -- read options from config and command-line
 opt.read_options(user_opts, "modernz", function(changed)
     validate_user_opts()
-	set_osc_styles()
+    set_osc_styles()
     set_time_styles(changed.timetotal, changed.timems)
     if changed.tick_delay or changed.tick_delay_follow_display_fps then
         set_tick_delay("display_fps", mp.get_property_number("display_fps"))
