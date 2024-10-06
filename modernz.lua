@@ -21,9 +21,14 @@ local user_opts = {
     greenandgrumpy = false,                -- disable santa hat in December
 
     -- Colors
-    osc_color = "#000000",                 -- accent of the OSC and the title bar, in Hex color format
     seekbarfg_color = "#BE4D25",           -- color of the seekbar progress and handle, in Hex color format
     seekbarbg_color = "#FFFFFF",           -- color of the remaining seekbar, in Hex color format
+    title_color = "#FFFFFF",               -- color of the title (above seekbar)
+    time_color = "#FFFFFF",                -- color of timestamps (below seekbar)
+    side_buttons_color = "#FFFFFF",        -- color of side buttons (audio, sub, playlist, vol, loop, info..etc)
+    middle_buttons_color = "#FFFFFF",      -- color of middle buttons (skip, jump, chapter...etc)
+    playpause_color = "#FFFFFF",           -- color of play/pause button
+    osc_color = "#000000",                 -- accent of the OSC and the title bar, in Hex color format
 
     -- Buttons
     hovereffect = true,                    -- whether buttons have a glowing effect when hovered over
@@ -206,14 +211,14 @@ local function set_osc_styles()
         SeekbarBg = "{\\blur0\\bord0\\1c&H" .. osc_color_convert(user_opts.seekbarbg_color) .. "&}",
         SeekbarFg = "{\\blur1\\bord1\\1c&H" .. osc_color_convert(user_opts.seekbarfg_color) .. "&}",
         VolumebarBg = "{\\blur0\\bord0\\1c&H999999&}",
-        VolumebarFg = "{\\blur1\\bord1\\1c&HFFFFFF&}",
-        Ctrl1 = "{\\blur0\\bord0\\1c&HFFFFFF&\\3c&HFFFFFF&\\fs36\\fn" .. iconfont .. "}",
-        Ctrl2 = "{\\blur0\\bord0\\1c&HFFFFFF&\\3c&HFFFFFF&\\fs24\\fn" .. iconfont .. "}",
-        Ctrl2Flip = "{\\blur0\\bord0\\1c&HFFFFFF&\\3c&HFFFFFF&\\fs24\\fn" .. iconfont .. "\\fry180",
-        Ctrl3 = "{\\blur0\\bord0\\1c&HFFFFFF&\\3c&HFFFFFF&\\fs24\\fn" .. iconfont .. "}",
-        Time = "{\\blur0\\bord0\\1c&HFFFFFF&\\3c&H000000&\\fs" .. user_opts.timefontsize .. "\\fn" .. user_opts.font .. "}",
+        VolumebarFg = "{\\blur1\\bord1\\1c&H" .. osc_color_convert(user_opts.side_buttons_color) .. "&}",
+        Ctrl1 = "{\\blur0\\bord0\\1c&H" .. osc_color_convert(user_opts.playpause_color) .. "&\\3c&HFFFFFF&\\fs36\\fn" .. iconfont .. "}",
+        Ctrl2 = "{\\blur0\\bord0\\1c&H" .. osc_color_convert(user_opts.middle_buttons_color) .. "&\\3c&HFFFFFF&\\fs24\\fn" .. iconfont .. "}",
+        Ctrl2Flip = "{\\blur0\\bord0\\1c&H" .. osc_color_convert(user_opts.middle_buttons_color) .. "&\\3c&HFFFFFF&\\fs24\\fn" .. iconfont .. "\\fry180",
+        Ctrl3 = "{\\blur0\\bord0\\1c&H" .. osc_color_convert(user_opts.side_buttons_color) .. "&\\3c&HFFFFFF&\\fs24\\fn" .. iconfont .. "}",
+        Time = "{\\blur0\\bord0\\1c&H" .. osc_color_convert(user_opts.time_color) .. "&\\3c&H000000&\\fs" .. user_opts.timefontsize .. "\\fn" .. user_opts.font .. "}",
         Tooltip = "{\\blur1\\bord0.5\\1c&HFFFFFF&\\3c&H000000&\\fs" .. user_opts.timefontsize .. "\\fn" .. user_opts.font .. "}",
-        Title = "{\\blur1\\bord0.5\\1c&HFFFFFF&\\3c&H0\\fs".. user_opts.titlefontsize .."\\q2\\fn" .. user_opts.font .. "}",
+        Title = "{\\blur1\\bord0.5\\1c&H" .. osc_color_convert(user_opts.title_color) .. "&\\3c&H0\\fs".. user_opts.titlefontsize .."\\q2\\fn" .. user_opts.font .. "}",
         WindowTitle = "{\\blur1\\bord0.5\\1c&HFFFFFF&\\3c&H0\\fs".. 18 .."\\q2\\fn" .. user_opts.font .. "}",
         WinCtrl = "{\\blur1\\bord0.5\\1c&HFFFFFF&\\3c&H0\\fs20\\fnmpv-osd-symbols}",
         elementDown = "{\\1c&H999999&}",
@@ -3094,6 +3099,8 @@ local function validate_user_opts()
 	
     local colors = {
 		user_opts.osc_color, user_opts.seekbarfg_color, user_opts.seekbarbg_color, 
+		user_opts.title_color, user_opts.time_color, user_opts.side_buttons_color, 
+		user_opts.middle_buttons_color, user_opts.playpause_color, 
     }
 
     for _, color in pairs(colors) do
