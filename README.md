@@ -3,6 +3,11 @@
 
 A modern look OSC for [mpv](https://mpv.io/), forked from ModernX to improve functionality with more features while maintaining mpv's OSC standards.
 
+If white buttons are not your style, you can customize [the colors](#colors) as much as you like:
+
+![colors_custom](https://github.com/user-attachments/assets/637f0c50-16ac-4d8c-a341-187e3d71d2d3)
+
+
 - [How to Install](#how-to-install)
 - [Configuration File](#configuration-file)
 - [User Options](#user-options)
@@ -15,7 +20,7 @@ A modern look OSC for [mpv](https://mpv.io/), forked from ModernX to improve fun
 - [x] Match mpv's `osc.lua` standards and functionality, where relative, to ensure compatibility and stability.
 - [x] Improve button placements
 - [x] Add an option to show a playlist button (`user_opts` mode: `get_playlist()` or `select.lua`)
-- [ ] Include more customization options for colors
+- [x] Include more customization options for colors
 - [ ] Add more `user_opts` validation
 - [x] Add translations: German, French, Spanish, Arabic [[learn more](#osc-language)]
 - [ ] Make first release v0.1.0
@@ -82,11 +87,16 @@ This is the full list of user options you can use in `script-opts/modernz.conf`,
 | greenandgrumpy  | no    | disable santa hat in December      |
 
 ### Colors
-| Option            | Value    | Description                           |
-|-------------------|----------|---------------------------------------|
-| osc_color         | #000000  | accent of the OSC and the title bar, in Hex color format |
-| seekbarfg_color   | #BE4D25  | color of the seekbar progress and handle, in Hex color format |
-| seekbarbg_color   | #FFFFFF  | color of the remaining seekbar, in Hex color format |
+| Option               | Value    | Description                           |
+|----------------------|----------|---------------------------------------|
+| seekbarfg_color      | #BE4D25  | color of the seekbar progress and handle, in Hex color format |
+| seekbarbg_color      | #FFFFFF  | color of the remaining seekbar, in Hex color format |
+| title_color          | #FFFFFF  | color of the title (above seekbar) |
+| time_color           | #FFFFFF  | color of timestamps (below seekbar) |
+| side_buttons_color   | #FFFFFF  | color of side buttons (audio, sub, playlist, vol, loop, info..etc) |
+| middle_buttons_color | #FFFFFF  | color of middle buttons (skip, jump, chapter...etc) |
+| playpause_color      | #FFFFFF  | color of play/pause button |
+| osc_color            | #000000  | accent of the OSC and the title bar, in Hex color format |
 
 ### Buttons
 | Option           | Value | Description                                           |
