@@ -112,8 +112,8 @@ This is the full list of user options you can use in `script-opts/modernz.conf`,
 | Option           | Value   | Description                                                    |
 |------------------|---------|----------------------------------------------------------------|
 | unicodeminus     | no      | whether to use the Unicode minus sign character in remaining time |
-| timetotal        | yes     | display total time instead of remaining time by default         |
-| timems           | no      | show time as milliseconds by default                           |
+| timetotal        | yes     | display total time instead of remaining time?         |
+| timems           | no      | display timecodes with milliseconds?                           |
 | timefontsize     | 18      | the font size of the time                                       |
 | jumpamount       | 10      | change the jump amount (in seconds by default)                  |
 | jumpiconnumber   | yes     | show different icon when jumpamount is 5, 10, or 30             |
