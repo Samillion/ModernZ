@@ -9,12 +9,21 @@ If white buttons and text don't suit your taste, you have the option to fully cu
 
 ![colors_custom](https://github.com/user-attachments/assets/637f0c50-16ac-4d8c-a341-187e3d71d2d3)
 
+#### Interactive Playlist
 
+Thanks to the guys at mpv for creating the awesome [select.lua](https://github.com/mpv-player/mpv/blob/master/player/lua/select.lua) script, which is bundled in mpv, you can now utilize it within this OSC.
+
+Simply ***right click*** on the playlist button, then it'll show you the current playlist. You can type to select (fuzzy match), or use the up/down arrows to select the video you like.
+
+https://github.com/user-attachments/assets/513c7ce8-8803-4b73-82af-2d1e690fd4f0
+
+## Get Started
 - [How to Install](#how-to-install)
 - [Configuration File](#configuration-file)
 - [User Options](#user-options)
 - [OSC Language (Translations)](#osc-language)
 - [History](#history)
+
 
 **To do list**:
 - [x] Re-organize the functions and variables so the order makes sense and not just random
@@ -103,16 +112,17 @@ This is the full list of user options you can use in `script-opts/modernz.conf`,
 | playpause_color       | #FFFFFF  | color of play/pause button                                               |
 
 ### Buttons
-| Option           | Value | Description                                                                          |
-|------------------|-------|--------------------------------------------------------------------------------------|
-| hovereffect      | yes   | whether buttons have a glowing effect when hovered over                              |
-| showplaylist     | no    | show playlist button? LClick: show playlist, RClick: use `select.lua` (if available) |
-| showjump         | yes   | show "jump forward/backward 10 seconds" buttons                                      |
-| showskip         | no    | show the skip back and forward (chapter) buttons                                     |
-| showinfo         | no    | show the info button                                                                 |
-| showloop         | yes   | show the loop button                                                                 |
-| showontop        | yes   | show window on top button                                                            |
-| showscreenshot   | no    | show screenshot button                                                               |
+| Option           | Value     | Description                                                                                                                                         |
+|------------------|-----------|-----------------------------------------------------------------------------------------------------------------------------------------------------|
+| hovereffect      | yes       | whether buttons have a glowing effect when hovered over                                                                                             |
+| showplaylist     | no        | show playlist button? L.Click: show playlist, R.Click: use `select.lua`                                                                             |
+| showjump         | yes       | show "jump forward/backward 10 seconds" buttons                                                                                                     |
+| showskip         | no        | show the skip back and forward (chapter) buttons                                                                                                    |
+| showinfo         | no        | show the info button                                                                                                                                |
+| showloop         | yes       | show the loop button                                                                                                                                |
+| showontop        | yes       | show window on top button                                                                                                                           |
+| showscreenshot   | no        | show screenshot button                                                                                                                              |
+| screenshot_flag  | subtitles | flag when using the screenshot button. subtitles, video, window [[details](https://mpv.io/manual/master/#command-interface-screenshot-%3Cflags%3E)] |
 
 ### Scaling
 | Option            | Value | Description                                    |
