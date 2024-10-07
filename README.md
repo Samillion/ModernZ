@@ -91,11 +91,11 @@ This is the full list of user options you can use in `script-opts/modernz.conf`,
 ### Colors
 | Option                | Value    | Description                                                              |
 |-----------------------|----------|--------------------------------------------------------------------------|
-| osc_color             | #000000  | accent of the OSC and the title bar, in Hex color format                 |
+| osc_color             | #000000  | accent of the OSC and the title bar                                      |
 | window_title_color    | #FFFFFF  | color of title in borderless/fullscreen mode                             |
 | window_controls_color | #FFFFFF  | color of window controls (close, min, max) in borderless/fullscreen mode |
-| seekbarfg_color       | #BE4D25  | color of the seekbar progress and handle, in Hex color format            |
-| seekbarbg_color       | #FFFFFF  | color of the remaining seekbar, in Hex color format                      |
+| seekbarfg_color       | #BE4D25  | color of the seekbar progress and handle                                 |
+| seekbarbg_color       | #FFFFFF  | color of the remaining seekbar                                           |
 | title_color           | #FFFFFF  | color of the title (above seekbar)                                       |
 | time_color            | #FFFFFF  | color of timestamps (below seekbar)                                      |
 | side_buttons_color    | #FFFFFF  | color of side buttons (audio, sub, playlist, vol, loop, info..etc)       |
