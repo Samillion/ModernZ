@@ -45,6 +45,8 @@ local user_opts = {
 
     showontop = true,                      -- show window on top button
     showscreenshot = false,                -- show screenshot button
+    screenshot_flag = "subtitles",         -- Mode when using the screenshot button. subtitles, video, window
+                                           -- https://mpv.io/manual/master/#command-interface-screenshot-%3Cflags%3E
 
     -- Scaling
     vidscale = true,                       -- whether to scale the controller with the video
@@ -2045,8 +2047,8 @@ local function osc_init()
     ne.eventresponder["mbtn_left_up"] =
         function ()
             local tempSubPosition = mp.get_property("sub-pos")
-            mp.commandv("set", "sub-pos", 100)
-            mp.command("screenshot") -- or "screenshot video" to not include subtitles
+            if user_opts.screenshot_flag == "subtitles" then mp.commandv("set", "sub-pos", 100) end
+            mp.commandv("screenshot", user_opts.screenshot_flag)
             mp.commandv("set", "sub-pos", tempSubPosition)
         end
 
@@ -3102,6 +3104,14 @@ local function validate_user_opts()
 			user_opts.seekbarkeyframes = false
 		end
 	end
+
+    if user_opts.screenshot_flag ~= "subtitles" and
+       user_opts.screenshot_flag ~= "video" and
+       user_opts.screenshot_flag ~= "window" then
+        msg.warn("screenshot_flag cannot be \"" ..
+                user_opts.screenshot_flag .. "\". Ignoring.")
+        user_opts.screenshot_flag = "subtitles"
+    end
 	
     local colors = {
 		user_opts.osc_color, user_opts.seekbarfg_color, user_opts.seekbarbg_color, 
