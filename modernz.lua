@@ -21,14 +21,16 @@ local user_opts = {
     greenandgrumpy = false,                -- disable santa hat in December
 
     -- Colors
-    seekbarfg_color = "#BE4D25",           -- color of the seekbar progress and handle, in Hex color format
-    seekbarbg_color = "#FFFFFF",           -- color of the remaining seekbar, in Hex color format
+    osc_color = "#000000",                 -- accent of the OSC and the title bar
+	window_title_color = "#FFFFFF",        -- color of title in borderless/fullscreen mode
+	window_controls_color = "#FFFFFF",     -- color of window controls (close, min, max) in borderless/fullscreen mode
     title_color = "#FFFFFF",               -- color of the title (above seekbar)
+    seekbarfg_color = "#BE4D25",           -- color of the seekbar progress and handle
+    seekbarbg_color = "#FFFFFF",           -- color of the remaining seekbar
     time_color = "#FFFFFF",                -- color of timestamps (below seekbar)
     side_buttons_color = "#FFFFFF",        -- color of side buttons (audio, sub, playlist, vol, loop, info..etc)
     middle_buttons_color = "#FFFFFF",      -- color of middle buttons (skip, jump, chapter...etc)
     playpause_color = "#FFFFFF",           -- color of play/pause button
-    osc_color = "#000000",                 -- accent of the OSC and the title bar, in Hex color format
 
     -- Buttons
     hovereffect = true,                    -- whether buttons have a glowing effect when hovered over
@@ -76,6 +78,7 @@ local user_opts = {
     -- UI [elements]
     showtitle = true,                      -- show title in OSC (above seekbar)
     showwindowtitle = true,                -- show window title in borderless/fullscreen mode
+	showwindowcontrols = true,             -- show window controls (close, min, max) in borderless/fullscreen
     titleBarStrip = false,                 -- whether to make the title bar a singular bar instead of a black fade
     title = "${media-title}",              -- title shown on OSC (above seekbar). ${media-title} or ${filename}
     font = "mpv-osd-symbols",              -- mpv-osd-symbols = default osc font (or the one set in mpv.conf)
@@ -219,8 +222,8 @@ local function set_osc_styles()
         Time = "{\\blur0\\bord0\\1c&H" .. osc_color_convert(user_opts.time_color) .. "&\\3c&H000000&\\fs" .. user_opts.timefontsize .. "\\fn" .. user_opts.font .. "}",
         Tooltip = "{\\blur1\\bord0.5\\1c&HFFFFFF&\\3c&H000000&\\fs" .. user_opts.timefontsize .. "\\fn" .. user_opts.font .. "}",
         Title = "{\\blur1\\bord0.5\\1c&H" .. osc_color_convert(user_opts.title_color) .. "&\\3c&H0\\fs".. user_opts.titlefontsize .."\\q2\\fn" .. user_opts.font .. "}",
-        WindowTitle = "{\\blur1\\bord0.5\\1c&HFFFFFF&\\3c&H0\\fs".. 18 .."\\q2\\fn" .. user_opts.font .. "}",
-        WinCtrl = "{\\blur1\\bord0.5\\1c&HFFFFFF&\\3c&H0\\fs20\\fnmpv-osd-symbols}",
+        WindowTitle = "{\\blur1\\bord0.5\\1c&H" .. osc_color_convert(user_opts.window_title_color) .. "&\\3c&H0\\fs".. 30 .."\\q2\\fn" .. user_opts.font .. "}",
+        WinCtrl = "{\\blur1\\bord0.5\\1c&H" .. osc_color_convert(user_opts.window_controls_color) .. "&\\3c&H0\\fs".. 25 .."\\fnmpv-osd-symbols}",
         elementDown = "{\\1c&H999999&}",
         elementHover = "{\\blur5\\2c&HFFFFFF&}",
         wcBar = "{\\1c&H" .. osc_color_convert(user_opts.osc_color) .. "}",
@@ -1292,10 +1295,10 @@ end
 local function window_controls()
     local wc_geo = {
         x = 0,
-        y = 30,
+        y = 50,
         an = 1,
         w = osc_param.playresx,
-        h = 30,
+        h = 50,
     }
 
     local controlbox_w = window_control_box_width
@@ -1324,11 +1327,11 @@ local function window_controls()
 
     local button_y = wc_geo.y - (wc_geo.h / 2)
     local first_geo =
-        {x = controlbox_left + 30, y = button_y, an = 5, w = 40, h = wc_geo.h}
+        {x = controlbox_left + 25, y = button_y, an = 5, w = 40, h = wc_geo.h}
     local second_geo =
-        {x = controlbox_left + 74, y = button_y, an = 5, w = 40, h = wc_geo.h}
+        {x = controlbox_left + 69, y = button_y, an = 5, w = 40, h = wc_geo.h}
     local third_geo =
-        {x = controlbox_left + 118, y = button_y, an = 5, w = 40, h = wc_geo.h}
+        {x = controlbox_left + 113, y = button_y, an = 5, w = 40, h = wc_geo.h}
 
     -- Window control buttons use symbols in the custom mpv osd font
     -- because the official unicode codepoints are sufficiently
@@ -1341,54 +1344,57 @@ local function window_controls()
         ne = new_element("windowtitle", "button")
         ne.content = function ()
             local title = mp.command_native({"expand-text", mp.get_property("title")})
-            -- escape ASS, and strip newlines and trailing slashes
 			title = title:gsub("\n", " ")
 			return title ~= "" and mp.command_native({"escape-ass", title}) or "mpv"
         end
         lo = add_layout("windowtitle")
-        geo = {x = 10, y = button_y + 10, an = 1, w = osc_param.playresx - 50, h = wc_geo.h}
+        geo = {x = 10, y = button_y + 16, an = 1, w = osc_param.playresx - 50, h = wc_geo.h}
         lo.geometry = geo
         lo.style = osc_styles.WindowTitle
-        lo.button.maxchars = geo.w / 10
+        lo.button.maxchars = geo.w / 17
     end
 
-    -- Close: 🗙
-    local ne = new_element("close", "button")
-    ne.content = "\238\132\149"
-    ne.eventresponder["mbtn_left_up"] =
-        function () mp.commandv("quit") end
-    lo = add_layout("close")
-    lo.geometry = third_geo
-    lo.style = osc_styles.WinCtrl
-    lo.button.hoverstyle = "{\\c&H2311E8&}"
+    if user_opts.showwindowcontrols then
+        -- Close: 🗙
+        local ne = new_element("close", "button")
+        ne.content = "\238\132\149"
+        ne.eventresponder["mbtn_left_up"] =
+            function () mp.commandv("quit") end
+        lo = add_layout("close")
+        lo.geometry = third_geo
+        lo.style = osc_styles.WinCtrl
+        lo.button.hoverstyle = "{\\c&H2311E8&}"
 
-    -- Minimize: 🗕
-    ne = new_element("minimize", "button")
-    ne.content = "\238\132\146"
-    ne.eventresponder["mbtn_left_up"] =
-        function () mp.commandv("cycle", "window-minimized") end
-    lo = add_layout("minimize")
-    lo.geometry = first_geo
-    lo.style = osc_styles.WinCtrl
+        -- Minimize: 🗕
+        ne = new_element("minimize", "button")
+        ne.content = "\238\132\146"
+        ne.eventresponder["mbtn_left_up"] =
+            function () mp.commandv("cycle", "window-minimized") end
+        lo = add_layout("minimize")
+        lo.geometry = first_geo
+        lo.style = osc_styles.WinCtrl
+        lo.button.hoverstyle = "{\\c&H00D7FF&}" -- gold
     
-    -- Maximize: 🗖/🗗
-    ne = new_element("maximize", "button")
-    if state.maximized or state.fullscreen then
-        ne.content = "\238\132\148"
-    else
-        ne.content = "\238\132\147"
-    end
-    ne.eventresponder["mbtn_left_up"] =
-        function ()
-            if state.fullscreen then
-                mp.commandv("cycle", "fullscreen")
-            else
-                mp.commandv("cycle", "window-maximized")
-            end
+        -- Maximize: 🗖/🗗
+        ne = new_element("maximize", "button")
+        if state.maximized or state.fullscreen then
+            ne.content = "\238\132\148"
+        else
+            ne.content = "\238\132\147"
         end
-    lo = add_layout("maximize")
-    lo.geometry = second_geo
-    lo.style = osc_styles.WinCtrl
+        ne.eventresponder["mbtn_left_up"] =
+            function ()
+               if state.fullscreen then
+                  mp.commandv("cycle", "fullscreen")
+               else
+                  mp.commandv("cycle", "window-maximized")
+               end
+            end
+        lo = add_layout("maximize")
+        lo.geometry = second_geo
+        lo.style = osc_styles.WinCtrl
+        lo.button.hoverstyle = "{\\c&H00D7FF&}" -- gold
+    end
 end
 
 --
@@ -1459,7 +1465,7 @@ layouts = function ()
     lo.slider.tooltip_style = osc_styles.Tooltip
     lo.slider.tooltip_an = 2
     
-    if (user_opts.persistentprogress or user_opts.persistentprogresstoggle) then
+    if user_opts.persistentprogress or user_opts.persistentprogresstoggle then
         lo = add_layout("persistentseekbar")
         lo.geometry = {x = refX, y = refY, an = 5, w = osc_geo.w, h = user_opts.persistentprogressheight}
         lo.style = osc_styles.SeekbarFg
@@ -3100,7 +3106,8 @@ local function validate_user_opts()
     local colors = {
 		user_opts.osc_color, user_opts.seekbarfg_color, user_opts.seekbarbg_color, 
 		user_opts.title_color, user_opts.time_color, user_opts.side_buttons_color, 
-		user_opts.middle_buttons_color, user_opts.playpause_color, 
+		user_opts.middle_buttons_color, user_opts.playpause_color, user_opts.window_title_color, 
+		user_opts.window_controls_color,
     }
 
     for _, color in pairs(colors) do
