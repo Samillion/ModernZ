@@ -22,8 +22,8 @@ local user_opts = {
 
     -- Colors
     osc_color = "#000000",                 -- accent of the OSC and the title bar
-	window_title_color = "#FFFFFF",        -- color of title in borderless/fullscreen mode
-	window_controls_color = "#FFFFFF",     -- color of window controls (close, min, max) in borderless/fullscreen mode
+    window_title_color = "#FFFFFF",        -- color of title in borderless/fullscreen mode
+    window_controls_color = "#FFFFFF",     -- color of window controls (close, min, max) in borderless/fullscreen mode
     title_color = "#FFFFFF",               -- color of the title (above seekbar)
     seekbarfg_color = "#BE4D25",           -- color of the seekbar progress and handle
     seekbarbg_color = "#FFFFFF",           -- color of the remaining seekbar
