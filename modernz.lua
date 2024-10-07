@@ -78,7 +78,7 @@ local user_opts = {
     -- UI [elements]
     showtitle = true,                      -- show title in OSC (above seekbar)
     showwindowtitle = true,                -- show window title in borderless/fullscreen mode
-	showwindowcontrols = true,             -- show window controls (close, min, max) in borderless/fullscreen
+    showwindowcontrols = true,             -- show window controls (close, min, max) in borderless/fullscreen
     titleBarStrip = false,                 -- whether to make the title bar a singular bar instead of a black fade
     title = "${media-title}",              -- title shown on OSC (above seekbar). ${media-title} or ${filename}
     font = "mpv-osd-symbols",              -- mpv-osd-symbols = default osc font (or the one set in mpv.conf)
