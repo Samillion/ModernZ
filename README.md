@@ -11,7 +11,7 @@ If white buttons and text don't suit your taste, you have the option to fully cu
 
 #### Interactive Playlist
 
-Thanks to the guys at mpv for creating the awesome [select.lua](https://github.com/mpv-player/mpv/blob/master/player/lua/select.lua) script, which is bundled in mpv, you can now utilize it within this OSC.
+Thanks to the guys at mpv for creating the awesome [select](https://github.com/mpv-player/mpv/blob/master/player/lua/select.lua) script, which is bundled in mpv, you can now utilize it within this OSC.
 
 Simply ***right click*** on the playlist button, then it'll show you the current playlist. You can type to select (fuzzy match), or use the up/down arrows to select the video you like.
 
@@ -54,8 +54,6 @@ https://github.com/user-attachments/assets/513c7ce8-8803-4b73-82af-2d1e690fd4f0
 
 **Fonts**: Place `Material-Design-Iconic-Round.ttf` in the `fonts` folder.
 
-**Configuration**: To adjust options, such as seek color, place `modernz.conf` in the `script-opts` folder
-
 **Thumbfast**: This OSC supports [thumbfast](https://github.com/po5/thumbfast). No additional steps needed, just place it in the `scripts` folder.
 
 ```
@@ -78,7 +76,11 @@ conf/mpv
 ## Configuration File
 To customize options or colors, you can add `modernz.conf` in the `script-opts` folder, then add the options in there as you like.
 
-An example of a `modernz.conf` file:
+You can download a configuration file containing all the options in their default values [here](https://github.com/Samillion/ModernZ/blob/main/modernz.conf), then edit them to your taste.
+
+Another way would be to create a shorter version with only the options you want changed.
+
+An example of a short `modernz.conf` file:
 
 ```
 # color of the seekbar progress and handle, in Hex color format
@@ -265,7 +267,7 @@ Below is a list that explains the OSC buttons function depending on how you inte
 
 ### Screenshot
 
-- `Left mouse button`: Takes a screenshot
+- `Left mouse button`: Take a screenshot
 
 ### Pin
 
@@ -514,6 +516,7 @@ The following is a list of languages you can add or use as reference:
 </details>
 
 ### Why aren't they included in user options already?
+
 They were, once. It would be difficult for me to maintain it accurately for many languages. This way, users have the option to localize it without flooding the OSC file with language listings.
 
 ## History
