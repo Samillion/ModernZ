@@ -15,12 +15,21 @@ Thanks to the guys at mpv for creating the awesome [select.lua](https://github.c
 
 Simply ***right click*** on the playlist button, then it'll show you the current playlist. You can type to select (fuzzy match), or use the up/down arrows to select the video you like.
 
+> [!TIP]
+> If the font size for the interactive playlist is too small, you can add the following to your `mpv.conf`
+>```ini
+> # change font size for console and select
+> script-opts-append=console-font_size=30
+>```
+
+
 https://github.com/user-attachments/assets/513c7ce8-8803-4b73-82af-2d1e690fd4f0
 
 ## Get Started
 - [How to Install](#how-to-install)
 - [Configuration File](#configuration-file)
 - [User Options](#user-options)
+- [Button Interactions](#button-interactions)
 - [OSC Language (Translations)](#osc-language)
 - [History](#history)
 
@@ -34,6 +43,7 @@ https://github.com/user-attachments/assets/513c7ce8-8803-4b73-82af-2d1e690fd4f0
 - [x] Include more customization options for colors
 - [ ] Add more `user_opts` validation
 - [x] Add translations: German, French, Spanish, Arabic [[learn more](#osc-language)]
+- [ ] Hide osc when `select-playlist` is triggered
 - [ ] Make first release v0.1.0
 - [ ] Stop adding things to the to do list. :P
 
@@ -196,6 +206,71 @@ This is the full list of user options you can use in `script-opts/modernz.conf`,
 | minmousemove                   | 0      | amount of pixels the mouse has to move for OSC to show |
 | tick_delay                     | 1 / 60 | minimum interval between OSC redraws in seconds        |
 | tick_delay_follow_display_fps  | no     | use display fps as the minimum interval                | 
+
+
+## Button Interactions
+Below is a list that explains the OSC buttons function depending on how you interact with them.
+
+> [!NOTE]
+> Middle clicking performs the same function as `Shift+left mouse button`, allowing for one handed use
+
+### Title
+
+- `Left mouse button`: Show `media-title`
+- `Right mouse button`: Show `filename`
+
+### Seekbar
+
+- `Left mouse button`: Seek to position (using keyframes)
+- `Shift+left mouse button`: Seek to the exact position
+- `Right mouse button`: Seek to the head of chosen chapter
+
+### Playback Time
+
+- `Left mouse button`: Display time in milliseconds
+
+### Duration
+
+- `Left mouse button`: Display remaining time instead of total time
+
+### Back/Forward
+
+- `Left mouse button`: Play previous/next file
+- `Right mouse button`: Show playlist
+
+### Skip Back/Forward
+
+- `Left mouse button`: Go to previous/next chapter
+- `Right mouse button`: Show chapter list
+
+### Jump Back/Forward
+
+- `Left mouse button`: Jumps forwards/backwards by 10 seconds (or by the amount set in `user_opts` `jumpamount`)
+- `Right mouse button`: Jumps forwards/backwards by 1 minute
+- `Shift+left mouse button`: Skips to the previous/next frame (and pauses)
+
+### Audio/Subtitle
+
+- `Left mouse button/right mouse button`: Cycle to next/previous track (and show list)
+
+### Playlist
+
+- `Left mouse button`: Show a simple playlist
+- `Right mouse button click`: Show an interactive playlist ([mpv/select.lua](https://github.com/mpv-player/mpv/blob/master/player/lua/select.lua))
+
+### Screenshot
+
+- `Left mouse button`: Takes a screenshot
+
+### Pin
+
+- `Left mouse button`: Toggle pin (and remove window border, if `user_opts` `ontopborder` is `false`)
+- `Right mouse button`: Toggle pin without changing the border
+
+### Volume
+
+- `Left mouse button`: Cycle mute on/off
+- `Scroll wheel`: Change volume up/down
 
 
 ## OSC Language
