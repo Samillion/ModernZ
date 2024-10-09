@@ -208,7 +208,7 @@ This is the full list of user options you can use in `script-opts/modernz.conf`,
 | hidetimeout                    | 2000   | duration in ms until OSC hides if no mouse movement    |
 | fadeduration                   | 250    | duration of fade out in ms, 0 = no fade                |
 | minmousemove                   | 0      | amount of pixels the mouse has to move for OSC to show |
-| tick_delay                     | 1 / 60 | minimum interval between OSC redraws in seconds        |
+| tick_delay                     | 0.0167 | minimum interval between OSC redraws in seconds        |
 | tick_delay_follow_display_fps  | no     | use display fps as the minimum interval                | 
 
 
@@ -220,65 +220,88 @@ Below is a list that explains the OSC buttons function depending on how you inte
 
 ### Title
 
-- `Left mouse button`: Show `media-title`
-- `Right mouse button`: Show `filename`
+| Action                | Function               |
+|-----------------------|------------------------|
+| Left mouse click      | Show `media-title`     |
+| Right mouse click     | Show `filename`        |
 
 ### Seekbar
 
-- `Left mouse button`: Seek to position (using keyframes)
-- `Shift+left mouse button`: Seek to the exact position
-- `Right mouse button`: Seek to the head of chosen chapter
+| Action                    | Function                               |
+|---------------------------|----------------------------------------|
+| Left mouse click          | Seek to position (using keyframes)     |
+| Shift+left mouse click    | Seek to the exact position             |
+| Right mouse click         | Seek to the head of chosen chapter     |
 
 ### Playback Time
 
-- `Left mouse button`: Display time in milliseconds
+| Action                | Function                        |
+|-----------------------|---------------------------------|
+| Left mouse click      | Display time in milliseconds    |
 
 ### Duration
 
-- `Left mouse button`: Display remaining time instead of total time
+| Action                | Function                                       |
+|-----------------------|------------------------------------------------|
+| Left mouse click      | Display remaining time instead of total time   |
 
 ### Back/Forward
 
-- `Left mouse button`: Play previous/next file
-- `Right mouse button`: Show playlist
-- `Shift+left mouse button`: Show playlist
+| Action                    | Function                  |
+|---------------------------|---------------------------|
+| Left mouse click          | Play previous/next file   |
+| Right mouse click         | Show playlist             |
+| Shift+left mouse click    | Show playlist             |
 
 ### Skip Back/Forward
 
-- `Left mouse button`: Go to previous/next chapter
-- `Right mouse button`: Show chapter list
+| Action                | Function                    |
+|-----------------------|-----------------------------|
+| Left mouse click      | Go to previous/next chapter |
+| Right mouse click     | Show chapter list           |
 
 ### Jump Back/Forward
 
-- `Left mouse button`: Jumps forwards/backwards by 10 seconds (or by the amount set in `user_opts` `jumpamount`)
-- `Right mouse button`: Jumps forwards/backwards by 1 minute
-- `Shift+left mouse button`: Skips to the previous/next frame (and pauses)
+| Action                    | Function                                                           |
+|---------------------------|--------------------------------------------------------------------|
+| Left mouse click          | Jumps forwards/backwards by 10 seconds (or by `user_opts` setting) |
+| Right mouse click         | Jumps forwards/backwards by 1 minute                               |
+| Shift+left mouse click    | Skips to the previous/next frame (and pauses)                      |
 
 ### Audio/Subtitle
 
-- `Left mouse button`: Cycle to next track
-- `Right mouse button`: Cycle to previous track
-- `Shift+left mouse button`: Show tracks list
+| Action                    | Function                 |
+|---------------------------|--------------------------|
+| Left mouse click          | Cycle to next track      |
+| Right mouse click         | Cycle to previous track  |
+| Shift+left mouse click    | Show tracks list         |
 
 ### Playlist
 
-- `Left mouse button`: Show a simple playlist
-- `Right mouse button click`: Show an interactive playlist ([mpv/select](https://github.com/mpv-player/mpv/blob/master/player/lua/select.lua))
+| Action                | Function                                                                                                         |
+|-----------------------|------------------------------------------------------------------------------------------------------------------|
+| Left mouse click      | Show a simple playlist                                                                                           |
+| Right mouse click     | Show an interactive playlist ([mpv/select](https://github.com/mpv-player/mpv/blob/master/player/lua/select.lua)) |
 
 ### Screenshot
 
-- `Left mouse button`: Take a screenshot
+| Action                | Function               |
+|-----------------------|------------------------|
+| Left mouse click      | Take a screenshot      |
 
 ### Pin
 
-- `Left mouse button`: Toggle pin (and remove window border, if `user_opts` `ontopborder` is `false`)
-- `Right mouse button`: Toggle pin without changing the border
+| Action                | Function                                                                                       |
+|-----------------------|------------------------------------------------------------------------------------------------|
+| Left mouse click      | Toggle pin (and remove window border, if `user_opts` `ontopborder` is `false`)                 |
+| Right mouse click     | Toggle pin without changing the border                                                         |
 
 ### Volume
 
-- `Left mouse button`: Cycle mute on/off
-- `Scroll wheel`: Change volume up/down
-
+| Action                | Function               |
+|-----------------------|------------------------|
+| Left mouse click      | Cycle mute on/off      |
+| Scroll wheel          | Change volume up/down  |
 
 ## OSC Language
 By default, the OSC is in English. However, it is relatively easy to add new languages.
