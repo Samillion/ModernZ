@@ -15,6 +15,8 @@ Thanks to the guys at mpv for creating the awesome [select.lua](https://github.c
 
 Simply ***right click*** on the playlist button, then it'll show you the current playlist. You can type to select (fuzzy match), or use the up/down arrows to select the video you like.
 
+I'm also happy to announce that mpv will include [full mouse support](https://github.com/mpv-player/mpv/pull/15016) in the interactive playlist. 🥳
+
 > [!TIP]
 > If the font size for the interactive playlist is too small, you can add the following to your `mpv.conf`
 >```ini
@@ -43,7 +45,7 @@ https://github.com/user-attachments/assets/513c7ce8-8803-4b73-82af-2d1e690fd4f0
 - [x] Include more customization options for colors
 - [ ] Add more `user_opts` validation
 - [x] Add translations: German, French, Spanish, Arabic [[learn more](#osc-language)]
-- [ ] Hide osc when `select-playlist` is triggered
+- [x] Hide osc when `select-playlist` is triggered
 - [ ] Make first release v0.1.0
 - [ ] Stop adding things to the to do list. :P
 
@@ -237,6 +239,7 @@ Below is a list that explains the OSC buttons function depending on how you inte
 
 - `Left mouse button`: Play previous/next file
 - `Right mouse button`: Show playlist
+- `Shift+left mouse button`: Show playlist
 
 ### Skip Back/Forward
 
@@ -251,12 +254,14 @@ Below is a list that explains the OSC buttons function depending on how you inte
 
 ### Audio/Subtitle
 
-- `Left mouse button/right mouse button`: Cycle to next/previous track (and show list)
+- `Left mouse button`: Cycle to next track
+- `Right mouse button`: Cycle to previous track
+- `Shift+left mouse button`: Show tracks list
 
 ### Playlist
 
 - `Left mouse button`: Show a simple playlist
-- `Right mouse button click`: Show an interactive playlist ([mpv/select.lua](https://github.com/mpv-player/mpv/blob/master/player/lua/select.lua))
+- `Right mouse button click`: Show an interactive playlist ([mpv/select](https://github.com/mpv-player/mpv/blob/master/player/lua/select.lua))
 
 ### Screenshot
 
