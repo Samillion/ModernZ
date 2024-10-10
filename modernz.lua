@@ -96,7 +96,7 @@ local user_opts = {
 
     -- UI [behavior]
     showonpause = true,                    -- whether to show osc when paused
-    onpausenotimeout = true,               -- whether to disable the hide timeout on pause
+    keeponpause = true,                    -- whether to disable the hide timeout on pause
     bottomhover = true,                    -- if the osc should only display when hovering at the bottom
     raisesubs = true,                      -- whether to raise subtitles above the osc when it's shown
     thumbnailborder = 2,                   -- the width of the thumbnail border (thumbfast)
@@ -2450,7 +2450,7 @@ local function render()
         local timeout = state.showtime + (get_hidetimeout() / 1000) - now
         if timeout <= 0 and get_touchtimeout() <= 0 then
             if state.active_element == nil and (user_opts.bottomhover or not mouse_over_osc) then
-                if not (state.paused and user_opts.onpausenotimeout) then
+                if not (state.paused and user_opts.keeponpause) then
                     hide_osc()
                 end
             end
