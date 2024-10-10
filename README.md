@@ -32,6 +32,7 @@ https://github.com/user-attachments/assets/513c7ce8-8803-4b73-82af-2d1e690fd4f0
 - [Configuration File](#configuration-file)
 - [User Options](#user-options)
 - [Button Interactions](#button-interactions)
+- [Keybinds](#keybinds)
 - [OSC Language (Translations)](#osc-language)
 - [History](#history)
 
@@ -302,6 +303,16 @@ Below is a list that explains the OSC buttons function depending on how you inte
 |-----------------------|------------------------|
 | Left mouse click      | Cycle mute on/off      |
 | Scroll wheel          | Change volume up/down  |
+
+## Keybinds
+The OSC does not set its own keybinds to not disturb the user's configuration.
+
+It does provide an option to set keybinds in `input.conf` with the following: (change the actual input if you want)
+
+| Function             | Input Command                                | Description                                                                                 |
+|----------------------|----------------------------------------------|---------------------------------------------------------------------------------------------|
+| Show OSC             | `o script-message-to modernz osc-show`       | Show OSC on command without needing to move mouse                                           |
+| Persistent Progress  | `x script-message-to modernz progresstoggle` | Toggle persistent progress bar (if `user_opts` `persistentprogresstoggle` is set to `true`) |
 
 ## OSC Language
 By default, the OSC is in English. However, it is relatively easy to add new languages.
