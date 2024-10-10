@@ -1737,9 +1737,9 @@ local function osc_init()
     ne.tooltip_style = osc_styles.Tooltip
     ne.tooltipF = texts.playlist
     ne.eventresponder["mbtn_left_up"] = 
-        function () mp.command("show-text ${playlist} 3000") end
-    ne.eventresponder["mbtn_right_up"] =
         function () open_selector("playlist") end
+    ne.eventresponder["mbtn_right_up"] =
+        function () open_selector("chapter") end
 
     -- vol_ctrl
     ne = new_element("vol_ctrl", "button")
@@ -1769,7 +1769,50 @@ local function osc_init()
             if state.mute then mp.commandv("cycle", "mute") end
             mp.commandv("osd-auto", "add", "volume", -5)
         end
-    
+
+    --volumebar
+    ne = new_element("volumebar", "slider")
+    ne.visible = (osc_param.playresx >= 900 - outeroffset) and user_opts.volumecontrol
+    ne.enabled = audio_track_count > 0
+    ne.slider.markerF = function ()
+        return {}
+    end
+    ne.slider.seekRangesF = function()
+      return nil
+    end
+    ne.slider.posF =
+        function ()
+            local volume = mp.get_property_number("volume")
+            if user_opts.volumecontrol == "log" then
+                return math.sqrt(volume * 100)
+            else
+                return volume
+            end
+        end
+    ne.slider.tooltipF = function (pos) return set_volume(pos) end
+    ne.eventresponder["mouse_move"] =
+        function (element)
+            -- see seekbar code for reference
+            local pos = get_slider_value(element)
+            local setvol = set_volume(pos)
+            if element.state.lastseek == nil or
+                element.state.lastseek ~= setvol then
+                    mp.commandv("set", "volume", setvol)
+                    element.state.lastseek = setvol
+            end
+        end
+    ne.eventresponder["mbtn_left_down"] =
+        function (element)
+            local pos = get_slider_value(element)
+            mp.commandv("set", "volume", set_volume(pos))
+        end
+    ne.eventresponder["reset"] =
+        function (element) element.state.lastseek = nil end
+    ne.eventresponder["wheel_up_press"] =
+        function () mp.commandv("osd-auto", "add", "volume", 5) end
+    ne.eventresponder["wheel_down_press"] =
+        function () mp.commandv("osd-auto", "add", "volume", -5) end
+
     --tog_fs
     ne = new_element("tog_fs", "button")
     ne.content = function ()
@@ -2033,49 +2076,6 @@ local function osc_init()
         end
     end
 
-    --volumebar
-    ne = new_element("volumebar", "slider")
-    ne.visible = (osc_param.playresx >= 900 - outeroffset) and user_opts.volumecontrol
-    ne.enabled = audio_track_count > 0
-    ne.slider.markerF = function ()
-        return {}
-    end
-    ne.slider.seekRangesF = function()
-      return nil
-    end
-    ne.slider.posF =
-        function ()
-            local volume = mp.get_property_number("volume")
-            if user_opts.volumecontrol == "log" then
-                return math.sqrt(volume * 100)
-            else
-                return volume
-            end
-        end
-    ne.slider.tooltipF = function (pos) return set_volume(pos) end
-    ne.eventresponder["mouse_move"] =
-        function (element)
-            -- see seekbar code for reference
-            local pos = get_slider_value(element)
-            local setvol = set_volume(pos)
-            if element.state.lastseek == nil or
-                element.state.lastseek ~= setvol then
-                    mp.commandv("set", "volume", setvol)
-                    element.state.lastseek = setvol
-            end
-        end
-    ne.eventresponder["mbtn_left_down"] =
-        function (element)
-            local pos = get_slider_value(element)
-            mp.commandv("set", "volume", set_volume(pos))
-        end
-    ne.eventresponder["reset"] =
-        function (element) element.state.lastseek = nil end
-    ne.eventresponder["wheel_up_press"] =
-        function () mp.commandv("osd-auto", "add", "volume", 5) end
-    ne.eventresponder["wheel_down_press"] =
-        function () mp.commandv("osd-auto", "add", "volume", -5) end
-    
     -- tc_left (current pos)
     ne = new_element("tc_left", "button")
     ne.content = function ()
