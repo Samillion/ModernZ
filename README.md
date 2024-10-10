@@ -126,17 +126,17 @@ This is the full list of user options you can use in `script-opts/modernz.conf`,
 | playpause_color       | #FFFFFF  | color of play/pause button                                               |
 
 ### Buttons
-| Option           | Value     | Description                                                                                                                                         |
-|------------------|-----------|-----------------------------------------------------------------------------------------------------------------------------------------------------|
-| hovereffect      | yes       | whether buttons have a glowing effect when hovered over                                                                                             |
-| showplaylist     | no        | show playlist button? L.Click: show playlist, R.Click: use `select.lua`                                                                             |
-| showjump         | yes       | show "jump forward/backward 10 seconds" buttons                                                                                                     |
-| showskip         | no        | show the skip back and forward (chapter) buttons                                                                                                    |
-| showinfo         | no        | show the info button                                                                                                                                |
-| showloop         | yes       | show the loop button                                                                                                                                |
-| showontop        | yes       | show window on top button                                                                                                                           |
-| showscreenshot   | no        | show screenshot button                                                                                                                              |
-| screenshot_flag  | subtitles | flag when using the screenshot button. subtitles, video, window [[details](https://mpv.io/manual/master/#command-interface-screenshot-%3Cflags%3E)] |
+| Option           | Value     | Description                                                                                                                                              |
+|------------------|-----------|----------------------------------------------------------------------------------------------------------------------------------------------------------|
+| hovereffect      | yes       | whether buttons have a glowing effect when hovered over                                                                                                  |
+| showplaylist     | no        | show playlist button? L.Click: show playlist, R.Click: use `select.lua`                                                                                  |
+| showjump         | yes       | show "jump forward/backward 10 seconds" buttons                                                                                                          |
+| showskip         | no        | show the skip back and forward (chapter) buttons                                                                                                         |
+| showinfo         | no        | show the info button                                                                                                                                     |
+| showloop         | yes       | show the loop button                                                                                                                                     |
+| showontop        | yes       | show window on top button                                                                                                                                |
+| showscreenshot   | no        | show screenshot button                                                                                                                                   |
+| screenshot_flag  | subtitles | flag for the screenshot button. subtitles, video, window, each-frame [[details](https://mpv.io/manual/master/#command-interface-screenshot-%3Cflags%3E)] |
 
 ### Scaling
 | Option            | Value | Description                                    |
