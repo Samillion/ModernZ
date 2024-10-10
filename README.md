@@ -186,7 +186,6 @@ This is the full list of user options you can use in `script-opts/modernz.conf`,
 | persistentprogress       | no              | always show a small progress line at the bottom of the screen        |
 | persistentprogressheight | 17              | the height of the persistentprogress bar                             |
 | persistentbuffer         | no              | on web videos, show the buffer on the persistent progress line       |
-| persistentprogresstoggle | no              | enable toggling the persistentprogress bar                           |
 | compactmode              | no              | replace the jump buttons with the chapter buttons                    |
 
 ### UI [behavior]
@@ -312,7 +311,7 @@ It does provide an option to set keybinds in `input.conf` with the following: (c
 | Function             | Input Command                                | Description                                                                                 |
 |----------------------|----------------------------------------------|---------------------------------------------------------------------------------------------|
 | Show OSC             | `o script-message-to modernz osc-show`       | Show OSC on command without needing to move mouse                                           |
-| Persistent Progress  | `x script-message-to modernz progresstoggle` | Toggle persistent progress bar (if `user_opts` `persistentprogresstoggle` is set to `true`) |
+| Persistent Progress  | `x script-message-to modernz progresstoggle` | Toggle persistent progress bar                                                              |
 
 ## OSC Language
 By default, the OSC is in English. However, it is relatively easy to add new languages.
