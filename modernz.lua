@@ -45,7 +45,7 @@ local user_opts = {
 
     showontop = true,                      -- show window on top button
     showscreenshot = false,                -- show screenshot button
-    screenshot_flag = "subtitles",         -- Mode when using the screenshot button. subtitles, video, window
+    screenshot_flag = "subtitles",         -- flag for the screenshot button. subtitles, video, window, each-frame
                                            -- https://mpv.io/manual/master/#command-interface-screenshot-%3Cflags%3E
 
     -- Scaling
@@ -1820,7 +1820,7 @@ local function osc_init()
             if user_opts.screenshot_flag == "subtitles" then mp.commandv("set", "sub-pos", 100) end
             mp.commandv("screenshot", user_opts.screenshot_flag)
             mp.commandv("set", "sub-pos", tempSubPosition)
-			mp.command("show-text 'Screenshot saved'")
+            mp.command("show-text 'Screenshot saved'")
         end
 
     --tog_info
@@ -2832,23 +2832,27 @@ local function validate_user_opts()
 
     if user_opts.volumecontroltype ~= "linear" and
        user_opts.volumecontroltype ~= "log" then
-        msg.warn("volumecontrol cannot be \"" ..
+            msg.warn("volumecontrol cannot be \"" ..
                 user_opts.volumecontroltype .. "\". Ignoring.")
         user_opts.volumecontroltype = "linear"
     end
 
-	if user_opts.automatickeyframemode then
-		if mp.get_property_number("duration", 0) > user_opts.automatickeyframelimit then
-			user_opts.seekbarkeyframes = true
-		else
-			user_opts.seekbarkeyframes = false
-		end
-	end
+    if user_opts.automatickeyframemode then
+       if mp.get_property_number("duration", 0) > user_opts.automatickeyframelimit then
+            user_opts.seekbarkeyframes = true
+       else
+            user_opts.seekbarkeyframes = false
+       end
+    end
 
     if user_opts.screenshot_flag ~= "subtitles" and
        user_opts.screenshot_flag ~= "video" and
-       user_opts.screenshot_flag ~= "window" then
-        msg.warn("screenshot_flag cannot be \"" ..
+       user_opts.screenshot_flag ~= "window" and
+       user_opts.screenshot_flag ~= "each-frame" and
+       user_opts.screenshot_flag ~= "subtitles+each-frame" and
+       user_opts.screenshot_flag ~= "video+each-frame" and
+       user_opts.screenshot_flag ~= "window+each-frame" then
+            msg.warn("screenshot_flag cannot be \"" ..
                 user_opts.screenshot_flag .. "\". Ignoring.")
         user_opts.screenshot_flag = "subtitles"
     end
