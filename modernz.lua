@@ -2820,6 +2820,13 @@ mp.register_script_message("thumbfast-info", function(json)
 	end
 end)
 
+mp.register_script_message("progresstoggle", function()
+	if not user_opts.persistentprogresstoggle then return end
+	state.persistentprogresstoggle = not state.persistentprogresstoggle
+	request_tick()
+	mp.command("show-text 'Persistent progress bar toggled'")
+end)
+
 -- Validate string type user options
 local function validate_user_opts()
     if user_opts.windowcontrols ~= "auto" and
