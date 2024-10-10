@@ -192,7 +192,7 @@ This is the full list of user options you can use in `script-opts/modernz.conf`,
 | Option              | Value | Description                                                |
 |---------------------|-------|------------------------------------------------------------|
 | showonpause         | yes   | whether to show osc when paused                            |
-| onpausenotimeout    | yes   | whether to disable the hide timeout on pause               |
+| keeponpause         | yes   | whether to disable the hide timeout on pause               |
 | bottomhover         | yes   | if the osc should only display when hovering at the bottom |
 | raisesubs           | yes   | whether to raise subtitles above the osc when it's shown   |
 | thumbnailborder     | 2     | the width of the thumbnail border (thumbfast)              |
