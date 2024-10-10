@@ -13,7 +13,12 @@ If white buttons and text don't suit your taste, you have the option to fully cu
 
 Thanks to the guys at mpv for creating the awesome [select](https://github.com/mpv-player/mpv/blob/master/player/lua/select.lua) script, which is bundled in mpv, you can now utilize it within this OSC.
 
-Simply ***right click*** on the playlist button, then it'll show you the current playlist. You can type to select (fuzzy match), or use the up/down arrows to select the video you like.
+The playlist button offers interactive options for both playlist and chapters list.
+
+| Action                | Function                          |
+|-----------------------|-----------------------------------|
+| Left mouse click      | Show an interactive playlist      |
+| Right mouse click     | Show an interactive chapters list |
 
 I'm also happy to announce that mpv will include [full mouse support](https://github.com/mpv-player/mpv/pull/15016) in the interactive playlist. 🥳
 
@@ -278,10 +283,10 @@ Below is a list that explains the OSC buttons function depending on how you inte
 
 ### Playlist
 
-| Action                | Function                                                                                                         |
-|-----------------------|------------------------------------------------------------------------------------------------------------------|
-| Left mouse click      | Show a simple playlist                                                                                           |
-| Right mouse click     | Show an interactive playlist ([mpv/select](https://github.com/mpv-player/mpv/blob/master/player/lua/select.lua)) |
+| Action                | Function                          |
+|-----------------------|-----------------------------------|
+| Left mouse click      | Show an interactive playlist      |
+| Right mouse click     | Show an interactive chapters list |
 
 ### Screenshot
 
