@@ -18,9 +18,10 @@ Thanks to the guys at mpv for creating the awesome [select](https://github.com/m
 | Left mouse click         | Show a simple playlist       |
 | Right mouse click        | Show an interactive playlist |
 
-| Action (Skip Buttons) | Function                          |
-|-----------------------|-----------------------------------|
-| Right mouse click     | Show an interactive chapters list |
+| Action (Skip Buttons)   | Function                          |
+|-------------------------|-----------------------------------|
+| Right mouse click       | Show an interactive chapters list |
+| Shift+right mouse click | Show a simple chapters list       |
 
 I'm also happy to announce that mpv will include [full mouse support](https://github.com/mpv-player/mpv/pull/15016) in the interactive playlist. 🥳
 
@@ -227,10 +228,10 @@ Below is a list that explains the OSC buttons function depending on how you inte
 
 ### Title
 
-| Action                | Function               |
-|-----------------------|------------------------|
-| Left mouse click      | Show `media-title`     |
-| Right mouse click     | Show `filename`        |
+| Action                | Function                  |
+|-----------------------|---------------------------|
+| Left mouse click      | Show `media-title` in OSD |
+| Right mouse click     | Show `filename` in OSD    |
 
 ### Seekbar
 
@@ -254,33 +255,35 @@ Below is a list that explains the OSC buttons function depending on how you inte
 
 ### Play/Pause
 
-| Action                | Function            |
-|-----------------------|---------------------|
-| Left mouse click      | Toggle play/pause   |
-| Right mouse click     | Enable/disable loop |
+| Action                | Function                   |
+|-----------------------|----------------------------|
+| Left mouse click      | Toggle play/pause          |
+| Right mouse click     | Toggle enable/disable loop |
 
 ### Back/Forward
 
 | Action                    | Function                  |
 |---------------------------|---------------------------|
 | Left mouse click          | Play previous/next file   |
-| Right mouse click         | Show playlist             |
-| Shift+left mouse click    | Show playlist             |
+| Right mouse click         | Show a simple playlist    |
+| Shift+left mouse click    | Show a simple playlist    |
 
 ### Skip Back/Forward
 
-| Action                | Function                          |
-|-----------------------|-----------------------------------|
-| Left mouse click      | Go to previous/next chapter       |
-| Right mouse click     | Show an interactive chapters list |
+| Action                  | Function                              |
+|-------------------------|---------------------------------------|
+| Left mouse click        | Go to previous/next chapter           |
+| Right mouse click       | Show an interactive chapters list     |
+| Shift+left mouse click  | Jump forwards/backwards by 60 seconds |
+| Shift+right mouse click | Show a simple chapters list           |
 
 ### Jump Back/Forward
 
-| Action                    | Function                                                           |
-|---------------------------|--------------------------------------------------------------------|
-| Left mouse click          | Jumps forwards/backwards by 10 seconds (or by `user_opts` setting) |
-| Right mouse click         | Jumps forwards/backwards by 1 minute                               |
-| Shift+left mouse click    | Skips to the previous/next frame (and pauses)                      |
+| Action                    | Function                                                                |
+|---------------------------|-------------------------------------------------------------------------|
+| Left mouse click          | Jumps forwards/backwards by 10 seconds (or by `user_opts` `jumpamount`) |
+| Right mouse click         | Jumps forwards/backwards by 1 minute                                    |
+| Shift+left mouse click    | Skips to the previous/next frame (and pauses)                           |
 
 ### Audio/Subtitle
 
@@ -305,16 +308,16 @@ Below is a list that explains the OSC buttons function depending on how you inte
 
 ### Pin
 
-| Action                | Function                                                                       |
-|-----------------------|--------------------------------------------------------------------------------|
-| Left mouse click      | Toggle pin (and remove window border, if `user_opts` `ontopborder` is `false`) |
-| Right mouse click     | Toggle pin without changing the border                                         |
+| Action                | Function                                |
+|-----------------------|-----------------------------------------|
+| Left mouse click      | Toggle pin and toggle window border     |
+| Right mouse click     | Toggle pin without changing the border  |
 
 ### Volume
 
 | Action                | Function               |
 |-----------------------|------------------------|
-| Left mouse click      | Cycle mute on/off      |
+| Left mouse click      | Toggle mute on/off     |
 | Scroll wheel          | Change volume up/down  |
 
 ## Keybinds
