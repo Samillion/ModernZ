@@ -50,7 +50,7 @@ https://github.com/user-attachments/assets/513c7ce8-8803-4b73-82af-2d1e690fd4f0
 - [x] Ensure all included functions and variables are actually used and not remnants of the past
 - [x] Match mpv's `osc.lua` standards and functionality, where relative, to ensure compatibility and stability.
 - [x] Improve button placements
-- [x] Add an option to show a playlist button (`user_opts` mode: `get_playlist()` or `select.lua`)
+- [x] Add an option to show a playlist button (`user_opts` mode: `simple` or `select.lua`)
 - [x] Include more customization options for colors
 - [ ] Add more `user_opts` validation
 - [x] Add translations: German, French, Spanish, Arabic [[learn more](#osc-language)]
@@ -334,7 +334,7 @@ It does provide an option to set keybinds in `input.conf` with the following: (c
 ## OSC Language
 By default, the OSC only has English language. However, it is relatively easy to add new languages.
 
-In `modernz.lua`, the `local language` stores the phrases, like so for the English language labeled as `["en"]`:
+In `modernz.lua`, the `local language` stores phrases for the English language labeled as `["en"]`:
 
 ```lua
 -- Localization
@@ -365,11 +365,13 @@ local language = {
 }
 ```
 
-You can use the following list to add more languages to `local language`, then set it in your `modernz.conf` to be used. (ie: `language=fr` for French)
+You can use the following language lists to adjust or add more languages to `local language` in `modernz.lua`:
 
 <details>
   <summary>French</summary>
-  
+
+  > In `modernz.conf` you must use `language=fr` for it to be active.
+
   ```lua
     ["fr"] = {
 	    welcome = "{\\fs24\\1c&H0&\\1c&HFFFFFF&}Déposez des fichiers ou des URLs ici pour les lire",
@@ -398,7 +400,9 @@ You can use the following list to add more languages to `local language`, then s
 </details>
 <details>
   <summary>German</summary>
-  
+
+  > In `modernz.conf` you must use `language=de` for it to be active.
+
   ```lua
     ["de"] = {
 	    welcome = "{\\fs24\\1c&H0&\\1c&HFFFFFF&}Dateien oder URLs hier ablegen, um sie abzuspielen",
@@ -427,7 +431,9 @@ You can use the following list to add more languages to `local language`, then s
 </details>
 <details>
   <summary>Spanish</summary>
-  
+
+  > In `modernz.conf` you must use `language=es` for it to be active.
+
   ```lua
     ["es"] = {
 	    welcome = "{\\fs24\\1c&H0&\\1c&HFFFFFF&}Suelta archivos o URLs aquí para reproducirlos",
@@ -456,7 +462,9 @@ You can use the following list to add more languages to `local language`, then s
 </details>
 <details>
   <summary>Polish</summary>
-  
+
+  > In `modernz.conf` you must use `language=pl` for it to be active.
+
   ```lua
     ["pl"] = {
 	    welcome = "{\\fs24\\1c&H0&\\1c&HFFFFFF&}Upuść plik lub łącze URL do odtworzenia",
@@ -485,7 +493,9 @@ You can use the following list to add more languages to `local language`, then s
 </details>
 <details>
   <summary>Japanese</summary>
-  
+
+  > In `modernz.conf` you must use `language=jp` for it to be active.
+
   ```lua
     ["jp"] = {
 	    welcome = "{\\fs24\\1c&H0&\\1c&HFFFFFF&}ファイルやURLのリンクをここにドロップすると再生されます",
@@ -514,7 +524,9 @@ You can use the following list to add more languages to `local language`, then s
 </details>
 <details>
   <summary>Simplified Chinese</summary>
-  
+
+  > In `modernz.conf` you must use `language=chs` for it to be active.
+
   ```lua
     ["chs"] = {
 	    welcome = "{\\fs24\\1c&H0&\\1c&HFFFFFF&}将文件或URL放在这里播放",
@@ -543,7 +555,9 @@ You can use the following list to add more languages to `local language`, then s
 </details>
 <details>
   <summary>Arabic</summary>
-  
+
+  > In `modernz.conf` you must use `language=ar` for it to be active.
+
   ```lua
     ["ar"] = {
 	    welcome = "{\\fs24\\1c&H0&\\1c&HFFFFFF&}أسقط الملفات أو الروابط هنا للتشغيل",
