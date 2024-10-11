@@ -11,7 +11,7 @@ If white buttons and text don't suit your taste, you have the option to fully cu
 
 #### Interactive Playlist
 
-Thanks to the guys at mpv for creating the awesome [select](https://github.com/mpv-player/mpv/blob/master/player/lua/select.lua) script, which is bundled in mpv, you can now utilize it within this OSC.
+Thanks to the guys at mpv for creating the awesome [select](https://github.com/mpv-player/mpv/blob/master/player/lua/select.lua) script and bundling in mpv [v0.39.0](https://github.com/mpv-player/mpv/discussions/14903), you can now utilize it within this OSC.
 
 | Action (Playlist Button) | Function                     |
 |--------------------------|------------------------------|
@@ -23,14 +23,14 @@ Thanks to the guys at mpv for creating the awesome [select](https://github.com/m
 | Right mouse click       | Show an interactive chapters list |
 | Shift+right mouse click | Show a simple chapters list       |
 
-I'm also happy to announce that mpv will include [full mouse support](https://github.com/mpv-player/mpv/pull/15016) in the interactive playlist. 🥳
+I'm also happy to announce that mpv implemented [full mouse support](https://github.com/mpv-player/mpv/pull/15016) in the interactive playlist. 🥳
 
 > [!TIP]
 > If the font size for the interactive playlist is too small, you can add the following to your `mpv.conf`
->```ini
+> ```ini
 > # change font size for console and select
 > script-opts-append=console-font_size=30
->```
+> ```
 
 
 https://github.com/user-attachments/assets/513c7ce8-8803-4b73-82af-2d1e690fd4f0
@@ -52,11 +52,13 @@ https://github.com/user-attachments/assets/513c7ce8-8803-4b73-82af-2d1e690fd4f0
 - [x] Improve button placements
 - [x] Add an option to show a playlist button (`user_opts` mode: `simple` or `select.lua`)
 - [x] Include more customization options for colors
-- [ ] Add more `user_opts` validation
+- [x] Add more `user_opts` validation
 - [x] Add translations: German, French, Spanish, Arabic [[learn more](#osc-language)]
 - [x] Hide osc when `select-playlist` is triggered
+- [ ] Remove redundant `user_opts` `compactmode`
+- [ ] Improve `show-text ${track-list}` output [specify mode]. Cause of delay: wait until [mpv/PR-15038](https://github.com/mpv-player/mpv/pull/15038) is more mainstream for users
 - [ ] Make first release v0.1.0
-- [ ] Stop adding things to the to do list. :P
+- [ ] Stop adding things to the to do list. 😝
 
 ## How to install
 **OSC**: Simply place `modernz.lua` in the corresponding mpv scripts folder of your operating system:
@@ -85,7 +87,7 @@ conf/mpv
 ## Configuration File
 To customize options or colors, you can add `modernz.conf` in the `script-opts` folder, then add the options in there as you like.
 
-You can download a configuration file containing all the options in their default values [here](https://github.com/Samillion/ModernZ/blob/main/modernz.conf), then edit them to your taste.
+You can download a configuration file containing all the options in their default values [here](https://github.com/Samillion/ModernZ/blob/main/modernz.conf), then adjust their values to your taste.
 
 Another way would be to create a shorter version with only the options you want changed.
 
@@ -95,10 +97,10 @@ An example of a short `modernz.conf` file:
 # color of the seekbar progress and handle, in Hex color format
 seekbarfg_color=#B7410E
 
-# show playlist button? LClick: show playlist, RClick: use select.lua (if available)
+# show playlist button?
 showplaylist=no
 
-# title shown on OSC (above seekbar), ${media-title} or ${filename}
+# title above seekbar
 title=${media-title}
 
 # scaling of the controller when windowed
@@ -109,7 +111,7 @@ jumpmode=relative
 ```
 
 ## User Options
-This is the full list of user options you can use in `script-opts/modernz.conf`, with their possible values and description.
+This is the full list of user options you can use in `script-opts/modernz.conf`, with their default values and description.
 
 ### General
 | Option          | Value | Description                                          |
@@ -181,20 +183,20 @@ This is the full list of user options you can use in `script-opts/modernz.conf`,
 | automatickeyframelimit  | 600   | videos of above this length (in seconds) will have seekbarkeyframes on               |
 
 ### UI [elements]
-| Option                   | Value           | Description                                                          |
-|--------------------------|-----------------|----------------------------------------------------------------------|
-| showtitle                | yes             | show title in OSC (above seekbar)                                    |
-| showwindowtitle          | yes             | show window title in borderless/fullscreen mode                      |
-| showwindowcontrols       | yes             | show window controls (close, min, max) in borderless/fullscreen      |
-| titleBarStrip            | no              | whether to make the title bar a singular bar instead of a black fade |
-| title                    | ${media-title}  | title shown on OSC (above seekbar). ${media-title} or ${filename}    |
-| font                     | mpv-osd-symbols | mpv-osd-symbols = default osc font (or the one set in mpv.conf)      |
-| titlefontsize            | 30              | the font size of the title text (above seekbar)                      |
-| chapter_fmt              | Chapter: %s     | chapter print format for seekbar-hover. "no" to disable              |
-| persistentprogress       | no              | always show a small progress line at the bottom of the screen        |
-| persistentprogressheight | 17              | the height of the persistentprogress bar                             |
-| persistentbuffer         | no              | on web videos, show the buffer on the persistent progress line       |
-| compactmode              | no              | replace the jump buttons with the chapter buttons                    |
+| Option                   | Value                 | Description                                                          |
+|--------------------------|-----------------------|----------------------------------------------------------------------|
+| showtitle                | yes                   | show title in OSC (above seekbar)                                    |
+| showwindowtitle          | yes                   | show window title in borderless/fullscreen mode                      |
+| showwindowcontrols       | yes                   | show window controls (close, min, max) in borderless/fullscreen      |
+| titleBarStrip            | no                    | whether to make the title bar a singular bar instead of a black fade |
+| title                    | ${media-title/no-ext} | title above seekbar. ${media-title} or ${filename} (can use /no-ext) |
+| font                     | mpv-osd-symbols       | mpv-osd-symbols = default osc font (or the one set in mpv.conf)      |
+| titlefontsize            | 30                    | the font size of the title text (above seekbar)                      |
+| chapter_fmt              | Chapter: %s           | chapter print format for seekbar-hover. "no" to disable              |
+| persistentprogress       | no                    | always show a small progress line at the bottom of the screen        |
+| persistentprogressheight | 17                    | the height of the persistentprogress bar                             |
+| persistentbuffer         | no                    | on web videos, show the buffer on the persistent progress line       |
+| compactmode              | no                    | replace the jump buttons with the chapter buttons                    |
 
 ### UI [behavior]
 | Option              | Value | Description                                                |
