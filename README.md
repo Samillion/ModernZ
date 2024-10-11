@@ -203,6 +203,7 @@ This is the full list of user options you can use in `script-opts/modernz.conf`,
 | keeponpause         | yes   | whether to disable the hide timeout on pause               |
 | bottomhover         | yes   | if the osc should only display when hovering at the bottom |
 | raisesubs           | yes   | whether to raise subtitles above the osc when it's shown   |
+| raisesubamount      | 175   | how much subtitles rise when the osc is shown              |
 | thumbnailborder     | 2     | the width of the thumbnail border (thumbfast)              |
 | OSCfadealpha        | 150   | alpha of the background box for the OSC                    |
 | boxalpha            | 75    | alpha of the window title bar                              |
