@@ -14,6 +14,7 @@ local utils = require 'mp.utils'
 -- do not touch, change them in modernz.conf
 local user_opts = {
     -- General
+    language = "en",                       -- For other langs: https://github.com/Samillion/ModernZ#osc-language
     idlescreen = true,                     -- show mpv logo on idle
     windowcontrols = "auto",               -- whether to show OSC window controls, "auto", "yes" or "no"
     showwindowed = true,                   -- show OSC when windowed?
@@ -187,7 +188,7 @@ local language = {
 }
 
 -- apply lang opts
-local texts = language["en"]
+local texts = language[user_opts.language]
 
 local thumbfast = {
 	width = 0,
