@@ -13,11 +13,13 @@ If white buttons and text don't suit your taste, you have the option to fully cu
 
 Thanks to the guys at mpv for creating the awesome [select](https://github.com/mpv-player/mpv/blob/master/player/lua/select.lua) script, which is bundled in mpv, you can now utilize it within this OSC.
 
-The playlist button offers interactive options for both playlist and chapters list.
+| Action (Playlist Button) | Function                     |
+|--------------------------|------------------------------|
+| Left mouse click         | Show a simple playlist       |
+| Right mouse click        | Show an interactive playlist |
 
-| Action                | Function                          |
+| Action (Skip Buttons) | Function                          |
 |-----------------------|-----------------------------------|
-| Left mouse click      | Show an interactive playlist      |
 | Right mouse click     | Show an interactive chapters list |
 
 I'm also happy to announce that mpv will include [full mouse support](https://github.com/mpv-player/mpv/pull/15016) in the interactive playlist. 🥳
@@ -250,6 +252,13 @@ Below is a list that explains the OSC buttons function depending on how you inte
 |-----------------------|------------------------------------------------|
 | Left mouse click      | Display remaining time instead of total time   |
 
+### Play/Pause
+
+| Action                | Function            |
+|-----------------------|---------------------|
+| Left mouse click      | Toggle play/pause   |
+| Right mouse click     | Enable/disable loop |
+
 ### Back/Forward
 
 | Action                    | Function                  |
@@ -260,10 +269,10 @@ Below is a list that explains the OSC buttons function depending on how you inte
 
 ### Skip Back/Forward
 
-| Action                | Function                    |
-|-----------------------|-----------------------------|
-| Left mouse click      | Go to previous/next chapter |
-| Right mouse click     | Show chapter list           |
+| Action                | Function                          |
+|-----------------------|-----------------------------------|
+| Left mouse click      | Go to previous/next chapter       |
+| Right mouse click     | Show an interactive chapters list |
 
 ### Jump Back/Forward
 
@@ -283,10 +292,10 @@ Below is a list that explains the OSC buttons function depending on how you inte
 
 ### Playlist
 
-| Action                | Function                          |
-|-----------------------|-----------------------------------|
-| Left mouse click      | Show an interactive playlist      |
-| Right mouse click     | Show an interactive chapters list |
+| Action                | Function                     |
+|-----------------------|------------------------------|
+| Left mouse click      | Show a simple playlist       |
+| Right mouse click     | Show an interactive playlist |
 
 ### Screenshot
 
@@ -296,10 +305,10 @@ Below is a list that explains the OSC buttons function depending on how you inte
 
 ### Pin
 
-| Action                | Function                                                                                       |
-|-----------------------|------------------------------------------------------------------------------------------------|
-| Left mouse click      | Toggle pin (and remove window border, if `user_opts` `ontopborder` is `false`)                 |
-| Right mouse click     | Toggle pin without changing the border                                                         |
+| Action                | Function                                                                       |
+|-----------------------|--------------------------------------------------------------------------------|
+| Left mouse click      | Toggle pin (and remove window border, if `user_opts` `ontopborder` is `false`) |
+| Right mouse click     | Toggle pin without changing the border                                         |
 
 ### Volume
 
@@ -313,10 +322,10 @@ The OSC does not set its own keybinds to not disturb the user's configuration.
 
 It does provide an option to set keybinds in `input.conf` with the following: (change the actual input if you want)
 
-| Function             | Input Command                                | Description                                                                                 |
-|----------------------|----------------------------------------------|---------------------------------------------------------------------------------------------|
-| Show OSC             | `o script-message-to modernz osc-show`       | Show OSC on command without needing to move mouse                                           |
-| Persistent Progress  | `x script-message-to modernz progresstoggle` | Toggle persistent progress bar                                                              |
+| Function             | Input Command                                | Description                                        |
+|----------------------|----------------------------------------------|----------------------------------------------------|
+| Show OSC             | `o script-message-to modernz osc-show`       | Show OSC on command without needing to move mouse  |
+| Persistent Progress  | `x script-message-to modernz progresstoggle` | Toggle persistent progress bar                     |
 
 ## OSC Language
 By default, the OSC is in English. However, it is relatively easy to add new languages.
