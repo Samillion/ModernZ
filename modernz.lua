@@ -97,6 +97,7 @@ local user_opts = {
     keeponpause = true,                    -- whether to disable the hide timeout on pause
     bottomhover = true,                    -- if the osc should only display when hovering at the bottom
     raisesubs = true,                      -- whether to raise subtitles above the osc when it's shown
+    raisesubamount = 175,                  -- how much subtitles rise when the osc is shown
     thumbnailborder = 2,                   -- the width of the thumbnail border (thumbfast)
 
     OSCfadealpha = 150,                    -- alpha of the background box for the OSC
@@ -1438,7 +1439,7 @@ local function adjust_subtitles(visible)
     if visible and user_opts.raisesubs and state.osc_visible == true and (state.fullscreen == false or user_opts.showfullscreen) then
         local w, h = mp.get_osd_size()
         if h > 0 then
-            local subpos = math.floor((osc_param.playresy - 175)/osc_param.playresy*100)
+            local subpos = math.floor((osc_param.playresy - user_opts.raisesubamount)/osc_param.playresy*100)
             if subpos < 0 then
                 subpos = 100 -- out of screen, default to original position
             end
