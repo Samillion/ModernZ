@@ -1741,7 +1741,7 @@ local function osc_init()
     ne.visible = (osc_param.playresx >= 600 - outeroffset)
     ne.content = icons.playlist
     ne.tooltip_style = osc_styles.Tooltip
-    ne.tooltipF = texts.playlist
+    ne.tooltipF = pl_count > 0 and texts.playlist .. " [" .. pl_pos .. "/" .. pl_count .. "]" or texts.playlist
     ne.eventresponder["mbtn_left_up"] = 
         function () mp.command("show-text ${playlist} 3000") end
     ne.eventresponder["mbtn_right_up"] =
