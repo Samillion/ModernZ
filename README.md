@@ -11,7 +11,7 @@ If white buttons and text don't suit your taste, you have the option to fully cu
 
 #### Interactive Playlist
 
-Thanks to the guys at mpv for creating the awesome [select](https://github.com/mpv-player/mpv/blob/master/player/lua/select.lua) script and bundling in mpv [v0.39.0](https://github.com/mpv-player/mpv/discussions/14903), you can now utilize it within this OSC.
+Thanks to the guys at mpv for creating the awesome [select](https://github.com/mpv-player/mpv/blob/master/player/lua/select.lua) script and bundling it in mpv [v0.39.0](https://github.com/mpv-player/mpv/discussions/14903), you can now utilize it within this OSC.
 
 | Action (Playlist Button) | Function                     |
 |--------------------------|------------------------------|
@@ -22,8 +22,6 @@ Thanks to the guys at mpv for creating the awesome [select](https://github.com/m
 |-------------------------|-----------------------------------|
 | Right mouse click       | Show an interactive chapters list |
 | Shift+right mouse click | Show a simple chapters list       |
-
-I'm also happy to announce that mpv implemented [full mouse support](https://github.com/mpv-player/mpv/pull/15016) in the interactive playlist. 🥳
 
 > [!TIP]
 > If the font size for the interactive playlist is too small, you can add the following to your `mpv.conf`
@@ -50,13 +48,13 @@ https://github.com/user-attachments/assets/513c7ce8-8803-4b73-82af-2d1e690fd4f0
 - [x] Ensure all included functions and variables are actually used and not remnants of the past
 - [x] Match mpv's `osc.lua` standards and functionality, where relative, to ensure compatibility and stability.
 - [x] Improve button placements
-- [x] Add an option to show a playlist button (`user_opts` mode: `simple` or `select.lua`)
+- [x] Add an option to show a playlist button (mode: `simple` or `select.lua`)
 - [x] Include more customization options for colors
 - [x] Add more `user_opts` validation
 - [x] Add translations: German, French, Spanish, Arabic [[learn more](#osc-language)]
 - [x] Hide osc when `select-playlist` is triggered
-- [ ] Remove redundant `user_opts` `compactmode`
-- [ ] Improve `show-text ${track-list}` output [specify mode]. Cause of delay: wait until [mpv/PR-15038](https://github.com/mpv-player/mpv/pull/15038) is more mainstream for users
+- [ ] Remove redundant `user_opts` `compactmode` [#15](https://github.com/Samillion/ModernZ/issues/15)
+- [ ] Improve `show-text ${track-list}` output [specify mode]. Cause of delay: wait until [mpv/PR-15038](https://github.com/mpv-player/mpv/pull/15038) is mainstream for users
 - [ ] Make first release v0.1.0
 - [ ] Stop adding things to the to do list. 😝
 
@@ -111,7 +109,7 @@ jumpmode=relative
 ```
 
 ## User Options
-This is the full list of user options you can use in `script-opts/modernz.conf`, with their default values and description.
+Below is the full list of options you can use in `modernz.conf`, with their default values and description.
 
 ### General
 | Option          | Value | Description                                          |
@@ -324,9 +322,9 @@ Below is a list that explains the OSC buttons function depending on how you inte
 | Scroll wheel          | Change volume up/down  |
 
 ## Keybinds
-The OSC does not set its own keybinds to not disturb the user's configuration.
+The OSC does not set its own keybinds to not disturb the user. Most of the functions are done by interacting with elements in the OSC itself.
 
-It does provide an option to set keybinds in `input.conf` with the following: (change the actual input if you want)
+You have an option to set keybinds in `input.conf` with the following:
 
 | Function                | Input Command                                | Description                                        |
 |-------------------------|----------------------------------------------|----------------------------------------------------|
@@ -334,7 +332,7 @@ It does provide an option to set keybinds in `input.conf` with the following: (c
 | Show OSC                | `z script-message-to modernz osc-show`       | Show OSC on command without needing to move mouse  |
 
 ## OSC Language
-By default, the OSC only has English language. However, it is relatively easy to add new languages.
+By default, the OSC only has English language. However, it is relatively easy to add other languages.
 
 In `modernz.lua`, the `local language` stores phrases for the English language labeled as `["en"]`:
 
