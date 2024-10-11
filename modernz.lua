@@ -34,12 +34,11 @@ local user_opts = {
 
     -- Buttons
     hovereffect = true,                    -- whether buttons have a glowing effect when hovered over
-	
-    showplaylist = false,                  -- show playlist button? LClick: show playlist, RClick: use select.lua
 
     showjump = true,                       -- show "jump forward/backward 10 seconds" buttons 
     showskip = false,                      -- show the skip back and forward (chapter) buttons
 
+    showplaylist = false,                  -- show playlist button? LClick: simple playlist, RClick: interactive playlist
     showinfo = false,                      -- show the info button
     showloop = true,                       -- show the loop button
 
@@ -1873,7 +1872,6 @@ local function osc_init()
             if user_opts.screenshot_flag == "subtitles" then mp.commandv("set", "sub-pos", 100) end
             mp.commandv("screenshot", user_opts.screenshot_flag)
             mp.commandv("set", "sub-pos", tempSubPosition)
-            mp.command("show-text 'Screenshot saved'")
         end
 
     --tog_info
@@ -2709,6 +2707,8 @@ mp.set_key_bindings({
                             function() process_event("mbtn_left", "down")  end},
     {"shift+mbtn_left",     function() process_event("shift+mbtn_left", "up") end,
                             function() process_event("shift+mbtn_left", "down")  end},
+    {"shift+mbtn_right",    function(e) process_event("shift+mbtn_right", "up") end,
+                            function(e) process_event("shift+mbtn_right", "down")  end},
     {"mbtn_right",          function() process_event("mbtn_right", "up") end,
                             function() process_event("mbtn_right", "down")  end},
     -- alias to shift_mbtn_left for single-handed mouse use
