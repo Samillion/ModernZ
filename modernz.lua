@@ -178,8 +178,8 @@ local language = {
 	    nochapter = "No chapters.",
 	    ontop = "Pin window",
 	    ontopdisable = "Unpin window",
-	    loopenable = "Enable looping",
-	    loopdisable = "Disable looping",
+	    loopenable = "Enable loop",
+	    loopdisable = "Disable loop",
 	    screenshot = "Screenshot",
 	    statsinfo = "Information",
 	},
@@ -1562,7 +1562,6 @@ local function osc_init()
     --play control buttons
     --playpause
     ne = new_element("playpause", "button")
-
     ne.content = function ()
         if mp.get_property("eof-reached") == "yes" then
             return (icons.replay)
@@ -1571,7 +1570,6 @@ local function osc_init()
         else
             return (icons.pause)
         end
-
     end
     ne.eventresponder["mbtn_left_up"] =
         function ()
@@ -1585,9 +1583,9 @@ local function osc_init()
     ne.eventresponder["mbtn_right_down"] =
         function ()
             if state.looping then
-                mp.command("show-text 'Loop disabled'")
+                mp.command("show-text '" .. texts.loopdisable .. "'")
             else
-                mp.command("show-text 'Loop enabled'")
+                mp.command("show-text '" .. texts.loopenable .. "'")
             end    
             state.looping = not state.looping
             mp.set_property_native("loop-file", state.looping)
@@ -1649,13 +1647,11 @@ local function osc_init()
             if compactmode then     
                 mp.commandv("add", "chapter", -1)
             else
-                mp.command("show-text ${chapter-list} 3000")
+                open_selector("chapter")
             end
         end
     ne.eventresponder["shift+mbtn_left_down"] =
-        function ()
-            mp.commandv("seek", -60, jumpmode)
-        end
+        function () mp.commandv("seek", -60, jumpmode) end
     ne.eventresponder["shift+mbtn_right_down"] =
         function () mp.command("show-text ${chapter-list} 3000") end
 
@@ -1678,7 +1674,7 @@ local function osc_init()
             if compactmode then
                 mp.commandv("add", "chapter", 1)
             else
-                mp.command("show-text ${chapter-list} 3000")
+                open_selector("chapter")
             end
         end
     ne.eventresponder["shift+mbtn_left_down"] =
@@ -1696,8 +1692,13 @@ local function osc_init()
     ne.content = icons.audio
     ne.tooltip_style = osc_styles.Tooltip
     ne.tooltipF = function ()
+        local prop = mp.get_property("current-tracks/audio/title")
+        if not prop then
+            prop = mp.get_property("current-tracks/audio/lang")
+            if not prop then prop = texts.na end
+        end
         return (texts.audio .. " " ..
-               (mp.get_property_native("aid") or "-") .. "/" .. audio_track_count)
+               (mp.get_property_native("aid") or "-") .. "/" .. audio_track_count .. " [" .. prop .. "]")
     end
     ne.nothingavailable = texts.noaudio
     ne.eventresponder["mbtn_left_up"] =
@@ -1707,8 +1708,8 @@ local function osc_init()
     ne.eventresponder["mbtn_right_up"] = 
         function () mp.command("cycle audio down") end
     ne.eventresponder["shift+mbtn_left_down"] =
-        function () mp.command("show-text ${track-list} 2000") end
-                
+        function () mp.command("show-text ${track-list} 3000") end
+
     --cy_sub
     ne = new_element("cy_sub", "button")
     ne.enabled = sub_track_count > 0
@@ -1717,8 +1718,13 @@ local function osc_init()
     ne.content = icons.sub
     ne.tooltip_style = osc_styles.Tooltip
     ne.tooltipF = function ()
+        local prop = mp.get_property("current-tracks/sub/title")
+        if not prop then
+            prop = mp.get_property("current-tracks/sub/lang")
+            if not prop then prop = texts.na end
+        end
         return (texts.subtitle .. " " ..
-               (mp.get_property_native("sid") or "-") .. "/" .. sub_track_count)
+               (mp.get_property_native("sid") or "-") .. "/" .. sub_track_count .. " [" .. prop .. "]")
     end
     ne.nothingavailable = texts.nosub
     ne.eventresponder["mbtn_left_up"] = 
@@ -1728,7 +1734,7 @@ local function osc_init()
     ne.eventresponder["mbtn_right_up"] =
         function () mp.command("cycle sub down") end
     ne.eventresponder["shift+mbtn_left_down"] =
-        function () mp.command("show-text ${track-list} 2000") end
+        function () mp.command("show-text ${track-list} 3000") end
 
     --tog_pl
     ne = new_element("tog_pl", "button")
@@ -1737,9 +1743,9 @@ local function osc_init()
     ne.tooltip_style = osc_styles.Tooltip
     ne.tooltipF = texts.playlist
     ne.eventresponder["mbtn_left_up"] = 
-        function () open_selector("playlist") end
+        function () mp.command("show-text ${playlist} 3000") end
     ne.eventresponder["mbtn_right_up"] =
-        function () open_selector("chapter") end
+        function () open_selector("playlist") end
 
     -- vol_ctrl
     ne = new_element("vol_ctrl", "button")
@@ -1846,6 +1852,11 @@ local function osc_init()
     end
     ne.eventresponder["mbtn_left_up"] =
         function ()
+            if state.looping then
+                mp.command("show-text '" .. texts.loopdisable .. "'")
+            else
+                mp.command("show-text '" .. texts.loopenable .. "'")
+            end
             state.looping = not state.looping
             mp.set_property_native("loop-file", state.looping)
         end    
