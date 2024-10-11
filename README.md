@@ -332,9 +332,9 @@ It does provide an option to set keybinds in `input.conf` with the following: (c
 | Show OSC                | `z script-message-to modernz osc-show`       | Show OSC on command without needing to move mouse  |
 
 ## OSC Language
-By default, the OSC is in English. However, it is relatively easy to add new languages.
+By default, the OSC only has English language. However, it is relatively easy to add new languages.
 
-In `modernz.lua`, the `local language` list stores the phrases and `local texts = language["en"]` sets the language with the initial defined in the list.
+In `modernz.lua`, the `local language` stores the phrases, like so for the English language labeled as `["en"]`:
 
 ```lua
 -- Localization
@@ -361,158 +361,155 @@ local language = {
 	    screenshot = "Screenshot",
 	    screenshotsaved = "Screenshot saved",
 	    statsinfo = "Information",
-	},
+    },
 }
-
--- apply lang opts
-local texts = language["en"]
 ```
 
-The following is a list of languages you can add or use as reference:
+You can use the following list to add more languages to `local language`, then set it in your `modernz.conf` to be used. (ie: `language=fr` for French)
 
 <details>
   <summary>French</summary>
   
   ```lua
-	["fr"] = {
-		welcome = "{\\fs24\\1c&H0&\\1c&HFFFFFF&}Déposez des fichiers ou des URLs ici pour les lire",
-		off = "DÉSACTIVÉ",
-		na = "n/d",
-		none = "Aucun disponible",
-		video = "Vidéo",
-		audio = "Audio",
-		subtitle = "Sous-titre",
-		nosub = "Pas de sous-titres disponibles",
-		noaudio = "Pas de pistes audio disponibles",
-		track = " pistes:",
-		playlist = "Liste de lecture",
-		nolist = "Liste de lecture vide.",
-		chapter = "Chapitre",
-		nochapter = "Pas de chapitres.",
-		ontop = "Épingler la fenêtre",
-		ontopdisable = "Désépingler la fenêtre",
-		loopenable = "Activer la boucle",
-		loopdisable = "Désactiver la boucle",
-		screenshot = "Capture d'écran",
-		screenshotsaved = "Capture d'écran enregistrée",
-		statsinfo = "Information",
-	},
+    ["fr"] = {
+	    welcome = "{\\fs24\\1c&H0&\\1c&HFFFFFF&}Déposez des fichiers ou des URLs ici pour les lire",
+	    off = "DÉSACTIVÉ",
+	    na = "n/d",
+	    none = "Aucun disponible",
+	    video = "Vidéo",
+	    audio = "Audio",
+	    subtitle = "Sous-titre",
+	    nosub = "Pas de sous-titres disponibles",
+	    noaudio = "Pas de pistes audio disponibles",
+	    track = " pistes:",
+	    playlist = "Liste de lecture",
+	    nolist = "Liste de lecture vide.",
+	    chapter = "Chapitre",
+	    nochapter = "Pas de chapitres.",
+	    ontop = "Épingler la fenêtre",
+	    ontopdisable = "Désépingler la fenêtre",
+	    loopenable = "Activer la boucle",
+	    loopdisable = "Désactiver la boucle",
+	    screenshot = "Capture d'écran",
+	    screenshotsaved = "Capture d'écran enregistrée",
+	    statsinfo = "Information",
+    },
   ```
 </details>
 <details>
   <summary>German</summary>
   
   ```lua
-	["de"] = {
-		welcome = "{\\fs24\\1c&H0&\\1c&HFFFFFF&}Dateien oder URLs hier ablegen, um sie abzuspielen",
-		off = "AUS",
-		na = "k.A.",
-		none = "Keine verfügbar",
-		video = "Video",
-		audio = "Audio",
-		subtitle = "Untertitel",
-		nosub = "Keine Untertitel verfügbar",
-		noaudio = "Keine Audiospuren verfügbar",
-		track = " Spuren:",
-		playlist = "Wiedergabeliste",
-		nolist = "Leere Wiedergabeliste.",
-		chapter = "Kapitel",
-		nochapter = "Keine Kapitel.",
-		ontop = "Fenster fixieren",
-		ontopdisable = "Fensterfixierung aufheben",
-		loopenable = "Schleifen aktivieren",
-		loopdisable = "Schleifen deaktivieren",
-		screenshot = "Screenshot",
-		screenshotsaved = "Screenshot gespeichert",
-		statsinfo = "Information",
-	},
+    ["de"] = {
+	    welcome = "{\\fs24\\1c&H0&\\1c&HFFFFFF&}Dateien oder URLs hier ablegen, um sie abzuspielen",
+	    off = "AUS",
+	    na = "k.A.",
+	    none = "Keine verfügbar",
+	    video = "Video",
+	    audio = "Audio",
+	    subtitle = "Untertitel",
+	    nosub = "Keine Untertitel verfügbar",
+	    noaudio = "Keine Audiospuren verfügbar",
+	    track = " Spuren:",
+	    playlist = "Wiedergabeliste",
+	    nolist = "Leere Wiedergabeliste.",
+	    chapter = "Kapitel",
+	    nochapter = "Keine Kapitel.",
+	    ontop = "Fenster fixieren",
+	    ontopdisable = "Fensterfixierung aufheben",
+	    loopenable = "Schleifen aktivieren",
+	    loopdisable = "Schleifen deaktivieren",
+	    screenshot = "Screenshot",
+	    screenshotsaved = "Screenshot gespeichert",
+	    statsinfo = "Information",
+    },
   ```
 </details>
 <details>
   <summary>Spanish</summary>
   
   ```lua
-	["es"] = {
-		welcome = "{\\fs24\\1c&H0&\\1c&HFFFFFF&}Suelta archivos o URLs aquí para reproducirlos",
-		off = "APAGADO",
-		na = "n/d",
-		none = "Ninguno disponible",
-		video = "Video",
-		audio = "Audio",
-		subtitle = "Subtítulo",
-		nosub = "No hay subtítulos disponibles",
-		noaudio = "No hay pistas de audio disponibles",
-		track = " pistas:",
-		playlist = "Lista de reproducción",
-		nolist = "Lista de reproducción vacía.",
-		chapter = "Capítulo",
-		nochapter = "No hay capítulos.",
-		ontop = "Fijar ventana",
-		ontopdisable = "Desfijar ventana",
-		loopenable = "Activar bucle",
-		loopdisable = "Desactivar bucle",
-		screenshot = "Captura de pantalla",
-		screenshotsaved = "Captura de pantalla guardada",
-		statsinfo = "Información",
-	},
+    ["es"] = {
+	    welcome = "{\\fs24\\1c&H0&\\1c&HFFFFFF&}Suelta archivos o URLs aquí para reproducirlos",
+	    off = "APAGADO",
+	    na = "n/d",
+	    none = "Ninguno disponible",
+	    video = "Video",
+	    audio = "Audio",
+	    subtitle = "Subtítulo",
+	    nosub = "No hay subtítulos disponibles",
+	    noaudio = "No hay pistas de audio disponibles",
+	    track = " pistas:",
+	    playlist = "Lista de reproducción",
+	    nolist = "Lista de reproducción vacía.",
+	    chapter = "Capítulo",
+	    nochapter = "No hay capítulos.",
+	    ontop = "Fijar ventana",
+	    ontopdisable = "Desfijar ventana",
+	    loopenable = "Activar bucle",
+	    loopdisable = "Desactivar bucle",
+	    screenshot = "Captura de pantalla",
+	    screenshotsaved = "Captura de pantalla guardada",
+	    statsinfo = "Información",
+    },
   ```
 </details>
 <details>
   <summary>Polish</summary>
   
   ```lua
-	["pl"] = {
-		welcome = "{\\fs24\\1c&H0&\\1c&HFFFFFF&}Upuść plik lub łącze URL do odtworzenia",
-		off = "WYŁ.",
-		na = "n/a",
-		none = "nic",
-		video = "Wideo",
-		audio = "Audio",
-		subtitle = "Napisy",
-		nosub = "Brak dostępnych napisów",
-		noaudio = "Brak dostępnych ścieżek dźwiękowych",
-		track = " ścieżki:",
-		playlist = "Lista odtwarzania",
-		nolist = "Lista odtwarzania pusta.",
-		chapter = "Rozdział",
-		nochapter = "Brak rozdziałów.",
-		ontop = "Przypnij okno do góry",
-		ontopdisable = "Odepnij okno od góry",
-		loopenable = "Włączenie zapętlenia",
-		loopdisable = "Wyłączenie zapętlenia",
-		screenshot = "Zrzut ekranu",
-		screenshotsaved = "Zrzut ekranu zapisany",
-		statsinfo = "Informacja",
-	},
+    ["pl"] = {
+	    welcome = "{\\fs24\\1c&H0&\\1c&HFFFFFF&}Upuść plik lub łącze URL do odtworzenia",
+	    off = "WYŁ.",
+	    na = "n/a",
+	    none = "nic",
+	    video = "Wideo",
+	    audio = "Audio",
+	    subtitle = "Napisy",
+	    nosub = "Brak dostępnych napisów",
+	    noaudio = "Brak dostępnych ścieżek dźwiękowych",
+	    track = " ścieżki:",
+	    playlist = "Lista odtwarzania",
+	    nolist = "Lista odtwarzania pusta.",
+	    chapter = "Rozdział",
+	    nochapter = "Brak rozdziałów.",
+	    ontop = "Przypnij okno do góry",
+	    ontopdisable = "Odepnij okno od góry",
+	    loopenable = "Włączenie zapętlenia",
+	    loopdisable = "Wyłączenie zapętlenia",
+	    screenshot = "Zrzut ekranu",
+	    screenshotsaved = "Zrzut ekranu zapisany",
+	    statsinfo = "Informacja",
+    },
   ```
 </details>
 <details>
   <summary>Japanese</summary>
   
   ```lua
-	["jp"] = {
-		welcome = "{\\fs24\\1c&H0&\\1c&HFFFFFF&}ファイルやURLのリンクをここにドロップすると再生されます",
-		off = "OFF",
-		na = "n/a",
-		none = "なし",
-		video = "ビデオ",
-		audio = "オーディオ",
-		subtitle = "サブタイトル",
-		nosub = "字幕はありません",
-		noaudio = "オーディオトラックはありません",
-		track = "トラック:",
-		playlist = "プレイリスト",
-		nolist = "空のプレイリスト.",
-		chapter = "チャプター",
-		nochapter = "利用可能なチャプターはありません.",
-		ontop = "ピンウィンドウをトップに表示",
-		ontopdisable = "ウィンドウを上からアンピンする",
-		loopenable = "ループON",
-		loopdisable = "ループOFF",
-		screenshot = "スクリーンショット",
-		screenshotsaved = "スクリーンショットが保存されました",
-		statsinfo = "情報",
-	},
+    ["jp"] = {
+	    welcome = "{\\fs24\\1c&H0&\\1c&HFFFFFF&}ファイルやURLのリンクをここにドロップすると再生されます",
+	    off = "OFF",
+	    na = "n/a",
+	    none = "なし",
+	    video = "ビデオ",
+	    audio = "オーディオ",
+	    subtitle = "サブタイトル",
+	    nosub = "字幕はありません",
+	    noaudio = "オーディオトラックはありません",
+	    track = "トラック:",
+	    playlist = "プレイリスト",
+	    nolist = "空のプレイリスト.",
+	    chapter = "チャプター",
+	    nochapter = "利用可能なチャプターはありません.",
+	    ontop = "ピンウィンドウをトップに表示",
+	    ontopdisable = "ウィンドウを上からアンピンする",
+	    loopenable = "ループON",
+	    loopdisable = "ループOFF",
+	    screenshot = "スクリーンショット",
+	    screenshotsaved = "スクリーンショットが保存されました",
+	    statsinfo = "情報",
+    },
   ```
 </details>
 <details>
@@ -541,36 +538,36 @@ The following is a list of languages you can add or use as reference:
 	    screenshot = "截屏",
 	    screenshotsaved = "截图已保存",
 	    statsinfo = "信息",
-	},
+    },
   ```
 </details>
 <details>
   <summary>Arabic</summary>
   
   ```lua
-	["ar"] = {
-		welcome = "{\\fs24\\1c&H0&\\1c&HFFFFFF&}أسقط الملفات أو الروابط هنا للتشغيل",
-		off = "إيقاف",
-		na = "غير متاح",
-		none = "غير متوفر",
-		video = "فيديو",
-		audio = "صوت",
-		subtitle = "الترجمة",
-		nosub = "لا توجد ترجمات",
-		noaudio = "لا توجد مسارات صوتية",
-		track = " مسارات:",
-		playlist = "قائمة التشغيل",
-		nolist = "قائمة التشغيل فارغة.",
-		chapter = "الفصل",
-		nochapter = "لا توجد فصول.",
-		ontop = "تثبيت النافذة",
-		ontopdisable = "إلغاء تثبيت النافذة",
-		loopenable = "تمكين التكرار",
-		loopdisable = "تعطيل التكرار",
-		screenshot = "لقطة شاشة",
-		screenshotsaved = "تم حفظ لقطة الشاشة",
-		statsinfo = "معلومات",
-	},
+    ["ar"] = {
+	    welcome = "{\\fs24\\1c&H0&\\1c&HFFFFFF&}أسقط الملفات أو الروابط هنا للتشغيل",
+	    off = "إيقاف",
+	    na = "غير متاح",
+	    none = "غير متوفر",
+	    video = "فيديو",
+	    audio = "صوت",
+	    subtitle = "الترجمة",
+	    nosub = "لا توجد ترجمات",
+	    noaudio = "لا توجد مسارات صوتية",
+	    track = " مسارات:",
+	    playlist = "قائمة التشغيل",
+	    nolist = "قائمة التشغيل فارغة.",
+	    chapter = "الفصل",
+	    nochapter = "لا توجد فصول.",
+	    ontop = "تثبيت النافذة",
+	    ontopdisable = "إلغاء تثبيت النافذة",
+	    loopenable = "تمكين التكرار",
+	    loopdisable = "تعطيل التكرار",
+	    screenshot = "لقطة شاشة",
+	    screenshotsaved = "تم حفظ لقطة الشاشة",
+	    statsinfo = "معلومات",
+    },
   ```
 </details>
 
