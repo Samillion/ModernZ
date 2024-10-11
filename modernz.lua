@@ -188,6 +188,9 @@ local language = {
 }
 
 local texts
+local function set_osc_texts()
+    texts = language[user_opts.language]
+end
 
 local thumbfast = {
 	width = 0,
@@ -1468,9 +1471,6 @@ end
 
 local function osc_init()
     msg.debug("osc_init")
-
-    -- apply lang opts
-    texts = language[user_opts.language]
 
     -- set canvas resolution according to display aspect and scaling setting
     local baseResY = 720
@@ -2899,6 +2899,7 @@ end
 -- read options from config and command-line
 opt.read_options(user_opts, "modernz", function(changed)
     validate_user_opts()
+    set_osc_texts()
     set_osc_styles()
     set_time_styles(changed.timetotal, changed.timems)
     if changed.tick_delay or changed.tick_delay_follow_display_fps then
@@ -2911,6 +2912,7 @@ opt.read_options(user_opts, "modernz", function(changed)
 end)
 
 validate_user_opts()
+set_osc_texts()
 set_osc_styles()
 set_time_styles(true, true)
 set_tick_delay("display_fps", mp.get_property_number("display_fps"))
