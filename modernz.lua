@@ -180,6 +180,7 @@ local language = {
 	    loopenable = "Enable loop",
 	    loopdisable = "Disable loop",
 	    screenshot = "Screenshot",
+	    screenshotsaved = "Screenshot saved",
 	    statsinfo = "Information",
 	},
 }
@@ -1610,7 +1611,6 @@ local function osc_init()
         ne.eventresponder["shift+mbtn_left_down"] =
             function () mp.commandv("frame-back-step") end
 
-
         --jumpfrwd
         ne = new_element("jumpfrwd", "button")
 
@@ -1872,6 +1872,7 @@ local function osc_init()
             if user_opts.screenshot_flag == "subtitles" then mp.commandv("set", "sub-pos", 100) end
             mp.commandv("screenshot", user_opts.screenshot_flag)
             mp.commandv("set", "sub-pos", tempSubPosition)
+            mp.command("show-text '" .. texts.screenshotsaved .. "'")
         end
 
     --tog_info
@@ -2830,10 +2831,9 @@ mp.register_script_message("thumbfast-info", function(json)
 	end
 end)
 
-mp.register_script_message("progresstoggle", function()
+mp.add_key_binding(nil, "progress-toggle", function()
 	state.persistentprogresstoggle = not state.persistentprogresstoggle
 	request_init()
-	mp.command("show-text 'Persistent progress bar toggled'")
 end)
 
 -- Validate string type user options
