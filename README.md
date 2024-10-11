@@ -55,7 +55,7 @@ https://github.com/user-attachments/assets/513c7ce8-8803-4b73-82af-2d1e690fd4f0
 - [x] Hide osc when `select-playlist` is triggered
 - [ ] Remove redundant `user_opts` `compactmode` [#15](https://github.com/Samillion/ModernZ/issues/15)
 - [ ] Improve `show-text ${track-list}` output [specify mode]. Cause of delay: wait until [mpv/PR-15038](https://github.com/mpv-player/mpv/pull/15038) is mainstream for users
-- [ ] Make first release v0.1.0
+- [x] Make first release v0.1.0
 - [ ] Stop adding things to the to do list. 😝
 
 ## How to install
