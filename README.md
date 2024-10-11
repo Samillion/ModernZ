@@ -325,10 +325,10 @@ The OSC does not set its own keybinds to not disturb the user's configuration.
 
 It does provide an option to set keybinds in `input.conf` with the following: (change the actual input if you want)
 
-| Function             | Input Command                                | Description                                        |
-|----------------------|----------------------------------------------|----------------------------------------------------|
-| Show OSC             | `o script-message-to modernz osc-show`       | Show OSC on command without needing to move mouse  |
-| Persistent Progress  | `x script-message-to modernz progresstoggle` | Toggle persistent progress bar                     |
+| Function                | Input Command                                | Description                                        |
+|-------------------------|----------------------------------------------|----------------------------------------------------|
+| Persistent Progress Bar | `x script-binding modernz/progress-toggle`   | Toggle persistent progress bar                     |
+| Show OSC                | `z script-message-to modernz osc-show`       | Show OSC on command without needing to move mouse  |
 
 ## OSC Language
 By default, the OSC is in English. However, it is relatively easy to add new languages.
@@ -358,6 +358,7 @@ local language = {
 	    loopenable = "Enable looping",
 	    loopdisable = "Disable looping",
 	    screenshot = "Screenshot",
+	    screenshotsaved = "Screenshot saved",
 	    statsinfo = "Information",
 	},
 }
@@ -392,6 +393,7 @@ The following is a list of languages you can add or use as reference:
 		loopenable = "Activer la boucle",
 		loopdisable = "Désactiver la boucle",
 		screenshot = "Capture d'écran",
+		screenshotsaved = "Capture d'écran enregistrée",
 		statsinfo = "Information",
 	},
   ```
@@ -420,6 +422,7 @@ The following is a list of languages you can add or use as reference:
 		loopenable = "Schleifen aktivieren",
 		loopdisable = "Schleifen deaktivieren",
 		screenshot = "Screenshot",
+		screenshotsaved = "Screenshot gespeichert",
 		statsinfo = "Information",
 	},
   ```
@@ -448,6 +451,7 @@ The following is a list of languages you can add or use as reference:
 		loopenable = "Activar bucle",
 		loopdisable = "Desactivar bucle",
 		screenshot = "Captura de pantalla",
+		screenshotsaved = "Captura de pantalla guardada",
 		statsinfo = "Información",
 	},
   ```
@@ -476,6 +480,7 @@ The following is a list of languages you can add or use as reference:
 		loopenable = "Włączenie zapętlenia",
 		loopdisable = "Wyłączenie zapętlenia",
 		screenshot = "Zrzut ekranu",
+		screenshotsaved = "Zrzut ekranu zapisany",
 		statsinfo = "Informacja",
 	},
   ```
@@ -504,6 +509,7 @@ The following is a list of languages you can add or use as reference:
 		loopenable = "ループON",
 		loopdisable = "ループOFF",
 		screenshot = "スクリーンショット",
+		screenshotsaved = "スクリーンショットが保存されました",
 		statsinfo = "情報",
 	},
   ```
@@ -532,6 +538,7 @@ The following is a list of languages you can add or use as reference:
 	    loopenable = "启用循环功能",
 	    loopdisable = "禁用循环功能",
 	    screenshot = "截屏",
+	    screenshotsaved = "截图已保存",
 	    statsinfo = "信息",
 	},
   ```
@@ -560,6 +567,7 @@ The following is a list of languages you can add or use as reference:
 		loopenable = "تمكين التكرار",
 		loopdisable = "تعطيل التكرار",
 		screenshot = "لقطة شاشة",
+		screenshotsaved = "تم حفظ لقطة الشاشة",
 		statsinfo = "معلومات",
 	},
   ```
