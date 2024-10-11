@@ -82,7 +82,7 @@ local user_opts = {
     showwindowtitle = true,                -- show window title in borderless/fullscreen mode
     showwindowcontrols = true,             -- show window controls (close, min, max) in borderless/fullscreen
     titleBarStrip = false,                 -- whether to make the title bar a singular bar instead of a black fade
-    title = "${media-title}",              -- title shown on OSC (above seekbar). ${media-title} or ${filename}
+    title = "${media-title/no-ext}",       -- title above seekbar. ${media-title} or ${filename} (can use /no-ext)
     font = "mpv-osd-symbols",              -- mpv-osd-symbols = default osc font (or the one set in mpv.conf)
     titlefontsize = 30,                    -- the font size of the title text (above seekbar)
     chapter_fmt = "Chapter: %s",           -- chapter print format for seekbar-hover. "no" to disable
@@ -187,8 +187,7 @@ local language = {
 	},
 }
 
--- apply lang opts
-local texts = language[user_opts.language]
+local texts
 
 local thumbfast = {
 	width = 0,
@@ -1469,6 +1468,9 @@ end
 
 local function osc_init()
     msg.debug("osc_init")
+
+    -- apply lang opts
+    texts = language[user_opts.language]
 
     -- set canvas resolution according to display aspect and scaling setting
     local baseResY = 720
@@ -2840,19 +2842,17 @@ end)
 
 -- Validate string type user options
 local function validate_user_opts()
-    if user_opts.windowcontrols ~= "auto" and
+    if user_opts.windowcontrols ~= "auto" and 
        user_opts.windowcontrols ~= "yes" and
        user_opts.windowcontrols ~= "no" then
-        msg.warn("windowcontrols cannot be \"" ..
-                user_opts.windowcontrols .. "\". Ignoring.")
-        user_opts.windowcontrols = "auto"
+          msg.warn("windowcontrols cannot be '" .. user_opts.windowcontrols .. "'. Ignoring.")
+          user_opts.windowcontrols = "auto"
     end
 
     if user_opts.volumecontroltype ~= "linear" and
        user_opts.volumecontroltype ~= "log" then
-            msg.warn("volumecontrol cannot be \"" ..
-                user_opts.volumecontroltype .. "\". Ignoring.")
-        user_opts.volumecontroltype = "linear"
+          msg.warn("volumecontrol cannot be '" .. user_opts.volumecontroltype .. "'. Ignoring.")
+          user_opts.volumecontroltype = "linear"
     end
 
     if user_opts.automatickeyframemode then
@@ -2870,9 +2870,16 @@ local function validate_user_opts()
        user_opts.screenshot_flag ~= "subtitles+each-frame" and
        user_opts.screenshot_flag ~= "video+each-frame" and
        user_opts.screenshot_flag ~= "window+each-frame" then
-            msg.warn("screenshot_flag cannot be \"" ..
-                user_opts.screenshot_flag .. "\". Ignoring.")
-        user_opts.screenshot_flag = "subtitles"
+          msg.warn("screenshot_flag cannot be '" .. user_opts.screenshot_flag .. "'. Ignoring.")
+          user_opts.screenshot_flag = "subtitles"
+    end
+	
+    if not language[user_opts.language] then
+       msg.warn("language '" .. user_opts.language .. "' not found. Ignoring.")
+       user_opts.language = "en"
+       if not language["en"] then
+          msg.warn("ERROR: can't find the default 'en' language or the one set by user_opts.")
+       end
     end
 	
     local colors = {
