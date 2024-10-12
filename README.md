@@ -54,7 +54,7 @@ https://github.com/user-attachments/assets/513c7ce8-8803-4b73-82af-2d1e690fd4f0
 - [x] Add translations: German, French, Spanish, Arabic [[learn more](#osc-language)]
 - [x] Hide osc when `select-playlist` is triggered
 - [ ] Remove redundant `user_opts` `compactmode` [#15](https://github.com/Samillion/ModernZ/issues/15)
-- [ ] Improve `show-text ${track-list}` output [specify mode]. Cause of delay: wait until [mpv/PR-15038](https://github.com/mpv-player/mpv/pull/15038) is mainstream for users
+- [ ] Improve use of `${track-list}` [specify mode]. Wait until [mpv-PR15038](https://github.com/mpv-player/mpv/pull/15038) is mainstream
 - [x] Make first release v0.1.0
 - [ ] Stop adding things to the to do list. 😝
 
@@ -176,7 +176,7 @@ Below is the full list of options you can use in `modernz.conf`, with their defa
 | seekrange               | yes   | show seekrange overlay                                                               |
 | seekrangealpha          | 150   | transparency of seekranges                                                           |
 | livemarkers             | yes   | update seekbar chapter markers on duration change                                    |
-| osc_on_seek             | no    | show osc when seeking? or input.conf: `x script-message-to modernz osc-show`         |
+| osc_on_seek             | no    | show osc when seeking?                                                               |
 | automatickeyframemode   | yes   | set seekbarkeyframes based on video length to prevent laggy scrubbing on long videos |
 | automatickeyframelimit  | 600   | videos of above this length (in seconds) will have seekbarkeyframes on               |
 
@@ -187,7 +187,7 @@ Below is the full list of options you can use in `modernz.conf`, with their defa
 | showwindowtitle          | yes                   | show window title in borderless/fullscreen mode                      |
 | showwindowcontrols       | yes                   | show window controls (close, min, max) in borderless/fullscreen      |
 | titleBarStrip            | no                    | whether to make the title bar a singular bar instead of a black fade |
-| title                    | ${media-title/no-ext} | title above seekbar. ${media-title} or ${filename} (can use /no-ext) |
+| title                    | ${media-title}        | title above seekbar. ${media-title} or ${filename} (can use /no-ext) |
 | font                     | mpv-osd-symbols       | mpv-osd-symbols = default osc font (or the one set in mpv.conf)      |
 | titlefontsize            | 30                    | the font size of the title text (above seekbar)                      |
 | chapter_fmt              | Chapter: %s           | chapter print format for seekbar-hover. "no" to disable              |
@@ -356,12 +356,12 @@ local language = {
 	    nochapter = "No chapters.",
 	    ontop = "Pin window",
 	    ontopdisable = "Unpin window",
-	    loopenable = "Enable looping",
-	    loopdisable = "Disable looping",
+	    loopenable = "Enable loop",
+	    loopdisable = "Disable loop",
 	    screenshot = "Screenshot",
 	    screenshotsaved = "Screenshot saved",
 	    statsinfo = "Information",
-    },
+	},
 }
 ```
 
@@ -372,7 +372,7 @@ You can use the following language lists to adjust or add more languages to `loc
 
   > In `modernz.conf` you must use `language=fr` for it to be active.
 
-  ```lua
+```lua
     ["fr"] = {
 	    welcome = "{\\fs24\\1c&H0&\\1c&HFFFFFF&}Déposez des fichiers ou des URLs ici pour les lire",
 	    off = "DÉSACTIVÉ",
@@ -396,14 +396,14 @@ You can use the following language lists to adjust or add more languages to `loc
 	    screenshotsaved = "Capture d'écran enregistrée",
 	    statsinfo = "Information",
     },
-  ```
+```
 </details>
 <details>
   <summary>German</summary>
 
   > In `modernz.conf` you must use `language=de` for it to be active.
 
-  ```lua
+```lua
     ["de"] = {
 	    welcome = "{\\fs24\\1c&H0&\\1c&HFFFFFF&}Dateien oder URLs hier ablegen, um sie abzuspielen",
 	    off = "AUS",
@@ -427,14 +427,14 @@ You can use the following language lists to adjust or add more languages to `loc
 	    screenshotsaved = "Screenshot gespeichert",
 	    statsinfo = "Information",
     },
-  ```
+```
 </details>
 <details>
   <summary>Spanish</summary>
 
   > In `modernz.conf` you must use `language=es` for it to be active.
 
-  ```lua
+```lua
     ["es"] = {
 	    welcome = "{\\fs24\\1c&H0&\\1c&HFFFFFF&}Suelta archivos o URLs aquí para reproducirlos",
 	    off = "APAGADO",
@@ -458,14 +458,14 @@ You can use the following language lists to adjust or add more languages to `loc
 	    screenshotsaved = "Captura de pantalla guardada",
 	    statsinfo = "Información",
     },
-  ```
+```
 </details>
 <details>
   <summary>Polish</summary>
 
   > In `modernz.conf` you must use `language=pl` for it to be active.
 
-  ```lua
+```lua
     ["pl"] = {
 	    welcome = "{\\fs24\\1c&H0&\\1c&HFFFFFF&}Upuść plik lub łącze URL do odtworzenia",
 	    off = "WYŁ.",
@@ -489,14 +489,14 @@ You can use the following language lists to adjust or add more languages to `loc
 	    screenshotsaved = "Zrzut ekranu zapisany",
 	    statsinfo = "Informacja",
     },
-  ```
+```
 </details>
 <details>
   <summary>Japanese</summary>
 
   > In `modernz.conf` you must use `language=jp` for it to be active.
 
-  ```lua
+```lua
     ["jp"] = {
 	    welcome = "{\\fs24\\1c&H0&\\1c&HFFFFFF&}ファイルやURLのリンクをここにドロップすると再生されます",
 	    off = "OFF",
@@ -520,14 +520,14 @@ You can use the following language lists to adjust or add more languages to `loc
 	    screenshotsaved = "スクリーンショットが保存されました",
 	    statsinfo = "情報",
     },
-  ```
+```
 </details>
 <details>
   <summary>Simplified Chinese</summary>
 
   > In `modernz.conf` you must use `language=chs` for it to be active.
 
-  ```lua
+```lua
     ["chs"] = {
 	    welcome = "{\\fs24\\1c&H0&\\1c&HFFFFFF&}将文件或URL放在这里播放",
 	    off = "关闭",
@@ -551,14 +551,14 @@ You can use the following language lists to adjust or add more languages to `loc
 	    screenshotsaved = "截图已保存",
 	    statsinfo = "信息",
     },
-  ```
+```
 </details>
 <details>
   <summary>Arabic</summary>
 
   > In `modernz.conf` you must use `language=ar` for it to be active.
 
-  ```lua
+```lua
     ["ar"] = {
 	    welcome = "{\\fs24\\1c&H0&\\1c&HFFFFFF&}أسقط الملفات أو الروابط هنا للتشغيل",
 	    off = "إيقاف",
@@ -582,7 +582,7 @@ You can use the following language lists to adjust or add more languages to `loc
 	    screenshotsaved = "تم حفظ لقطة الشاشة",
 	    statsinfo = "معلومات",
     },
-  ```
+```
 </details>
 
 ### Why aren't they included in user options already?
