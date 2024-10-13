@@ -53,7 +53,7 @@ https://github.com/user-attachments/assets/513c7ce8-8803-4b73-82af-2d1e690fd4f0
 - [x] Add more `user_opts` validation
 - [x] Add translations: German, French, Spanish, Arabic [[learn more](#osc-language)]
 - [x] Hide osc when `select-playlist` is triggered
-- [ ] Remove redundant `user_opts` `compactmode` [#15](https://github.com/Samillion/ModernZ/issues/15)
+- [x] Remove redundant `user_opts` `compactmode` [#15](https://github.com/Samillion/ModernZ/issues/15)
 - [ ] Improve use of `${track-list}` [specify mode]. Wait until [mpv-PR15038](https://github.com/mpv-player/mpv/pull/15038) is mainstream
 - [x] Make first release v0.1.0
 - [ ] Stop adding things to the to do list. 😝
@@ -194,7 +194,6 @@ Below is the full list of options you can use in `modernz.conf`, with their defa
 | persistentprogress       | no                    | always show a small progress line at the bottom of the screen        |
 | persistentprogressheight | 17                    | the height of the persistentprogress bar                             |
 | persistentbuffer         | no                    | on web videos, show the buffer on the persistent progress line       |
-| compactmode              | no                    | replace the jump buttons with the chapter buttons                    |
 
 ### UI [behavior]
 | Option              | Value | Description                                                |
