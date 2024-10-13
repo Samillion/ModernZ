@@ -91,8 +91,6 @@ local user_opts = {
     persistentprogressheight = 17,         -- the height of the persistentprogress bar
     persistentbuffer = false,              -- on web videos, show the buffer on the persistent progress line
 
-    compactmode = false,                   -- replace the jump buttons with the chapter buttons
-
     -- UI [behavior]
     showonpause = true,                    -- whether to show osc when paused
     keeponpause = true,                    -- whether to disable the hide timeout on pause
@@ -184,7 +182,7 @@ local language = {
 	    screenshot = "Screenshot",
 	    screenshotsaved = "Screenshot saved",
 	    statsinfo = "Information",
-	},
+    },
 }
 
 local texts
@@ -1157,6 +1155,7 @@ local function window_controls()
         geo = {x = 10, y = button_y + 16, an = 1, w = osc_param.playresx - 50, h = wc_geo.h}
         lo.geometry = geo
         lo.style = osc_styles.WindowTitle
+        --lo.style = string.format("%s{\\clip(%f,%f,%f,%f)}", osc_styles.WindowTitle, geo.x, geo.y - geo.h, geo.x + geo.w, geo.y)
         lo.button.maxchars = geo.w / 15
     end
 
@@ -1285,12 +1284,7 @@ layouts = function ()
     local showinfo = user_opts.showinfo
     local showontop = user_opts.showontop
     local showscreenshot = user_opts.showscreenshot
-	local showplaylist = user_opts.showplaylist
-
-    if user_opts.compactmode then
-        user_opts.showjump = false
-        showjump = false
-    end
+    local showplaylist = user_opts.showplaylist
 
     local offset = showjump and 60 or 0
     local outeroffset = (showskip and 0 or 100) + (showjump and 0 or 100)
@@ -1373,12 +1367,12 @@ layouts = function ()
     lo.visible = (osc_param.playresx >= 600 - outeroffset)
 
     -- Playlist
-	if showplaylist then
-		lo = add_layout("tog_pl")
-		lo.geometry = {x = 127, y = refY - 40, an = 5, w = 24, h = 24}
-		lo.style = osc_styles.Ctrl3
-		lo.visible = (osc_param.playresx >= 600 - outeroffset)
-	end
+    if showplaylist then
+        lo = add_layout("tog_pl")
+        lo.geometry = {x = 127, y = refY - 40, an = 5, w = 24, h = 24}
+        lo.style = osc_styles.Ctrl3
+        lo.visible = (osc_param.playresx >= 600 - outeroffset)
+    end
 
     -- Volume
     lo = add_layout("vol_ctrl")
@@ -1510,13 +1504,7 @@ local function osc_init()
 
     local nojumpoffset = user_opts.showjump and 0 or 100
     local noskipoffset = user_opts.showskip and 0 or 100
-
-    local compactmode = user_opts.compactmode
-
-    if compactmode then nojumpoffset = 100 end
-
     local outeroffset = (user_opts.showskip and 0 or 140) + (user_opts.showjump and 0 or 140)
-    if compactmode then outeroffset = 140 end
 
     local ne
 
@@ -1524,8 +1512,7 @@ local function osc_init()
     ne = new_element("title", "button")
     ne.visible = user_opts.showtitle
     ne.content = function ()
-        local title = state.forced_title or
-                      mp.command_native({"expand-text", user_opts.title})
+        local title = state.forced_title or mp.command_native({"expand-text", user_opts.title})
         title = title:gsub("\n", " ")
         return title ~= "" and mp.command_native({"escape-ass", title}) or "mpv"
     end
@@ -1636,23 +1623,11 @@ local function osc_init()
     ne.visible = (osc_param.playresx >= 400 - nojumpoffset*10)
     ne.softrepeat = true
     ne.content = icons.backward
-    ne.enabled = (have_ch) or compactmode -- disables button when no chapters available.
+    ne.enabled = (have_ch) -- disables button when no chapters available.
     ne.eventresponder["mbtn_left_down"] =
-        function () 
-            if compactmode then
-                mp.commandv("seek", -jumpamount, jumpmode)
-            else
-                mp.commandv("add", "chapter", -1)
-            end
-        end
+        function () mp.commandv("add", "chapter", -1) end
     ne.eventresponder["mbtn_right_down"] =
-        function () 
-            if compactmode then     
-                mp.commandv("add", "chapter", -1)
-            else
-                open_selector("chapter")
-            end
-        end
+        function () open_selector("chapter") end
     ne.eventresponder["shift+mbtn_left_down"] =
         function () mp.commandv("seek", -60, jumpmode) end
     ne.eventresponder["shift+mbtn_right_down"] =
@@ -1663,23 +1638,11 @@ local function osc_init()
     ne.visible = (osc_param.playresx >= 400 - nojumpoffset*10)
     ne.softrepeat = true
     ne.content = icons.forward
-    ne.enabled = (have_ch) or compactmode -- disables button when no chapters available.
+    ne.enabled = (have_ch) -- disables button when no chapters available.
     ne.eventresponder["mbtn_left_down"] =
-        function ()
-            if compactmode then
-                mp.commandv("seek", jumpamount, jumpmode)
-            else
-                mp.commandv("add", "chapter", 1)
-            end
-        end
+        function () mp.commandv("add", "chapter", 1) end
     ne.eventresponder["mbtn_right_down"] =
-        function ()
-            if compactmode then
-                mp.commandv("add", "chapter", 1)
-            else
-                open_selector("chapter")
-            end
-        end
+        function () open_selector("chapter") end
     ne.eventresponder["shift+mbtn_left_down"] =
         function () mp.commandv("seek", 60, jumpmode) end
     ne.eventresponder["shift+mbtn_right_down"] =
@@ -2630,20 +2593,6 @@ mp.observe_property("chapter-list", "native", function(_, list)
     state.chapter_list = list
     update_duration_watch()
     request_init()
-end)
-
--- These are for backwards compatibility only.
-mp.register_script_message("osc-message", function(message, dur)
-    mp.osd_message(message, dur)
-end)
-mp.register_script_message("osc-chapterlist", function(dur)
-    mp.command("show-text ${chapter-list} " .. (dur and dur * 1000 or ""))
-end)
-mp.register_script_message("osc-playlist", function(dur)
-    mp.command("show-text ${playlist} " .. (dur and dur * 1000 or ""))
-end)
-mp.register_script_message("osc-tracklist", function(dur)
-    mp.command("show-text ${track-list} " .. (dur and dur * 1000 or ""))
 end)
 
 mp.observe_property("seeking", "native", function(_, seeking)
