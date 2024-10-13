@@ -325,10 +325,12 @@ The OSC does not set its own keybinds to not disturb the user. Most of the funct
 
 You have an option to set keybinds in `input.conf` with the following:
 
-| Function                | Input Command                                | Description                                        |
-|-------------------------|----------------------------------------------|----------------------------------------------------|
-| Persistent Progress Bar | `x script-binding modernz/progress-toggle`   | Toggle persistent progress bar                     |
-| Show OSC                | `z script-message-to modernz osc-show`       | Show OSC on command without needing to move mouse  |
+| Function                | Input Command                                      | Description                                                               |
+|-------------------------|----------------------------------------------------|---------------------------------------------------------------------------|
+| Persistent Progress     | `w script-binding modernz/progress-toggle`         | Toggle persistent progress bar                                            |
+| Show OSC                | `x script-message-to modernz osc-show`             | Show OSC on command without needing to move mouse                         |
+| OSC Visibility          | `y script-message-to modernz osc-visibility cycle` | OSC visibility mode. Accepts `never`, `auto`, `always` and `cycle`        |
+| Logo on Idle            | `z script-message-to modernz osc-idlescreen cycle` | The visibility of the mpv logo on idle. Accepts `yes`, `no`, and `cycle`  |
 
 ## OSC Language
 By default, the OSC only has English language. However, it is relatively easy to add other languages.
