@@ -11,27 +11,30 @@ If white buttons and text don't suit your taste, you have the option to fully cu
 
 #### Interactive Playlist
 
-Thanks to the guys at mpv for creating the awesome [select](https://github.com/mpv-player/mpv/blob/master/player/lua/select.lua) script and bundling it in mpv [v0.39.0](https://github.com/mpv-player/mpv/discussions/14903), you can now utilize it within this OSC.
+Thanks to the mpv team for developing the excellent [select](https://github.com/mpv-player/mpv/blob/master/player/lua/select.lua) script and including it in mpv [v0.39.0](https://github.com/mpv-player/mpv/discussions/14903), you can now seamlessly access it through this OSC.
 
-| Action (Playlist Button) | Function                     |
-|--------------------------|------------------------------|
-| Left mouse click         | Show a simple playlist       |
-| Right mouse click        | Show an interactive playlist |
+https://github.com/user-attachments/assets/b7402c7a-313a-4abb-98b9-c34ec936fede
 
-| Action (Skip Buttons)   | Function                          |
-|-------------------------|-----------------------------------|
-| Right mouse click       | Show an interactive chapters list |
-| Shift+right mouse click | Show a simple chapters list       |
+| Playlist Button  | Function                     |
+|------------------|------------------------------|
+| Left mouse click | Show an interactive playlist |
+
+| Audio/Subtitle buttons | Function                           |
+|------------------------|------------------------------------|
+| Right mouse click      | Show an interactive tracks list    |
+
+| Skip Buttons      | Function                          |
+|-------------------|-----------------------------------|
+| Right mouse click | Show an interactive chapters list |
+
+You can find more details on button interactions [here](#button-interactions).
 
 > [!TIP]
-> If the font size for the interactive playlist is too small, you can add the following to your `mpv.conf`
+> If the font size for the interactive playlist is too small, you can add the following in your `mpv.conf`
 > ```ini
 > # change font size for console and select
 > script-opts-append=console-font_size=30
 > ```
-
-
-https://github.com/user-attachments/assets/513c7ce8-8803-4b73-82af-2d1e690fd4f0
 
 ## Get Started
 - [How to Install](#how-to-install)
@@ -224,6 +227,7 @@ Below is a list that explains the OSC buttons function depending on how you inte
 | Left mouse click          | Seek to position (using keyframes)     |
 | Shift+left mouse click    | Seek to the exact position             |
 | Right mouse click         | Seek to the head of chosen chapter     |
+| Scroll wheel              | Seek forward/backwards                 |
 
 ### Playback Time
 
@@ -271,18 +275,18 @@ Below is a list that explains the OSC buttons function depending on how you inte
 
 ### Audio/Subtitle
 
-| Action                    | Function                 |
-|---------------------------|--------------------------|
-| Left mouse click          | Cycle to next track      |
-| Right mouse click         | Cycle to previous track  |
-| Shift+left mouse click    | Show tracks list         |
+| Action                    | Function                           |
+|---------------------------|------------------------------------|
+| Left mouse click          | Cycle audio/subtitle track         |
+| Right mouse click         | Show an interactive tracks list    |
+| Shift+left mouse click    | Show a simple tracks list          |
 
 ### Playlist
 
 | Action                | Function                     |
 |-----------------------|------------------------------|
-| Left mouse click      | Show a simple playlist       |
-| Right mouse click     | Show an interactive playlist |
+| Left mouse click      | Show an interactive playlist |
+| Right mouse click     | Show a simple playlist       |
 
 ### Screenshot
 
