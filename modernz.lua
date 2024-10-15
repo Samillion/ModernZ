@@ -2010,6 +2010,10 @@ local function osc_init()
                 state.playingWhilstSeeking = false
             end
         end
+    ne.eventresponder["wheel_up_press"] =
+        function () mp.commandv("osd-auto", "seek",  10) end
+    ne.eventresponder["wheel_down_press"] =
+        function () mp.commandv("osd-auto", "seek", -10) end
 
     --persistent seekbar
     if user_opts.persistentprogress or state.persistentprogresstoggle then
