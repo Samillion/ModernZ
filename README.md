@@ -13,7 +13,7 @@ If white buttons and text don't suit your taste, you have the option to fully cu
 
 Thanks to the mpv team for developing the excellent [select](https://github.com/mpv-player/mpv/blob/master/player/lua/select.lua) script and including it in mpv [v0.39.0](https://github.com/mpv-player/mpv/discussions/14903), you can now seamlessly access it through this OSC.
 
-https://github.com/user-attachments/assets/b7402c7a-313a-4abb-98b9-c34ec936fede
+https://github.com/user-attachments/assets/119cd68a-f574-40fa-9ecf-41a850ddde4d
 
 | Playlist Button  | Function                     |
 |------------------|------------------------------|
