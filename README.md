@@ -15,17 +15,11 @@ Thanks to the mpv team for developing the excellent [select](https://github.com/
 
 https://github.com/user-attachments/assets/119cd68a-f574-40fa-9ecf-41a850ddde4d
 
-| Playlist Button  | Function                     |
-|------------------|------------------------------|
-| Left mouse click | Show an interactive playlist |
-
-| Audio/Subtitle buttons | Function                           |
-|------------------------|------------------------------------|
-| Right mouse click      | Show an interactive tracks list    |
-
-| Skip Buttons      | Function                          |
-|-------------------|-----------------------------------|
-| Right mouse click | Show an interactive chapters list |
+| Button(s)      | Action           | Function                           |
+|----------------|------------------|------------------------------------|
+| Playlist       | Left mouse click | Show an interactive playlist       |
+| Audio/Subtitle | Right mouse click | Show an interactive tracks list   |
+| Skip           | Right mouse click | Show an interactive chapters list |
 
 You can find more details on button interactions [here](#button-interactions).
 
