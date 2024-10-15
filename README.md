@@ -42,22 +42,6 @@ https://github.com/user-attachments/assets/513c7ce8-8803-4b73-82af-2d1e690fd4f0
 - [OSC Language (Translations)](#osc-language)
 - [History](#history)
 
-
-**To do list**:
-- [x] Re-organize the functions and variables so the order makes sense and not just random
-- [x] Ensure all included functions and variables are actually used and not remnants of the past
-- [x] Match mpv's `osc.lua` standards and functionality, where relative, to ensure compatibility and stability.
-- [x] Improve button placements
-- [x] Add an option to show a playlist button (mode: `simple` or `select.lua`)
-- [x] Include more customization options for colors
-- [x] Add more `user_opts` validation
-- [x] Add translations: German, French, Spanish, Arabic [[learn more](#osc-language)]
-- [x] Hide osc when `select-playlist` is triggered
-- [x] Remove redundant `user_opts` `compactmode` [#15](https://github.com/Samillion/ModernZ/issues/15)
-- [ ] Improve use of `${track-list}` [specify mode]. Wait until [mpv-PR15038](https://github.com/mpv-player/mpv/pull/15038) is mainstream
-- [x] Make first release v0.1.0
-- [ ] Stop adding things to the to do list. 😝
-
 ## How to install
 **OSC**: Simply place `modernz.lua` in the corresponding mpv scripts folder of your operating system:
 
