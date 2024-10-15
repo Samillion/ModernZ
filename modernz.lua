@@ -213,23 +213,23 @@ local osc_styles
 
 local function set_osc_styles()
     osc_styles = {
-        TransBg = "{\\blur100\\bord" .. user_opts.OSCfadealpha .. "\\1c&H000000&\\3c&H" .. osc_color_convert(user_opts.osc_color) .. "&}",
+        background = "{\\blur100\\bord" .. user_opts.OSCfadealpha .. "\\1c&H000000&\\3c&H" .. osc_color_convert(user_opts.osc_color) .. "&}",
         SeekbarBg = "{\\blur0\\bord0\\1c&H" .. osc_color_convert(user_opts.seekbarbg_color) .. "&}",
         SeekbarFg = "{\\blur1\\bord1\\1c&H" .. osc_color_convert(user_opts.seekbarfg_color) .. "&}",
         VolumebarBg = "{\\blur0\\bord0\\1c&H999999&}",
         VolumebarFg = "{\\blur1\\bord1\\1c&H" .. osc_color_convert(user_opts.side_buttons_color) .. "&}",
         Ctrl1 = "{\\blur0\\bord0\\1c&H" .. osc_color_convert(user_opts.playpause_color) .. "&\\3c&HFFFFFF&\\fs36\\fn" .. iconfont .. "}",
         Ctrl2 = "{\\blur0\\bord0\\1c&H" .. osc_color_convert(user_opts.middle_buttons_color) .. "&\\3c&HFFFFFF&\\fs24\\fn" .. iconfont .. "}",
-        Ctrl2Flip = "{\\blur0\\bord0\\1c&H" .. osc_color_convert(user_opts.middle_buttons_color) .. "&\\3c&HFFFFFF&\\fs24\\fn" .. iconfont .. "\\fry180",
+        Ctrl2Flip = "{\\blur0\\bord0\\1c&H" .. osc_color_convert(user_opts.middle_buttons_color) .. "&\\3c&HFFFFFF&\\fs24\\fn" .. iconfont .. "\\fry180}",
         Ctrl3 = "{\\blur0\\bord0\\1c&H" .. osc_color_convert(user_opts.side_buttons_color) .. "&\\3c&HFFFFFF&\\fs24\\fn" .. iconfont .. "}",
         Time = "{\\blur0\\bord0\\1c&H" .. osc_color_convert(user_opts.time_color) .. "&\\3c&H000000&\\fs" .. user_opts.timefontsize .. "\\fn" .. user_opts.font .. "}",
         Tooltip = "{\\blur1\\bord0.5\\1c&HFFFFFF&\\3c&H000000&\\fs" .. user_opts.timefontsize .. "\\fn" .. user_opts.font .. "}",
-        Title = "{\\blur1\\bord0.5\\1c&H" .. osc_color_convert(user_opts.title_color) .. "&\\3c&H0\\fs".. user_opts.titlefontsize .."\\q2\\fn" .. user_opts.font .. "}",
-        WindowTitle = "{\\blur1\\bord0.5\\1c&H" .. osc_color_convert(user_opts.window_title_color) .. "&\\3c&H0\\fs".. 30 .."\\q2\\fn" .. user_opts.font .. "}",
-        WinCtrl = "{\\blur1\\bord0.5\\1c&H" .. osc_color_convert(user_opts.window_controls_color) .. "&\\3c&H0\\fs".. 25 .."\\fnmpv-osd-symbols}",
+        Title = "{\\blur1\\bord0.5\\1c&H" .. osc_color_convert(user_opts.title_color) .. "&\\3c&H0&\\fs".. user_opts.titlefontsize .."\\q2\\fn" .. user_opts.font .. "}",
+        WindowTitle = "{\\blur1\\bord0.5\\1c&H" .. osc_color_convert(user_opts.window_title_color) .. "&\\3c&H0&\\fs".. 30 .."\\q2\\fn" .. user_opts.font .. "}",
+        WinCtrl = "{\\blur1\\bord0.5\\1c&H" .. osc_color_convert(user_opts.window_controls_color) .. "&\\3c&H0&\\fs".. 25 .."\\fnmpv-osd-symbols}",
         elementDown = "{\\1c&H999999&}",
         elementHover = "{\\blur5\\2c&HFFFFFF&}",
-        wcBar = "{\\1c&H" .. osc_color_convert(user_opts.osc_color) .. "}",
+        wcBar = "{\\1c&H" .. osc_color_convert(user_opts.osc_color) .. "&}",
     }
 end
 
@@ -268,6 +268,7 @@ local state = {
     chapter_list = {},                      -- sorted by time
     mute = false,
     looping = false,
+    selector = false,
     sliderpos = 0,
     touchingprogressbar = false,            -- if the mouse is touching the progress bar
     initialborder = mp.get_property("border"),
@@ -575,7 +576,7 @@ end
 local function window_controls_enabled()
     local val = user_opts.windowcontrols
     if val == "auto" then
-        return (not state.border) or state.fullscreen
+        return not state.border or not state.title_bar or state.fullscreen
     else
         return val ~= "no"
     end
@@ -1130,34 +1131,15 @@ local function window_controls()
     end
 
     local button_y = wc_geo.y - (wc_geo.h / 2)
-    local first_geo =
-        {x = controlbox_left + 25, y = button_y, an = 5, w = 40, h = wc_geo.h}
-    local second_geo =
-        {x = controlbox_left + 69, y = button_y, an = 5, w = 40, h = wc_geo.h}
-    local third_geo =
-        {x = controlbox_left + 113, y = button_y, an = 5, w = 40, h = wc_geo.h}
+    local first_geo = {x = controlbox_left + 25, y = button_y, an = 5, w = 40, h = wc_geo.h}
+    local second_geo = {x = controlbox_left + 69, y = button_y, an = 5, w = 40, h = wc_geo.h}
+    local third_geo = {x = controlbox_left + 113, y = button_y, an = 5, w = 40, h = wc_geo.h}
 
     -- Window control buttons use symbols in the custom mpv osd font
     -- because the official unicode codepoints are sufficiently
     -- exotic that a system might lack an installed font with them,
     -- and libass will complain that they are not present in the
     -- default font, even if another font with them is available.
-
-    -- Window Title
-    if user_opts.showwindowtitle then
-        ne = new_element("windowtitle", "button")
-        ne.content = function ()
-            local title = mp.command_native({"expand-text", mp.get_property("title")})
-			title = title:gsub("\n", " ")
-			return title ~= "" and mp.command_native({"escape-ass", title}) or "mpv"
-        end
-        lo = add_layout("windowtitle")
-        geo = {x = 10, y = button_y + 16, an = 1, w = osc_param.playresx - 50, h = wc_geo.h}
-        lo.geometry = geo
-        lo.style = osc_styles.WindowTitle
-        --lo.style = string.format("%s{\\clip(%f,%f,%f,%f)}", osc_styles.WindowTitle, geo.x, geo.y - geo.h, geo.x + geo.w, geo.y)
-        lo.button.maxchars = geo.w / 15
-    end
 
     if user_opts.showwindowcontrols then
         -- Close: 🗙
@@ -1180,7 +1162,7 @@ local function window_controls()
         lo.style = osc_styles.WinCtrl
         lo.button.hoverstyle = "{\\c&H00D7FF&}" -- gold
     
-        -- Maximize: 🗖/🗗
+        -- Maximize: 🗖 /🗗
         ne = new_element("maximize", "button")
         if state.maximized or state.fullscreen then
             ne.content = "\238\132\148"
@@ -1199,6 +1181,30 @@ local function window_controls()
         lo.geometry = second_geo
         lo.style = osc_styles.WinCtrl
         lo.button.hoverstyle = "{\\c&H00D7FF&}" -- gold
+    end
+
+    -- Window Title
+    if user_opts.showwindowtitle then
+        ne = new_element("windowtitle", "button")
+        ne.content = function ()
+            local title = mp.command_native({"expand-text", mp.get_property("title")}) or ""
+            title = title:gsub("\n", " ")
+            return title ~= "" and mp.command_native({"escape-ass", title}) or "mpv"
+        end
+        local left_pad = 0
+        local right_pad = 0
+        lo = add_layout("windowtitle")
+        local geo = {x = 20, y = button_y + 16, an = 1, w = osc_param.playresx - 50, h = wc_geo.h}
+        lo.geometry = geo
+
+        local clip_x1 = titlebox_left + left_pad 
+        local clip_y1 = wc_geo.y - wc_geo.h 
+        local clip_x2 = titlebox_right - right_pad
+        local clip_y2 = wc_geo.y + wc_geo.h
+        lo.style = string.format("%s{\\clip(%f,%f,%f,%f)}", osc_styles.WindowTitle, clip_x1, clip_y1, clip_x2, clip_y2)
+        lo.button.maxchars = geo.w / 10
+
+        add_area("window-controls-title", titlebox_left, 0, titlebox_right, wc_geo.h)
     end
 end
 
@@ -1228,24 +1234,23 @@ layouts = function ()
     add_area("showhide", 0, 0, osc_param.playresx, osc_param.playresy)
 
     -- fetch values
-    local osc_w, osc_h=
-        osc_geo.w, osc_geo.h
+    local osc_w, osc_h = osc_geo.w, osc_geo.h
 
     -- Controller Background
     local lo, geo
     
-    new_element("TransBg", "box")
-    lo = add_layout("TransBg")
+    new_element("background", "box")
+    lo = add_layout("background")
     lo.geometry = {x = posX, y = posY, an = 7, w = osc_w, h = 1}
-    lo.style = osc_styles.TransBg
+    lo.style = osc_styles.background
     lo.layer = 10
     lo.alpha[3] = 0
 
-    if not user_opts.titleBarStrip and not state.border then
+    if not user_opts.titleBarStrip and (not state.border or state.fullscreen) then
         new_element("TitleTransBg", "box")
         lo = add_layout("TitleTransBg")
         lo.geometry = {x = posX, y = -100, an = 7, w = osc_w, h = -1}
-        lo.style = osc_styles.TransBg
+        lo.style = osc_styles.background
         lo.layer = 10
         lo.alpha[3] = 0
     end
@@ -1450,17 +1455,15 @@ end
 local function osc_visible(visible)
     if state.osc_visible ~= visible then
         state.osc_visible = visible
-        adjust_subtitles(true)    -- raise subtitles
+        adjust_subtitles(true)
     end
     request_tick()
 end
 
 local function open_selector(type)
     mp.command("script-binding select/select-" .. type)
-
-    if user_opts.visibility == "auto" then
-        osc_visible(false)
-    end
+    state.selector = true
+    osc_visible(false)
 end
 
 local function osc_init()
@@ -1471,9 +1474,7 @@ local function osc_init()
     local display_w, display_h, display_aspect = mp.get_osd_size()
     local scale = 1
 
-    if (mp.get_property("video") == "no") then -- dummy/forced window
-        scale = user_opts.scaleforcedwindow
-    elseif state.fullscreen then
+    if state.fullscreen then
         scale = user_opts.scalefullscreen
     else
         scale = user_opts.scalewindowed
@@ -2236,7 +2237,7 @@ local function process_event(source, what)
                 )
             ) then
                 if user_opts.bottomhover then -- if enabled, only show osc if mouse is hovering at the bottom of the screen (where the UI elements are)
-                    if mouseY > osc_param.playresy - 200 or (not state.border or state.fullscreen) and mouseY < 40 then -- account for scaling options
+                    if mouseY > osc_param.playresy - 160 or (not state.border or state.fullscreen) and mouseY < 40 then -- account for scaling options
                         show_osc()
                     else
                         hide_osc()
@@ -2385,14 +2386,9 @@ local function render()
         for _,cords in ipairs(osc_param.areas["window-controls"]) do
             if state.osc_visible then -- activate only when OSC is actually visible
                 set_virt_mouse_area(cords.x1, cords.y1, cords.x2, cords.y2, "window-controls")
-            end
-            if state.osc_visible ~= state.windowcontrols_buttons then
-                if state.osc_visible then
-                    mp.enable_key_bindings("window-controls")
-                else
-                    mp.disable_key_bindings("window-controls")
-                end
-                state.windowcontrols_buttons = state.osc_visible
+                mp.enable_key_bindings("window-controls")
+            else
+                mp.disable_key_bindings("window-controls")
             end
 
             if mouse_hit_coords(cords.x1, cords.y1, cords.x2, cords.y2) then
@@ -2426,7 +2422,7 @@ local function render()
         local timeout = state.showtime + (get_hidetimeout() / 1000) - now
         if timeout <= 0 and get_touchtimeout() <= 0 then
             if state.active_element == nil and (user_opts.bottomhover or not mouse_over_osc) then
-                if not (state.paused and user_opts.keeponpause) then
+                if state.selector or not (state.paused and user_opts.keeponpause) then
                     hide_osc()
                 end
             end
@@ -2608,6 +2604,10 @@ mp.observe_property("fullscreen", "bool", function(_, val)
 end)
 mp.observe_property("border", "bool", function(_, val)
     state.border = val
+    request_init_resize()
+end)
+mp.observe_property("title-bar", "bool", function(_, val)
+    state.title_bar = val
     request_init_resize()
 end)
 mp.observe_property("window-maximized", "bool", function(_, val)
