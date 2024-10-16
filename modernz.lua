@@ -1689,7 +1689,7 @@ local function osc_init()
     ne.eventresponder["enter"] = 
         function () mp.command("cycle audio") end
     ne.eventresponder["mbtn_right_up"] = 
-        function () mp.command("cycle audio down") end
+        function () open_selector("aid") end
     ne.eventresponder["shift+mbtn_left_down"] =
         function () mp.command("show-text ${track-list} 3000") end
 
@@ -1715,7 +1715,7 @@ local function osc_init()
     ne.eventresponder["enter"] = 
         function () mp.command("cycle sub") end
     ne.eventresponder["mbtn_right_up"] =
-        function () mp.command("cycle sub down") end
+        function () open_selector("sid") end
     ne.eventresponder["shift+mbtn_left_down"] =
         function () mp.command("show-text ${track-list} 3000") end
 
@@ -1726,9 +1726,9 @@ local function osc_init()
     ne.tooltip_style = osc_styles.Tooltip
     ne.tooltipF = pl_count > 0 and texts.playlist .. " [" .. pl_pos .. "/" .. pl_count .. "]" or texts.playlist
     ne.eventresponder["mbtn_left_up"] = 
-        function () mp.command("show-text ${playlist} 3000") end
-    ne.eventresponder["mbtn_right_up"] =
         function () open_selector("playlist") end
+    ne.eventresponder["mbtn_right_up"] =
+        function () mp.command("show-text ${playlist} 3000") end
 
     -- vol_ctrl
     ne = new_element("vol_ctrl", "button")
