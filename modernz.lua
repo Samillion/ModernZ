@@ -82,7 +82,7 @@ local user_opts = {
     showwindowtitle = true,                -- show window title in borderless/fullscreen mode
     showwindowcontrols = true,             -- show window controls (close, min, max) in borderless/fullscreen
     titleBarStrip = false,                 -- whether to make the title bar a singular bar instead of a black fade
-    title = "${media-title/no-ext}",       -- title above seekbar. ${media-title} or ${filename} (can use /no-ext)
+    title = "${media-title}",              -- title above seekbar. ${media-title} or ${filename} (can use /no-ext)
     font = "mpv-osd-symbols",              -- mpv-osd-symbols = default osc font (or the one set in mpv.conf)
     titlefontsize = 30,                    -- the font size of the title text (above seekbar)
     chapter_fmt = "Chapter: %s",           -- chapter print format for seekbar-hover. "no" to disable
