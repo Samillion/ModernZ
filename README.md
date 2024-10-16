@@ -9,17 +9,17 @@ If white buttons and text don't suit your taste, you have the option to fully cu
 
 ![colors_custom](https://github.com/user-attachments/assets/637f0c50-16ac-4d8c-a341-187e3d71d2d3)
 
-#### Interactive Playlist
+#### Interactive Lists
 
-Thanks to the mpv team for developing the excellent [select](https://github.com/mpv-player/mpv/blob/master/player/lua/select.lua) script and including it in mpv [v0.39.0](https://github.com/mpv-player/mpv/discussions/14903), you can now seamlessly access it through this OSC.
+Thanks to the mpv team for developing the excellent [select](https://github.com/mpv-player/mpv/blob/master/player/lua/select.lua) script and including it starting mpv [v0.39.0](https://github.com/mpv-player/mpv/discussions/14903), you can now seamlessly access it through this OSC.
 
-https://github.com/user-attachments/assets/119cd68a-f574-40fa-9ecf-41a850ddde4d
+https://github.com/user-attachments/assets/60af24fc-f18f-40ed-8eaa-1f3198ded786
 
-| Button(s)      | Action           | Function                           |
-|----------------|------------------|------------------------------------|
-| Playlist       | Left mouse click | Show an interactive playlist       |
-| Audio/Subtitle | Right mouse click | Show an interactive tracks list   |
-| Skip           | Right mouse click | Show an interactive chapters list |
+| Button(s)      | Action            | Function                           |
+|----------------|-------------------|------------------------------------|
+| Playlist       | Left mouse click  | Show an interactive playlist       |
+| Audio/Subtitle | Right mouse click | Show an interactive tracks list    |
+| Skip           | Right mouse click | Show an interactive chapters list  |
 
 You can find more details on button interactions [here](#button-interactions).
 
@@ -27,7 +27,7 @@ You can find more details on button interactions [here](#button-interactions).
 > If the font size for the interactive playlist is too small, you can add the following in your `mpv.conf`
 > ```ini
 > # change font size for console and select
-> script-opts-append=console-font_size=30
+> script-opts-append=console-font_size=25
 > ```
 
 ## Get Started
@@ -344,7 +344,7 @@ local language = {
 	    screenshot = "Screenshot",
 	    screenshotsaved = "Screenshot saved",
 	    statsinfo = "Information",
-	},
+    },
 }
 ```
 
