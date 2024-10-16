@@ -1387,7 +1387,7 @@ layouts = function ()
 
     -- Volumebar
     lo = new_element("volumebarbg", "box")
-    lo.visible = (osc_param.playresx >= 700 - outeroffset) and user_opts.volumecontrol
+    lo.visible = (osc_param.playresx >= 1000 - outeroffset) and user_opts.volumecontrol
     lo = add_layout("volumebarbg")
     lo.geometry = {x = 200 - (showplaylist and 0 or 45), y = refY - 40, an = 4, w = 80, h = 2}
     lo.layer = 13
@@ -1721,7 +1721,7 @@ local function osc_init()
 
     --tog_pl
     ne = new_element("tog_pl", "button")
-    ne.visible = (osc_param.playresx >= 600 - outeroffset)
+    ne.visible = (osc_param.playresx >= 700 - outeroffset)
     ne.content = icons.playlist
     ne.tooltip_style = osc_styles.Tooltip
     ne.tooltipF = pl_count > 0 and texts.playlist .. " [" .. pl_pos .. "/" .. pl_count .. "]" or texts.playlist
@@ -1733,7 +1733,7 @@ local function osc_init()
     -- vol_ctrl
     ne = new_element("vol_ctrl", "button")
     ne.enabled = audio_track_count > 0
-    ne.visible = (osc_param.playresx >= 700 - outeroffset) and user_opts.volumecontrol
+    ne.visible = (osc_param.playresx >= 900 - outeroffset) and user_opts.volumecontrol
     ne.content = function ()
         local volume = mp.get_property_number("volume", 0)
         if state.mute then
@@ -1761,7 +1761,7 @@ local function osc_init()
 
     --volumebar
     ne = new_element("volumebar", "slider")
-    ne.visible = (osc_param.playresx >= 900 - outeroffset) and user_opts.volumecontrol
+    ne.visible = (osc_param.playresx >= 1000 - outeroffset) and user_opts.volumecontrol
     ne.enabled = audio_track_count > 0
     ne.slider.markerF = function ()
         return {}
@@ -1824,7 +1824,7 @@ local function osc_init()
             return (icons.loopoff)
         end
     end
-    ne.visible = (osc_param.playresx >= 600 - outeroffset)
+    ne.visible = (osc_param.playresx >= 800 - outeroffset)
     ne.tooltip_style = osc_styles.Tooltip
     ne.tooltipF = function ()
         local msg = texts.loopenable
@@ -1864,7 +1864,7 @@ local function osc_init()
     ne.content = icons.info
     ne.tooltip_style = osc_styles.Tooltip
     ne.tooltipF = texts.statsinfo
-    ne.visible = (osc_param.playresx >= 800 - outeroffset - (user_opts.showloop and 0 or 100) - (user_opts.showontop and 0 or 100))
+    ne.visible = (osc_param.playresx >= 700 - outeroffset - (user_opts.showloop and 0 or 100) - (user_opts.showontop and 0 or 100))
     ne.eventresponder["mbtn_left_up"] =
         function () mp.commandv("script-binding", "stats/display-stats-toggle") end
 
@@ -1885,7 +1885,7 @@ local function osc_init()
         end
         return msg
     end
-    ne.visible = (osc_param.playresx >= 700 - outeroffset - (user_opts.showloop and 0 or 100))
+    ne.visible = (osc_param.playresx >= 850 - outeroffset - (user_opts.showloop and 0 or 100))
     ne.eventresponder["mbtn_left_up"] =
         function () 
             mp.commandv("cycle", "ontop") 
