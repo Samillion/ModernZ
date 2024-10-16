@@ -1438,14 +1438,30 @@ layouts = function ()
 end
 
 local function adjust_subtitles(visible)
-    if visible and user_opts.raisesubs and state.osc_visible == true and (state.fullscreen == false or user_opts.showfullscreen) then
+    local scale
+    if state.fullscreen then
+        scale = user_opts.scalefullscreen
+    else
+        scale = user_opts.scalewindowed
+    end
+
+    if visible and user_opts.raisesubs and state.osc_visible == true then
         local w, h = mp.get_osd_size()
         if h > 0 then
-            local subpos = math.floor((osc_param.playresy - user_opts.raisesubamount)/osc_param.playresy*100)
-            if subpos < 0 then
-                subpos = 100 -- out of screen, default to original position
+            local raise_factor = user_opts.raisesubamount
+
+            -- adjust for extreme scales
+            if scale > 1 then
+                raise_factor = raise_factor * (1 + (scale - 1) * 0.2)  -- slight increase when scale > 1
+            elseif scale < 1 then
+                raise_factor = raise_factor * (0.8 + (scale - 0.5) * 0.5)  -- slight decrease when scale < 1
             end
-            mp.commandv("set", "sub-pos", subpos) -- percentage
+
+            local subpos = math.floor((osc_param.playresy - raise_factor) / osc_param.playresy * 100)
+            if subpos < 0 then
+                subpos = 100 -- original position if out of bounds
+            end
+            mp.commandv("set", "sub-pos", subpos)
         end
     elseif user_opts.raisesubs then
         mp.commandv("set", "sub-pos", 100)
@@ -2604,6 +2620,7 @@ end)
 mp.observe_property("fullscreen", "bool", function(_, val)
     state.fullscreen = val
     state.marginsREQ = true
+    adjust_subtitles(state.osc_visible)
     request_init_resize()
 end)
 mp.observe_property("border", "bool", function(_, val)
@@ -2631,6 +2648,7 @@ mp.observe_property("osd-dimensions", "native", function()
     -- (we could use the value instead of re-querying it all the time, but then
     --  we might have to worry about property update ordering)
     request_init_resize()
+    adjust_subtitles(state.osc_visible)
 end)
 mp.observe_property("osd-scale-by-window", "native", request_init_resize)
 mp.observe_property('touch-pos', 'native', handle_touch)
