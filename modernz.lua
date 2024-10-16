@@ -124,14 +124,6 @@ local osc_param = { -- calculated by osc_init()
     areas = {},
 }
 
--- Icons for jump button depending on jumpamount 
-local jumpicons = { 
-	[5] = {"\239\142\177", "\239\142\163"}, 
-	[10] = {"\239\142\175", "\239\142\161"}, 
-	[30] = {"\239\142\176", "\239\142\162"}, 
-	default = {"\239\142\178    ", "\239\142\178"}, -- second icon is mirrored in layout() 
-} 
-
 local icons = {
 	previous = "\239\142\181",
 	next = "\239\142\180",
@@ -153,7 +145,13 @@ local icons = {
 	ontopon = "\239\142\150",
 	ontopoff = "\239\142\149",
 	screenshot = "\239\135\168",
-	playlist = "\239\137\135"
+	playlist = "\239\137\135",
+	jumpicons = { 
+	    [5] = {"\239\142\177", "\239\142\163"}, 
+	    [10] = {"\239\142\175", "\239\142\161"}, 
+	    [30] = {"\239\142\176", "\239\142\162"}, 
+	    default = {"\239\142\178    ", "\239\142\178"}, -- second icon is mirrored in layout() 
+	}
 }
 
 -- Localization
@@ -213,7 +211,7 @@ local osc_styles
 
 local function set_osc_styles()
     osc_styles = {
-        background = "{\\blur100\\bord" .. user_opts.OSCfadealpha .. "\\1c&H000000&\\3c&H" .. osc_color_convert(user_opts.osc_color) .. "&}",
+        box_bg = "{\\blur100\\bord" .. user_opts.OSCfadealpha .. "\\1c&H000000&\\3c&H" .. osc_color_convert(user_opts.osc_color) .. "&}",
         SeekbarBg = "{\\blur0\\bord0\\1c&H" .. osc_color_convert(user_opts.seekbarbg_color) .. "&}",
         SeekbarFg = "{\\blur1\\bord1\\1c&H" .. osc_color_convert(user_opts.seekbarfg_color) .. "&}",
         VolumebarBg = "{\\blur0\\bord0\\1c&H999999&}",
@@ -867,7 +865,6 @@ local function render_elements(master_ass)
                                     mp.commandv("script-message-to", "thumbfast", "thumb", hover_sec, thumbX, thumbY)
                                 end
 
-                                
                                 -- chapter title
                                 local se, ae = state.slider_element, elements[state.active_element]
                                 if user_opts.chapter_fmt ~= "no" and state.touchingprogressbar then
@@ -1239,10 +1236,10 @@ layouts = function ()
     -- Controller Background
     local lo, geo
     
-    new_element("background", "box")
-    lo = add_layout("background")
+    new_element("box_bg", "box")
+    lo = add_layout("box_bg")
     lo.geometry = {x = posX, y = posY, an = 7, w = osc_w, h = 1}
-    lo.style = osc_styles.background
+    lo.style = osc_styles.box_bg
     lo.layer = 10
     lo.alpha[3] = 0
 
@@ -1250,7 +1247,7 @@ layouts = function ()
         new_element("TitleTransBg", "box")
         lo = add_layout("TitleTransBg")
         lo.geometry = {x = posX, y = -100, an = 7, w = osc_w, h = -1}
-        lo.style = osc_styles.background
+        lo.style = osc_styles.box_bg
         lo.layer = 10
         lo.alpha[3] = 0
     end
@@ -1333,7 +1330,7 @@ layouts = function ()
         lo.geometry = {x = refX + 60, y = refY - 40 , an = 5, w = 30, h = 24}
         -- HACK: jumpfrwd's icon must be mirrored for nonstandard # of seconds
         -- as the font only has an icon without a number for rewinding
-        lo.style = (user_opts.jumpiconnumber and jumpicons[user_opts.jumpamount] ~= nil) and osc_styles.Ctrl2 or osc_styles.Ctrl2Flip
+        lo.style = (user_opts.jumpiconnumber and icons.jumpicons[user_opts.jumpamount] ~= nil) and osc_styles.Ctrl2 or osc_styles.Ctrl2Flip
     end
 
     if showskip then
@@ -1602,16 +1599,16 @@ local function osc_init()
     if user_opts.showjump then
         local jumpamount = user_opts.jumpamount
         local jumpmode = user_opts.jumpmode
-        local icons = jumpicons.default
+        local jump_icon = icons.jumpicons.default
         if user_opts.jumpiconnumber then
-            icons = jumpicons[jumpamount] or jumpicons.default
+            jump_icon = icons.jumpicons[jumpamount] or icons.jumpicons.default
         end
 
         --jumpback
         ne = new_element("jumpback", "button")
 
         ne.softrepeat = true
-        ne.content = icons[1]
+        ne.content = jump_icon[1]
         ne.eventresponder["mbtn_left_down"] =
             function () mp.commandv("seek", -jumpamount, jumpmode) end
         ne.eventresponder["mbtn_right_down"] =
@@ -1623,7 +1620,7 @@ local function osc_init()
         ne = new_element("jumpfrwd", "button")
 
         ne.softrepeat = true
-        ne.content = icons[2]
+        ne.content = jump_icon[2]
         ne.eventresponder["mbtn_left_down"] =
             function () mp.commandv("seek", jumpamount, jumpmode) end
         ne.eventresponder["mbtn_right_down"] =
@@ -1671,7 +1668,7 @@ local function osc_init()
     ne = new_element("cy_audio", "button")
     ne.enabled = audio_track_count > 0
     ne.off = audio_track_count == 0
-    ne.visible = (osc_param.playresx >= 500 - outeroffset)
+    ne.visible = (osc_param.playresx >= 250 - outeroffset)
     ne.content = icons.audio
     ne.tooltip_style = osc_styles.Tooltip
     ne.tooltipF = function ()
@@ -1733,7 +1730,7 @@ local function osc_init()
     -- vol_ctrl
     ne = new_element("vol_ctrl", "button")
     ne.enabled = audio_track_count > 0
-    ne.visible = (osc_param.playresx >= 900 - outeroffset) and user_opts.volumecontrol
+    ne.visible = (osc_param.playresx >= 760 - outeroffset) and user_opts.volumecontrol
     ne.content = function ()
         local volume = mp.get_property_number("volume", 0)
         if state.mute then
@@ -1824,7 +1821,7 @@ local function osc_init()
             return (icons.loopoff)
         end
     end
-    ne.visible = (osc_param.playresx >= 800 - outeroffset)
+    ne.visible = (osc_param.playresx >= 700 - outeroffset)
     ne.tooltip_style = osc_styles.Tooltip
     ne.tooltipF = function ()
         local msg = texts.loopenable
@@ -1849,7 +1846,7 @@ local function osc_init()
     ne.content = icons.screenshot
     ne.tooltip_style = osc_styles.Tooltip
     ne.tooltipF = texts.screenshot
-    ne.visible = (osc_param.playresx >= 900 - outeroffset - (user_opts.showloop and 0 or 100) - (user_opts.showontop and 0 or 100) - (user_opts.showinfo and 0 or 100))
+    ne.visible = (osc_param.playresx >= 870 - outeroffset - (user_opts.showloop and 0 or 100) - (user_opts.showontop and 0 or 100) - (user_opts.showinfo and 0 or 100))
     ne.eventresponder["mbtn_left_up"] =
         function ()
             local tempSubPosition = mp.get_property("sub-pos")
@@ -1864,7 +1861,7 @@ local function osc_init()
     ne.content = icons.info
     ne.tooltip_style = osc_styles.Tooltip
     ne.tooltipF = texts.statsinfo
-    ne.visible = (osc_param.playresx >= 700 - outeroffset - (user_opts.showloop and 0 or 100) - (user_opts.showontop and 0 or 100))
+    ne.visible = (osc_param.playresx >= 600 - outeroffset - (user_opts.showloop and 0 or 100) - (user_opts.showontop and 0 or 100))
     ne.eventresponder["mbtn_left_up"] =
         function () mp.commandv("script-binding", "stats/display-stats-toggle") end
 
@@ -1885,7 +1882,7 @@ local function osc_init()
         end
         return msg
     end
-    ne.visible = (osc_param.playresx >= 850 - outeroffset - (user_opts.showloop and 0 or 100))
+    ne.visible = (osc_param.playresx >= 760 - outeroffset - (user_opts.showloop and 0 or 100))
     ne.eventresponder["mbtn_left_up"] =
         function () 
             mp.commandv("cycle", "ontop") 
@@ -2169,7 +2166,6 @@ local function cache_state(_, st)
     request_tick()
 end
 
-
 local function mouse_leave()
     if get_hidetimeout() >= 0 and get_touchtimeout() <= 0 then
         hide_osc()
@@ -2201,7 +2197,6 @@ local function process_event(source, what)
         what and ("_" .. what) or "")
 
     if what == "down" or what == "press" then
-
         reset_timeout() -- clicking resets the hideosc timer
 
         for n = 1, #elements do
@@ -2219,12 +2214,9 @@ local function process_event(source, what)
                 if element_has_action(elements[n], action) then
                     elements[n].eventresponder[action](elements[n])
                 end
-
             end
         end
-
     elseif what == "up" then
-
         if elements[state.active_element] then
             local n = state.active_element
 
@@ -2240,13 +2232,11 @@ local function process_event(source, what)
             if element_has_action(elements[n], "reset") then
                 elements[n].eventresponder["reset"](elements[n])
             end
-
         end
         state.active_element = nil
         state.mouse_down_counter = 0
 
     elseif source == "mouse_move" then
-
         state.mouse_in_window = true
 
         local mouseX, mouseY = get_virt_mouse_pos()
@@ -2459,7 +2449,6 @@ local function render()
         end
     end
 
-
     -- actual rendering
     local ass = assdraw.ass_new()
 
@@ -2486,7 +2475,6 @@ tick = function()
     if not state.enabled then return end
 
     if state.idle then
-
         -- render idle message
         msg.trace("idle message")
         local _, _, display_aspect = mp.get_osd_size()
@@ -2497,8 +2485,7 @@ tick = function()
         local display_w = display_h * display_aspect
         -- logo is rendered at 2^(6-1) = 32 times resolution with size 1800x1800
         local icon_x, icon_y = (display_w - 1800 / 32) / 2, 140
-        local line_prefix = ("{\\rDefault\\an7\\1a&H00&\\bord0\\shad0\\pos(%f,%f)}"):format(icon_x,
-                                                                                            icon_y)
+        local line_prefix = ("{\\rDefault\\an7\\1a&H00&\\bord0\\shad0\\pos(%f,%f)}"):format(icon_x, icon_y)
 
         local ass = assdraw.ass_new()
         -- mpv logo
@@ -2530,7 +2517,6 @@ tick = function()
             mp.disable_key_bindings("showhide_wc")
             state.showhide_enabled = false
         end
-
     elseif state.fullscreen and user_opts.showfullscreen
         or (not state.fullscreen and user_opts.showwindowed) then
 
@@ -2683,10 +2669,10 @@ mp.set_key_bindings({
                             function() process_event("mbtn_left", "down")  end},
     {"shift+mbtn_left",     function() process_event("shift+mbtn_left", "up") end,
                             function() process_event("shift+mbtn_left", "down")  end},
-    {"shift+mbtn_right",    function(e) process_event("shift+mbtn_right", "up") end,
-                            function(e) process_event("shift+mbtn_right", "down")  end},
     {"mbtn_right",          function() process_event("mbtn_right", "up") end,
                             function() process_event("mbtn_right", "down")  end},
+    {"shift+mbtn_right",    function(e) process_event("shift+mbtn_right", "up") end,
+                            function(e) process_event("shift+mbtn_right", "down")  end},
     -- alias to shift_mbtn_left for single-handed mouse use
     {"mbtn_mid",            function() process_event("shift+mbtn_left", "up") end,
                             function() process_event("shift+mbtn_left", "down")  end},
