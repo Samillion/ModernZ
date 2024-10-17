@@ -3,7 +3,7 @@
 
 A sleek and modern OSC for [mpv](https://mpv.io/), this project is a fork of ModernX designed to enhance functionality by adding more features, all while preserving the core standards of mpv's OSC.
 
-If white buttons and text don't suit your taste, you have the option to fully customize the [colors](#colors) to match your preferences as much as you'd like:
+If white buttons and text don't suit your taste, you have the option to fully customize the [colors](#colors) and display specific [buttons](#buttons) to match your preferences as much as you'd like:
 
 ![titlebar_custom](https://github.com/user-attachments/assets/7968b6f0-df16-44fd-8306-01e581b4e1a7)
 
