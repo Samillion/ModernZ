@@ -202,24 +202,24 @@ Below is the full list of options you can use in `modernz.conf`, with their defa
 ### Mouse Commands (User Options)
 Customize the button function based on mouse action same as you would in `input.conf`. [details](https://mpv.io/manual/master/#list-of-input-commands)
 
-| Option                         | Function                                                                    |
-|--------------------------------|-----------------------------------------------------------------------------|
-| title_mbtn_left_command        | `show-text ${media-title}`                                                  |
-| title_mbtn_right_command       | `show-text ${filename}`                                                     |
-| playlist_mbtn_left_command     | `script-binding select/select-playlist; script-message-to modernz osc-hide` |
-| playlist_mbtn_right_command    | `show-text ${playlist} 3000`                                                |
-| audio_track_mbtn_left_command  | `script-binding select/select-aid; script-message-to modernz osc-hide`      |
-| audio_track_mbtn_right_command | `cycle audio`                                                               |
-| audio_track_wheel_down_command | `cycle audio`                                                               |
-| audio_track_wheel_up_command   | `cycle audio down`                                                          |
-| sub_track_mbtn_left_command    | `script-binding select/select-sid; script-message-to modernz osc-hide`      |
-| sub_track_mbtn_right_command   | `cycle sub`                                                                 |
-| sub_track_wheel_down_command   | `cycle sub`                                                                 |
-| sub_track_wheel_up_command     | `cycle sub down`                                                            |
-| ch_prev_mbtn_left_command      | `no-osd add chapter -1`                                                     |
-| ch_prev_mbtn_right_command     | `script-binding select/select-chapter; script-message-to modernz osc-hide`  |
-| ch_next_mbtn_left_command      | `no-osd add chapter 1`                                                      |
-| ch_next_mbtn_right_command     | `script-binding select/select-chapter; script-message-to modernz osc-hide`  |
+| Type                  | Option                         | Function                                                                    |
+|-----------------------|--------------------------------|-----------------------------------------------------------------------------|
+| Title (seekbar)       | title_mbtn_left_command        | `show-text ${media-title}`                                                  |
+|                       | title_mbtn_right_command       | `show-text ${filename}`                                                     |
+| Playlist Button       | playlist_mbtn_left_command     | `script-binding select/select-playlist; script-message-to modernz osc-hide` |
+|                       | playlist_mbtn_right_command    | `show-text ${playlist} 3000`                                                |
+| Audio Button          | audio_track_mbtn_left_command  | `script-binding select/select-aid; script-message-to modernz osc-hide`      |
+|                       | audio_track_mbtn_right_command | `cycle audio`                                                               |
+|                       | audio_track_wheel_down_command | `cycle audio`                                                               |
+|                       | audio_track_wheel_up_command   | `cycle audio down`                                                          |
+| Subtitle Button       | sub_track_mbtn_left_command    | `script-binding select/select-sid; script-message-to modernz osc-hide`      |
+|                       | sub_track_mbtn_right_command   | `cycle sub`                                                                 |
+|                       | sub_track_wheel_down_command   | `cycle sub`                                                                 |
+|                       | sub_track_wheel_up_command     | `cycle sub down`                                                            |
+| Chapter Skip Buttons  | ch_prev_mbtn_left_command      | `no-osd add chapter -1`                                                     |
+|                       | ch_prev_mbtn_right_command     | `script-binding select/select-chapter; script-message-to modernz osc-hide`  |
+|                       | ch_next_mbtn_left_command      | `no-osd add chapter 1`                                                      |
+|                       | ch_next_mbtn_right_command     | `script-binding select/select-chapter; script-message-to modernz osc-hide`  |
 
 ## Button Interactions
 Below is a list that explains the OSC buttons function depending on how you interact with them.
