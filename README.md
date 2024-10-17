@@ -271,11 +271,12 @@ Below is a list that explains the OSC buttons function depending on how you inte
 
 ### Audio/Subtitle
 
-| Action                    | Function                           |
-|---------------------------|------------------------------------|
-| Left mouse click          | Cycle audio/subtitle track         |
-| Right mouse click         | Show an interactive tracks list    |
-| Shift+left mouse click    | Show a simple tracks list          |
+| Action                    | Function                            |
+|---------------------------|-------------------------------------|
+| Left mouse click          | Cycle audio/subtitle track          |
+| Right mouse click         | Show an interactive tracks list     |
+| Shift+left mouse click    | Show a simple tracks list           |
+| Scroll wheel              | Cycle audio/subtitle tracks up/down |
 
 ### Playlist
 
