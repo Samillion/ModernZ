@@ -43,7 +43,7 @@ local user_opts = {
     showplaylist = false,                  -- show playlist button? LClick: simple playlist, RClick: interactive playlist
     showinfo = false,                      -- show the info button
     showloop = true,                       -- show the loop button
-
+    showfullscreen = true,                 -- show fullscreen toggle button
     showontop = true,                      -- show window on top button
     showscreenshot = false,                -- show screenshot button
     screenshot_flag = "subtitles",         -- flag for the screenshot button. subtitles, video, window, each-frame
@@ -1284,6 +1284,7 @@ layouts = function ()
     local showjump = user_opts.showjump
     local showskip = user_opts.showskip
     local shownextprev = user_opts.shownextprev
+    local showfullscreen = user_opts.showfullscreen
     local showloop = user_opts.showloop
     local showinfo = user_opts.showinfo
     local showontop = user_opts.showontop
@@ -1397,39 +1398,40 @@ layouts = function ()
     lo.slider.tooltip_an = 2
 
     -- Fullscreen/Info/Loop/Pin/Screenshot
-    lo = add_layout("tog_fs")
-    lo.geometry = {x = osc_geo.w - 37, y = refY - 40, an = 5, w = 24, h = 24}
-    lo.style = osc_styles.Ctrl3
-    lo.visible = (osc_param.playresx >= 250 - outeroffset) 
+    if showfullscreen then
+        lo = add_layout("tog_fs")
+        lo.geometry = {x = osc_geo.w - 37, y = refY - 40, an = 5, w = 24, h = 24}
+        lo.style = osc_styles.Ctrl3
+        lo.visible = (osc_param.playresx >= 250 - outeroffset)
+    end
 
-	if showinfo then
-		lo = add_layout("tog_info")
-		lo.geometry = {x = osc_geo.w - 82, y = refY - 40, an = 5, w = 24, h = 24}
-		lo.style = osc_styles.Ctrl3
-		lo.visible = (osc_param.playresx >= 300 - outeroffset)
-	end
+    if showinfo then
+        lo = add_layout("tog_info")
+        lo.geometry = {x = osc_geo.w - 82 + (showfullscreen and 0 or 45), y = refY - 40, an = 5, w = 24, h = 24}
+        lo.style = osc_styles.Ctrl3
+        lo.visible = (osc_param.playresx >= 300 - outeroffset)
+    end
 	
-	if showloop then
-		lo = add_layout("tog_loop")
-		lo.geometry = {x = osc_geo.w - 127 + (showinfo and 0 or 45), y = refY - 40, an = 5, w = 24, h = 24}
-		lo.style = osc_styles.Ctrl3
-		lo.visible = (osc_param.playresx >= 400 - outeroffset)
-	end
+    if showloop then
+        lo = add_layout("tog_loop")
+        lo.geometry = {x = osc_geo.w - 127 + (showinfo and 0 or 45) + (showfullscreen and 0 or 45), y = refY - 40, an = 5, w = 24, h = 24}
+        lo.style = osc_styles.Ctrl3
+        lo.visible = (osc_param.playresx >= 400 - outeroffset)
+    end
 
-	if showontop then
-		lo = add_layout("tog_ontop")
-		lo.geometry = {x = osc_geo.w - 172 + (showloop and 0 or 45) + (showinfo and 0 or 45), y = refY - 40, an = 5, w = 24, h = 24}
-		lo.style = osc_styles.Ctrl3
-		lo.visible = (osc_param.playresx >= 500 - outeroffset)
-	end
+    if showontop then
+        lo = add_layout("tog_ontop")
+        lo.geometry = {x = osc_geo.w - 172 + (showloop and 0 or 45) + (showinfo and 0 or 45) + (showfullscreen and 0 or 45), y = refY - 40, an = 5, w = 24, h = 24}
+        lo.style = osc_styles.Ctrl3
+        lo.visible = (osc_param.playresx >= 500 - outeroffset)
+    end
 
-	if showscreenshot then
-		lo = add_layout("screenshot")
-		lo.geometry = {x = osc_geo.w - 217 + (showontop and 0 or 45) + (showloop and 0 or 45) + (showinfo and 0 or 45), y = refY - 40, an = 5, w = 24, h = 24}
-		lo.style = osc_styles.Ctrl3
-		lo.visible = (osc_param.playresx >= 600 - outeroffset)
-	end
-
+    if showscreenshot then
+        lo = add_layout("screenshot")
+        lo.geometry = {x = osc_geo.w - 217 + (showontop and 0 or 45) + (showloop and 0 or 45) + (showinfo and 0 or 45) + (showfullscreen and 0 or 45), y = refY - 40, an = 5, w = 24, h = 24}
+        lo.style = osc_styles.Ctrl3
+        lo.visible = (osc_param.playresx >= 600 - outeroffset)
+    end
 end
 
 local function adjust_subtitles(visible)
@@ -1668,7 +1670,7 @@ local function osc_init()
     ne = new_element("cy_audio", "button")
     ne.enabled = audio_track_count > 0
     ne.off = audio_track_count == 0
-    ne.visible = (osc_param.playresx >= 250 - outeroffset)
+    ne.visible = (osc_param.playresx >= 550 - outeroffset)
     ne.content = icons.audio
     ne.tooltip_style = osc_styles.Tooltip
     ne.tooltipF = function ()
@@ -1812,6 +1814,15 @@ local function osc_init()
     ne.eventresponder["mbtn_left_up"] =
         function () mp.commandv("cycle", "fullscreen") end
 
+    --tog_info
+    ne = new_element("tog_info", "button")
+    ne.content = icons.info
+    ne.tooltip_style = osc_styles.Tooltip
+    ne.tooltipF = texts.statsinfo
+    ne.visible = (osc_param.playresx >= 600 - outeroffset - (user_opts.showfullscreen and 0 or 100))
+    ne.eventresponder["mbtn_left_up"] =
+        function () mp.commandv("script-binding", "stats/display-stats-toggle") end
+
     --tog_loop
     ne = new_element("tog_loop", "button")
     ne.content = function ()
@@ -1821,7 +1832,7 @@ local function osc_init()
             return (icons.loopoff)
         end
     end
-    ne.visible = (osc_param.playresx >= 700 - outeroffset)
+    ne.visible = (osc_param.playresx >= 700 - outeroffset - (user_opts.showinfo and 0 or 100) - (user_opts.showfullscreen and 0 or 100))
     ne.tooltip_style = osc_styles.Tooltip
     ne.tooltipF = function ()
         local msg = texts.loopenable
@@ -1841,30 +1852,6 @@ local function osc_init()
             mp.set_property_native("loop-file", state.looping)
         end    
 
-    --screenshot
-    ne = new_element("screenshot", "button")
-    ne.content = icons.screenshot
-    ne.tooltip_style = osc_styles.Tooltip
-    ne.tooltipF = texts.screenshot
-    ne.visible = (osc_param.playresx >= 870 - outeroffset - (user_opts.showloop and 0 or 100) - (user_opts.showontop and 0 or 100) - (user_opts.showinfo and 0 or 100))
-    ne.eventresponder["mbtn_left_up"] =
-        function ()
-            local tempSubPosition = mp.get_property("sub-pos")
-            if user_opts.screenshot_flag == "subtitles" then mp.commandv("set", "sub-pos", 100) end
-            mp.commandv("screenshot", user_opts.screenshot_flag)
-            mp.commandv("set", "sub-pos", tempSubPosition)
-            mp.command("show-text '" .. texts.screenshotsaved .. "'")
-        end
-
-    --tog_info
-    ne = new_element("tog_info", "button")
-    ne.content = icons.info
-    ne.tooltip_style = osc_styles.Tooltip
-    ne.tooltipF = texts.statsinfo
-    ne.visible = (osc_param.playresx >= 600 - outeroffset - (user_opts.showloop and 0 or 100) - (user_opts.showontop and 0 or 100))
-    ne.eventresponder["mbtn_left_up"] =
-        function () mp.commandv("script-binding", "stats/display-stats-toggle") end
-
     --tog_ontop
     ne = new_element("tog_ontop", "button")
     ne.content = function ()
@@ -1882,7 +1869,7 @@ local function osc_init()
         end
         return msg
     end
-    ne.visible = (osc_param.playresx >= 760 - outeroffset - (user_opts.showloop and 0 or 100))
+    ne.visible = (osc_param.playresx >= 760 - outeroffset - (user_opts.showloop and 0 or 100) - (user_opts.showinfo and 0 or 100) - (user_opts.showfullscreen and 0 or 100))
     ne.eventresponder["mbtn_left_up"] =
         function () 
             mp.commandv("cycle", "ontop") 
@@ -1897,6 +1884,21 @@ local function osc_init()
 
     ne.eventresponder["mbtn_right_up"] =
         function () mp.commandv("cycle", "ontop") end
+
+    --screenshot
+    ne = new_element("screenshot", "button")
+    ne.content = icons.screenshot
+    ne.tooltip_style = osc_styles.Tooltip
+    ne.tooltipF = texts.screenshot
+    ne.visible = (osc_param.playresx >= 870 - outeroffset - (user_opts.showontop and 0 or 100) - (user_opts.showloop and 0 or 100) - (user_opts.showinfo and 0 or 100) - (user_opts.showfullscreen and 0 or 100))
+    ne.eventresponder["mbtn_left_up"] =
+        function ()
+            local tempSubPosition = mp.get_property("sub-pos")
+            if user_opts.screenshot_flag == "subtitles" then mp.commandv("set", "sub-pos", 100) end
+            mp.commandv("screenshot", user_opts.screenshot_flag)
+            mp.commandv("set", "sub-pos", tempSubPosition)
+            mp.command("show-text '" .. texts.screenshotsaved .. "'")
+        end
     
     --seekbar
     ne = new_element("seekbar", "slider")
