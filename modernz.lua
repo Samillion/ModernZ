@@ -38,6 +38,7 @@ local user_opts = {
 
     showjump = true,                       -- show "jump forward/backward 10 seconds" buttons 
     showskip = false,                      -- show the skip back and forward (chapter) buttons
+    shownextprev = true,                   -- show the next/previous playlist track buttons
 
     showplaylist = false,                  -- show playlist button? LClick: simple playlist, RClick: interactive playlist
     showinfo = false,                      -- show the info button
@@ -1282,6 +1283,7 @@ layouts = function ()
 
     local showjump = user_opts.showjump
     local showskip = user_opts.showskip
+    local shownextprev = user_opts.shownextprev
     local showloop = user_opts.showloop
     local showinfo = user_opts.showinfo
     local showontop = user_opts.showontop
@@ -1301,13 +1303,11 @@ layouts = function ()
     lo.button.maxchars = geo.w / 11
 
     -- buttons
-    lo = add_layout("pl_prev")
-    if showskip then
-        lo.geometry = {x = refX - 120 - offset, y = refY - 40 , an = 5, w = 30, h = 24}
-    else
-        lo.geometry = {x = refX - 60 - offset, y = refY - 40 , an = 5, w = 30, h = 24}
+    if shownextprev then
+        lo = add_layout("pl_prev")
+        lo.geometry = {x = refX - (60 + (showskip and 60 or 0)) - offset, y = refY - 40 , an = 5, w = 30, h = 24}
+        lo.style = osc_styles.Ctrl2
     end
-    lo.style = osc_styles.Ctrl2
 
     if showskip then 
         lo = add_layout("skipback")
@@ -1339,13 +1339,11 @@ layouts = function ()
         lo.style = osc_styles.Ctrl2
     end
 
-    lo = add_layout("pl_next")
-    if showskip then
-        lo.geometry = {x = refX + 120 + offset, y = refY - 40 , an = 5, w = 30, h = 24}
-    else
-        lo.geometry = {x = refX + 60 + offset, y = refY - 40 , an = 5, w = 30, h = 24}
+    if shownextprev then
+        lo = add_layout("pl_next")
+        lo.geometry = {x = refX + (60 + (showskip and 60 or 0)) + offset, y = refY - 40 , an = 5, w = 30, h = 24}
+        lo.style = osc_styles.Ctrl2
     end
-    lo.style = osc_styles.Ctrl2
 
     -- Time
     lo = add_layout("tc_left")
@@ -1535,34 +1533,36 @@ local function osc_init()
     ne.eventresponder["mbtn_right_up"] =
         function () mp.command("show-text ${filename}") end
 
-    -- playlist buttons
-    -- prev
-    ne = new_element("pl_prev", "button")
-    ne.visible = (osc_param.playresx >= 500 - nojumpoffset - noskipoffset*(nojumpoffset == 0 and 1 or 10))
-    ne.content = icons.previous
-    ne.enabled = (pl_pos > 1) or (loop ~= "no")
-    ne.eventresponder["mbtn_left_up"] =
-        function () mp.commandv("playlist-prev", "weak") end
-    ne.eventresponder["enter"] =
-        function () mp.commandv("playlist-prev", "weak") end
-    ne.eventresponder["mbtn_right_up"] =
-        function () mp.command("show-text ${playlist} 3000") end
-    ne.eventresponder["shift+mbtn_left_down"] =
-        function () mp.command("show-text ${playlist} 3000") end
+    if user_opts.shownextprev then
+        -- playlist buttons
+        -- prev
+        ne = new_element("pl_prev", "button")
+        ne.visible = (osc_param.playresx >= 500 - nojumpoffset - noskipoffset*(nojumpoffset == 0 and 1 or 10))
+        ne.content = icons.previous
+        ne.enabled = (pl_pos > 1) or (loop ~= "no")
+        ne.eventresponder["mbtn_left_up"] =
+            function () mp.commandv("playlist-prev", "weak") end
+        ne.eventresponder["enter"] =
+            function () mp.commandv("playlist-prev", "weak") end
+        ne.eventresponder["mbtn_right_up"] =
+            function () mp.command("show-text ${playlist} 3000") end
+        ne.eventresponder["shift+mbtn_left_down"] =
+            function () mp.command("show-text ${playlist} 3000") end
 
-    --next
-    ne = new_element("pl_next", "button")
-    ne.visible = (osc_param.playresx >= 500 - nojumpoffset - noskipoffset*(nojumpoffset == 0 and 1 or 10))
-    ne.content = icons.next
-    ne.enabled = (have_pl and (pl_pos < pl_count)) or (loop ~= "no")
-    ne.eventresponder["mbtn_left_up"] =
-        function () mp.commandv("playlist-next", "weak") end
-    ne.eventresponder["enter"] =
-        function () mp.commandv("playlist-next", "weak") end
-    ne.eventresponder["mbtn_right_up"] =
-        function () mp.command("show-text ${playlist} 3000") end
-    ne.eventresponder["shift+mbtn_left_down"] =
-        function () mp.command("show-text ${playlist} 3000") end
+        --next
+        ne = new_element("pl_next", "button")
+        ne.visible = (osc_param.playresx >= 500 - nojumpoffset - noskipoffset*(nojumpoffset == 0 and 1 or 10))
+        ne.content = icons.next
+        ne.enabled = (have_pl and (pl_pos < pl_count)) or (loop ~= "no")
+        ne.eventresponder["mbtn_left_up"] =
+            function () mp.commandv("playlist-next", "weak") end
+        ne.eventresponder["enter"] =
+            function () mp.commandv("playlist-next", "weak") end
+        ne.eventresponder["mbtn_right_up"] =
+            function () mp.command("show-text ${playlist} 3000") end
+        ne.eventresponder["shift+mbtn_left_down"] =
+            function () mp.command("show-text ${playlist} 3000") end
+    end
 
     --play control buttons
     --playpause
