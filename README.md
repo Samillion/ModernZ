@@ -125,6 +125,7 @@ Below is the full list of options you can use in `modernz.conf`, with their defa
 | shownextprev     | yes       | show the next/previous playlist track buttons                                                                                                                 |
 | showinfo         | no        | show the info button                                                                                                                                          |
 | showloop         | yes       | show the loop button                                                                                                                                          |
+| showfullscreen   | yes       | show the fullscreen toggle button                                                                                                                             |
 | showontop        | yes       | show window on top button                                                                                                                                     |
 | showscreenshot   | no        | show screenshot button                                                                                                                                        |
 | screenshot_flag  | subtitles | flag for the screenshot button. `subtitles` `video` `window` `each-frame` [[details](https://mpv.io/manual/master/#command-interface-screenshot-%3Cflags%3E)] |
