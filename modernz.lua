@@ -1785,7 +1785,7 @@ local function osc_init()
                 return volume
             end
         end
-    ne.slider.tooltipF = function (pos) return set_volume(pos) end
+    ne.slider.tooltipF = function (pos) return (audio_track_count > 0) and set_volume(pos) or "" end
     ne.eventresponder["mouse_move"] =
         function (element)
             -- see seekbar code for reference
