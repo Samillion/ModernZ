@@ -13,7 +13,7 @@ If white buttons and text don't suit your taste, you have the option to fully cu
 
 Thanks to the mpv team for developing the excellent [select](https://github.com/mpv-player/mpv/blob/master/player/lua/select.lua) script and including it starting mpv [v0.39.0](https://github.com/mpv-player/mpv/discussions/14903), you can now seamlessly access it through this OSC.
 
-You can also customize how to access the interaction lists by adjusting the [Mouse Commands (User Options)](#mouse-commands-user-options).
+You can also customize how to access the interactive lists by adjusting the [Mouse Commands (User Options)](#mouse-commands-user-options).
 
 https://github.com/user-attachments/assets/60af24fc-f18f-40ed-8eaa-1f3198ded786
 
