@@ -1691,6 +1691,10 @@ local function osc_init()
         function () open_selector("aid") end
     ne.eventresponder["shift+mbtn_left_down"] =
         function () mp.command("show-text ${track-list} 3000") end
+    ne.eventresponder["wheel_down_press"] =
+        function () mp.command("cycle audio") end
+    ne.eventresponder["wheel_up_press"] =
+        function () mp.command("cycle audio down") end
 
     --cy_sub
     ne = new_element("cy_sub", "button")
@@ -1717,6 +1721,10 @@ local function osc_init()
         function () open_selector("sid") end
     ne.eventresponder["shift+mbtn_left_down"] =
         function () mp.command("show-text ${track-list} 3000") end
+    ne.eventresponder["wheel_down_press"] =
+        function () mp.command("cycle sub") end
+    ne.eventresponder["wheel_up_press"] =
+        function () mp.command("cycle sub down") end
 
     --tog_pl
     ne = new_element("tog_pl", "button")
