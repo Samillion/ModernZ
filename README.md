@@ -105,6 +105,7 @@ Below is the full list of options you can use in `modernz.conf`, with their defa
 | window_controls_color | #FFFFFF  | color of window controls (close, min, max) in borderless/fullscreen mode |
 | seekbarfg_color       | #BE4D25  | color of the seekbar progress and handle                                 |
 | seekbarbg_color       | #FFFFFF  | color of the remaining seekbar                                           |
+| vol_bar_match_seek    | no       | match volume bar color with seekbar color? ignores `side_buttons_color`  |
 | title_color           | #FFFFFF  | color of the title (above seekbar)                                       |
 | time_color            | #FFFFFF  | color of timestamps (below seekbar)                                      |
 | side_buttons_color    | #FFFFFF  | color of side buttons (audio, sub, playlist, vol, loop, info..etc)       |
