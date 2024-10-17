@@ -28,6 +28,7 @@ local user_opts = {
     title_color = "#FFFFFF",               -- color of the title (above seekbar)
     seekbarfg_color = "#BE4D25",           -- color of the seekbar progress and handle
     seekbarbg_color = "#FFFFFF",           -- color of the remaining seekbar
+    vol_bar_match_seek = false,            -- match volume bar color with seekbar color? ignores side_buttons_color
     time_color = "#FFFFFF",                -- color of timestamps (below seekbar)
     side_buttons_color = "#FFFFFF",        -- color of side buttons (audio, sub, playlist, vol, loop, info..etc)
     middle_buttons_color = "#FFFFFF",      -- color of middle buttons (skip, jump, chapter...etc)
@@ -1419,11 +1420,11 @@ layouts = function ()
     lo.geometry = {x = 200 - (showplaylist and 0 or 45), y = refY - 40, an = 4, w = 80, h = 2}
     lo.layer = 13
     lo.alpha[1] = 128
-    lo.style = osc_styles.VolumebarBg
+    lo.style = user_opts.vol_bar_match_seek and osc_styles.SeekbarBg or osc_styles.VolumebarBg
     
     lo = add_layout("volumebar")
     lo.geometry = {x = 200 - (showplaylist and 0 or 45), y = refY - 40, an = 4, w = 80, h = 8}
-    lo.style = osc_styles.VolumebarFg
+    lo.style = user_opts.vol_bar_match_seek and osc_styles.SeekbarFg or osc_styles.VolumebarFg
     lo.slider.gap = 3
     lo.slider.tooltip_style = osc_styles.Tooltip
     lo.slider.tooltip_an = 2
