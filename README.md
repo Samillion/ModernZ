@@ -33,6 +33,7 @@ You can find more details on button interactions [here](#button-interactions).
 - [Button Interactions](#button-interactions)
 - [Keybinds](#keybinds)
 - [OSC Language (Translations)](#osc-language)
+- [Additional Scripts](#extras) (Extras)
 - [History](#history)
 
 ## How to install
@@ -592,6 +593,15 @@ You can use the following language lists to adjust or add more languages to `loc
 ### Why aren't they included in user options already?
 
 They were, once. It would be difficult for me to maintain it accurately for many languages. This way, users have the option to localize it without flooding the OSC file with language listings.
+
+## Extras
+The following scripts are ones I wrote and maintain, feel free to use them if they're useful to you.
+
+- [Pause Indicator](https://github.com/Samillion/ModernZ/tree/main/extras#pause-indicator-lite)
+- [YTDLAutoFormat](https://github.com/Samillion/mpv-ytdlautoformat)
+- [Box to Wide](https://github.com/Samillion/mpv-boxtowide)
+
+Other useful scripts can be found in the mpv [user scripts](https://github.com/mpv-player/mpv/wiki/User-Scripts) wiki
 
 ## History
 - [Samillion/ModernZ](https://github.com/Samillion/ModernZ)
