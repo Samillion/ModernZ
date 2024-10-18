@@ -85,6 +85,19 @@ mp.observe_property("pause", "bool", function(_, paused)
             indicator:remove()
         end
     end)
+
+    -- toggle pause with keybind (only if opts allows it)
+    if opts.allow_keybind then
+        mp.set_key_bindings({
+            {opts.used_keybind, function() mp.commandv("cycle", "pause") end}
+        }, "pause-indicator", "force")
+
+        if paused then
+            mp.enable_key_bindings("pause-indicator")
+        else
+            mp.disable_key_bindings("pause-indicator")
+        end
+    end
 end)
 
 -- update pause indicator position when window size changes
@@ -94,19 +107,3 @@ mp.observe_property("osd-dimensions", "native", function()
         indicator:update()
     end
 end)
-
--- toggle pause with keybind (only if opts allows it)
-if opts.allow_keybind then
-    mp.set_key_bindings({
-       {opts.used_keybind, function() mp.commandv("cycle", "pause") end}
-    }, "pause-indicator", "force")
-
-    -- Enable the key bindings when paused
-    mp.observe_property("pause", "bool", function(_, paused)
-        if paused then
-            mp.enable_key_bindings("pause-indicator")
-        else
-            mp.disable_key_bindings("pause-indicator")
-        end
-    end)
-end
