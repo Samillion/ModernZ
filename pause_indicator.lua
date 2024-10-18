@@ -1,13 +1,13 @@
 --[[
 
    A simple script that shows a pause indicator, on pause
-   More info: https://github.com/Samillion/ModernZ
+   More info: https://github.com/Samillion/ModernZ/issues/52
 
 --]]
 
 -- options
 local opts = {
-    indicator_icon = "pause",             -- what icon to show with indicator? pause, play
+    indicator_icon = "play",             -- what icon to show with indicator? pause, play
 
     -- pause icon
     rectangles_color = "FFFFFF",         -- Color for rectangles
@@ -21,8 +21,8 @@ local opts = {
     triangle_color = "FFFFFF",           -- Color of triangle
     triangle_border_color = "111111",    -- Color of triangle borders
     triangle_opacity = 40,               -- Opacity of triangle (0-100)
-    triangle_width = 70,                 -- Width of triangle
-    triangle_height = 60,                -- height of triangle
+    triangle_width = 80,                 -- Width of triangle
+    triangle_height = 80,                -- height of triangle
 
     -- keybind
     allow_keybind = true,                -- Allow keybind to toggle pause (only while indicator is active)
