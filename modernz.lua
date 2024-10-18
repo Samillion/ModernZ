@@ -2059,41 +2059,64 @@ local function osc_init()
         end
     end
 
-    -- tc_left (current pos)
-    ne = new_element("tc_left", "button")
-    ne.content = function ()
+    -- Helper function to format time
+    local function format_time(seconds)
+        if not seconds then return "--:--" end
+        
+        local hours = math.floor(seconds / 3600)
+        local minutes = math.floor((seconds % 3600) / 60)
+        local whole_seconds = math.floor(seconds % 60)
+        local milliseconds = state.tc_ms and math.floor((seconds % 1) * 1000) or nil
+        
+        -- Format string templates
+        local format_with_ms = hours > 0 and "%02d:%02d:%02d.%03d" or "%02d:%02d.%03d"
+        local format_without_ms = hours > 0 and "%02d:%02d:%02d" or "%02d:%02d"
+        
         if state.tc_ms then
-            return mp.get_property_osd("playback-time/full"):gsub("-", "")
+            return string.format(format_with_ms, 
+                hours > 0 and hours or minutes,
+                hours > 0 and minutes or whole_seconds,
+                hours > 0 and whole_seconds or milliseconds,
+                hours > 0 and milliseconds or nil)
         else
-            return mp.get_property_osd("playback-time"):gsub("-", "")
+            return string.format(format_without_ms,
+                hours > 0 and hours or minutes,
+                hours > 0 and minutes or whole_seconds,
+                hours > 0 and whole_seconds or nil)
         end
     end
-    ne.eventresponder["mbtn_left_up"] = function ()
+
+    -- Current position time display
+    ne = new_element("tc_left", "button")
+    ne.content = function()
+        local playback_time = mp.get_property_number("playback-time", 0)
+        return format_time(playback_time)
+    end
+    ne.eventresponder["mbtn_left_up"] = function()
         state.tc_ms = not state.tc_ms
         request_init()
     end
 
-    -- tc_right (total/remaining time)
+    -- Total/remaining time display
     ne = new_element("tc_right", "button")
     ne.visible = (mp.get_property_number("duration", 0) > 0)
-    ne.content = function ()
-        if mp.get_property_number("duration", 0) <= 0 then return "--:--:--" end
-        if state.rightTC_trem then
-            local minus = user_opts.unicodeminus and UNICODE_MINUS or "-"
-            if state.tc_ms then
-                return (minus..mp.get_property_osd("playtime-remaining/full"))
-            else
-                return (minus..mp.get_property_osd("playtime-remaining"))
-            end
-        else
-            if state.tc_ms then
-                return (mp.get_property_osd("duration/full"))
-            else
-                return (mp.get_property_osd("duration"))
-            end
-        end
+    ne.content = function()
+        local duration = mp.get_property_number("duration", 0)
+        if duration <= 0 then return "--:--" end
+        
+        local time_to_display = state.rightTC_trem and 
+            mp.get_property_number("playtime-remaining", 0) or 
+            duration
+            
+        local prefix = state.rightTC_trem and 
+            (user_opts.unicodeminus and UNICODE_MINUS or "-") or 
+            ""
+            
+        return prefix .. format_time(time_to_display)
     end
-    ne.eventresponder["mbtn_left_up"] = function () state.rightTC_trem = not state.rightTC_trem end
+    ne.eventresponder["mbtn_left_up"] = function()
+        state.rightTC_trem = not state.rightTC_trem
+    end
 
     -- load layout
     layouts()
