@@ -31,8 +31,8 @@ local opts = {
 
 -- convert percentage opacity (0-100) to ASS alpha values
 local function convert_opacity(value)
-    local alpha = math.floor((100 - value) * 2.55)
-    return string.format("%02X", alpha)
+    value = math.max(0, math.min(100, value))
+    return string.format("%02X", (255 - (value * 2.55)))
 end
 
 -- init
