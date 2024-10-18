@@ -6,7 +6,7 @@ A simple script that displays an indicator on pause, with options to adjust icon
 
 I only decided to write this because the ones I found were either too complicated or too simple. The alternatives are great, this one just meets my simple use case scenario.
 
-**Script:** [Pause Indicator Lite](./extras/pause_indicator_lite.lua)
+**Script:** [Pause Indicator Lite](./pause_indicator_lite.lua)
 
 **Options:**
 ```lua
