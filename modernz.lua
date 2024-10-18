@@ -44,7 +44,7 @@ local user_opts = {
     showplaylist = false,                  -- show playlist button? LClick: simple playlist, RClick: interactive playlist
     showinfo = false,                      -- show the info button
     showloop = true,                       -- show the loop button
-    showfullscreen_button = true,                 -- show fullscreen toggle button
+    showfullscreen_button = true,          -- show fullscreen toggle button
     showontop = true,                      -- show window on top button
     showscreenshot = false,                -- show screenshot button
     screenshot_flag = "subtitles",         -- flag for the screenshot button. subtitles, video, window, each-frame
@@ -115,7 +115,7 @@ local user_opts = {
     minmousemove = 0,                      -- amount of pixels the mouse has to move for OSC to show
 
     tick_delay = 1 / 60,                   -- minimum interval between OSC redraws in seconds
-    tick_delay_follow_display_fps = false,  -- use display fps as the minimum interval
+    tick_delay_follow_display_fps = false, -- use display fps as the minimum interval
 
     -- Mouse commands
     -- customize the button function based on mouse action
@@ -2103,15 +2103,13 @@ local function osc_init()
     ne.content = function()
         local duration = mp.get_property_number("duration", 0)
         if duration <= 0 then return "--:--" end
-        
+
         local time_to_display = state.rightTC_trem and 
-            mp.get_property_number("playtime-remaining", 0) or 
-            duration
-            
+            mp.get_property_number("playtime-remaining", 0) or duration
+
         local prefix = state.rightTC_trem and 
-            (user_opts.unicodeminus and UNICODE_MINUS or "-") or 
-            ""
-            
+            (user_opts.unicodeminus and UNICODE_MINUS or "-") or ""
+
         return prefix .. format_time(time_to_display)
     end
     ne.eventresponder["mbtn_left_up"] = function()
