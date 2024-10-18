@@ -1732,6 +1732,7 @@ local function osc_init()
     -- vol_ctrl
     ne = new_element("vol_ctrl", "button")
     ne.enabled = audio_track_count > 0
+    ne.off = audio_track_count == 0
     ne.visible = (osc_param.playresx >= 760 - outeroffset) and user_opts.volumecontrol
     ne.content = function ()
         local volume = mp.get_property_number("volume", 0)
