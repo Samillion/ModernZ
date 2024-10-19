@@ -1,6 +1,6 @@
 <h1 align="center">ModernZ - A Sleek Alternative OSC for MPV</h1>
 
-A modern and feature-rich on-screen controller (OSC) for [mpv](https://mpv.io/). ModernZ enhances the default mpv experience while maintaining core functionality.
+A sleek and modern OSC for [mpv](https://mpv.io/), this project is a fork of ModernX designed to enhance functionality by adding more features, all while preserving the core standards of mpv's OSC.
 
 ![ModernZ OSC Screenshot](https://github.com/user-attachments/assets/57dc6e88-c222-4a62-b650-5ae6c88b4fc0)
 
@@ -33,7 +33,8 @@ Don't like the default white buttons and text? ModernZ is fully customizable! Ch
 ![Custom Titlebar Example](https://github.com/user-attachments/assets/7968b6f0-df16-44fd-8306-01e581b4e1a7)
 ![Custom Colors Example](https://github.com/user-attachments/assets/637f0c50-16ac-4d8c-a341-187e3d71d2d3)
 
-See the [Configuration](docs/USER_OPTS.md#colors) section for details on customizing colors and buttons.
+See the [Color Customization](docs/USER_OPTS.md#colors) section in the configuration guide for details on how to customize colors and buttons.
+
 
 ## Installation
 
@@ -62,8 +63,8 @@ See the [Configuration](docs/USER_OPTS.md#colors) section for details on customi
    	   ├── modernz.lua
    	   └── thumbfast.lua (optional)
    ```
-   > [!TIP]
-   > Need more details on MPV file locations? Check the [MPV manual](https://mpv.io/manual/master/#files).
+> [!TIP]
+> Need more details on MPV file locations? Check the [MPV manual](https://mpv.io/manual/master/#files).
 
 ## Configuration
 
