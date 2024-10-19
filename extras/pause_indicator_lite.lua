@@ -26,7 +26,7 @@ local opts = {
 
     -- keybind
     allow_keybind = true,                -- Allow keybind to toggle pause (only while indicator is active)
-    used_keybind = "mbtn_left",          -- The used keybind to toggle pause. Left mouse click as default
+    used_keybind = "mbtn_left",          -- The used keybind to toggle pause.
 }
 
 -- convert percentage opacity (0-100) to ASS alpha values
@@ -79,7 +79,7 @@ end
 mp.observe_property("pause", "bool", function(_, paused)
     mp.add_timeout(0.1, function()
         if paused then
-            update_pause_indicator_position()  -- Center and draw pause indicator
+            update_pause_indicator_position()
             indicator:update()
         else
             indicator:remove()
