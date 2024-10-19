@@ -29,10 +29,28 @@ Below is the full list for indicator options and their default values. To adjust
 | `triangle_width`         | 80          | Width of triangle (play icon)                                                                                                                 |
 | `triangle_height`        | 80          | Height of triangle (play icon)                                                                                                                |
 
+### How to install
 
-> [!NOTE]
-> I don't plan to focus many updates on this script, because ASS drawing and positioning pisses me off. 😝 
-> 
-> Other alternatives can be found in the mpv [user scripts](https://github.com/mpv-player/mpv/wiki/User-Scripts) wiki.
+Simply place `pause_indicator_lite.lua` in the corresponding mpv scripts folder of your operating system:
 
-This isn't exclusive to be used on ModernZ OSC. Feel free to use it with whatever you want.
+- Windows: `%APPDATA%\mpv\scripts\` or `C:\users\USERNAME\AppData\Roaming\mpv\scripts\`
+- Linux: `~/.config/mpv/scripts/` or `/home/USERNAME/.config/mpv/scripts/`
+- Mac: `~/.config/mpv/scripts/` or `/Users/USERNAME/.config/mpv/scripts/`
+
+> [!TIP]
+> More information about mpv files locations can be found  [here](https://mpv.io/manual/master/#files)
+
+```
+config/mpv
+│   input.conf
+│   mpv.conf
+│
+└───scripts
+        pause_indicator_lite.lua
+```
+
+### Notes
+
+- I don't plan to focus many updates on this script, because ASS drawing and positioning pisses me off. 😝 
+- Other alternatives can be found in the mpv [user scripts](https://github.com/mpv-player/mpv/wiki/User-Scripts) wiki.
+- This isn't exclusive to be used on ModernZ OSC. Feel free to use it with whatever you want.
