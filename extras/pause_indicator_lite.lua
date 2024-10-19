@@ -55,9 +55,9 @@ local function update_pause_indicator_position()
     if display_aspect == 0 then return end
 
     -- colors and opaicty
-    icon_color = convert_color(opts.icon_color)
-    icon_border_color = convert_color(opts.icon_border_color)
-    icon_opacity = convert_opacity(opts.icon_opacity)
+    local icon_color = convert_color(opts.icon_color)
+    local icon_border_color = convert_color(opts.icon_border_color)
+    local icon_opacity = convert_opacity(opts.icon_opacity)
 
     -- rectangles parameters
     local rect_width = opts.rectangles_width
