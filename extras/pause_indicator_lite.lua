@@ -15,24 +15,28 @@ local opts = {
     keybind_set = "mbtn_left",           -- The set keybind to toggle pause
     keybind_mode = "onpause",            -- Mode to activate keybind. onpause, always
 
+    -- icon colors & opacity
+    icon_color = "#FFFFFF",              -- Icon fill color
+    icon_border_color = "#111111",       -- Icon border color
+    icon_opacity = 40,                   -- Icon opacity
+
     -- pause icon
-    rectangles_color = "#FFFFFF",        -- Color for rectangles
-    rectangles_border_color = "#111111", -- Color for rectangle borders
-    rectangles_opacity = 40,             -- Opacity of rectangles (0-100)
     rectangles_width = 30,               -- Width of rectangles
     rectangles_height = 80,              -- Height of rectangles
     rectangles_spacing = 20,             -- Spacing between the two rectangles
 
     -- play icon
-    triangle_color = "#FFFFFF",          -- Color of triangle
-    triangle_border_color = "#111111",   -- Color of triangle borders
-    triangle_opacity = 40,               -- Opacity of triangle (0-100)
     triangle_width = 80,                 -- Width of triangle
     triangle_height = 80,                -- height of triangle
 }
 
+local msg = require 'mp.msg'
+
 -- convert color from hex (credit to mpv/osc.lua)
 local function convert_color(color)
+    if color:find("^#%x%x%x%x%x%x$") == nil then
+        msg.warn("'" .. color .. "' is not a valid color")
+    end
     return color:sub(6,7) .. color:sub(4,5) ..  color:sub(2,3)
 end
 
@@ -49,7 +53,12 @@ local indicator = mp.create_osd_overlay("ass-events")
 local function update_pause_indicator_position()
     local _, _, display_aspect = mp.get_osd_size()
     if display_aspect == 0 then return end
-		
+
+    -- colors and opaicty
+    icon_color = convert_color(opts.icon_color)
+    icon_border_color = convert_color(opts.icon_border_color)
+    icon_opacity = convert_opacity(opts.icon_opacity)
+
     -- rectangles parameters
     local rect_width = opts.rectangles_width
     local rect_height = opts.rectangles_height
@@ -57,15 +66,11 @@ local function update_pause_indicator_position()
 
     -- triangle parameters
     local triangle_width = opts.triangle_width
-    local triangle_height = opts.triangle_height or 75 
-
-    -- convert opacity to ASS format
-    local rect_alpha = convert_opacity(opts.rectangles_opacity)
-    local triangle_alpha = convert_opacity(opts.triangle_opacity)
+    local triangle_height = opts.triangle_height
 
     -- draw rectangles
     local rectangles = string.format([[{\an5\p1\alpha&H%s\1c&H%s&\3c&H%s&}]], 
-        rect_alpha, convert_color(opts.rectangles_color), convert_color(opts.rectangles_border_color)) ..
+        icon_opacity, icon_color, icon_border_color) ..
         string.format([[m 0 0 l %d 0 l %d %d l 0 %d m %d 0 l %d 0 l %d %d l %d %d]], 
         rect_width, rect_width, rect_height, rect_height, rect_width + rect_spacing, 
         rect_width + rect_spacing + rect_width, rect_width + rect_spacing + rect_width, 
@@ -73,7 +78,7 @@ local function update_pause_indicator_position()
 
     -- draw triangle
     local triangle = string.format([[{\an5\p1\alpha&H%s\1c&H%s&\3c&H%s&}]], 
-        triangle_alpha, convert_color(opts.triangle_color), convert_color(opts.triangle_border_color)) ..
+        icon_opacity, icon_color, icon_border_color) ..
         string.format([[m 0 0 l %d %d l 0 %d]], 
         triangle_width, triangle_height / 2, triangle_height)
 
