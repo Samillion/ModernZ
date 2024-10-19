@@ -7,7 +7,13 @@
 
 -- options
 local opts = {
-    indicator_icon = "play",             -- what icon to show with indicator? pause, play
+    -- indicator icon type
+    indicator_icon = "pause",            -- which icon to show with indicator? pause, play
+
+    -- keybind
+    allow_keybind = true,                -- Allow keybind to toggle pause (only while indicator is active)
+    used_keybind = "mbtn_left",          -- The used keybind to toggle pause.
+    keybind_mode = "onpause",            -- mode to activate keybind. onpause, always
 
     -- pause icon
     rectangles_color = "FFFFFF",         -- Color for rectangles
@@ -23,10 +29,6 @@ local opts = {
     triangle_opacity = 40,               -- Opacity of triangle (0-100)
     triangle_width = 80,                 -- Width of triangle
     triangle_height = 80,                -- height of triangle
-
-    -- keybind
-    allow_keybind = true,                -- Allow keybind to toggle pause (only while indicator is active)
-    used_keybind = "mbtn_left",          -- The used keybind to toggle pause.
 }
 
 -- convert percentage opacity (0-100) to ASS alpha values
@@ -86,15 +88,15 @@ mp.observe_property("pause", "bool", function(_, paused)
         end
     end)
 
-    -- toggle pause with keybind (only if opts allows it)
-    if opts.allow_keybind then
+    -- set keybind (only if opts allow it)
+    if opts.allow_keybind == true then
         mp.set_key_bindings({
-            {opts.used_keybind, function() mp.commandv("cycle", "pause") end}
+           {opts.used_keybind, function() mp.commandv("cycle", "pause") end}
         }, "pause-indicator", "force")
 
-        if paused then
+        if opts.keybind_mode == "always" or (opts.keybind_mode == "onpause" and paused) then
             mp.enable_key_bindings("pause-indicator")
-        else
+        elseif opts.keybind_mode == "onpause" and not paused then
             mp.disable_key_bindings("pause-indicator")
         end
     end
