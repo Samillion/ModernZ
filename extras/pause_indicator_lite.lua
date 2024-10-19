@@ -18,7 +18,7 @@ local opts = {
     -- icon colors & opacity
     icon_color = "#FFFFFF",              -- Icon fill color
     icon_border_color = "#111111",       -- Icon border color
-    icon_opacity = 40,                   -- Icon opacity
+    icon_opacity = 40,                   -- Icon opacity (0-100)
 
     -- pause icon
     rectangles_width = 30,               -- Width of rectangles
