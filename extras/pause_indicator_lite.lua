@@ -1,7 +1,7 @@
 --[[
 
    A simple script that shows a pause indicator, on pause
-   More info: https://github.com/Samillion/ModernZ/issues/52
+   More info: https://github.com/Samillion/ModernZ/tree/main/extras#pause-indicator-lite
 
 --]]
 
