@@ -8,28 +8,33 @@
 -- options
 local opts = {
     -- indicator icon type
-    indicator_icon = "pause",            -- which icon to show with indicator? pause, play
+    indicator_icon = "pause",            -- Which icon to show as indicator? pause, play
 
     -- keybind
     allow_keybind = true,                -- Allow keybind to toggle pause (only while indicator is active)
     used_keybind = "mbtn_left",          -- The used keybind to toggle pause.
-    keybind_mode = "onpause",            -- mode to activate keybind. onpause, always
+    keybind_mode = "onpause",            -- Mode to activate keybind. onpause, always
 
     -- pause icon
-    rectangles_color = "FFFFFF",         -- Color for rectangles
-    rectangles_border_color = "111111",  -- Color for rectangle borders
+    rectangles_color = "#FFFFFF",        -- Color for rectangles
+    rectangles_border_color = "#111111", -- Color for rectangle borders
     rectangles_opacity = 40,             -- Opacity of rectangles (0-100)
     rectangles_width = 30,               -- Width of rectangles
     rectangles_height = 80,              -- Height of rectangles
     rectangles_spacing = 20,             -- Spacing between the two rectangles
 
     -- play icon
-    triangle_color = "FFFFFF",           -- Color of triangle
-    triangle_border_color = "111111",    -- Color of triangle borders
+    triangle_color = "#FFFFFF",          -- Color of triangle
+    triangle_border_color = "#111111",   -- Color of triangle borders
     triangle_opacity = 40,               -- Opacity of triangle (0-100)
     triangle_width = 80,                 -- Width of triangle
     triangle_height = 80,                -- height of triangle
 }
+
+-- convert color from hex (credit to mpv/osc.lua)
+local function convert_color(color)
+    return color:sub(6,7) .. color:sub(4,5) ..  color:sub(2,3)
+end
 
 -- convert percentage opacity (0-100) to ASS alpha values
 local function convert_opacity(value)
@@ -60,7 +65,7 @@ local function update_pause_indicator_position()
 
     -- draw rectangles
     local rectangles = string.format([[{\an5\p1\alpha&H%s\1c&H%s&\3c&H%s&}]], 
-        rect_alpha, opts.rectangles_color, opts.rectangles_border_color) ..
+        rect_alpha, convert_color(opts.rectangles_color), convert_color(opts.rectangles_border_color)) ..
         string.format([[m 0 0 l %d 0 l %d %d l 0 %d m %d 0 l %d 0 l %d %d l %d %d]], 
         rect_width, rect_width, rect_height, rect_height, rect_width + rect_spacing, 
         rect_width + rect_spacing + rect_width, rect_width + rect_spacing + rect_width, 
@@ -68,7 +73,7 @@ local function update_pause_indicator_position()
 
     -- draw triangle
     local triangle = string.format([[{\an5\p1\alpha&H%s\1c&H%s&\3c&H%s&}]], 
-        triangle_alpha, opts.triangle_color, opts.triangle_border_color) ..
+        triangle_alpha, convert_color(opts.triangle_color), convert_color(opts.triangle_border_color)) ..
         string.format([[m 0 0 l %d %d l 0 %d]], 
         triangle_width, triangle_height / 2, triangle_height)
 
