@@ -81,6 +81,7 @@ local triangle = string.format([[{\an5\p1\alpha&H%s\1c&H%s&\3c&H%s&}]],
 
 -- init
 local indicator = mp.create_osd_overlay("ass-events")
+local flash = mp.create_osd_overlay("ass-events")
 
 -- draw and update position based on window size
 local function update_pause_indicator_position()
@@ -93,7 +94,7 @@ end
 
 -- flash play icon
 local function flash_icon()
-    if not opts.flash_play_icon then return end
+    if not opts.flash_play_icon then return flash:remove() end
 
     local mod = opts.flash_icon_bigger_by
     -- set parameters for the flash play icon
@@ -102,7 +103,6 @@ local function flash_icon()
         string.format([[m 0 0 l %d %d l 0 %d]], 
         triangle_width + mod, (triangle_height + mod) / 2, triangle_height + mod)
 
-    local flash = mp.create_osd_overlay("ass-events")
     flash.data = flash_play
     flash:update()
 
@@ -122,6 +122,9 @@ mp.observe_property("pause", "bool", function(_, paused)
             update_pause_indicator_position()
             indicator:update()
             toggled = true
+            if opts.flash_play_icon then
+                flash:remove()
+            end
         else
             indicator:remove()
             if toggled then
