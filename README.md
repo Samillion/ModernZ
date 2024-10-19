@@ -1,5 +1,5 @@
 ## ModernZ OSC
-![Preview](https://github.com/user-attachments/assets/115b0dda-c1d7-484c-9032-8005b6520540)
+![Preview](https://github.com/user-attachments/assets/57dc6e88-c222-4a62-b650-5ae6c88b4fc0)
 
 A sleek and modern OSC for [mpv](https://mpv.io/), this project is a fork of ModernX designed to enhance functionality by adding more features, all while preserving the core standards of mpv's OSC.
 
@@ -15,7 +15,7 @@ Thanks to the mpv team for developing the excellent [select](https://github.com/
 
 You can also customize how to access the interactive lists by adjusting the [Mouse Commands (User Options)](#mouse-commands-user-options).
 
-https://github.com/user-attachments/assets/60af24fc-f18f-40ed-8eaa-1f3198ded786
+https://github.com/user-attachments/assets/188992ba-1ad8-4d71-a96c-44c3c99df4e0
 
 You can find more details on button interactions [here](#button-interactions).
 
