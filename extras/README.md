@@ -14,8 +14,8 @@ Below is the full list for indicator options and their default values. To adjust
 | Option                   | Value       | Description                                                                                                                                   |
 |--------------------------|-------------|-----------------------------------------------------------------------------------------------------------------------------------------------|
 | `indicator_icon`         | "pause"     | Which icon to show as indicator `pause`, `play`                                                                                               |
-| `allow_keybind`          | true        | Allow keybind to toggle pause                                                                                                                 |
-| `used_keybind`           | "mbtn_left" | The used keybind to toggle pause [[reference](https://github.com/mpv-player/mpv/blob/master/etc/input.conf)]                                  |
+| `keybind_allow`          | true        | Allow keybind to toggle pause                                                                                                                 |
+| `keybind_set`            | "mbtn_left" | The set keybind to toggle pause [[reference](https://github.com/mpv-player/mpv/blob/master/etc/input.conf)]                                   |
 | `keybind_mode`           | "onpause"   | Mode to activate keybind. <br />`onpause`: only active when video is paused, to unpause <br />`always`: always active to toggle pause/unpause |
 | `rectangles_color`       | "#FFFFFF"   | Color for rectangles (pause icon)                                                                                                             |
 | `rectangles_border_color`| "#111111"   | Color for rectangle borders (pause icon)                                                                                                      |
