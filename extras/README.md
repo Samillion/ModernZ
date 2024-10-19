@@ -9,6 +9,7 @@ I only decided to write this because the ones I found were either too complicate
 **Script:** [Pause Indicator Lite](./pause_indicator_lite.lua)
 
 ### Indicator Options
+Below is the full list for indicator options and their default values. To adjust them, simply change their values in `local opts` within the script.
 
 | Option                   | Value       | Description                                                                                                                                   |
 |--------------------------|-------------|-----------------------------------------------------------------------------------------------------------------------------------------------|
