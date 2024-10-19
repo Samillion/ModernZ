@@ -8,26 +8,31 @@
 -- options
 local opts = {
     -- indicator icon type
-    indicator_icon = "pause",            -- Which icon to show as indicator? pause, play
+    indicator_icon = "pause",        -- Which icon to show as indicator? pause, play
 
     -- keybind
-    keybind_allow = true,                -- Allow keybind to toggle pause
-    keybind_set = "mbtn_left",           -- The set keybind to toggle pause
-    keybind_mode = "onpause",            -- Mode to activate keybind. onpause, always
+    keybind_allow = true,            -- Allow keybind to toggle pause
+    keybind_set = "mbtn_left",       -- The set keybind to toggle pause
+    keybind_mode = "onpause",        -- Mode to activate keybind. onpause, always
 
     -- icon colors & opacity
-    icon_color = "#FFFFFF",              -- Icon fill color
-    icon_border_color = "#111111",       -- Icon border color
-    icon_opacity = 40,                   -- Icon opacity (0-100)
+    icon_color = "#FFFFFF",          -- Icon fill color
+    icon_border_color = "#111111",   -- Icon border color
+    icon_opacity = 40,               -- Icon opacity (0-100)
 
     -- pause icon
-    rectangles_width = 30,               -- Width of rectangles
-    rectangles_height = 80,              -- Height of rectangles
-    rectangles_spacing = 20,             -- Spacing between the two rectangles
+    rectangles_width = 30,           -- Width of rectangles
+    rectangles_height = 80,          -- Height of rectangles
+    rectangles_spacing = 20,         -- Spacing between the two rectangles
 
     -- play icon
-    triangle_width = 80,                 -- Width of triangle
-    triangle_height = 80,                -- height of triangle
+    triangle_width = 80,             -- Width of triangle
+    triangle_height = 80,            -- height of triangle
+
+    -- best with pause icon
+    flash_play_icon = true,          -- Flash play icon on unpause?
+    flash_icon_timeout = 0.3,        -- How long should the flash last?
+    flash_icon_bigger_by = 0         -- Increase flash icon size from default by (0-100)
 }
 
 local msg = require 'mp.msg'
@@ -46,6 +51,34 @@ local function convert_opacity(value)
     return string.format("%02X", (255 - (value * 2.55)))
 end
 
+-- colors and opaicty
+local icon_color = convert_color(opts.icon_color)
+local icon_border_color = convert_color(opts.icon_border_color)
+local icon_opacity = convert_opacity(opts.icon_opacity)
+
+-- rectangles parameters
+local rect_width = opts.rectangles_width
+local rect_height = opts.rectangles_height
+local rect_spacing = opts.rectangles_spacing
+
+-- triangle parameters
+local triangle_width = opts.triangle_width
+local triangle_height = opts.triangle_height
+
+-- draw rectangles
+local rectangles = string.format([[{\an5\p1\alpha&H%s\1c&H%s&\3c&H%s&}]], 
+    icon_opacity, icon_color, icon_border_color) ..
+    string.format([[m 0 0 l %d 0 l %d %d l 0 %d m %d 0 l %d 0 l %d %d l %d %d]], 
+    rect_width, rect_width, rect_height, rect_height, rect_width + rect_spacing, 
+    rect_width + rect_spacing + rect_width, rect_width + rect_spacing + rect_width, 
+    rect_height, rect_width + rect_spacing, rect_height)
+
+-- draw triangle
+local triangle = string.format([[{\an5\p1\alpha&H%s\1c&H%s&\3c&H%s&}]], 
+    icon_opacity, icon_color, icon_border_color) ..
+    string.format([[m 0 0 l %d %d l 0 %d]], 
+    triangle_width, triangle_height / 2, triangle_height)
+
 -- init
 local indicator = mp.create_osd_overlay("ass-events")
 
@@ -54,38 +87,33 @@ local function update_pause_indicator_position()
     local _, _, display_aspect = mp.get_osd_size()
     if display_aspect == 0 then return end
 
-    -- colors and opaicty
-    local icon_color = convert_color(opts.icon_color)
-    local icon_border_color = convert_color(opts.icon_border_color)
-    local icon_opacity = convert_opacity(opts.icon_opacity)
-
-    -- rectangles parameters
-    local rect_width = opts.rectangles_width
-    local rect_height = opts.rectangles_height
-    local rect_spacing = opts.rectangles_spacing
-
-    -- triangle parameters
-    local triangle_width = opts.triangle_width
-    local triangle_height = opts.triangle_height
-
-    -- draw rectangles
-    local rectangles = string.format([[{\an5\p1\alpha&H%s\1c&H%s&\3c&H%s&}]], 
-        icon_opacity, icon_color, icon_border_color) ..
-        string.format([[m 0 0 l %d 0 l %d %d l 0 %d m %d 0 l %d 0 l %d %d l %d %d]], 
-        rect_width, rect_width, rect_height, rect_height, rect_width + rect_spacing, 
-        rect_width + rect_spacing + rect_width, rect_width + rect_spacing + rect_width, 
-        rect_height, rect_width + rect_spacing, rect_height)
-
-    -- draw triangle
-    local triangle = string.format([[{\an5\p1\alpha&H%s\1c&H%s&\3c&H%s&}]], 
-        icon_opacity, icon_color, icon_border_color) ..
-        string.format([[m 0 0 l %d %d l 0 %d]], 
-        triangle_width, triangle_height / 2, triangle_height)
-
     local icon = opts.indicator_icon == "play" and triangle or rectangles
-
     indicator.data = icon
 end
+
+-- flash play icon
+local function flash_icon()
+    if not opts.flash_play_icon then return end
+
+    local mod = opts.flash_icon_bigger_by
+    -- set parameters for the flash play icon
+    local flash_play = string.format([[{\an5\p1\alpha&H%s\1c&H%s&\3c&H%s&}]], 
+        icon_opacity, icon_color, icon_border_color) ..
+        string.format([[m 0 0 l %d %d l 0 %d]], 
+        triangle_width + mod, (triangle_height + mod) / 2, triangle_height + mod)
+
+    local flash = mp.create_osd_overlay("ass-events")
+    flash.data = flash_play
+    flash:update()
+
+    -- set timeout for the flash icon
+    mp.add_timeout(opts.flash_icon_timeout, function()
+        flash:remove()
+    end)
+end
+
+-- keep track of pause toggle
+local toggled = false
 
 -- observe when pause state changes
 mp.observe_property("pause", "bool", function(_, paused)
@@ -93,8 +121,13 @@ mp.observe_property("pause", "bool", function(_, paused)
         if paused then
             update_pause_indicator_position()
             indicator:update()
+            toggled = true
         else
             indicator:remove()
+            if toggled then
+                flash_icon()
+                toggled = false
+            end
         end
     end)
 

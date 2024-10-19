@@ -11,20 +11,23 @@ I only decided to write this because the ones I found were either too complicate
 ### Indicator Options
 Below is the full list for indicator options and their default values. To adjust them, simply change their values in `local opts` within the script.
 
-| Option               | Value       | Description                                                                                                                                   |
-|----------------------|-------------|-----------------------------------------------------------------------------------------------------------------------------------------------|
-| `indicator_icon`     | "pause"     | Which icon to show as indicator `pause`, `play`                                                                                               |
-| `keybind_allow`      | true        | Allow keybind to toggle pause                                                                                                                 |
-| `keybind_set`        | "mbtn_left" | The set keybind to toggle pause [[reference](https://github.com/mpv-player/mpv/blob/master/etc/input.conf)]                                   |
-| `keybind_mode`       | "onpause"   | Mode to activate keybind. <br />`onpause`: only active when video is paused, to unpause <br />`always`: always active to toggle pause/unpause |
-| `icon_color`         | "#FFFFFF"   | Icon fill color                                                                                                                               |
-| `icon_border_color`  | "#111111"   | Icon border color                                                                                                                             |
-| `icon_opacity`       | 40          | Icon opacity (0-100)                                                                                                                          |
-| `rectangles_width`   | 30          | Width of rectangles (pause icon)                                                                                                              |
-| `rectangles_height`  | 80          | Height of rectangles (pause icon)                                                                                                             |
-| `rectangles_spacing` | 20          | Spacing between the two rectangles (pause icon)                                                                                               |
-| `triangle_width`     | 80          | Width of triangle (play icon)                                                                                                                 |
-| `triangle_height`    | 80          | Height of triangle (play icon)                                                                                                                |
+| Option                 | Value       | Description                                                                                                                                   |
+|------------------------|-------------|-----------------------------------------------------------------------------------------------------------------------------------------------|
+| `indicator_icon`       | "pause"     | Which icon to show as indicator `pause`, `play`                                                                                               |
+| `keybind_allow`        | true        | Allow keybind to toggle pause                                                                                                                 |
+| `keybind_set`          | "mbtn_left" | The set keybind to toggle pause [[reference](https://github.com/mpv-player/mpv/blob/master/etc/input.conf)]                                   |
+| `keybind_mode`         | "onpause"   | Mode to activate keybind. <br />`onpause`: only active when video is paused, to unpause <br />`always`: always active to toggle pause/unpause |
+| `icon_color`           | "#FFFFFF"   | Icon fill color                                                                                                                               |
+| `icon_border_color`    | "#111111"   | Icon border color                                                                                                                             |
+| `icon_opacity`         | 40          | Icon opacity (0-100)                                                                                                                          |
+| `rectangles_width`     | 30          | Width of rectangles (pause icon)                                                                                                              |
+| `rectangles_height`    | 80          | Height of rectangles (pause icon)                                                                                                             |
+| `rectangles_spacing`   | 20          | Spacing between the two rectangles (pause icon)                                                                                               |
+| `triangle_width`       | 80          | Width of triangle (play icon)                                                                                                                 |
+| `triangle_height`      | 80          | Height of triangle (play icon)                                                                                                                |
+| `flash_play_icon`      | true        | Flash play icon on unpause? (best with pause indicator icon)                                                                                  |
+| `flash_icon_timeout`   | 0.3         | How long should the flash last? (seconds)                                                                                                     |
+| `flash_icon_bigger_by` | 0           | Increase flash icon size from default by (0-100)                                                                                              |
 
 ### How to install
 
