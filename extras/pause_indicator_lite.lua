@@ -11,8 +11,8 @@ local opts = {
     indicator_icon = "pause",            -- Which icon to show as indicator? pause, play
 
     -- keybind
-    allow_keybind = true,                -- Allow keybind to toggle pause (only while indicator is active)
-    used_keybind = "mbtn_left",          -- The used keybind to toggle pause.
+    keybind_allow = true,                -- Allow keybind to toggle pause
+    keybind_set = "mbtn_left",           -- The set keybind to toggle pause
     keybind_mode = "onpause",            -- Mode to activate keybind. onpause, always
 
     -- pause icon
@@ -94,9 +94,9 @@ mp.observe_property("pause", "bool", function(_, paused)
     end)
 
     -- set keybind (only if opts allow it)
-    if opts.allow_keybind == true then
+    if opts.keybind_allow == true then
         mp.set_key_bindings({
-           {opts.used_keybind, function() mp.commandv("cycle", "pause") end}
+           {opts.keybind_set, function() mp.commandv("cycle", "pause") end}
         }, "pause-indicator", "force")
 
         if opts.keybind_mode == "always" or (opts.keybind_mode == "onpause" and paused) then
