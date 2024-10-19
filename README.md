@@ -151,7 +151,7 @@ local language = {
 }
 ```
 
-For complete translation documentation, available languages, and contribution guidelines, see [TRANSLATIONS.md](docs\TRANSLATIONS.md).
+For complete translation documentation, available languages, and contribution guidelines, see [TRANSLATIONS.md](docs/TRANSLATIONS.md).
 
 **Q: Why aren't all translations included by default?**  
 A: They were, once. It would be difficult for me to maintain it accurately for many languages. This way, users have the option to localize it without flooding the OSC file with language listings.
