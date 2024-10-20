@@ -75,6 +75,7 @@ local user_opts = {
     livemarkers = true,                    -- update seekbar chapter markers on duration change
 
     osc_on_seek = false,                   -- show osc when seeking? or input.conf: x script-message-to modernz osc-show
+    mouse_seek_pause = true,               -- should the video pause while seeking with mouse move? (on button hold)
 
     automatickeyframemode = true,          -- set seekbarkeyframes based on video length to prevent laggy scrubbing on long videos 
     automatickeyframelimit = 600,          -- videos of above this length (in seconds) will have seekbarkeyframes on
@@ -1977,7 +1978,7 @@ local function osc_init()
             -- mouse move events may pile up during seeking and may still get
             -- sent when the user is done seeking, so we need to throw away
             -- identical seeks
-            if mp.get_property("pause") == "no" then
+            if mp.get_property("pause") == "no" and user_opts.mouse_seek_pause then
                 state.playingWhilstSeeking = true
                 mp.commandv("cycle", "pause")
             end
