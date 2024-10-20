@@ -85,6 +85,7 @@ Create `modernz.conf` in your mpv script-opts directory:
 | seekrangealpha         | 150   | transparency of seekranges                                                           |
 | livemarkers            | yes   | update seekbar chapter markers on duration change                                    |
 | osc_on_seek            | no    | show osc when seeking                                                                |
+| mouse_seek_pause       | yes   | should the video pause while seeking with mouse move? (on button hold)               |
 | automatickeyframemode  | yes   | set seekbarkeyframes based on video length to prevent laggy scrubbing on long videos |
 | automatickeyframelimit | 600   | videos of above this length (in seconds) will have seekbarkeyframes on               |
 
