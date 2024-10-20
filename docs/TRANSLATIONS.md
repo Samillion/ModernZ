@@ -117,7 +117,7 @@ ModernZ currently has translations for the following languages:
 
 If you'd like to share your translations with the community:
 
-1. **Fork the repository**: Visit the ModernZ GitHub page (https://github.com/cyl0/ModernX) and click "Fork" to create your own copy of the project.
+1. **Fork the repository**: Visit the ModernZ GitHub page (https://github.com/Samillion/ModernZ) and click "Fork" to create your own copy of the project.
 
 2. **Edit the** `modernz-locale.lua` **file** Add your translations to the file in your forked repository.
 
