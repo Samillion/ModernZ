@@ -35,7 +35,6 @@ Don't like the default white buttons and text? ModernZ is fully customizable! Ch
 
 See the [Color Customization](docs/USER_OPTS.md#colors) section in the configuration guide for details on how to customize colors and buttons.
 
-
 ## Installation
 
 1. **Copy Files**
@@ -63,8 +62,8 @@ See the [Color Customization](docs/USER_OPTS.md#colors) section in the configura
    	   ├── modernz.lua
    	   └── thumbfast.lua (optional)
    ```
-> [!TIP]
-> Need more details on MPV file locations? Check the [MPV manual](https://mpv.io/manual/master/#files).
+   > [!TIP]
+   > Need more details on MPV file locations? Check the [MPV manual](https://mpv.io/manual/master/#files).
 
 ## Configuration
 
@@ -130,31 +129,42 @@ https://github.com/user-attachments/assets/188992ba-1ad8-4d71-a96c-44c3c99df4e0
 
 ## Translations
 
-ModernZ is in English by default, but it's easy to add translations. Just edit the local language table in `modernz.lua`.
+ModernZ is currently available in English, but you can easily switch it to your preferred language! Here's how:
 
-Example of adding/modifying translations in `modernz.lua`:
+**1. Download the locale pack:**
 
-```lua
-local language = {
-    ["en"] = {
-        welcome = "Drop files or URLs to play here",
-        off = "OFF",
-        na = "n/a",
-        -- ... other strings
-    },
-    ["zh"] = {
-	    welcome = "{\\fs24\\1c&H0&\\1c&HFFFFFF&}将文件或URL放在这里播放",
-	    off = "关闭",
-	    na = "n/a",
-        -- ... other strings
-    }
-}
-```
+Grab the [modernz-locale.lua](/modernz-locale.lua) file from this repository. This file holds translations for various languages.
 
-For complete translation documentation, available languages, and contribution guidelines, see [TRANSLATIONS.md](docs/TRANSLATIONS.md).
+**2. Add the locales to MPV:**
 
-**Q: Why aren't all translations included by default?**  
-A: They were, once. It would be difficult for me to maintain it accurately for many languages. This way, users have the option to localize it without flooding the OSC file with language listings.
+Copy the downloaded `modernz-locale.lua` file to your MPV's `/scripts` folder.
+
+**3. Choose our language:**
+
+There are two ways to set your preferred language:
+
+- **Recommended:** Use the `modernz.conf` file
+
+  ```ini
+  # Example configuration in modernz.conf
+  language = "zh"  # Set language to Simplified Chinese
+  ```
+
+- **Alternative:** Edit the `modernz.lua` script
+
+  Open `modernz.lua` and find the `user_opts` section near the beginning. Change the `language` value to your preferred code:
+
+  ```lua
+  local user_opts = {
+      -- General
+      language = "en",  -- Change this to your preferred language code
+      ...
+  }
+  ```
+
+**Need More Info?**
+
+For a complete list of available languages, contribution guidelines, and in-depth translation documentation, head over to the [TRANSLATIONS.md](docs/TRANSLATIONS.md).
 
 ## Extras
 

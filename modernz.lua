@@ -188,38 +188,57 @@ local icons = {
 	}
 }
 
--- Localization
--- To add more languages:
--- https://github.com/Samillion/ModernZ#osc-language
+--- Localization
 local language = {
     ["en"] = {
-	    welcome = "{\\fs24\\1c&H0&\\1c&HFFFFFF&}Drop files or URLs to play here",
-	    off = "OFF",
-	    na = "n/a",
-	    none = "None available",
-	    video = "Video",
-	    audio = "Audio",
-	    subtitle = "Subtitle",
-	    nosub = "No subtitles available",
-	    noaudio = "No audio tracks available",
-	    track = " tracks:",
-	    playlist = "Playlist",
-	    nolist = "Empty playlist.",
-	    chapter = "Chapter",
-	    nochapter = "No chapters.",
-	    ontop = "Pin window",
-	    ontopdisable = "Unpin window",
-	    loopenable = "Enable loop",
-	    loopdisable = "Disable loop",
-	    screenshot = "Screenshot",
-	    screenshotsaved = "Screenshot saved",
-	    statsinfo = "Information",
+        welcome = "{\\fs24\\1c&H0&\\1c&HFFFFFF&}Drop files or URLs to play here",
+        off = "OFF",
+        na = "n/a",
+        none = "None available",
+        video = "Video",
+        audio = "Audio",
+        subtitle = "Subtitle",
+        nosub = "No subtitles available",
+        noaudio = "No audio tracks available",
+        track = " tracks:",
+        playlist = "Playlist",
+        nolist = "Empty playlist.",
+        chapter = "Chapter",
+        nochapter = "No chapters.",
+        ontop = "Pin window",
+        ontopdisable = "Unpin window",
+        loopenable = "Enable loop",
+        loopdisable = "Disable loop",
+        screenshot = "Screenshot",
+        screenshotsaved = "Screenshot saved",
+        statsinfo = "Information",
     },
 }
 
+-- Load external locales if available
+local locale_file = mp.find_config_file('scripts/modernz-locale.lua')
+if locale_file then
+    local success, external = pcall(function()
+        return loadfile(locale_file)()
+    end)
+    
+    if success and external then
+        -- Merge external locales
+        for lang, strings in pairs(external) do
+            language[lang] = strings
+            -- Fill in any missing locales with English
+            for key, value in pairs(language["en"]) do
+                if strings[key] == nil then
+                    strings[key] = value
+                end
+            end
+        end
+    end
+end
+
 local texts
 local function set_osc_texts()
-    texts = language[user_opts.language]
+    texts = language[user_opts.language] or language["en"]
 end
 
 local thumbfast = {
