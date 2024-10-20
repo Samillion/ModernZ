@@ -60,6 +60,7 @@ local user_opts = {
     unicodeminus = false,                  -- whether to use the Unicode minus sign character in remaining time
     timetotal = true,                      -- display total time instead of remaining time?
     timems = false,                        -- display timecodes with milliseconds?
+    time_format = "dynamic",               -- "dynamic" or "fixed". dynamic shows MM:SS when possible, fixed always shows HH:MM:SS
     timefontsize = 18,                     -- the font size of the time
     jumpamount = 10,                       -- change the jump amount (in seconds by default)
     jumpiconnumber = true,                 -- show different icon when jumpamount is 5, 10, or 30
@@ -2092,21 +2093,24 @@ local function osc_init()
         local whole_seconds = math.floor(seconds % 60)
         local milliseconds = state.tc_ms and math.floor((seconds % 1) * 1000) or nil
         
+        -- Always show HH:MM:SS if user_opts.time_format is "fixed"
+        local force_hours = user_opts.time_format == "fixed"
+        
         -- Format string templates
-        local format_with_ms = hours > 0 and "%02d:%02d:%02d.%03d" or "%02d:%02d.%03d"
-        local format_without_ms = hours > 0 and "%02d:%02d:%02d" or "%02d:%02d"
+        local format_with_ms = (hours > 0 or force_hours) and "%02d:%02d:%02d.%03d" or "%02d:%02d.%03d"
+        local format_without_ms = (hours > 0 or force_hours) and "%02d:%02d:%02d" or "%02d:%02d"
         
         if state.tc_ms then
             return string.format(format_with_ms, 
-                hours > 0 and hours or minutes,
-                hours > 0 and minutes or whole_seconds,
-                hours > 0 and whole_seconds or milliseconds,
-                hours > 0 and milliseconds or nil)
+                (hours > 0 or force_hours) and hours or minutes,
+                (hours > 0 or force_hours) and minutes or whole_seconds,
+                (hours > 0 or force_hours) and whole_seconds or milliseconds,
+                (hours > 0 or force_hours) and milliseconds or nil)
         else
             return string.format(format_without_ms,
-                hours > 0 and hours or minutes,
-                hours > 0 and minutes or whole_seconds,
-                hours > 0 and whole_seconds or nil)
+                (hours > 0 or force_hours) and hours or minutes,
+                (hours > 0 or force_hours) and minutes or whole_seconds,
+                (hours > 0 or force_hours) and whole_seconds or nil)
         end
     end
 
