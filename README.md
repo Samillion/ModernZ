@@ -1,4 +1,4 @@
-<h1 align="center">ModernZ - A Sleek Alternative OSC for MPV</h1>
+<h1 align="center">ModernZ - A Sleek Alternative OSC for mpv</h1>
 
 A sleek and modern OSC for [mpv](https://mpv.io/), this project is a fork of ModernX designed to enhance functionality by adding more features, all while preserving the core standards of mpv's OSC.
 
@@ -66,7 +66,7 @@ See the [Color Customization](docs/USER_OPTS.md#colors) section in the configura
    	   └── thumbfast.lua (optional)
    ```
    > [!TIP]
-   > Need more details on MPV file locations? Check the [MPV manual](https://mpv.io/manual/master/#files).
+   > Need more details on mpv file locations? Check the [mpv manual](https://mpv.io/manual/master/#files).
 
 ## Configuration
 
@@ -138,9 +138,9 @@ ModernZ is currently available in English, but you can easily switch it to your 
 
 Grab the [modernz-locale.lua](/extras/locale/modernz-locale.lua) file from this repository. This file holds translations for various languages.
 
-**2. Add the locales to MPV:**
+**2. Add the locales to mpv:**
 
-Copy the downloaded `modernz-locale.lua` file to your MPV's `/scripts` folder.
+Copy the downloaded `modernz-locale.lua` file to your mpv's `/scripts` folder.
 
 **3. Choose our language:**
 
@@ -175,7 +175,7 @@ The following scripts are ones I wrote and maintain, feel free to use them if th
 
 - [Pause Indicator](/extras/pause-indicator-lite) - A simple script that displays an indicator on pause
 
-- [YTDLAutoFormat](https://github.com/Samillion/mpv-ytdlautoformat) - A simple mpv script to auto change ytdl-format for Youtube and Twitch
+- [YTDLAutoFormat](https://github.com/Samillion/mpv-ytdlautoformat) - A simple mpv script to automatically change ytdl-format (yt-dlp) for specified domains/streams.
 
 - [Box to Wide](https://github.com/Samillion/mpv-boxtowide) - A simple mpv script to change 4:3 aspect-ratio of video files/streams to 16:9 automatically.
 
