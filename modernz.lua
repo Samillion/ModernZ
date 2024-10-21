@@ -132,6 +132,9 @@ local user_opts = {
     playlist_mbtn_left_command = "script-binding select/select-playlist; script-message-to modernz osc-hide",
     playlist_mbtn_right_command = "show-text ${playlist} 3000",
 
+    -- volume control icon mouse actions
+    volumectrl_mbtn_right_command = "script-binding select/select-audio-device; script-message-to modernz osc-hide",
+
     -- audio button mouse actions
     audio_track_mbtn_left_command = "script-binding select/select-aid; script-message-to modernz osc-hide",
     audio_track_mbtn_right_command = "cycle audio",
@@ -1770,6 +1773,7 @@ local function osc_init()
         end
     end
     ne.eventresponder["mbtn_left_up"] = function () mp.commandv("cycle", "mute") end
+    ne.eventresponder["mbtn_right_up"] = command_callback(user_opts.volumectrl_mbtn_right_command)
     ne.eventresponder["wheel_up_press"] =
         function () 
             if state.mute then mp.commandv("cycle", "mute") end
