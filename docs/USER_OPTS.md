@@ -63,17 +63,18 @@ Create `modernz.conf` in your mpv script-opts directory:
 
 ### Time & Volume
 
-| Option            | Value    | Description                                                       |
-| ----------------- | -------- | ----------------------------------------------------------------- |
-| unicodeminus      | no       | whether to use the Unicode minus sign character in remaining time |
-| timetotal         | yes      | display total time instead of remaining time?                     |
-| timems            | no       | display timecodes with milliseconds                               |
-| timefontsize      | 18       | the font size of the time                                         |
-| jumpamount        | 10       | change the jump amount (in seconds by default)                    |
-| jumpiconnumber    | yes      | show different icon when jumpamount is `5`, `10`, or `30`         |
-| jumpmode          | relative | seek mode for jump buttons                                        |
-| volumecontrol     | yes      | whether to show mute button and volume slider                     |
-| volumecontroltype | linear   | use `linear` or `log` (logarithmic) volume scale                  |
+| Option            | Value    | Description                                                                      |
+| ----------------- | -------- | ---------------------------------------------------------------------------------|
+| unicodeminus      | no       | whether to use the Unicode minus sign character in remaining time                |
+| timetotal         | yes      | display total time instead of remaining time?                                    |
+| timems            | no       | display timecodes with milliseconds                                              |
+| time_format       | dynamic  | dynamic or fixed. dynamic shows MM:SS when possible, fixed always shows HH:MM:SS |
+| timefontsize      | 18       | the font size of the time                                                        |
+| jumpamount        | 10       | change the jump amount (in seconds by default)                                   |
+| jumpiconnumber    | yes      | show different icon when jumpamount is `5`, `10`, or `30`                        |
+| jumpmode          | relative | seek mode for jump buttons                                                       |
+| volumecontrol     | yes      | whether to show mute button and volume slider                                    |
+| volumecontroltype | linear   | use `linear` or `log` (logarithmic) volume scale                                 |
 
 ### Seeking
 
