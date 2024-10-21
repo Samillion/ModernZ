@@ -634,7 +634,7 @@ end
 local function window_controls_enabled()
     local val = user_opts.windowcontrols
     if val == "auto" then
-        return not state.border or not state.title_bar or state.fullscreen
+        return not (state.border and state.title_bar) or state.fullscreen
     else
         return val ~= "no"
     end
@@ -1303,7 +1303,7 @@ layouts = function ()
     lo.layer = 10
     lo.alpha[3] = 0
 
-    if not user_opts.titleBarStrip and (not state.border or state.fullscreen) then
+    if not user_opts.titleBarStrip and (not (state.border and state.title_bar) or state.fullscreen) then
         new_element("TitleTransBg", "box")
         lo = add_layout("TitleTransBg")
         lo.geometry = {x = posX, y = -100, an = 7, w = osc_w, h = -1}
@@ -2293,7 +2293,7 @@ local function process_event(source, what)
                 )
             ) then
                 if user_opts.bottomhover then -- if enabled, only show osc if mouse is hovering at the bottom of the screen (where the UI elements are)
-                    if mouseY > osc_param.playresy - (user_opts.bottomhover_zone or 160) or (not state.border or state.fullscreen) and mouseY < 40 then -- account for scaling options
+                    if mouseY > osc_param.playresy - (user_opts.bottomhover_zone or 160) or (not (state.border and state.title_bar) or state.fullscreen) and mouseY < 40 then -- account for scaling options
                         show_osc()
                     else
                         hide_osc()
