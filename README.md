@@ -133,7 +133,7 @@ ModernZ is currently available in English, but you can easily switch it to your 
 
 **1. Download the locale pack:**
 
-Grab the [modernz-locale.lua](/modernz-locale.lua) file from this repository. This file holds translations for various languages.
+Grab the [modernz-locale.lua](/extras/locale/modernz-locale.lua) file from this repository. This file holds translations for various languages.
 
 **2. Add the locales to MPV:**
 
@@ -170,7 +170,7 @@ For a complete list of available languages, contribution guidelines, and in-dept
 
 The following scripts are ones I wrote and maintain, feel free to use them if they're useful to you.
 
-- [Pause Indicator](https://github.com/Samillion/ModernZ/tree/main/extras#pause-indicator-lite) - A simple script that displays an indicator on pause
+- [Pause Indicator](/extras/pause-indicator-lite) - A simple script that displays an indicator on pause
 
 - [YTDLAutoFormat](https://github.com/Samillion/mpv-ytdlautoformat) - A simple mpv script to auto change ytdl-format for Youtube and Twitch
 
