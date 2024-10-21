@@ -1542,7 +1542,9 @@ local function osc_init()
     local display_w, display_h, display_aspect = mp.get_osd_size()
     local scale = 1
 
-    if state.fullscreen then
+    if mp.get_property("video") == "no" then -- dummy/forced window
+        scale = user_opts.scaleforcedwindow
+    elseif state.fullscreen then
         scale = user_opts.scalefullscreen
     else
         scale = user_opts.scalewindowed
@@ -2804,15 +2806,19 @@ local function idlescreen_visibility(mode, no_osd)
 end
 
 mp.observe_property("pause", "bool", function(name, enabled)
-	pause_state(name, enabled)
-	if user_opts.showonpause then
-		if enabled then
-			visibility_mode("always", true)
-			show_osc()
-		else
-			visibility_mode("auto", true)
-		end
-	end
+    pause_state(name, enabled)
+    if user_opts.showonpause then
+        if enabled then
+            if user_opts.keeponpause then
+                visibility_mode("always", true)
+            else
+                visibility_mode("auto", true)
+            end
+            show_osc()
+        else
+            visibility_mode("auto", true)
+        end
+    end
 end)
 
 mp.register_script_message("osc-visibility", visibility_mode)
