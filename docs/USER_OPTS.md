@@ -108,19 +108,20 @@ Create `modernz.conf` in your mpv script-opts directory:
 
 ### UI [behavior]
 
-| Option          | Value | Description                                                |
-| --------------- | ----- | ---------------------------------------------------------- |
-| showonpause     | yes   | whether to show osc when paused                            |
-| keeponpause     | yes   | whether to disable the hide timeout on pause               |
-| bottomhover     | yes   | if the osc should only display when hovering at the bottom |
-| raisesubs       | yes   | whether to raise subtitles above the osc when it's shown   |
-| raisesubamount  | 175   | how much subtitles rise when the osc is shown              |
-| thumbnailborder | 2     | the width of the thumbnail border (thumbfast)              |
-| OSCfadealpha    | 150   | alpha of the background box for the OSC                    |
-| boxalpha        | 75    | alpha of the window title bar                              |
-| ontopborder     | no    | If you pin the window, keep window border?                 |
-| loopinpause     | yes   | activate looping by right clicking pause                   |
-| visibility      | auto  | only used at init to set visibility_mode(...)              |
+| Option           | Value | Description                                                |
+| ---------------- | ----- | ---------------------------------------------------------- |
+| showonpause      | yes   | whether to show osc when paused                            |
+| keeponpause      | yes   | whether to disable the hide timeout on pause               |
+| bottomhover      | yes   | if the osc should only display when hovering at the bottom |
+| bottomhover_zone | 160   | height of show/hide zone for bottomhover                   |
+| raisesubs        | yes   | whether to raise subtitles above the osc when it's shown   |
+| raisesubamount   | 175   | how much subtitles rise when the osc is shown              |
+| thumbnailborder  | 2     | the width of the thumbnail border (thumbfast)              |
+| OSCfadealpha     | 150   | alpha of the background box for the OSC                    |
+| boxalpha         | 75    | alpha of the window title bar                              |
+| ontopborder      | no    | If you pin the window, keep window border?                 |
+| loopinpause      | yes   | activate looping by right clicking pause                   |
+| visibility       | auto  | only used at init to set visibility_mode(...)              |
 
 ### UI [time-based]
 
