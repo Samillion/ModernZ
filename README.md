@@ -21,7 +21,7 @@ A sleek and modern OSC for [mpv](https://mpv.io/), this project is a fork of Mod
 ## Features
 
 - 🎨 Modern, customizable interface
-- 🖼️ Video thumbnail previews on seek
+- 🖼️ Video thumbnail previews on seek (with [thumbfast](https://github.com/po5/thumbfast))
 - 📄 Interactive playlist and chapter lists
 - 🌐 Multi-language support
 - ⌨️ Configurable controls
@@ -37,13 +37,16 @@ See the [Color Customization](docs/USER_OPTS.md#colors) section in the configura
 
 ## Installation
 
-1. **Copy Files**
+1. **Disable Stock OSC**
+   - Add `osc=no` in your `mpv.conf`
+
+2. **Copy Files**
 
    - Place `modernz.lua` in your mpv scripts directory
    - Place `Material-Design-Iconic-Round.ttf` in your mpv fonts directory
    - (OPTIONAL) Place `thumbfast.lua` in your mpv scripts directory
 
-2. **Locations**
+3. **Locations**
 
    ```
    Linux:   ~/.config/mpv/
@@ -51,7 +54,7 @@ See the [Color Customization](docs/USER_OPTS.md#colors) section in the configura
    macOS:   ~/Library/Application Support/mpv/
    ```
 
-3. **Folder Structure**
+4. **Folder Structure**
    ```
    mpv/
    ├── fonts/
