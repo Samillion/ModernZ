@@ -221,6 +221,8 @@ local language = {
     },
 }
 
+mp.observe_property("osc", "bool", function(name, value) if value == true then mp.set_property("osc", "no") end end)
+
 -- Load external locales if available
 local locale_file = mp.find_config_file('scripts/modernz-locale.lua')
 if locale_file then
@@ -2561,7 +2563,7 @@ tick = function()
             mp.disable_key_bindings("showhide_wc")
             state.showhide_enabled = false
         end
-    elseif state.fullscreen and user_opts.showfullscreen
+    elseif (state.fullscreen and user_opts.showfullscreen)
         or (not state.fullscreen and user_opts.showwindowed) then
 
         -- render the OSC
@@ -2622,12 +2624,6 @@ local function set_tick_delay(_, display_fps)
     end
     tick_delay = 1 / display_fps
 end
-
-mp.observe_property("osc", "bool", function(name, value)
-    if value == true then
-        mp.set_property("osc", "no")
-    end
-end)
 
 mp.register_event("shutdown", shutdown)
 mp.register_event("start-file", request_init)
