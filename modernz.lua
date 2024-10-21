@@ -99,6 +99,7 @@ local user_opts = {
     showonpause = true,                    -- whether to show osc when paused
     keeponpause = true,                    -- whether to disable the hide timeout on pause
     bottomhover = true,                    -- if the osc should only display when hovering at the bottom
+    bottomhover_zone = 160,                -- height of show/hide zone for bottomhover
     raisesubs = true,                      -- whether to raise subtitles above the osc when it's shown
     raisesubamount = 175,                  -- how much subtitles rise when the osc is shown
     thumbnailborder = 2,                   -- the width of the thumbnail border (thumbfast)
@@ -2290,7 +2291,7 @@ local function process_event(source, what)
                 )
             ) then
                 if user_opts.bottomhover then -- if enabled, only show osc if mouse is hovering at the bottom of the screen (where the UI elements are)
-                    if mouseY > osc_param.playresy - 160 or (not state.border or state.fullscreen) and mouseY < 40 then -- account for scaling options
+                    if mouseY > osc_param.playresy - (user_opts.bottomhover_zone or 160) or (not state.border or state.fullscreen) and mouseY < 40 then -- account for scaling options
                         show_osc()
                     else
                         hide_osc()
