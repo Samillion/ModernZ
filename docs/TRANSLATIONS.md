@@ -9,13 +9,13 @@ This guide provides everything you need to use, modify, and add translations for
 - [Adding a New Language](#adding-a-new-language)
 - [Updating Existing Translations](#updating-existing-translations)
 - [Translation Keys Reference](#translation-keys-reference)
-- [Contributing Translations](#contributing-translations)
+- [Contributing Translations](#contributing)
 
 ## Quick Start
 
 To get started with translations:
 
-1. **Locate the translation file:** Open the `modernz-locale.lua` file from the repository (typically found at [`../modernz-locale.lua`](../modernz-locale.lua)).
+1. **Locate the translation file:** Open the `modernz-locale.lua` file from the repository (typically found at [modernz-locale.lua](../extras/locale/modernz-locale.lua)).
 2. **Edit Translations:** Use the following format to add or modify translations:
    ```lua
    ["language-code"] = {
