@@ -173,11 +173,11 @@ For a complete list of available languages, contribution guidelines, and in-dept
 
 The following scripts are ones I wrote and maintain, feel free to use them if they're useful to you.
 
-- [Pause Indicator](/extras/pause-indicator-lite) - A simple script that displays an indicator on pause
+- [Pause-Indicator-Lite](/extras/pause-indicator-lite) - A simple script that displays an indicator on pause
 
-- [YTDLAutoFormat](https://github.com/Samillion/mpv-ytdlautoformat) - A simple mpv script to automatically change ytdl-format (yt-dlp) for specified domains/streams.
+- [ytdlAutoFormat](https://github.com/Samillion/mpv-ytdlautoformat) - A simple mpv script to automatically change ytdl-format (yt-dlp) for specified domains.
 
-- [Box to Wide](https://github.com/Samillion/mpv-boxtowide) - A simple mpv script to change 4:3 aspect-ratio of video files/streams to 16:9 automatically.
+- [BoxtoWide](https://github.com/Samillion/mpv-boxtowide) - A simple mpv script to change 4:3 aspect-ratio of video files/streams to 16:9 automatically.
 
 For even more useful scripts, check out the [mpv User Scripts Wiki](https://github.com/mpv-player/mpv/wiki/User-Scripts). It offers a wide range of community-contributed scripts to enhance your mpv experience.
 
