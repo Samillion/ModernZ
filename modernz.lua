@@ -165,33 +165,33 @@ local osc_param = { -- calculated by osc_init()
 }
 
 local icons = {
-	previous = "\239\142\181",
-	next = "\239\142\180",
-	play = "\239\142\170",
-	pause = "\239\142\167",
-	replay = "\239\142\178",
-	backward = "\239\142\160",
-	forward = "\239\142\159",
-	audio = "\239\142\183",
-	volume = "\239\142\188",
-	volumelow = "\239\142\185",
-	volumemute = "\239\142\187",
-	sub = "\239\140\164",
-	minimize = "\239\133\172",
-	fullscreen = "\239\133\173",  
-	loopoff = "\239\134\181",
-	loopon = "\239\134\183",
-	info = "\239\135\183",
-	ontopon = "\239\142\150",
-	ontopoff = "\239\142\149",
-	screenshot = "\239\135\168",
-	playlist = "\239\137\135",
-	jumpicons = { 
-	    [5] = {"\239\142\177", "\239\142\163"}, 
-	    [10] = {"\239\142\175", "\239\142\161"}, 
-	    [30] = {"\239\142\176", "\239\142\162"}, 
-	    default = {"\239\142\178    ", "\239\142\178"}, -- second icon is mirrored in layout() 
-	}
+    previous = "\239\142\181",
+    next = "\239\142\180",
+    play = "\239\142\170",
+    pause = "\239\142\167",
+    replay = "\239\142\178",
+    backward = "\239\142\160",
+    forward = "\239\142\159",
+    audio = "\239\142\183",
+    volume = "\239\142\188",
+    volumelow = "\239\142\185",
+    volumemute = "\239\142\187",
+    sub = "\239\140\164",
+    minimize = "\239\133\172",
+    fullscreen = "\239\133\173",  
+    loopoff = "\239\134\181",
+    loopon = "\239\134\183",
+    info = "\239\135\183",
+    ontopon = "\239\142\150",
+    ontopoff = "\239\142\149",
+    screenshot = "\239\135\168",
+    playlist = "\239\137\135",
+    jumpicons = { 
+        [5] = {"\239\142\177", "\239\142\163"}, 
+        [10] = {"\239\142\175", "\239\142\161"}, 
+        [30] = {"\239\142\176", "\239\142\162"}, 
+        default = {"\239\142\178    ", "\239\142\178"}, -- second icon is mirrored in layout() 
+    }
 }
 
 --- Localization
@@ -250,10 +250,10 @@ local function set_osc_texts()
 end
 
 local thumbfast = {
-	width = 0,
-	height = 0,
-	disabled = true,
-	available = false
+    width = 0,
+    height = 0,
+    disabled = true,
+    available = false
 }
 
 local tick_delay = 1 / 60
@@ -525,10 +525,10 @@ local function ass_append_alpha(ass, alpha, modifier, inverse)
     for ai, av in pairs(alpha) do
         av = mult_alpha(av, modifier)
         if state.animation then
-			local animpos = state.animation
-			if inverse then
-				animpos = 255 - animpos
-			end
+            local animpos = state.animation
+            if inverse then
+                animpos = 255 - animpos
+            end
             av = mult_alpha(av, animpos)
         end
         ar[ai] = av
@@ -539,7 +539,7 @@ local function ass_append_alpha(ass, alpha, modifier, inverse)
 end
 
 local function ass_draw_cir_cw(ass, x, y, r)
-	ass:round_rect_cw(x-r, y-r, x+r, y+r, r)
+    ass:round_rect_cw(x-r, y-r, x+r, y+r, r)
 end
 
 local function ass_draw_rr_h_cw(ass, x0, y0, x1, y1, r1, hexagon, r2)
@@ -623,11 +623,11 @@ end
 
 -- convert slider_pos to logarithmic depending on volumecontrol user_opts
 local function set_volume(slider_pos)
-	local volume = slider_pos
-	if user_opts.volumecontroltype == "log" then
-		volume = slider_pos^2 / 100
-	end
-	return math.floor(volume)
+    local volume = slider_pos
+    if user_opts.volumecontroltype == "log" then
+        volume = slider_pos^2 / 100
+    end
+    return math.floor(volume)
 end
 
 -- WindowControl helpers
@@ -1464,7 +1464,7 @@ layouts = function ()
         lo.style = osc_styles.Ctrl3
         lo.visible = (osc_param.playresx >= 300 - outeroffset)
     end
-	
+
     if showloop then
         lo = add_layout("tog_loop")
         lo.geometry = {x = osc_geo.w - 127 + (showinfo and 0 or 45) + (showfullscreen and 0 or 45), y = refY - 40, an = 5, w = 24, h = 24}
@@ -2577,10 +2577,10 @@ mp.observe_property("chapter-list", "native", function(_, list)
 end)
 
 mp.observe_property("seeking", "native", function(_, seeking)
-	reset_timeout()
-	if seeking and user_opts.osc_on_seek then
-		mp.commandv("script-message-to", "modernz", "osc-show")
-	end
+    reset_timeout()
+    if seeking and user_opts.osc_on_seek then
+        mp.commandv("script-message-to", "modernz", "osc-show")
+    end
 end)
 mp.observe_property("fullscreen", "bool", function(_, val)
     state.fullscreen = val
@@ -2618,17 +2618,17 @@ end)
 mp.observe_property("osd-scale-by-window", "native", request_init_resize)
 mp.observe_property('touch-pos', 'native', handle_touch)
 mp.observe_property("mute", "bool", function(_, val)
-	state.mute = val
-	request_tick()
+    state.mute = val
+    request_tick()
 end)
 
 -- ensure compatibility with auto looping scripts (eg: a script that sets videos under 2 seconds to loop by default)
 mp.observe_property("loop-file", "bool", function(_, val)
-	if (val == nil) then
-		state.looping = true
-	else 
-		state.looping = false
-	end
+    if (val == nil) then
+        state.looping = true
+    else 
+        state.looping = false
+    end
 end)
 
 -- mouse show/hide bindings
@@ -2768,17 +2768,17 @@ mp.add_key_binding(nil, "visibility", function() visibility_mode("cycle") end)
 
 mp.register_script_message("osc-idlescreen", idlescreen_visibility)
 mp.register_script_message("thumbfast-info", function(json)
-	local data = utils.parse_json(json)
-	if type(data) ~= "table" or not data.width or not data.height then
-		msg.error("thumbfast-info: received json didn't produce a table with thumbnail information")
-	else
-		thumbfast = data
-	end
+    local data = utils.parse_json(json)
+    if type(data) ~= "table" or not data.width or not data.height then
+        msg.error("thumbfast-info: received json didn't produce a table with thumbnail information")
+    else
+        thumbfast = data
+    end
 end)
 
 mp.add_key_binding(nil, "progress-toggle", function()
-	state.persistentprogresstoggle = not state.persistentprogresstoggle
-	request_init()
+    state.persistentprogresstoggle = not state.persistentprogresstoggle
+    request_init()
 end)
 
 -- Validate string type user options
@@ -2814,7 +2814,7 @@ local function validate_user_opts()
           msg.warn("screenshot_flag cannot be '" .. user_opts.screenshot_flag .. "'. Ignoring.")
           user_opts.screenshot_flag = "subtitles"
     end
-	
+
     if not language[user_opts.language] then
        msg.warn("language '" .. user_opts.language .. "' not found. Ignoring.")
        user_opts.language = "en"
@@ -2822,7 +2822,7 @@ local function validate_user_opts()
           msg.warn("ERROR: can't find the default 'en' language or the one set by user_opts.")
        end
     end
-	
+
     local colors = {
         user_opts.osc_color, user_opts.seekbarfg_color, user_opts.seekbarbg_color, 
         user_opts.title_color, user_opts.time_color, user_opts.side_buttons_color, 
