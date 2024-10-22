@@ -1149,7 +1149,7 @@ local function add_layout(name)
 
         return elements[name].layout
     else
-        msg.error("Can't add_layout to element \""..name.."\", doesn't exist.")
+        msg.error("Can't add_layout to element '"..name.."', doesn't exist.")
     end
 end
 
@@ -1202,8 +1202,7 @@ local function window_controls()
         -- Close: 🗙
         local ne = new_element("close", "button")
         ne.content = "\238\132\149"
-        ne.eventresponder["mbtn_left_up"] =
-            function () mp.commandv("quit") end
+        ne.eventresponder["mbtn_left_up"] = function () mp.commandv("quit") end
         lo = add_layout("close")
         lo.geometry = third_geo
         lo.style = osc_styles.WinCtrl
@@ -1212,8 +1211,7 @@ local function window_controls()
         -- Minimize: 🗕
         ne = new_element("minimize", "button")
         ne.content = "\238\132\146"
-        ne.eventresponder["mbtn_left_up"] =
-            function () mp.commandv("cycle", "window-minimized") end
+        ne.eventresponder["mbtn_left_up"] = function () mp.commandv("cycle", "window-minimized") end
         lo = add_layout("minimize")
         lo.geometry = first_geo
         lo.style = osc_styles.WinCtrl
@@ -1221,11 +1219,7 @@ local function window_controls()
     
         -- Maximize: 🗖 /🗗
         ne = new_element("maximize", "button")
-        if state.maximized or state.fullscreen then
-            ne.content = "\238\132\148"
-        else
-            ne.content = "\238\132\147"
-        end
+        ne.content = (state.maximized or state.fullscreen) and "\238\132\148" or "\238\132\147"
         ne.eventresponder["mbtn_left_up"] =
             function ()
                if state.fullscreen then
@@ -1622,11 +1616,11 @@ local function osc_init()
     ne = new_element("playpause", "button")
     ne.content = function ()
         if mp.get_property("eof-reached") == "yes" then
-            return (icons.replay)
+            return icons.replay
         elseif mp.get_property("pause") == "yes" and not state.playingWhilstSeeking then
-            return (icons.play)
+            return icons.play
         else
-            return (icons.pause)
+            return icons.pause
         end
     end
     ne.eventresponder["mbtn_left_up"] =
@@ -1828,9 +1822,9 @@ local function osc_init()
     ne = new_element("tog_fs", "button")
     ne.content = function ()
         if state.fullscreen then
-            return (icons.minimize)
+            return icons.minimize
         else
-            return (icons.fullscreen)
+            return icons.fullscreen
         end
     end
     ne.visible = (osc_param.playresx >= 250)
@@ -1848,9 +1842,9 @@ local function osc_init()
     ne = new_element("tog_loop", "button")
     ne.content = function ()
         if state.looping then
-            return (icons.loopon)
+            return icons.loopon
         else
-            return (icons.loopoff)
+            return icons.loopoff
         end
     end
     ne.visible = (osc_param.playresx >= 700 - outeroffset - (user_opts.showinfo and 0 or 100) - (user_opts.showfullscreen and 0 or 100))
@@ -1877,9 +1871,9 @@ local function osc_init()
     ne = new_element("tog_ontop", "button")
     ne.content = function ()
         if mp.get_property("ontop") == "no" then
-            return (icons.ontopon)
+            return icons.ontopon
         else
-            return (icons.ontopoff)
+            return icons.ontopoff
         end
     end
     ne.tooltip_style = osc_styles.Tooltip
@@ -2246,7 +2240,6 @@ local function process_event(source, what)
         reset_timeout() -- clicking resets the hideosc timer
 
         for n = 1, #elements do
-
             if mouse_hit(elements[n]) and
                 elements[n].eventresponder and
                 (elements[n].eventresponder[source .. "_up"] or
