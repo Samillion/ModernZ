@@ -35,6 +35,7 @@ Create `modernz.conf` in your mpv script-opts directory:
 | side_buttons_color    | #FFFFFF | color of side buttons (audio, sub, playlist, vol, loop, info..etc)       |
 | middle_buttons_color  | #FFFFFF | color of middle buttons (skip, jump, chapter...etc)                      |
 | playpause_color       | #FFFFFF | color of play/pause button                                               |
+| held_element_color    | #999999 | color of an element while held down                                      |
 
 ### Buttons
 

@@ -33,6 +33,7 @@ local user_opts = {
     side_buttons_color = "#FFFFFF",        -- color of side buttons (audio, sub, playlist, vol, loop, info..etc)
     middle_buttons_color = "#FFFFFF",      -- color of middle buttons (skip, jump, chapter...etc)
     playpause_color = "#FFFFFF",           -- color of play/pause button
+    held_element_color = "#999999",        -- color of an element while held down
 
     -- Buttons
     hovereffect = true,                    -- whether buttons have a glowing effect when hovered over
@@ -284,9 +285,9 @@ local function set_osc_styles()
         Time = "{\\blur0\\bord0\\1c&H" .. osc_color_convert(user_opts.time_color) .. "&\\3c&H000000&\\fs" .. user_opts.timefontsize .. "\\fn" .. user_opts.font .. "}",
         Tooltip = "{\\blur1\\bord0.5\\1c&HFFFFFF&\\3c&H000000&\\fs" .. user_opts.timefontsize .. "\\fn" .. user_opts.font .. "}",
         Title = "{\\blur1\\bord0.5\\1c&H" .. osc_color_convert(user_opts.title_color) .. "&\\3c&H0&\\fs".. user_opts.titlefontsize .."\\q2\\fn" .. user_opts.font .. "}",
-        WindowTitle = "{\\blur1\\bord0.5\\1c&H" .. osc_color_convert(user_opts.window_title_color) .. "&\\3c&H0&\\fs".. 30 .."\\q2\\fn" .. user_opts.font .. "}",
-        WinCtrl = "{\\blur1\\bord0.5\\1c&H" .. osc_color_convert(user_opts.window_controls_color) .. "&\\3c&H0&\\fs".. 25 .."\\fnmpv-osd-symbols}",
-        elementDown = "{\\1c&H999999&}",
+        WindowTitle = "{\\blur1\\bord0.5\\1c&H" .. osc_color_convert(user_opts.window_title_color) .. "&\\3c&H0&\\fs".. 30 .. "\\q2\\fn" .. user_opts.font .. "}",
+        WinCtrl = "{\\blur1\\bord0.5\\1c&H" .. osc_color_convert(user_opts.window_controls_color) .. "&\\3c&H0&\\fs".. 25 .. "\\fnmpv-osd-symbols}",
+        elementDown = "{\\1c&H" .. osc_color_convert(user_opts.held_element_color) .. "&}",
         elementHover = "{\\blur5\\2c&HFFFFFF&}",
         wcBar = "{\\1c&H" .. osc_color_convert(user_opts.osc_color) .. "&}",
     }
@@ -2827,7 +2828,7 @@ local function validate_user_opts()
         user_opts.osc_color, user_opts.seekbarfg_color, user_opts.seekbarbg_color, 
         user_opts.title_color, user_opts.time_color, user_opts.side_buttons_color, 
         user_opts.middle_buttons_color, user_opts.playpause_color, user_opts.window_title_color, 
-        user_opts.window_controls_color,
+        user_opts.window_controls_color, user_opts.held_element_color,
     }
 
     for _, color in pairs(colors) do
