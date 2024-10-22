@@ -2477,7 +2477,7 @@ local function render()
     if state.showtime ~= nil and get_hidetimeout() >= 0 then
         local timeout = state.showtime + (get_hidetimeout() / 1000) - now
         if timeout <= 0 and get_touchtimeout() <= 0 then
-            if state.active_element == nil and (not mouse_over_osc) then
+            if state.active_element == nil and not mouse_over_osc then
                 if not (state.paused and user_opts.keeponpause) then
                     hide_osc()
                 end
