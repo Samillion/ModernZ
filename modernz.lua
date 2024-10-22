@@ -2824,10 +2824,10 @@ local function validate_user_opts()
     end
 	
     local colors = {
-		user_opts.osc_color, user_opts.seekbarfg_color, user_opts.seekbarbg_color, 
-		user_opts.title_color, user_opts.time_color, user_opts.side_buttons_color, 
-		user_opts.middle_buttons_color, user_opts.playpause_color, user_opts.window_title_color, 
-		user_opts.window_controls_color,
+        user_opts.osc_color, user_opts.seekbarfg_color, user_opts.seekbarbg_color, 
+        user_opts.title_color, user_opts.time_color, user_opts.side_buttons_color, 
+        user_opts.middle_buttons_color, user_opts.playpause_color, user_opts.window_title_color, 
+        user_opts.window_controls_color,
     }
 
     for _, color in pairs(colors) do
