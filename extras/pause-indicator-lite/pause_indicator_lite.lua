@@ -9,6 +9,8 @@
 local opts = {
     -- indicator icon type
     indicator_icon = "pause",        -- Which icon to show as indicator? pause, play
+    indicator_stay = true,           -- Should the pause indicator stay visible during pause?
+    indicator_stay_timeout = 0.6,    -- If it doesn't stay, how long should it last? (seconds)
 
     -- keybind
     keybind_allow = true,            -- Allow keybind to toggle pause
@@ -122,6 +124,9 @@ mp.observe_property("pause", "bool", function(_, paused)
             update_pause_indicator_position()
             indicator:update()
             toggled = true
+            if not opts.indicator_stay then
+                mp.add_timeout(opts.indicator_stay_timeout, function() indicator:remove() end)
+            end
             if opts.flash_play_icon then
                 flash:remove()
             end
