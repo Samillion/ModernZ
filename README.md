@@ -189,14 +189,11 @@ For even more useful scripts, check out the [mpv User Scripts Wiki](https://gith
     - forked from [cyl0/ModernX](https://github.com/cyl0/ModernX)
     - forked from [maoiscat/mpv-osc-modern](https://github.com/maoiscat/mpv-osc-modern)
 
-Looking at the fork history, I asked myself:
+**Why fork yet again?**
+- To add many features in: [Color Customization](docs/USER_OPTS.md#colors), [Options](docs/USER_OPTS.md) and [Locale Integration](docs/TRANSLATIONS.md)
+- To re-do the project entirely to match mpv's stock osc standards, to ensure compatibility
+- To eliminate old bugs and redundancy within the code
 
-> Doesn't that mean you stripped it back down to be a near match of the original?
+In essence, to modernize the ModernX origin.
 
-Absolutely, yes. :stuck_out_tongue_closed_eyes:
-
-The caveat here is that I only asked myself that after the fact, and since then, many improvements and features were added.
-
-Arguing with myself, I concluded: The main idea was to re-do the project to keep mpv's OSC standards for functionality and compatibility. It's a nice side project that is teaching me a lot about mpv and lua.
-
-Still, all the people there deserve credit for their great work.
+Having said that, ModernZ still uses parts of the old code, and every previous and current fork author and contributor deserve credit (including mpv's stock osc), that is why they're mentioned in detail.
