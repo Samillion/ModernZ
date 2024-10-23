@@ -76,18 +76,15 @@ See the [Color Customization](docs/USER_OPTS.md#colors) section in the configura
 
 2. Example short configuration:
 
-   ```ini
+   ```
    # Seekbar colors (Hex format)
    seekbarfg_color=#B7410E
-
-   # Interface colors
-   text_color=#FFFFFF
-   button_color=#B7410E
 
    # Interface options
    showplaylist=no
    title=${media-title}
    scalewindowed=1.0
+   windowcontrols=auto
    ```
 
 For a full list of options, [check out the detailed user options here](docs/USER_OPTS.md).
