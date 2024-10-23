@@ -812,7 +812,6 @@ local function render_elements(master_ass)
 
                     element.eventresponder[state.active_event_source.."_down"](element)
                 end
-                state.mouse_down_counter = state.mouse_down_counter + 1
             end
         end
         
