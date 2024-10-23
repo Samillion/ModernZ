@@ -4,10 +4,10 @@
 ----- forked from cyl0: https://github.com/cyl0/ModernX
 ------ forked from maoiscat: https://github.com/maoiscat/mpv-osc-modern
 
-local assdraw = require 'mp.assdraw'
-local msg = require 'mp.msg'
-local opt = require 'mp.options'
-local utils = require 'mp.utils'
+local assdraw = require "mp.assdraw"
+local msg = require "mp.msg"
+local opt = require "mp.options"
+local utils = require "mp.utils"
 
 -- Parameters
 -- default user option values
@@ -225,7 +225,7 @@ local language = {
 mp.observe_property("osc", "bool", function(name, value) if value == true then mp.set_property("osc", "no") end end)
 
 -- Load external locales if available
-local locale_file = mp.find_config_file('scripts/modernz-locale.lua')
+local locale_file = mp.find_config_file("scripts/modernz-locale.lua")
 if locale_file then
     local success, external = pcall(function()
         return loadfile(locale_file)()
@@ -427,7 +427,6 @@ end
 -- returns hitbox spanning coordinates (top left, bottom right corner)
 -- according to alignment
 local function get_hitbox_coords(x, y, an, w, h)
-
     local alignments = {
       [1] = function () return x, y-h, x+w, y end,
       [2] = function () return x-(w/2), y-h, x+(w/2), y end,
@@ -475,7 +474,6 @@ end
 
 -- translate value into element coordinates
 local function get_slider_ele_pos_for(element, val)
-
     local ele_pos = scale_value(
         element.slider.min.value, element.slider.max.value,
         element.slider.min.ele_pos, element.slider.max.ele_pos,
@@ -1220,14 +1218,13 @@ local function window_controls()
         -- Maximize: 🗖 /🗗
         ne = new_element("maximize", "button")
         ne.content = (state.maximized or state.fullscreen) and "\238\132\148" or "\238\132\147"
-        ne.eventresponder["mbtn_left_up"] =
-            function ()
-               if state.fullscreen then
-                  mp.commandv("cycle", "fullscreen")
-               else
-                  mp.commandv("cycle", "window-maximized")
-               end
+        ne.eventresponder["mbtn_left_up"] = function ()
+            if state.fullscreen then
+                mp.commandv("cycle", "fullscreen")
+            else
+                mp.commandv("cycle", "window-maximized")
             end
+        end
         lo = add_layout("maximize")
         lo.geometry = second_geo
         lo.style = osc_styles.WinCtrl
@@ -2218,7 +2215,6 @@ local function process_event(source, what)
         end
         state.active_element = nil
         state.mouse_down_counter = 0
-
     elseif source == "mouse_move" then
         state.mouse_in_window = true
 
@@ -2313,7 +2309,6 @@ local function render()
 
     -- fade animation
     if state.anitype ~= nil then
-
         if state.anistart == nil then
             state.anistart = now
         end
@@ -2614,7 +2609,7 @@ mp.observe_property("osd-dimensions", "native", function()
     adjust_subtitles(state.osc_visible)
 end)
 mp.observe_property("osd-scale-by-window", "native", request_init_resize)
-mp.observe_property('touch-pos', 'native', handle_touch)
+mp.observe_property("touch-pos", "native", handle_touch)
 mp.observe_property("mute", "bool", function(_, val)
     state.mute = val
     request_tick()
