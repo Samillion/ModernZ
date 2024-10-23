@@ -39,7 +39,7 @@ local user_opts = {
     hovereffect = true,                    -- whether buttons have a glowing effect when hovered over
 
     showjump = true,                       -- show "jump forward/backward 10 seconds" buttons 
-    showskip = false,                      -- show the skip back and forward (chapter) buttons
+    showskip = false,                      -- show the chapter skip back and forward buttons
     shownextprev = true,                   -- show the next/previous playlist track buttons
 
     showplaylist = false,                  -- show playlist button? LClick: simple playlist, RClick: interactive playlist
@@ -50,6 +50,8 @@ local user_opts = {
     showscreenshot = false,                -- show screenshot button
     screenshot_flag = "subtitles",         -- flag for the screenshot button. subtitles, video, window, each-frame
                                            -- https://mpv.io/manual/master/#command-interface-screenshot-%3Cflags%3E
+    chapter_softrepeat = true,             -- holding chapter skip buttons repeats toggle
+    jump_softrepeat = true,                -- holding jump seek buttons repeats toggle
 
     -- Scaling
     vidscale = true,                       -- whether to scale the controller with the video
@@ -109,7 +111,6 @@ local user_opts = {
     boxalpha = 75,                         -- alpha of the window title bar
 
     loopinpause = true,                    -- activate looping by right clicking pause
-
     visibility = "auto",                   -- only used at init to set visibility_mode(...)
 
     -- UI [time-based]
@@ -1360,7 +1361,7 @@ layouts = function ()
     end
 
     if showskip then 
-        lo = add_layout("skip_backward")
+        lo = add_layout("chapter_backward")
         lo.geometry = {x = refX - 60 - offset, y = refY - 40 , an = 5, w = 30, h = 24}
         lo.style = osc_styles.Ctrl2
     end
@@ -1384,7 +1385,7 @@ layouts = function ()
     end
 
     if showskip then
-        lo = add_layout("skip_forward")
+        lo = add_layout("chapter_forward")
         lo.geometry = {x = refX + 60 + offset, y = refY - 40 , an = 5, w = 30, h = 24}
         lo.style = osc_styles.Ctrl2
     end
@@ -1641,7 +1642,7 @@ local function osc_init()
 
     --jump_backward
     ne = new_element("jump_backward", "button")
-    ne.softrepeat = true
+    ne.softrepeat = user_opts.jump_softrepeat == true
     ne.content = jump_icon[1]
     ne.eventresponder["mbtn_left_down"] = function () mp.commandv("seek", -jumpamount, jumpmode) end
     ne.eventresponder["mbtn_right_down"] = function () mp.commandv("seek", -60, jumpmode) end
@@ -1649,16 +1650,16 @@ local function osc_init()
 
     --jump_forward
     ne = new_element("jump_forward", "button")
-    ne.softrepeat = true
+    ne.softrepeat = user_opts.jump_softrepeat == true
     ne.content = jump_icon[2]
     ne.eventresponder["mbtn_left_down"] = function () mp.commandv("seek", jumpamount, jumpmode) end
     ne.eventresponder["mbtn_right_down"] = function () mp.commandv("seek", 60, jumpmode) end
     ne.eventresponder["shift+mbtn_left_down"] = function () mp.commandv("frame-step") end
 
-    --skip_backward
-    ne = new_element("skip_backward", "button")
+    --chapter_backward
+    ne = new_element("chapter_backward", "button")
     ne.visible = (osc_param.playresx >= 400 - nojumpoffset*10)
-    ne.softrepeat = true
+    ne.softrepeat = user_opts.chapter_softrepeat == true
     ne.content = icons.backward
     ne.enabled = (have_ch) -- disables button when no chapters available.
     ne.eventresponder["mbtn_left_down"] = command_callback(user_opts.ch_prev_mbtn_left_command)
@@ -1666,10 +1667,10 @@ local function osc_init()
     ne.eventresponder["shift+mbtn_left_down"] = function () mp.commandv("seek", -60, jumpmode) end
     ne.eventresponder["shift+mbtn_right_down"] = function () mp.command("show-text ${chapter-list} 3000") end
 
-    --skip_forward
-    ne = new_element("skip_forward", "button")
+    --chapter_forward
+    ne = new_element("chapter_forward", "button")
     ne.visible = (osc_param.playresx >= 400 - nojumpoffset*10)
-    ne.softrepeat = true
+    ne.softrepeat = user_opts.chapter_softrepeat == true
     ne.content = icons.forward
     ne.enabled = (have_ch) -- disables button when no chapters available.
     ne.eventresponder["mbtn_left_down"] = command_callback(user_opts.ch_next_mbtn_left_command)

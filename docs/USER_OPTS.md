@@ -52,6 +52,8 @@ Create `modernz.conf` in your mpv script-opts directory:
 | showontop             | yes       | show `window on top (pin)` button                                                                                                                             |
 | showscreenshot        | no        | show `screenshot` button                                                                                                                                      |
 | screenshot_flag       | subtitles | flag for the screenshot button. `subtitles` `video` `window` `each-frame` [[details](https://mpv.io/manual/master/#command-interface-screenshot-%3Cflags%3E)] |
+| chapter_softrepeat    | yes       | holding chapter skip buttons repeats toggle                                                                                                                   |
+| jump_softrepeat       | yes       | holding jump seek buttons repeats toggle                                                                                                                      |
 
 ### Scaling
 
