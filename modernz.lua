@@ -108,7 +108,6 @@ local user_opts = {
     OSCfadealpha = 150,                    -- alpha of the background box for the OSC
     boxalpha = 75,                         -- alpha of the window title bar
 
-    ontopborder = false,                   -- If you pin the window, keep window border?
     loopinpause = true,                    -- activate looping by right clicking pause
 
     visibility = "auto",                   -- only used at init to set visibility_mode(...)
@@ -1587,26 +1586,24 @@ local function osc_init()
     ne.eventresponder["mbtn_left_up"] = command_callback(user_opts.title_mbtn_left_command)
     ne.eventresponder["mbtn_right_up"] = command_callback(user_opts.title_mbtn_right_command)
 
-    if user_opts.shownextprev then
-        -- playlist buttons
-        -- prev
-        ne = new_element("playlist_prev", "button")
-        ne.visible = (osc_param.playresx >= 500 - nojumpoffset - noskipoffset*(nojumpoffset == 0 and 1 or 10))
-        ne.content = icons.previous
-        ne.enabled = (pl_pos > 1) or (loop ~= "no")
-        ne.eventresponder["mbtn_left_up"] = function () mp.commandv("playlist-prev", "weak") end
-        ne.eventresponder["mbtn_right_up"] = function () mp.command("show-text ${playlist} 3000") end
-        ne.eventresponder["shift+mbtn_left_down"] = function () mp.command("show-text ${playlist} 3000") end
+    -- playlist buttons
+    -- prev
+    ne = new_element("playlist_prev", "button")
+    ne.visible = (osc_param.playresx >= 500 - nojumpoffset - noskipoffset*(nojumpoffset == 0 and 1 or 10))
+    ne.content = icons.previous
+    ne.enabled = (pl_pos > 1) or (loop ~= "no")
+    ne.eventresponder["mbtn_left_up"] = function () mp.commandv("playlist-prev", "weak") end
+    ne.eventresponder["mbtn_right_up"] = function () mp.command("show-text ${playlist} 3000") end
+    ne.eventresponder["shift+mbtn_left_down"] = function () mp.command("show-text ${playlist} 3000") end
 
-        --next
-        ne = new_element("playlist_next", "button")
-        ne.visible = (osc_param.playresx >= 500 - nojumpoffset - noskipoffset*(nojumpoffset == 0 and 1 or 10))
-        ne.content = icons.next
-        ne.enabled = (have_pl and (pl_pos < pl_count)) or (loop ~= "no")
-        ne.eventresponder["mbtn_left_up"] = function () mp.commandv("playlist-next", "weak") end
-        ne.eventresponder["mbtn_right_up"] = function () mp.command("show-text ${playlist} 3000") end
-        ne.eventresponder["shift+mbtn_left_down"] = function () mp.command("show-text ${playlist} 3000") end
-    end
+    --next
+    ne = new_element("playlist_next", "button")
+    ne.visible = (osc_param.playresx >= 500 - nojumpoffset - noskipoffset*(nojumpoffset == 0 and 1 or 10))
+    ne.content = icons.next
+    ne.enabled = (have_pl and (pl_pos < pl_count)) or (loop ~= "no")
+    ne.eventresponder["mbtn_left_up"] = function () mp.commandv("playlist-next", "weak") end
+    ne.eventresponder["mbtn_right_up"] = function () mp.command("show-text ${playlist} 3000") end
+    ne.eventresponder["shift+mbtn_left_down"] = function () mp.command("show-text ${playlist} 3000") end
 
     --play control buttons
     --play_pause
@@ -1638,32 +1635,27 @@ local function osc_init()
         mp.set_property_native("loop-file", state.looping)
     end
 
-    if user_opts.showjump then
-        local jumpamount = user_opts.jumpamount
-        local jumpmode = user_opts.jumpmode
-        local jump_icon = user_opts.jumpiconnumber and icons.jumpicons[jumpamount] or icons.jumpicons.default
-
-        --jump_backward
-        ne = new_element("jump_backward", "button")
-        ne.softrepeat = true
-        ne.content = jump_icon[1]
-        ne.eventresponder["mbtn_left_down"] = function () mp.commandv("seek", -jumpamount, jumpmode) end
-        ne.eventresponder["mbtn_right_down"] = function () mp.commandv("seek", -60, jumpmode) end
-        ne.eventresponder["shift+mbtn_left_down"] = function () mp.commandv("frame-back-step") end
-
-        --jump_forward
-        ne = new_element("jump_forward", "button")
-        ne.softrepeat = true
-        ne.content = jump_icon[2]
-        ne.eventresponder["mbtn_left_down"] = function () mp.commandv("seek", jumpamount, jumpmode) end
-        ne.eventresponder["mbtn_right_down"] = function () mp.commandv("seek", 60, jumpmode) end
-        ne.eventresponder["shift+mbtn_left_down"] = function () mp.commandv("frame-step") end
-    end
-
-    --skip_backward
     local jumpamount = user_opts.jumpamount
     local jumpmode = user_opts.jumpmode
+    local jump_icon = user_opts.jumpiconnumber and icons.jumpicons[jumpamount] or icons.jumpicons.default
 
+    --jump_backward
+    ne = new_element("jump_backward", "button")
+    ne.softrepeat = true
+    ne.content = jump_icon[1]
+    ne.eventresponder["mbtn_left_down"] = function () mp.commandv("seek", -jumpamount, jumpmode) end
+    ne.eventresponder["mbtn_right_down"] = function () mp.commandv("seek", -60, jumpmode) end
+    ne.eventresponder["shift+mbtn_left_down"] = function () mp.commandv("frame-back-step") end
+
+    --jump_forward
+    ne = new_element("jump_forward", "button")
+    ne.softrepeat = true
+    ne.content = jump_icon[2]
+    ne.eventresponder["mbtn_left_down"] = function () mp.commandv("seek", jumpamount, jumpmode) end
+    ne.eventresponder["mbtn_right_down"] = function () mp.commandv("seek", 60, jumpmode) end
+    ne.eventresponder["shift+mbtn_left_down"] = function () mp.commandv("frame-step") end
+
+    --skip_backward
     ne = new_element("skip_backward", "button")
     ne.visible = (osc_param.playresx >= 400 - nojumpoffset*10)
     ne.softrepeat = true
@@ -1840,7 +1832,7 @@ local function osc_init()
     ne.visible = (osc_param.playresx >= 760 - outeroffset - (user_opts.showloop and 0 or 100) - (user_opts.showinfo and 0 or 100) - (user_opts.showfullscreen and 0 or 100))
     ne.eventresponder["mbtn_left_up"] = function () 
         mp.commandv("cycle", "ontop") 
-        if state.initialborder == "yes" and not user_opts.ontopborder then
+        if state.initialborder == "yes" then
             if mp.get_property("ontop") == "yes" then
                 mp.commandv("set", "border", "no")
             else
@@ -1989,44 +1981,42 @@ local function osc_init()
     ne.eventresponder["wheel_down_press"] = function () mp.commandv("osd-auto", "seek", -10) end
 
     --persistent seekbar
-    if user_opts.persistentprogress or state.persistentprogresstoggle then
-        ne = new_element("persistentseekbar", "slider")
-        ne.enabled = mp.get_property("percent-pos") ~= nil
-        state.slider_element = ne.enabled and ne or nil  -- used for forced_title
-        ne.slider.markerF = function () return {} end
-        ne.slider.posF = function () 
-            if mp.get_property_bool("eof-reached") then return 100 end
-            return mp.get_property_number("percent-pos") 
-        end 
-        ne.slider.tooltipF = function() return "" end
-        ne.slider.seekRangesF = function()
-            if user_opts.persistentbuffer then
-                if not user_opts.seekrange then
-                    return nil
-                end
-                local cache_state = state.cache_state
-                if not cache_state then
-                    return nil
-                end
-                local duration = mp.get_property_number("duration")
-                if duration == nil or duration <= 0 then
-                    return nil
-                end
-                local ranges = cache_state["seekable-ranges"]
-                if #ranges == 0 then
-                    return nil
-                end
-                local nranges = {}
-                for _, range in pairs(ranges) do
-                    nranges[#nranges + 1] = {
-                        ["start"] = 100 * range["start"] / duration,
-                        ["end"] = 100 * range["end"] / duration,
-                    }
-                end
-                return nranges
+    ne = new_element("persistentseekbar", "slider")
+    ne.enabled = mp.get_property("percent-pos") ~= nil
+    state.slider_element = ne.enabled and ne or nil  -- used for forced_title
+    ne.slider.markerF = function () return {} end
+    ne.slider.posF = function () 
+        if mp.get_property_bool("eof-reached") then return 100 end
+        return mp.get_property_number("percent-pos") 
+    end 
+    ne.slider.tooltipF = function() return "" end
+    ne.slider.seekRangesF = function()
+        if user_opts.persistentbuffer then
+            if not user_opts.seekrange then
+                return nil
             end
-            return nil
+            local cache_state = state.cache_state
+            if not cache_state then
+                return nil
+            end
+            local duration = mp.get_property_number("duration")
+            if duration == nil or duration <= 0 then
+                return nil
+            end
+            local ranges = cache_state["seekable-ranges"]
+            if #ranges == 0 then
+                return nil
+            end
+            local nranges = {}
+            for _, range in pairs(ranges) do
+                nranges[#nranges + 1] = {
+                    ["start"] = 100 * range["start"] / duration,
+                    ["end"] = 100 * range["end"] / duration,
+                }
+            end
+            return nranges
         end
+        return nil
     end
 
     -- Helper function to format time
