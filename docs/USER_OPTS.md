@@ -120,7 +120,6 @@ Create `modernz.conf` in your mpv script-opts directory:
 | thumbnailborder  | 2     | the width of the thumbnail border (thumbfast)              |
 | OSCfadealpha     | 150   | alpha of the background box for the OSC                    |
 | boxalpha         | 75    | alpha of the window title bar                              |
-| ontopborder      | no    | If you pin the window, keep window border?                 |
 | loopinpause      | yes   | activate looping by right clicking pause                   |
 | visibility       | auto  | only used at init to set visibility_mode(...)              |
 
