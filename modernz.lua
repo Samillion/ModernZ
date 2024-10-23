@@ -744,7 +744,7 @@ local function prepare_elements()
         -- style it accordingly and kill the eventresponders
         if not element.enabled then
             element.layout.alpha[1] = 215
-            if not (element.name == "cy_sub" or element.name == "cy_audio") then -- keep these to display tooltips
+            if not (element.name == "sub_track" or element.name == "audio_track") then -- keep these to display tooltips
                 element.eventresponder = nil
             end
         end
@@ -978,13 +978,12 @@ local function render_elements(master_ass)
                     buttontext = buttontext .. "..."
                 end
                 local _, nchars2 = buttontext:gsub(".[\128-\191]*", "")
-                local stretch = (maxchars/#buttontext)*100
-                buttontext = string.format("{\\fscx%f}",
-                    (maxchars/#buttontext)*100) .. buttontext
+                local stretch = (maxchars/#buttontext) * 100
+                buttontext = string.format("{\\fscx%f}%s{\\r}", stretch, buttontext)
             end
 
             elem_ass:append(buttontext)
-            
+
             -- add tooltip for audio and subtitle tracks
             if element.tooltipF ~= nil then
                 if mouse_hit(element) then
@@ -1299,8 +1298,8 @@ layouts = function ()
     lo.alpha[3] = 0
 
     if not user_opts.titleBarStrip and (not (state.border and state.title_bar) or state.fullscreen) then
-        new_element("TitleTransBg", "box")
-        lo = add_layout("TitleTransBg")
+        new_element("title_alpha_bg", "box")
+        lo = add_layout("title_alpha_bg")
         lo.geometry = {x = posX, y = -100, an = 7, w = osc_w, h = -1}
         lo.style = osc_styles.box_bg
         lo.layer = 10
@@ -1359,43 +1358,43 @@ layouts = function ()
 
     -- buttons
     if shownextprev then
-        lo = add_layout("pl_prev")
+        lo = add_layout("playlist_prev")
         lo.geometry = {x = refX - (60 + (showskip and 60 or 0)) - offset, y = refY - 40 , an = 5, w = 30, h = 24}
         lo.style = osc_styles.Ctrl2
     end
 
     if showskip then 
-        lo = add_layout("skipback")
+        lo = add_layout("skip_backward")
         lo.geometry = {x = refX - 60 - offset, y = refY - 40 , an = 5, w = 30, h = 24}
         lo.style = osc_styles.Ctrl2
     end
 
     if showjump then
-        lo = add_layout("jumpback")
+        lo = add_layout("jump_backward")
         lo.geometry = {x = refX - 60, y = refY - 40 , an = 5, w = 30, h = 24}
         lo.style = osc_styles.Ctrl2
     end
 
-    lo = add_layout("playpause")
+    lo = add_layout("play_pause")
     lo.geometry = {x = refX, y = refY - 40 , an = 5, w = 45, h = 45}
     lo.style = osc_styles.Ctrl1
 
     if showjump then
-        lo = add_layout("jumpfrwd")
+        lo = add_layout("jump_forward")
         lo.geometry = {x = refX + 60, y = refY - 40 , an = 5, w = 30, h = 24}
-        -- HACK: jumpfrwd's icon must be mirrored for nonstandard # of seconds
+        -- HACK: jump_forward's icon must be mirrored for nonstandard # of seconds
         -- as the font only has an icon without a number for rewinding
         lo.style = (user_opts.jumpiconnumber and icons.jumpicons[user_opts.jumpamount] ~= nil) and osc_styles.Ctrl2 or osc_styles.Ctrl2Flip
     end
 
     if showskip then
-        lo = add_layout("skipfrwd")
+        lo = add_layout("skip_forward")
         lo.geometry = {x = refX + 60 + offset, y = refY - 40 , an = 5, w = 30, h = 24}
         lo.style = osc_styles.Ctrl2
     end
 
     if shownextprev then
-        lo = add_layout("pl_next")
+        lo = add_layout("playlist_next")
         lo.geometry = {x = refX + (60 + (showskip and 60 or 0)) + offset, y = refY - 40 , an = 5, w = 30, h = 24}
         lo.style = osc_styles.Ctrl2
     end
@@ -1410,20 +1409,20 @@ layouts = function ()
     lo.style = osc_styles.Time
 
     -- Audio
-    lo = add_layout("cy_audio")
+    lo = add_layout("audio_track")
     lo.geometry = {x = 37, y = refY - 40, an = 5, w = 24, h = 24}
     lo.style = osc_styles.Ctrl3
     lo.visible = (osc_param.playresx >= 500 - outeroffset)
 
     -- Subtitle
-    lo = add_layout("cy_sub")
+    lo = add_layout("sub_track")
     lo.geometry = {x = 82, y = refY - 40, an = 5, w = 24, h = 24}
     lo.style = osc_styles.Ctrl3
     lo.visible = (osc_param.playresx >= 600 - outeroffset)
 
     -- Playlist
     if showplaylist then
-        lo = add_layout("tog_pl")
+        lo = add_layout("tog_playlist")
         lo.geometry = {x = 127, y = refY - 40, an = 5, w = 24, h = 24}
         lo.style = osc_styles.Ctrl3
         lo.visible = (osc_param.playresx >= 600 - outeroffset)
@@ -1453,7 +1452,7 @@ layouts = function ()
 
     -- Fullscreen/Info/Loop/Pin/Screenshot
     if showfullscreen then
-        lo = add_layout("tog_fs")
+        lo = add_layout("tog_fullscreen")
         lo.geometry = {x = osc_geo.w - 37, y = refY - 40, an = 5, w = 24, h = 24}
         lo.style = osc_styles.Ctrl3
         lo.visible = (osc_param.playresx >= 250 - outeroffset)
@@ -1594,7 +1593,7 @@ local function osc_init()
     if user_opts.shownextprev then
         -- playlist buttons
         -- prev
-        ne = new_element("pl_prev", "button")
+        ne = new_element("playlist_prev", "button")
         ne.visible = (osc_param.playresx >= 500 - nojumpoffset - noskipoffset*(nojumpoffset == 0 and 1 or 10))
         ne.content = icons.previous
         ne.enabled = (pl_pos > 1) or (loop ~= "no")
@@ -1603,7 +1602,7 @@ local function osc_init()
         ne.eventresponder["shift+mbtn_left_down"] = function () mp.command("show-text ${playlist} 3000") end
 
         --next
-        ne = new_element("pl_next", "button")
+        ne = new_element("playlist_next", "button")
         ne.visible = (osc_param.playresx >= 500 - nojumpoffset - noskipoffset*(nojumpoffset == 0 and 1 or 10))
         ne.content = icons.next
         ne.enabled = (have_pl and (pl_pos < pl_count)) or (loop ~= "no")
@@ -1613,8 +1612,8 @@ local function osc_init()
     end
 
     --play control buttons
-    --playpause
-    ne = new_element("playpause", "button")
+    --play_pause
+    ne = new_element("play_pause", "button")
     ne.content = function ()
         if mp.get_property("eof-reached") == "yes" then
             return icons.replay
@@ -1647,18 +1646,16 @@ local function osc_init()
         local jumpmode = user_opts.jumpmode
         local jump_icon = user_opts.jumpiconnumber and icons.jumpicons[jumpamount] or icons.jumpicons.default
 
-        --jumpback
-        ne = new_element("jumpback", "button")
-
+        --jump_backward
+        ne = new_element("jump_backward", "button")
         ne.softrepeat = true
         ne.content = jump_icon[1]
         ne.eventresponder["mbtn_left_down"] = function () mp.commandv("seek", -jumpamount, jumpmode) end
         ne.eventresponder["mbtn_right_down"] = function () mp.commandv("seek", -60, jumpmode) end
         ne.eventresponder["shift+mbtn_left_down"] = function () mp.commandv("frame-back-step") end
 
-        --jumpfrwd
-        ne = new_element("jumpfrwd", "button")
-
+        --jump_forward
+        ne = new_element("jump_forward", "button")
         ne.softrepeat = true
         ne.content = jump_icon[2]
         ne.eventresponder["mbtn_left_down"] = function () mp.commandv("seek", jumpamount, jumpmode) end
@@ -1666,11 +1663,11 @@ local function osc_init()
         ne.eventresponder["shift+mbtn_left_down"] = function () mp.commandv("frame-step") end
     end
 
-    --skipback
+    --skip_backward
     local jumpamount = user_opts.jumpamount
     local jumpmode = user_opts.jumpmode
 
-    ne = new_element("skipback", "button")
+    ne = new_element("skip_backward", "button")
     ne.visible = (osc_param.playresx >= 400 - nojumpoffset*10)
     ne.softrepeat = true
     ne.content = icons.backward
@@ -1680,8 +1677,8 @@ local function osc_init()
     ne.eventresponder["shift+mbtn_left_down"] = function () mp.commandv("seek", -60, jumpmode) end
     ne.eventresponder["shift+mbtn_right_down"] = function () mp.command("show-text ${chapter-list} 3000") end
 
-    --skipfrwd
-    ne = new_element("skipfrwd", "button")
+    --skip_forward
+    ne = new_element("skip_forward", "button")
     ne.visible = (osc_param.playresx >= 400 - nojumpoffset*10)
     ne.softrepeat = true
     ne.content = icons.forward
@@ -1693,8 +1690,8 @@ local function osc_init()
 
     update_tracklist()
     
-    --cy_audio
-    ne = new_element("cy_audio", "button")
+    --audio_track
+    ne = new_element("audio_track", "button")
     ne.enabled = audio_track_count > 0
     ne.off = audio_track_count == 0
     ne.visible = (osc_param.playresx >= 550 - outeroffset)
@@ -1716,8 +1713,8 @@ local function osc_init()
     ne.eventresponder["wheel_down_press"] = command_callback(user_opts.audio_track_wheel_down_command)
     ne.eventresponder["wheel_up_press"] = command_callback(user_opts.audio_track_wheel_up_command)
 
-    --cy_sub
-    ne = new_element("cy_sub", "button")
+    --sub_track
+    ne = new_element("sub_track", "button")
     ne.enabled = sub_track_count > 0
     ne.off = sub_track_count == 0
     ne.visible = (osc_param.playresx >= 600 - outeroffset)
@@ -1739,8 +1736,8 @@ local function osc_init()
     ne.eventresponder["wheel_down_press"] = command_callback(user_opts.sub_track_wheel_down_command)
     ne.eventresponder["wheel_up_press"] = command_callback(user_opts.sub_track_wheel_up_command)
 
-    --tog_pl
-    ne = new_element("tog_pl", "button")
+    --tog_playlist
+    ne = new_element("tog_playlist", "button")
     ne.visible = (osc_param.playresx >= 700 - outeroffset)
     ne.content = icons.playlist
     ne.tooltip_style = osc_styles.Tooltip
@@ -1808,8 +1805,8 @@ local function osc_init()
     ne.eventresponder["wheel_up_press"] = function () mp.commandv("osd-auto", "add", "volume", 5) end
     ne.eventresponder["wheel_down_press"] = function () mp.commandv("osd-auto", "add", "volume", -5) end
 
-    --tog_fs
-    ne = new_element("tog_fs", "button")
+    --tog_fullscreen
+    ne = new_element("tog_fullscreen", "button")
     ne.content = function () return state.fullscreen and icons.minimize or icons.fullscreen end
     ne.visible = (osc_param.playresx >= 250)
     ne.eventresponder["mbtn_left_up"] = function () mp.commandv("cycle", "fullscreen") end
