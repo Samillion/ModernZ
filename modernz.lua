@@ -139,21 +139,21 @@ local user_opts = {
 
     -- audio button mouse actions
     audio_track_mbtn_left_command = "script-binding select/select-aid; script-message-to modernz osc-hide",
-    audio_track_mbtn_right_command = "cycle audio",
-    audio_track_wheel_down_command = "cycle audio",
-    audio_track_wheel_up_command = "cycle audio down",
+    audio_track_mbtn_right_command = "osd-msg cycle audio",
+    audio_track_wheel_down_command = "osd-msg cycle audio",
+    audio_track_wheel_up_command = "osd-msg cycle audio down",
 
     -- subtitle button mouse actions
     sub_track_mbtn_left_command = "script-binding select/select-sid; script-message-to modernz osc-hide",
-    sub_track_mbtn_right_command = "cycle sub",
-    sub_track_wheel_down_command = "cycle sub",
-    sub_track_wheel_up_command = "cycle sub down",
+    sub_track_mbtn_right_command = "osd-msg cycle sub",
+    sub_track_wheel_down_command = "osd-msg cycle sub",
+    sub_track_wheel_up_command = "osd-msg cycle sub down",
 
     -- chapter skip buttons mouse actions
-    ch_prev_mbtn_left_command = "no-osd add chapter -1",
+    ch_prev_mbtn_left_command = "osd-msg add chapter -1",
     ch_prev_mbtn_right_command = "script-binding select/select-chapter; script-message-to modernz osc-hide",
 
-    ch_next_mbtn_left_command = "no-osd add chapter 1",
+    ch_next_mbtn_left_command = "osd-msg add chapter 1",
     ch_next_mbtn_right_command = "script-binding select/select-chapter; script-message-to modernz osc-hide",
 }
 
@@ -1688,7 +1688,7 @@ local function osc_init()
     ne.content = icons.audio
     ne.tooltip_style = osc_styles.Tooltip
     ne.tooltipF = function ()
-        local prop = mp.get_property("current-tracks/audio/title") or mp.get_property("current-tracks/audio/lang") or texts.na
+        local prop = mp.get_property("current-tracks/audio/lang") or mp.get_property("current-tracks/audio/title") or texts.na
         return (texts.audio .. " " ..
                (mp.get_property_native("aid") or "-") .. "/" .. audio_track_count .. " [" .. prop .. "]")
     end
@@ -1707,7 +1707,7 @@ local function osc_init()
     ne.content = icons.sub
     ne.tooltip_style = osc_styles.Tooltip
     ne.tooltipF = function ()
-        local prop = mp.get_property("current-tracks/sub/title") or mp.get_property("current-tracks/sub/lang") or texts.na
+        local prop = mp.get_property("current-tracks/sub/lang") or mp.get_property("current-tracks/sub/title") or texts.na
         return (texts.subtitle .. " " ..
                (mp.get_property_native("sid") or "-") .. "/" .. sub_track_count .. " [" .. prop .. "]")
     end
@@ -1846,9 +1846,8 @@ local function osc_init()
         if user_opts.screenshot_flag == "subtitles" or user_opts.screenshot_flag == "subtitles+each-frame" then 
             mp.commandv("set", "sub-pos", 100) 
         end
-        mp.commandv("screenshot", user_opts.screenshot_flag)
+        mp.commandv("osd-msg", "screenshot", user_opts.screenshot_flag)
         mp.commandv("set", "sub-pos", tempSubPosition)
-        mp.command("show-text '" .. texts.screenshotsaved .. "'")
     end
 
     --seekbar
