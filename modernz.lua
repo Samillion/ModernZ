@@ -55,7 +55,7 @@ local user_opts = {
 
     downloadbutton = true,                 -- show download button on web videos (requires yt-dlp)
     downloadpath = "~~desktop/mpv",        -- the download path for videos
-    ytdlpQuality = ""                      -- optional parameteres for yt-dlp 
+    ytdlpQuality = "",                     -- optional parameteres for yt-dlp 
                                            -- example "-f bestvideo[vcodec^=avc][ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best"
 
     -- Scaling
