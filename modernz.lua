@@ -114,7 +114,7 @@ local user_opts = {
     visibility = "auto",                   -- only used at init to set visibility_mode(...)
 
     -- UI [time-based]
-    hidetimeout = 2000,                    -- duration in ms until OSC hides if no mouse movement
+    hidetimeout = 1500,                    -- duration in ms until OSC hides if no mouse movement
     fadeduration = 250,                    -- duration of fade out in ms, 0 = no fade
     minmousemove = 0,                      -- amount of pixels the mouse has to move for OSC to show
 
@@ -2139,9 +2139,16 @@ local function cache_state(_, st)
 end
 
 local function mouse_leave()
+    state.touchtime = nil  
+
     if get_hidetimeout() >= 0 and get_touchtimeout() <= 0 then
-        hide_osc()
+        local elapsed_time = mp.get_time() - state.showtime
+        
+        if elapsed_time >= (get_hidetimeout() / 1000) then
+            hide_osc()
+        end
     end
+
     -- reset mouse position
     state.last_mouseX, state.last_mouseY = nil, nil
     state.mouse_in_window = false
@@ -2220,7 +2227,15 @@ local function process_event(source, what)
                     if mouseY > osc_param.playresy - (user_opts.bottomhover_zone or 160) or (not (state.border and state.title_bar) or state.fullscreen) and mouseY < 40 then -- account for scaling options
                         show_osc()
                     else
-                        hide_osc()
+                        state.touchtime = nil  
+
+                        if get_hidetimeout() >= 0 and get_touchtimeout() <= 0 then
+                            local elapsed_time = mp.get_time() - state.showtime
+                            
+                            if elapsed_time >= (get_hidetimeout() / 1000) then
+                                hide_osc()
+                            end
+                        end
                     end
                 else
                     show_osc()
