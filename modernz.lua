@@ -179,7 +179,7 @@ local icons = {
     volumemute = "\239\142\187",
     sub = "\239\140\164",
     minimize = "\239\133\172",
-    fullscreen = "\239\133\173",  
+    fullscreen = "\239\133\173",
     loopoff = "\239\134\181",
     loopon = "\239\134\183",
     info = "\239\135\183",
@@ -188,10 +188,10 @@ local icons = {
     screenshot = "\239\135\168",
     playlist = "\239\137\135",
     jumpicons = { 
-        [5] = {"\239\142\177", "\239\142\163"}, 
-        [10] = {"\239\142\175", "\239\142\161"}, 
-        [30] = {"\239\142\176", "\239\142\162"}, 
-        default = {"\239\142\178    ", "\239\142\178"}, -- second icon is mirrored in layout() 
+        [5] = {"\239\142\177", "\239\142\163"},
+        [10] = {"\239\142\175", "\239\142\161"},
+        [30] = {"\239\142\176", "\239\142\162"},
+        default = {"\239\142\178    ", "\239\142\178"}, -- second icon is mirrored in layout()
     }
 }
 
@@ -1663,7 +1663,7 @@ local function osc_init()
     ne.content = icons.backward
     ne.enabled = (have_ch) -- disables button when no chapters available.
     ne.eventresponder["mbtn_left_down"] = command_callback(user_opts.ch_prev_mbtn_left_command)
-    ne.eventresponder["mbtn_right_down"] = command_callback(user_opts.ch_prev_mbtn_right_command )
+    ne.eventresponder["mbtn_right_down"] = command_callback(user_opts.ch_prev_mbtn_right_command)
     ne.eventresponder["shift+mbtn_left_down"] = function () mp.commandv("seek", -60, jumpmode) end
     ne.eventresponder["shift+mbtn_right_down"] = function () mp.command("show-text ${chapter-list} 3000") end
 
@@ -1688,11 +1688,7 @@ local function osc_init()
     ne.content = icons.audio
     ne.tooltip_style = osc_styles.Tooltip
     ne.tooltipF = function ()
-        local prop = mp.get_property("current-tracks/audio/title")
-        if not prop then
-            prop = mp.get_property("current-tracks/audio/lang")
-            if not prop then prop = texts.na end
-        end
+        local prop = mp.get_property("current-tracks/audio/title") or mp.get_property("current-tracks/audio/lang") or texts.na
         return (texts.audio .. " " ..
                (mp.get_property_native("aid") or "-") .. "/" .. audio_track_count .. " [" .. prop .. "]")
     end
@@ -1711,11 +1707,7 @@ local function osc_init()
     ne.content = icons.sub
     ne.tooltip_style = osc_styles.Tooltip
     ne.tooltipF = function ()
-        local prop = mp.get_property("current-tracks/sub/title")
-        if not prop then
-            prop = mp.get_property("current-tracks/sub/lang")
-            if not prop then prop = texts.na end
-        end
+        local prop = mp.get_property("current-tracks/sub/title") or mp.get_property("current-tracks/sub/lang") or texts.na
         return (texts.subtitle .. " " ..
                (mp.get_property_native("sid") or "-") .. "/" .. sub_track_count .. " [" .. prop .. "]")
     end
@@ -1756,11 +1748,11 @@ local function osc_init()
     ne.eventresponder["mbtn_right_up"] = command_callback(user_opts.volumectrl_mbtn_right_command)
     ne.eventresponder["wheel_up_press"] = function () 
         if state.mute then mp.commandv("cycle", "mute") end
-        mp.commandv("osd-auto", "add", "volume", 5)
+        mp.commandv("add", "volume", 5)
     end
     ne.eventresponder["wheel_down_press"] = function () 
         if state.mute then mp.commandv("cycle", "mute") end
-        mp.commandv("osd-auto", "add", "volume", -5)
+        mp.commandv("add", "volume", -5)
     end
 
     --volumebar
@@ -1792,8 +1784,8 @@ local function osc_init()
         mp.commandv("set", "volume", set_volume(pos))
     end
     ne.eventresponder["reset"] = function (element) element.state.lastseek = nil end
-    ne.eventresponder["wheel_up_press"] = function () mp.commandv("osd-auto", "add", "volume", 5) end
-    ne.eventresponder["wheel_down_press"] = function () mp.commandv("osd-auto", "add", "volume", -5) end
+    ne.eventresponder["wheel_up_press"] = function () mp.commandv("add", "volume", 5) end
+    ne.eventresponder["wheel_down_press"] = function () mp.commandv("add", "volume", -5) end
 
     --tog_fullscreen
     ne = new_element("tog_fullscreen", "button")
@@ -1978,8 +1970,8 @@ local function osc_init()
             state.playingWhilstSeeking = false
         end
     end
-    ne.eventresponder["wheel_up_press"] = function () mp.commandv("osd-auto", "seek",  10) end
-    ne.eventresponder["wheel_down_press"] = function () mp.commandv("osd-auto", "seek", -10) end
+    ne.eventresponder["wheel_up_press"] = function () mp.commandv("seek",  10) end
+    ne.eventresponder["wheel_down_press"] = function () mp.commandv("seek", -10) end
 
     --persistent seekbar
     ne = new_element("persistentseekbar", "slider")
@@ -2112,7 +2104,10 @@ local function hide_osc()
     if thumbfast.width ~= 0 and thumbfast.height ~= 0 then
         mp.commandv("script-message-to", "thumbfast", "clear")
     end
-    if not state.enabled then
+
+    local mode = mp.get_property_native("user-data/osc/visibility") or ""
+
+    if not state.enabled and mode ~= "always" then
         -- typically hide happens at render() from tick(), but now tick() is
         -- no-op and won't render again to remove the osc, so do that manually.
         state.osc_visible = false
