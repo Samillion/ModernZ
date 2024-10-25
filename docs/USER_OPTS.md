@@ -39,21 +39,24 @@ Create `modernz.conf` in your mpv script-opts directory:
 
 ### Buttons
 
-| Option                | Value     | Description                                                                                                                                                   |
-| --------------------- | --------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| hovereffect           | yes       | whether buttons have a glowing effect when hovered over                                                                                                       |
-| showplaylist          | no        | show `playlist` button                                                                                                                                        |
-| showjump              | yes       | show `jump forward/backward 10 seconds` buttons                                                                                                               |
-| showskip              | no        | show the `skip back/forward (chapter)` buttons                                                                                                                |
-| shownextprev          | yes       | show the `next/previous playlist track` buttons                                                                                                               |
-| showinfo              | no        | show the `info (stats)` button                                                                                                                                |
-| showloop              | yes       | show the `loop` button                                                                                                                                        |
-| showfullscreen_button | yes       | show the `fullscreen toggle` button                                                                                                                           |
-| showontop             | yes       | show `window on top (pin)` button                                                                                                                             |
-| showscreenshot        | no        | show `screenshot` button                                                                                                                                      |
-| screenshot_flag       | subtitles | flag for the screenshot button. `subtitles` `video` `window` `each-frame` [[details](https://mpv.io/manual/master/#command-interface-screenshot-%3Cflags%3E)] |
-| chapter_softrepeat    | yes       | holding chapter skip buttons repeats toggle                                                                                                                   |
-| jump_softrepeat       | yes       | holding jump seek buttons repeats toggle                                                                                                                      |
+| Option                | Value         | Description                                                                                                                                                   |
+| --------------------- | ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| hovereffect           | yes           | whether buttons have a glowing effect when hovered over                                                                                                       |
+| showplaylist          | no            | show `playlist` button                                                                                                                                        |
+| showjump              | yes           | show `jump forward/backward 10 seconds` buttons                                                                                                               |
+| showskip              | no            | show the `skip back/forward (chapter)` buttons                                                                                                                |
+| shownextprev          | yes           | show the `next/previous playlist track` buttons                                                                                                               |
+| showinfo              | no            | show the `info (stats)` button                                                                                                                                |
+| showloop              | yes           | show the `loop` button                                                                                                                                        |
+| showfullscreen_button | yes           | show the `fullscreen toggle` button                                                                                                                           |
+| showontop             | yes           | show `window on top (pin)` button                                                                                                                             |
+| showscreenshot        | no            | show `screenshot` button                                                                                                                                      |
+| screenshot_flag       | subtitles     | flag for the screenshot button. `subtitles` `video` `window` `each-frame` [[details](https://mpv.io/manual/master/#command-interface-screenshot-%3Cflags%3E)] |
+| chapter_softrepeat    | yes           | holding chapter skip buttons repeats toggle                                                                                                                   |
+| jump_softrepeat       | yes           | holding jump seek buttons repeats toggle                                                                                                                      |
+| downloadbutton        | yes           | show download button on web videos (requires yt-dlp and ffmpeg)                                                                                               |
+| downloadpath          | ~~desktop/mpv | the download path for videos                                                                                                                                  |
+| ytdlpQuality          |               | optional parameteres for yt-dlp <br>example `-f bestvideo[vcodec^=avc][ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best`                                        |
 
 ### Scaling
 
