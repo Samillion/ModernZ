@@ -55,8 +55,8 @@ Create `modernz.conf` in your mpv script-opts directory:
 | chapter_softrepeat    | yes           | holding chapter skip buttons repeats toggle                                                                                                                   |
 | jump_softrepeat       | yes           | holding jump seek buttons repeats toggle                                                                                                                      |
 | downloadbutton        | yes           | show download button on web videos (requires yt-dlp and ffmpeg)                                                                                               |
-| downloadpath          | ~~desktop/mpv | the download path for videos                                                                                                                                  |
-| ytdlpQuality          |               | optional parameteres for yt-dlp <br>example `-f bestvideo[vcodec^=avc][ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best`                                        |
+| download_path         | ~~desktop/mpv | the download path for videos [[paths](https://mpv.io/manual/master/#paths)]                                                                                   |
+| ytdlp_format          |               | optional parameters for yt-dlp <br>example `-f bv[vcodec^=avc][ext=mp4]+ba[ext=m4a]/b[ext=mp4]`                                                               |
 
 ### Scaling
 
