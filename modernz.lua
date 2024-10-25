@@ -53,6 +53,11 @@ local user_opts = {
     chapter_softrepeat = true,             -- holding chapter skip buttons repeats toggle
     jump_softrepeat = true,                -- holding jump seek buttons repeats toggle
 
+    downloadbutton = true,                 -- show download button on web videos (requires yt-dlp and ffmpeg)
+    downloadpath = "~~desktop/mpv",        -- the download path for videos
+    ytdlpQuality = "",                     -- optional parameteres for yt-dlp 
+                                           -- example "-f bestvideo[vcodec^=avc][ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best"
+
     -- Scaling
     vidscale = true,                       -- whether to scale the controller with the video
     scalewindowed = 1.0,                   -- scaling of the controller when windowed
@@ -186,6 +191,8 @@ local icons = {
     ontopon = "\239\142\150",
     ontopoff = "\239\142\149",
     screenshot = "\239\135\168",
+    download = "\239\136\160",
+    downloading = "\239\134\185",
     playlist = "\239\137\135",
     jumpicons = { 
         [5] = {"\239\142\177", "\239\142\163"},
@@ -334,6 +341,13 @@ local state = {
     playingWhilstSeeking = false,
     playingWhilstSeekingWaitingForEnd = false,
     persistentprogresstoggle = user_opts.persistentprogress,
+    downloadedOnce = false,
+    downloading = false,
+    fileSizeBytes = 0,
+    fileSizeNormalised = "Approximating size...",
+    isWebVideo = false,
+    web_video_path = "",                    -- used for yt-dlp downloading
+    videoCantBeDownloaded = false,
 }
 
 local logo_lines = {
@@ -1094,6 +1108,114 @@ end
 --
 -- Initialisation and Layout
 --
+local function is_url(s)
+    if not s then
+        user_opts.downloadbutton = false
+        return false
+    end
+
+    local url_pattern = "^[%w]+://[%w%.%-_]+%.[%a]+[-%w%.%-%_/?&=]*"
+    return string.match(s, url_pattern) ~= nil
+end
+
+local function format_file_size(file_size)
+    local units = {"bytes", "KB", "MB", "GB", "TB"}
+    local unit_index = 1
+
+    while file_size >= 1024 and unit_index < #units do
+        file_size = file_size / 1024
+        unit_index = unit_index + 1
+    end
+
+    return string.format("%.1f %s", file_size, units[unit_index])
+end
+
+local function exec_filesize(args)
+    mp.command_native_async({
+        name = "subprocess",
+        args = args,
+        capture_stdout = true,
+        capture_stderr = true
+    }, function(res, val)
+        local fileSizeString = val.stdout
+        state.fileSizeBytes = tonumber(fileSizeString)
+
+        if state.fileSizeBytes then
+            state.fileSizeNormalised = "Download size: " .. format_file_size(state.fileSizeBytes)
+            msg.info("File size: " .. state.fileSizeBytes .. " B (" .. state.fileSizeNormalised .. ")")
+        else
+            state.fileSizeNormalised = "Unknown"
+            msg.info("Unable to retrieve file size.")
+        end
+
+        request_tick()
+    end)
+end
+
+local function download_done(success, result, error)
+    if success then
+        local download_path = mp.command_native({"expand-path", user_opts.downloadpath})
+        mp.command("show-text 'Download saved to " .. download_path .. "'")
+        state.downloadedOnce = true
+        msg.info("Download completed")
+    else
+        mp.command("show-text 'Download failed - " .. (error or "Unknown error") .. "'")
+        msg.info("Download failed")
+    end
+    state.downloading = false
+end
+
+local function exec(args, callback)
+    for i = #args, 1, -1 do
+        if args[i] == nil or args[i] == "" then
+            table.remove(args, i)
+        end
+    end
+
+    msg.info("Executing command: " .. table.concat(args, " "))
+
+    local ret = mp.command_native_async({
+        name = "subprocess",
+        args = args,
+        capture_stdout = true,
+        capture_stderr = true
+    }, callback)
+
+    return ret and ret.status or nil
+end
+
+local function check_path_url()
+    state.isWebVideo = false
+    state.downloading = false
+
+    local path = mp.get_property("path")
+    if not path then return nil end
+
+    if string.find(path, "https://") then
+        path = string.gsub(path, "ytdl://", "") -- Remove "ytdl://" prefix
+    else
+        path = string.gsub(path, "ytdl://", "https://") -- Replace "ytdl://" with "https://"
+    end
+
+    if is_url(path) then
+        state.isWebVideo = true
+        state.web_video_path = path
+        msg.info("Web video detected.")
+
+        if user_opts.downloadbutton then
+            msg.info("Fetching file size...")
+            local command = { 
+                "yt-dlp", 
+                "--no-download", 
+                "-O", 
+                "%(filesize,filesize_approx)s", -- Fetch file size or approximate size
+                path
+            }
+            exec_filesize(command)
+        end
+    end
+end
+
 local function new_element(name, type)
     elements[name] = {}
     elements[name].type = type
@@ -1482,6 +1604,13 @@ layouts = function ()
         lo.style = osc_styles.Ctrl3
         lo.visible = (osc_param.playresx >= 600 - outeroffset)
     end
+    
+    if user_opts.downloadbutton then
+        lo = add_layout('download')
+        lo.geometry = {x = osc_geo.w - 262 + (showscreenshot and 0 or 45) + (showontop and 0 or 45) + (showloop and 0 or 45) + (showinfo and 0 or 45) + (showfullscreen and 0 or 45), y = refY - 40, an = 5, w = 24, h = 24}
+        lo.style = osc_styles.Ctrl3
+        lo.visible = (osc_param.playresx >= 400 - outeroffset)
+    end
 end
 
 local function adjust_subtitles(visible)
@@ -1848,6 +1977,41 @@ local function osc_init()
         end
         mp.commandv("osd-msg", "screenshot", user_opts.screenshot_flag)
         mp.commandv("set", "sub-pos", tempSubPosition)
+    end
+
+    --download
+    ne = new_element('download', 'button')
+    ne.content = function () return state.downloading and icons.downloading or icons.download end
+    ne.visible = (osc_param.playresx >= 1000 - outeroffset - (user_opts.showscreenshot and 0 or 100) - (user_opts.showontop and 0 or 100) - (user_opts.showloop and 0 or 100) - (user_opts.showinfo and 0 or 100) - (user_opts.showfullscreen and 0 or 100)) and state.isWebVideo
+    ne.tooltip_style = osc_styles.Tooltip
+    ne.tooltipF = function () return state.downloading and "Downloading..." or state.fileSizeNormalised end
+    ne.eventresponder['mbtn_left_up'] = function ()
+        if not state.videoCantBeDownloaded then
+            local localpath = mp.command_native({"expand-path", user_opts.downloadpath})
+
+            if state.downloadedOnce then
+                mp.command("show-text 'Already downloaded'")
+            elseif state.downloading then
+                mp.command("show-text 'Already downloading'")
+            else
+                mp.command("show-text Downloading...")
+                state.downloading = true
+                local command = {
+                    "yt-dlp",
+                    user_opts.ytdlpQuality,
+                    "--remux", "mp4",
+                    "--add-metadata",
+                    "--embed-subs",
+                    "-o", "%(title)s",
+                    "-P", localpath,
+                    state.web_video_path
+                }
+
+                local status = exec(command, download_done)
+            end
+        else
+            mp.command("show-text 'Unable to download'")
+        end
     end
 
     --seekbar
@@ -2557,6 +2721,10 @@ local function set_tick_delay(_, display_fps)
     tick_delay = 1 / display_fps
 end
 
+mp.register_event("file-loaded", function() 
+    state.fileSizeNormalised = "Approximating size..."
+    check_path_url()
+end)
 mp.register_event("shutdown", shutdown)
 mp.register_event("start-file", request_init)
 mp.observe_property("track-list", "native", request_init)
