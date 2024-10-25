@@ -957,13 +957,27 @@ local function render_elements(master_ass)
                             end
                         end
 
+                        -- chapter title tooltip on showtitle=false and no thumbfast
+                        local tooltip_content = tooltiplabel
+                        if thumbfast.disabled and not user_opts.showtitle then
+                            if user_opts.chapter_fmt ~= "no" and state.touchingprogressbar then
+                                local dur = mp.get_property_number("duration", 0)
+                                if dur > 0 then
+                                    local ch = get_chapter(state.sliderpos * dur / 100)
+                                    if ch and ch.title and ch.title ~= "" then
+                                        tooltip_content = tooltip_content .. " " .. string.format(user_opts.chapter_fmt, ch.title)
+                                    end
+                                end
+                            end
+                        end
+
                         -- tooltip label
                         elem_ass:new_event()
                         elem_ass:pos(tx, ty)
                         elem_ass:an(an)
                         elem_ass:append(slider_lo.tooltip_style)
                         ass_append_alpha(elem_ass, slider_lo.alpha, 0)
-                        elem_ass:append(tooltiplabel)
+                        elem_ass:append(tooltip_content)
                     elseif element.thumbnailable and thumbfast.available then
                         mp.commandv("script-message-to", "thumbfast", "clear")
                     end
