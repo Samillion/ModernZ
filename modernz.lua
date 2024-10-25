@@ -53,7 +53,7 @@ local user_opts = {
     chapter_softrepeat = true,             -- holding chapter skip buttons repeats toggle
     jump_softrepeat = true,                -- holding jump seek buttons repeats toggle
 
-    downloadbutton = true,                 -- show download button on web videos (requires yt-dlp)
+    downloadbutton = true,                 -- show download button on web videos (requires yt-dlp and ffmpeg)
     downloadpath = "~~desktop/mpv",        -- the download path for videos
     ytdlpQuality = "",                     -- optional parameteres for yt-dlp 
                                            -- example "-f bestvideo[vcodec^=avc][ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best"
@@ -1115,7 +1115,6 @@ local function is_url(s)
     end
 
     local url_pattern = "^[%w]+://[%w%.%-_]+%.[%a]+[-%w%.%-%_/?&=]*"
-
     return string.match(s, url_pattern) ~= nil
 end
 
@@ -1123,13 +1122,11 @@ local function format_file_size(file_size)
     local units = {"bytes", "KB", "MB", "GB", "TB"}
     local unit_index = 1
 
-    -- Adjust the file size to the appropriate unit
     while file_size >= 1024 and unit_index < #units do
         file_size = file_size / 1024
         unit_index = unit_index + 1
     end
 
-    -- Format the file size with one decimal point
     return string.format("%.1f %s", file_size, units[unit_index])
 end
 
@@ -1985,7 +1982,7 @@ local function osc_init()
     --download
     ne = new_element('download', 'button')
     ne.content = function () return state.downloading and icons.downloading or icons.download end
-    ne.visible = (osc_param.playresx >= 1100 - outeroffset - (user_opts.showscreenshot and 0 or 100) - (user_opts.showontop and 0 or 100) - (user_opts.showloop and 0 or 100) - (user_opts.showinfo and 0 or 100) - (user_opts.showfullscreen and 0 or 100)) and state.isWebVideo
+    ne.visible = (osc_param.playresx >= 1000 - outeroffset - (user_opts.showscreenshot and 0 or 100) - (user_opts.showontop and 0 or 100) - (user_opts.showloop and 0 or 100) - (user_opts.showinfo and 0 or 100) - (user_opts.showfullscreen and 0 or 100)) and state.isWebVideo
     ne.tooltip_style = osc_styles.Tooltip
     ne.tooltipF = function () return state.downloading and "Downloading..." or state.fileSizeNormalised end
     ne.eventresponder['mbtn_left_up'] = function ()
