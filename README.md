@@ -23,6 +23,7 @@ A sleek and modern OSC for [mpv](https://mpv.io/), this project is a fork of Mod
 - 🎨 Modern, customizable interface
 - 🖼️ Video thumbnail previews on seek (with [thumbfast](https://github.com/po5/thumbfast))
 - 📄 Interactive playlist and chapter lists
+- 🔽 Download button for web videos (with yt-dlp)
 - 🌐 Multi-language support
 - ⌨️ Configurable controls
 
@@ -192,6 +193,6 @@ For even more useful scripts, check out the [mpv User Scripts Wiki](https://gith
 - To re-do the project entirely to match mpv's stock osc standards, to ensure compatibility
 - To eliminate old bugs and redundancy within the code
 
-In essence, to modernize the ModernX origin.
+In essence, to modernize and revive the `Modern` origin.
 
 Having said that, ModernZ still uses parts of the old code, and every previous and current fork author and contributor deserve credit (including mpv's stock osc), that is why they're mentioned in detail.
