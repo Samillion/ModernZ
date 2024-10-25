@@ -54,9 +54,9 @@ local user_opts = {
     jump_softrepeat = true,                -- holding jump seek buttons repeats toggle
 
     downloadbutton = true,                 -- show download button on web videos (requires yt-dlp and ffmpeg)
-    downloadpath = "~~desktop/mpv",        -- the download path for videos
-    ytdlpQuality = "",                     -- optional parameteres for yt-dlp 
-                                           -- example "-f bestvideo[vcodec^=avc][ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best"
+    download_path = "~~desktop/mpv",       -- the download path for videos https://mpv.io/manual/master/#paths
+    ytdlp_format = "",                     -- optional format parameters for yt-dlp 
+                                           -- example "-f bv[vcodec^=avc][ext=mp4]+ba[ext=m4a]/b[ext=mp4]"
 
     -- Scaling
     vidscale = true,                       -- whether to scale the controller with the video
@@ -1168,7 +1168,7 @@ end
 
 local function download_done(success, result, error)
     if success then
-        local download_path = mp.command_native({"expand-path", user_opts.downloadpath})
+        local download_path = mp.command_native({"expand-path", user_opts.download_path})
         mp.command("show-text 'Download saved to " .. download_path .. "'")
         state.downloadedOnce = true
         msg.info("Download completed")
@@ -2001,7 +2001,7 @@ local function osc_init()
     ne.tooltipF = function () return state.downloading and "Downloading..." or state.fileSizeNormalised end
     ne.eventresponder['mbtn_left_up'] = function ()
         if not state.videoCantBeDownloaded then
-            local localpath = mp.command_native({"expand-path", user_opts.downloadpath})
+            local localpath = mp.command_native({"expand-path", user_opts.download_path})
 
             if state.downloadedOnce then
                 mp.command("show-text 'Already downloaded'")
@@ -2012,7 +2012,7 @@ local function osc_init()
                 state.downloading = true
                 local command = {
                     "yt-dlp",
-                    user_opts.ytdlpQuality,
+                    user_opts.ytdlp_format,
                     "--remux", "mp4",
                     "--add-metadata",
                     "--embed-subs",
