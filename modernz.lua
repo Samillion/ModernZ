@@ -20,6 +20,8 @@ local user_opts = {
     showwindowed = true,                   -- show OSC when windowed?
     showfullscreen = true,                 -- show OSC when fullscreen?
     greenandgrumpy = false,                -- disable santa hat in December
+    icon_style = "fluent",                 -- choose icon style. fluent, material
+                                           -- Requires font files provided in repo in /fonts
 
     -- Colors
     osc_color = "#000000",                 -- accent of the OSC and the title bar
@@ -171,40 +173,79 @@ local osc_param = { -- calculated by osc_init()
 }
 
 local icons = {
-    play = "\238\166\143",
-    pause = "\238\163\140",
-    replay = "\238\189\191",
-    previous = "\239\152\167",
-    next = "\239\149\168",
-    rewind = "\238\168\158",
-    forward = "\238\152\135",
+    fluent = {
+        play = "\238\166\143",
+        pause = "\238\163\140",
+        replay = "\238\189\191",
+        previous = "\239\152\167",
+        next = "\239\149\168",
+        rewind = "\238\168\158",
+        forward = "\238\152\135",
 
-    audio = '\238\175\139',
-    subtitle = '\238\175\141',
-    playlist = "\238\161\159",
-    volume_mute = '\238\173\138',
-    volume_quiet = '\238\172\184',
-    volume_low = '\238\172\189',
-    volume_high = '\238\173\130',
-    
-    download = "\239\133\144",
-    downloading = "\239\140\174",
-    screenshot = "\238\169\183",
-    ontop_on = "\238\165\190",
-    ontop_off = "\238\166\129",
-    loop_off = "\239\133\178",
-    loop_on = "\239\133\181",
-    info = "\239\146\164",
-    fullscreen = "\239\133\160",
-    fullscreen_exit = "\239\133\166",
+        audio = '\238\175\139',
+        subtitle = '\238\175\141',
+        playlist = "\238\161\159",
+        volume_mute = '\238\173\138',
+        volume_quiet = '\238\172\184',
+        volume_low = '\238\172\189',
+        volume_high = '\238\173\130',
+        
+        download = "\239\133\144",
+        downloading = "\239\140\174",
+        screenshot = "\238\169\183",
+        ontop_on = "\238\165\190",
+        ontop_off = "\238\166\129",
+        loop_off = "\239\133\178",
+        loop_on = "\239\133\181",
+        info = "\239\146\164",
+        fullscreen = "\239\133\160",
+        fullscreen_exit = "\239\133\166",
 
-    jumpicons = { 
-        [5] = {"\238\171\186", "\238\171\187"}, 
-        [10] = {"\238\171\188", "\238\172\129"}, 
-        [30] = {"\238\172\133", "\238\172\134"}, 
-        default = {"\238\172\138", "\238\172\138"}, -- second icon is mirrored in layout() 
+        jumpicons = { 
+            [5] = {"\238\171\186", "\238\171\187"}, 
+            [10] = {"\238\171\188", "\238\172\129"}, 
+            [30] = {"\238\172\133", "\238\172\134"}, 
+            default = {"\238\172\138", "\238\172\138"}, -- second icon is mirrored in layout() 
+        }
+    },
+    material = {
+        play = "\239\142\170",
+        pause = "\239\142\167",
+        replay = "\239\142\178",
+        previous = "\239\142\181",
+        next = "\239\142\180",
+        rewind = "\239\142\160",
+        forward = "\239\142\159",
+
+        audio = "\239\142\183",
+        subtitle = "\239\140\164",
+        playlist = "\239\137\135",
+        volume_mute = "\239\142\187",
+        volume_quiet = "\239\142\185",
+        volume_low = "\239\142\185",
+        volume_high = "\239\142\188",
+
+        download = "\239\136\160",
+        downloading = "\239\134\185",
+        screenshot = "\239\135\168",
+        ontop_on = "\239\142\150",
+        ontop_off = "\239\142\149",
+        loop_off = "\239\134\181",
+        loop_on = "\239\134\183",
+        info = "\239\135\183",
+        fullscreen = "\239\133\173",
+        fullscreen_exit = "\239\133\172",
+
+        jumpicons = { 
+            [5] = {"\239\142\177", "\239\142\163"},
+            [10] = {"\239\142\175", "\239\142\161"},
+            [30] = {"\239\142\176", "\239\142\162"},
+            default = {"\239\142\178", "\239\142\178"}, -- second icon is mirrored in layout()
+        }
     }
+
 }
+icons = user_opts.icon_style == "fluent" and icons.fluent or icons.material
 
 --- Localization
 local language = {
@@ -274,7 +315,8 @@ local sub_track_count = 0
 local window_control_box_width = 138
 local is_december = os.date("*t").month == 12
 local UNICODE_MINUS = string.char(0xe2, 0x88, 0x92)  -- UTF-8 for U+2212 MINUS SIGN
-local iconfont = "fluent-system-icons"
+local iconfont = user_opts.icon_style == "fluent" and "fluent-system-icons" or "Material-Design-Iconic-Round"
+local iconfont_size = user_opts.icon_style == "fluent" and 30 or 36
 
 local function osc_color_convert(color)
     return color:sub(6,7) .. color:sub(4,5) ..  color:sub(2,3)
@@ -289,7 +331,7 @@ local function set_osc_styles()
         SeekbarFg = "{\\blur1\\bord1\\1c&H" .. osc_color_convert(user_opts.seekbarfg_color) .. "&}",
         VolumebarBg = "{\\blur0\\bord0\\1c&H999999&}",
         VolumebarFg = "{\\blur1\\bord1\\1c&H" .. osc_color_convert(user_opts.side_buttons_color) .. "&}",
-        Ctrl1 = "{\\blur0\\bord0\\1c&H" .. osc_color_convert(user_opts.playpause_color) .. "&\\3c&HFFFFFF&\\fs30\\fn" .. iconfont .. "}",
+        Ctrl1 = "{\\blur0\\bord0\\1c&H" .. osc_color_convert(user_opts.playpause_color) .. "&\\3c&HFFFFFF&\\fs" .. iconfont_size .. "\\fn" .. iconfont .. "}",
         Ctrl2 = "{\\blur0\\bord0\\1c&H" .. osc_color_convert(user_opts.middle_buttons_color) .. "&\\3c&HFFFFFF&\\fs24\\fn" .. iconfont .. "}",
         Ctrl2Flip = "{\\blur0\\bord0\\1c&H" .. osc_color_convert(user_opts.middle_buttons_color) .. "&\\3c&HFFFFFF&\\fs24\\fn" .. iconfont .. "\\fry180}",
         Ctrl3 = "{\\blur0\\bord0\\1c&H" .. osc_color_convert(user_opts.side_buttons_color) .. "&\\3c&HFFFFFF&\\fs24\\fn" .. iconfont .. "}",
@@ -1509,9 +1551,7 @@ layouts = function ()
     if showjump then
         lo = add_layout("jump_backward")
         lo.geometry = {x = refX - 60, y = refY - 40 , an = 5, w = 30, h = 24}
-        -- HACK: jump_forward's icon must be mirrored for nonstandard # of seconds
-        -- as the font only has an icon without a number for rewinding
-        lo.style = (user_opts.jumpiconnumber and icons.jumpicons[user_opts.jumpamount] ~= nil) and osc_styles.Ctrl2 or osc_styles.Ctrl2Flip
+        lo.style = user_opts.icon_style == "fluent" and ((user_opts.jumpiconnumber and icons.jumpicons[user_opts.jumpamount] ~= nil) and osc_styles.Ctrl2 or osc_styles.Ctrl2Flip) or osc_styles.Ctrl2
     end
 
     lo = add_layout("play_pause")
@@ -1521,7 +1561,7 @@ layouts = function ()
     if showjump then
         lo = add_layout("jump_forward")
         lo.geometry = {x = refX + 60, y = refY - 40 , an = 5, w = 30, h = 24}
-        lo.style = osc_styles.Ctrl2
+        lo.style = user_opts.icon_style == "fluent" and osc_styles.Ctrl2 or ((user_opts.jumpiconnumber and icons.jumpicons[user_opts.jumpamount] ~= nil) and osc_styles.Ctrl2 or osc_styles.Ctrl2Flip)
     end
 
     if showskip then
