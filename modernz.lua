@@ -171,17 +171,17 @@ local osc_param = { -- calculated by osc_init()
 }
 
 local icons = {
-    play = "\239\152\133",
-    pause = "\239\150\163",
+    play = "\238\166\143",
+    pause = "\238\163\140",
     replay = "\238\189\191",
-    previous = "\239\152\168",
-    next = "\239\149\169",
-    rewind = "\239\153\180",
-    forward = "\239\143\190",
+    previous = "\239\152\167",
+    next = "\239\149\168",
+    rewind = "\238\168\158",
+    forward = "\238\152\135",
 
     audio = '\238\175\139',
     subtitle = '\238\175\141',
-    playlist = "\238\161\156",
+    playlist = "\238\161\159",
     volume_mute = '\238\173\138',
     volume_quiet = '\238\172\184',
     volume_low = '\238\172\189',
@@ -189,7 +189,7 @@ local icons = {
     
     download = "\239\133\144",
     downloading = "\239\140\174",
-    screenshot = "\239\154\142",
+    screenshot = "\238\169\183",
     ontop_on = "\238\165\190",
     ontop_off = "\238\166\129",
     loop_off = "\239\133\178",
@@ -1495,7 +1495,9 @@ layouts = function ()
     if showjump then
         lo = add_layout("jump_backward")
         lo.geometry = {x = refX - 60, y = refY - 40 , an = 5, w = 30, h = 24}
-        lo.style = osc_styles.Ctrl2
+        -- HACK: jump_forward's icon must be mirrored for nonstandard # of seconds
+        -- as the font only has an icon without a number for rewinding
+        lo.style = (user_opts.jumpiconnumber and icons.jumpicons[user_opts.jumpamount] ~= nil) and osc_styles.Ctrl2 or osc_styles.Ctrl2Flip
     end
 
     lo = add_layout("play_pause")
@@ -1505,9 +1507,7 @@ layouts = function ()
     if showjump then
         lo = add_layout("jump_forward")
         lo.geometry = {x = refX + 60, y = refY - 40 , an = 5, w = 30, h = 24}
-        -- HACK: jump_forward's icon must be mirrored for nonstandard # of seconds
-        -- as the font only has an icon without a number for rewinding
-        lo.style = (user_opts.jumpiconnumber and icons.jumpicons[user_opts.jumpamount] ~= nil) and osc_styles.Ctrl2 or osc_styles.Ctrl2Flip
+        lo.style = osc_styles.Ctrl2
     end
 
     if showskip then
