@@ -2,7 +2,7 @@
 
 A sleek and modern OSC for [mpv](https://mpv.io/), this project is a fork of ModernX designed to enhance functionality by adding more features, all while preserving the core standards of mpv's OSC.
 
-![ModernZ OSC Screenshot](https://github.com/user-attachments/assets/57dc6e88-c222-4a62-b650-5ae6c88b4fc0)
+![ModernZ OSC Screenshot](https://github.com/user-attachments/assets/236f0035-e2b1-401f-8650-f5a49d44a6e0)
 
 <p align="center">
     <a href="#installation"><strong>Installation »</strong></a>
@@ -31,8 +31,9 @@ A sleek and modern OSC for [mpv](https://mpv.io/), this project is a fork of Mod
 
 Don't like the default white buttons and text? ModernZ is fully customizable! Change colors and button layouts to match your style:
 
-![Custom Titlebar Example](https://github.com/user-attachments/assets/7968b6f0-df16-44fd-8306-01e581b4e1a7)
-![Custom Colors Example](https://github.com/user-attachments/assets/637f0c50-16ac-4d8c-a341-187e3d71d2d3)
+![modernz_ui_top](https://github.com/user-attachments/assets/7765900e-93a0-46fa-9f9a-0e7c696ab3a0)
+
+![modernz_ui_bottom](https://github.com/user-attachments/assets/16921c25-b040-4e52-899f-ba4513954be2)
 
 See the [Color Customization](docs/USER_OPTS.md#colors) section in the configuration guide for details on how to customize colors and buttons.
 
@@ -44,7 +45,7 @@ See the [Color Customization](docs/USER_OPTS.md#colors) section in the configura
 2. **Copy Files**
 
    - Place `modernz.lua` in your mpv scripts directory
-   - Place `Material-Design-Iconic-Round.ttf` in your mpv fonts directory
+   - Place `fluent-system-icons.ttf` in your mpv fonts directory
    - (OPTIONAL) Place `thumbfast.lua` in your mpv scripts directory
 
 3. **Locations**
@@ -59,7 +60,7 @@ See the [Color Customization](docs/USER_OPTS.md#colors) section in the configura
    ```
    mpv/
    ├── fonts/
-   │   └── Material-Design-Iconic-Round.ttf
+   │   └── fluent-system-icons.ttf
    ├── script-opts/
    │   └── modernz.conf
    └── scripts/
@@ -118,7 +119,7 @@ z   script-message-to modernz osc-idlescreen   # Toggle idle screen
 
 ModernZ supports mpv's built-in select.lua ([v0.39+](https://github.com/mpv-player/mpv/discussions/14903)) for playlist and chapter navigation.
 
-https://github.com/user-attachments/assets/188992ba-1ad8-4d71-a96c-44c3c99df4e0
+https://github.com/user-attachments/assets/f47a2eb6-d926-4f3b-8a5d-19301c70c7a5
 
 > [!TIP]
 > If the font size for the interactive playlist is too small, you can add the following in your `mpv.conf`
@@ -196,3 +197,6 @@ For even more useful scripts, check out the [mpv User Scripts Wiki](https://gith
 In essence, to modernize and revive the `Modern` origin.
 
 Having said that, ModernZ still uses parts of the old code, and every previous and current fork author and contributor deserve credit (including mpv's stock osc), that is why they're mentioned in detail.
+
+#### Credits:
+Fluent System Icons font was modified by [Xurdejl](https://github.com/Xurdejl) for use on ModernZ, they also contributed with code, reports and tests. 😻
