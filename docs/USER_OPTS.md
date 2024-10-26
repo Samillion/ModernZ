@@ -109,6 +109,9 @@ Create `modernz.conf` in your mpv script-opts directory:
 | font                     | mpv-osd-symbols  | mpv-osd-symbols = default osc font (or the one set in mpv.conf)            |
 | titlefontsize            | 30               | the font size of the title text (above seekbar)                            |
 | chapter_fmt              | Chapter: %s      | chapter print format for seekbar-hover. `no` to disable                    |
+| playpause_size           | 30               | icon size for the play-pause button                                        |
+| midbuttons_size          | 24               | icon size for the middle buttons                                           |
+| sidebuttons_size         | 24               | icon size for the side buttons                                             |
 | persistentprogress       | no               | always show a small progress line at the bottom of the screen              |
 | persistentprogressheight | 17               | the height of the persistentprogress bar                                   |
 | persistentbuffer         | no               | on web videos, show the buffer on the persistent progress line             |
