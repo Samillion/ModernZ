@@ -2062,8 +2062,8 @@ local function osc_init()
         if duration ~= nil and pos ~= nil then
             local possec = duration * (pos / 100)
             local time = mp.format_time(possec)
-            -- If video is less than 1 hour, strip the "00:" prefix
-            if possec < 3600 then
+            -- If video is less than 1 hour, and the time format is not fixed, strip the "00:" prefix
+            if possec < 3600 and user_opts.time_format ~= "fixed" then
                 time = time:gsub("^00:", "")
             end
             return time
