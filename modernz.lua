@@ -101,6 +101,10 @@ local user_opts = {
     titlefontsize = 30,                    -- the font size of the title text (above seekbar)
     chapter_fmt = "Chapter: %s",           -- chapter print format for seekbar-hover. "no" to disable
 
+    playpause_size = 30,                   -- icon size for the play-pause button
+    midbuttons_size = 24,                  -- icon size for the middle buttons
+    sidebuttons_size = 24,                 -- icon size for the side buttons
+
     persistentprogress = false,            -- always show a small progress line at the bottom of the screen
     persistentprogressheight = 17,         -- the height of the persistentprogress bar
     persistentbuffer = false,              -- on web videos, show the buffer on the persistent progress line
@@ -286,16 +290,19 @@ end
 local osc_styles
 
 local function set_osc_styles()
+    local playpause_size = user_opts.playpause_size or 30
+    local midbuttons_size = user_opts.midbuttons_size or 24
+    local sidebuttons_size = user_opts.sidebuttons_size or 24
     osc_styles = {
         box_bg = "{\\blur100\\bord" .. user_opts.OSCfadealpha .. "\\1c&H000000&\\3c&H" .. osc_color_convert(user_opts.osc_color) .. "&}",
         SeekbarBg = "{\\blur0\\bord0\\1c&H" .. osc_color_convert(user_opts.seekbarbg_color) .. "&}",
         SeekbarFg = "{\\blur1\\bord1\\1c&H" .. osc_color_convert(user_opts.seekbarfg_color) .. "&}",
         VolumebarBg = "{\\blur0\\bord0\\1c&H999999&}",
         VolumebarFg = "{\\blur1\\bord1\\1c&H" .. osc_color_convert(user_opts.side_buttons_color) .. "&}",
-        Ctrl1 = "{\\blur0\\bord0\\1c&H" .. osc_color_convert(user_opts.playpause_color) .. "&\\3c&HFFFFFF&\\fs30\\fn" .. iconfont .. "}",
-        Ctrl2 = "{\\blur0\\bord0\\1c&H" .. osc_color_convert(user_opts.middle_buttons_color) .. "&\\3c&HFFFFFF&\\fs24\\fn" .. iconfont .. "}",
-        Ctrl2Flip = "{\\blur0\\bord0\\1c&H" .. osc_color_convert(user_opts.middle_buttons_color) .. "&\\3c&HFFFFFF&\\fs24\\fn" .. iconfont .. "\\fry180}",
-        Ctrl3 = "{\\blur0\\bord0\\1c&H" .. osc_color_convert(user_opts.side_buttons_color) .. "&\\3c&HFFFFFF&\\fs24\\fn" .. iconfont .. "}",
+        Ctrl1 = "{\\blur0\\bord0\\1c&H" .. osc_color_convert(user_opts.playpause_color) .. "&\\3c&HFFFFFF&\\fs" .. playpause_size .. "\\fn" .. iconfont .. "}",
+        Ctrl2 = "{\\blur0\\bord0\\1c&H" .. osc_color_convert(user_opts.middle_buttons_color) .. "&\\3c&HFFFFFF&\\fs" .. midbuttons_size .. "\\fn" .. iconfont .. "}",
+        Ctrl2Flip = "{\\blur0\\bord0\\1c&H" .. osc_color_convert(user_opts.middle_buttons_color) .. "&\\3c&HFFFFFF&\\fs" .. midbuttons_size .. "\\fn" .. iconfont .. "\\fry180}",
+        Ctrl3 = "{\\blur0\\bord0\\1c&H" .. osc_color_convert(user_opts.side_buttons_color) .. "&\\3c&HFFFFFF&\\fs" .. sidebuttons_size .. "\\fn" .. iconfont .. "}",
         Time = "{\\blur0\\bord0\\1c&H" .. osc_color_convert(user_opts.time_color) .. "&\\3c&H000000&\\fs" .. user_opts.timefontsize .. "\\fn" .. user_opts.font .. "}",
         Tooltip = "{\\blur1\\bord0.5\\1c&HFFFFFF&\\3c&H000000&\\fs" .. user_opts.timefontsize .. "\\fn" .. user_opts.font .. "}",
         thumbnail = "{\\blur1\\bord0.5\\1c&H" .. osc_color_convert(user_opts.thumbnailborder_color) .. "&\\3c&H000000&}",
@@ -1837,7 +1844,7 @@ local function osc_init()
     ne.content = icons.audio
     ne.tooltip_style = osc_styles.Tooltip
     ne.tooltipF = function ()
-        local prop = mp.get_property("current-tracks/audio/lang") or mp.get_property("current-tracks/audio/title") or texts.na
+        local prop = mp.get_property("current-tracks/audio/title") or mp.get_property("current-tracks/audio/lang") or texts.na
         return (texts.audio .. " " ..
                (mp.get_property_native("aid") or "-") .. "/" .. audio_track_count .. " [" .. prop .. "]")
     end
@@ -1856,7 +1863,7 @@ local function osc_init()
     ne.content = icons.subtitle
     ne.tooltip_style = osc_styles.Tooltip
     ne.tooltipF = function ()
-        local prop = mp.get_property("current-tracks/sub/lang") or mp.get_property("current-tracks/sub/title") or texts.na
+        local prop = mp.get_property("current-tracks/sub/title") or mp.get_property("current-tracks/sub/lang") or texts.na
         return (texts.subtitle .. " " ..
                (mp.get_property_native("sid") or "-") .. "/" .. sub_track_count .. " [" .. prop .. "]")
     end
