@@ -97,6 +97,7 @@ local user_opts = {
     showwindowcontrols = true,             -- show window controls (close, min, max) in borderless/fullscreen
     titleBarStrip = false,                 -- whether to make the title bar a singular bar instead of a black fade
     title = "${media-title}",              -- title above seekbar. ${media-title} or ${filename} (can use /no-ext)
+    windowcontrols_title = "${media-title}", -- Same as title but for windowcontrols
     font = "mpv-osd-symbols",              -- mpv-osd-symbols = default osc font (or the one set in mpv.conf)
     titlefontsize = 30,                    -- the font size of the title text (above seekbar)
     chapter_fmt = "Chapter: %s",           -- chapter print format for seekbar-hover. "no" to disable
@@ -1417,7 +1418,7 @@ local function window_controls()
     if user_opts.showwindowtitle then
         ne = new_element("windowtitle", "button")
         ne.content = function ()
-            local title = mp.command_native({"expand-text", mp.get_property("title")}) or ""
+            local title = mp.command_native({"expand-text", user_opts.windowcontrols_title}) or ""
             title = title:gsub("\n", " ")
             return title ~= "" and mp.command_native({"escape-ass", title}) or "mpv"
         end
