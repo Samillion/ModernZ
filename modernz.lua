@@ -34,6 +34,7 @@ local user_opts = {
     middle_buttons_color = "#FFFFFF",      -- color of middle buttons (skip, jump, chapter...etc)
     playpause_color = "#FFFFFF",           -- color of play/pause button
     held_element_color = "#999999",        -- color of an element while held down
+    thumbnailborder_color = "#111111",     -- color of border for thumbnail (with thumbfast)
 
     -- Buttons
     hovereffect = true,                    -- whether buttons have a glowing effect when hovered over
@@ -297,6 +298,7 @@ local function set_osc_styles()
         Ctrl3 = "{\\blur0\\bord0\\1c&H" .. osc_color_convert(user_opts.side_buttons_color) .. "&\\3c&HFFFFFF&\\fs24\\fn" .. iconfont .. "}",
         Time = "{\\blur0\\bord0\\1c&H" .. osc_color_convert(user_opts.time_color) .. "&\\3c&H000000&\\fs" .. user_opts.timefontsize .. "\\fn" .. user_opts.font .. "}",
         Tooltip = "{\\blur1\\bord0.5\\1c&HFFFFFF&\\3c&H000000&\\fs" .. user_opts.timefontsize .. "\\fn" .. user_opts.font .. "}",
+        thumbnail = "{\\blur1\\bord0.5\\1c&H" .. osc_color_convert(user_opts.thumbnailborder_color) .. "&\\3c&H000000&}",
         Title = "{\\blur1\\bord0.5\\1c&H" .. osc_color_convert(user_opts.title_color) .. "&\\3c&H0&\\fs".. user_opts.titlefontsize .."\\q2\\fn" .. user_opts.font .. "}",
         WindowTitle = "{\\blur1\\bord0.5\\1c&H" .. osc_color_convert(user_opts.window_title_color) .. "&\\3c&H0&\\fs".. 30 .. "\\q2\\fn" .. user_opts.font .. "}",
         WinCtrl = "{\\blur1\\bord0.5\\1c&H" .. osc_color_convert(user_opts.window_controls_color) .. "&\\3c&H0&\\fs".. 25 .. "\\fnmpv-osd-symbols}",
@@ -932,7 +934,7 @@ local function render_elements(master_ass)
                                     elem_ass:new_event()
                                     elem_ass:pos(thumbX * r_w, ty - thumbMarginY - thumbfast.height * r_h)
                                     elem_ass:an(7)
-                                    elem_ass:append(osc_styles.Tooltip)
+                                    elem_ass:append(osc_styles.thumbnail)
                                     elem_ass:draw_start()
                                     elem_ass:rect_cw(-thumbPad * r_w, -thumbPad * r_h, (thumbfast.width + thumbPad) * r_w, (thumbfast.height + thumbPad) * r_h)
                                     elem_ass:draw_stop()
@@ -3019,7 +3021,7 @@ local function validate_user_opts()
         user_opts.osc_color, user_opts.seekbarfg_color, user_opts.seekbarbg_color, 
         user_opts.title_color, user_opts.time_color, user_opts.side_buttons_color, 
         user_opts.middle_buttons_color, user_opts.playpause_color, user_opts.window_title_color, 
-        user_opts.window_controls_color, user_opts.held_element_color,
+        user_opts.window_controls_color, user_opts.held_element_color, user_opts.thumbnailborder_color,
     }
 
     for _, color in pairs(colors) do
