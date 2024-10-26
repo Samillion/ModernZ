@@ -20,12 +20,12 @@ A sleek and modern OSC for [mpv](https://mpv.io/), this project is a fork of Mod
 
 ## Features
 
-- 🎨 Modern, customizable interface
+- 🎨 Modern, customizable interface [[options](#configuration)]
 - 🖼️ Video thumbnail previews on seek (with [thumbfast](https://github.com/po5/thumbfast))
-- 📄 Interactive playlist and chapter lists
-- 🔽 Download button for web videos (with yt-dlp)
-- 🌐 Multi-language support
-- ⌨️ Configurable controls
+- 📄 Interactive lists for playlist, subtitles, audio tracks, chapter and audio devices [[preview](#interactive-lists)]
+- 🔽 Download button for web videos (with [yt-dlp](https://github.com/yt-dlp/yt-dlp))
+- 🌐 Multi-language support [[locale](#translations)]
+- ⌨️ Configurable controls [[details](#controls)]
 
 ## Customization Showcase
 
@@ -56,7 +56,7 @@ See the [Color Customization](docs/USER_OPTS.md#colors) section in the configura
    macOS:   ~/Library/Application Support/mpv/
    ```
 
-4. **Folder Structure**
+4. **Folder Structure** [[mpv manual](https://mpv.io/manual/master/#files)]
    ```
    mpv/
    ├── fonts/
@@ -67,8 +67,6 @@ See the [Color Customization](docs/USER_OPTS.md#colors) section in the configura
    	   ├── modernz.lua
    	   └── thumbfast.lua (optional)
    ```
-   > [!TIP]
-   > Need more details on mpv file locations? Check the [mpv manual](https://mpv.io/manual/master/#files).
 
 ## Configuration
 
