@@ -2757,12 +2757,24 @@ mp.observe_property("chapter-list", "native", function(_, list)
     request_init()
 end)
 
+local last_time = -1 -- last known playback time
+local new_file_flag = false -- flag to detect new file starts
+mp.observe_property("playback-time", "native", function(_, time)
+    if time == nil or time < last_time then
+        new_file_flag = true
+    elseif time and time > 1 then
+        new_file_flag = false
+    end
+    last_time = time or 0
+    request_tick()
+end)
 mp.observe_property("seeking", "native", function(_, seeking)
     reset_timeout()
-    if seeking and user_opts.osc_on_seek then
-        mp.commandv("script-message-to", "modernz", "osc-show")
+    if seeking and user_opts.osc_on_seek and not new_file_flag then
+        show_osc()
     end
 end)
+
 mp.observe_property("fullscreen", "bool", function(_, val)
     state.fullscreen = val
     state.marginsREQ = true
@@ -2789,7 +2801,6 @@ end)
 mp.observe_property("display-fps", "number", set_tick_delay)
 mp.observe_property("demuxer-cache-state", "native", cache_state)
 mp.observe_property("vo-configured", "bool", request_tick)
-mp.observe_property("playback-time", "number", request_tick)
 mp.observe_property("osd-dimensions", "native", function()
     -- (we could use the value instead of re-querying it all the time, but then
     --  we might have to worry about property update ordering)
