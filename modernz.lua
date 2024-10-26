@@ -1984,7 +1984,12 @@ local function osc_init()
             end
         end
     end
-    ne.eventresponder["mbtn_right_up"] = function () mp.commandv("cycle", "ontop") end
+    ne.eventresponder["mbtn_right_up"] = function () 
+        mp.commandv("cycle", "ontop")
+        if mp.get_property("border") == "no" then
+            mp.commandv("set", "border", "yes")
+        end
+    end
 
     --screenshot
     ne = new_element("screenshot", "button")
