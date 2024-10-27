@@ -1159,6 +1159,12 @@ local function format_file_size(file_size)
 end
 
 local function exec_filesize(args)
+    for i = #args, 1, -1 do
+        if args[i] == nil or args[i] == "" then
+            table.remove(args, i)
+        end
+    end
+
     mp.command_native_async({
         name = "subprocess",
         args = args,
@@ -1233,9 +1239,10 @@ local function check_path_url()
         if user_opts.downloadbutton then
             msg.info("Fetching file size...")
             local command = { 
-                "yt-dlp", 
-                "--no-download", 
-                "-O", 
+                "yt-dlp",
+                user_opts.ytdlp_format,
+                "--no-download",
+                "-O",
                 "%(filesize,filesize_approx)s", -- Fetch file size or approximate size
                 path
             }
