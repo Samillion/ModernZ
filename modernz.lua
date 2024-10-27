@@ -176,7 +176,6 @@ local osc_param = { -- calculated by osc_init()
     areas = {},
 }
 
-
 local icons = {
     play = "\238\166\143",
     pause = "\238\163\140",
@@ -186,17 +185,17 @@ local icons = {
     rewind = "\238\168\158",
     forward = "\238\152\135",
 
-    audio = '\238\175\139',
-    subtitle = '\238\175\141',
+    audio = "\238\175\139",
+    subtitle = "\238\175\141",
     playlist = "\238\161\159",
-    volume_mute = '\238\173\138',
-    volume_quiet = '\238\172\184',
-    volume_low = '\238\172\189',
-    volume_high = '\238\173\130',
-    
+    volume_mute = "\238\173\138",
+    volume_quiet = "\238\172\184",
+    volume_low = "\238\172\189",
+    volume_high = "\238\173\130",
+
     download = "\239\133\144",
     downloading = "\239\140\174",
-    screenshot = "\238\156\153",
+    screenshot = "\238\169\150",
     ontop_on = "\238\165\190",
     ontop_off = "\238\166\129",
     loop_off = "\239\133\178",
@@ -1633,7 +1632,7 @@ layouts = function ()
     end
     
     if user_opts.downloadbutton then
-        lo = add_layout('download')
+        lo = add_layout("download")
         lo.geometry = {x = osc_geo.w - 262 + (showscreenshot and 0 or 45) + (showontop and 0 or 45) + (showloop and 0 or 45) + (showinfo and 0 or 45) + (showfullscreen and 0 or 45), y = refY - 40, an = 5, w = 24, h = 24}
         lo.style = osc_styles.Ctrl3
         lo.visible = (osc_param.playresx >= 400 - outeroffset)
@@ -2014,12 +2013,12 @@ local function osc_init()
     end
 
     --download
-    ne = new_element('download', 'button')
+    ne = new_element("download", "button")
     ne.content = function () return state.downloading and icons.downloading or icons.download end
     ne.visible = (osc_param.playresx >= 1000 - outeroffset - (user_opts.showscreenshot and 0 or 100) - (user_opts.showontop and 0 or 100) - (user_opts.showloop and 0 or 100) - (user_opts.showinfo and 0 or 100) - (user_opts.showfullscreen and 0 or 100)) and state.isWebVideo
     ne.tooltip_style = osc_styles.Tooltip
     ne.tooltipF = function () return state.downloading and "Downloading..." or state.fileSizeNormalised end
-    ne.eventresponder['mbtn_left_up'] = function ()
+    ne.eventresponder["mbtn_left_up"] = function ()
         if not state.videoCantBeDownloaded then
             local localpath = mp.command_native({"expand-path", user_opts.download_path})
 
