@@ -2,7 +2,7 @@
 
 A sleek and modern OSC for [mpv](https://mpv.io/), this project is a fork of ModernX designed to enhance functionality by adding more features, all while preserving the core standards of mpv's OSC.
 
-![ModernZ_OSC](https://github.com/user-attachments/assets/1af10b00-f502-4cd5-a05e-2c85b9bac05b)
+![ModernZ_OSC](https://github.com/user-attachments/assets/e7d8e956-c248-4216-91ba-6bc68c97e2de)
 
 <p align="center">
     <a href="#installation"><strong>Installation »</strong></a>
