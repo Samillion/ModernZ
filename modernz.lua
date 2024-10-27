@@ -2986,6 +2986,12 @@ mp.add_key_binding(nil, "progress-toggle", function()
     request_init()
 end)
 
+mp.register_script_message("persistent-progress", function(value)
+    value = (value == "true" or value == "yes") and true or false
+    state.persistentprogresstoggle = value
+    request_init()
+end)
+
 -- Validate string type user options
 local function validate_user_opts()
     if user_opts.windowcontrols ~= "auto" and 

@@ -111,3 +111,21 @@ Below is a list that explains the OSC buttons function depending on how you inte
 | Show OSC            | `x script-message-to modernz osc-show`             | Show OSC on command without needing to move mouse                        |
 | OSC Visibility      | `y script-message-to modernz osc-visibility cycle` | OSC visibility mode. Accepts `never`, `auto`, `always` and `cycle`       |
 | Logo on Idle        | `z script-message-to modernz osc-idlescreen cycle` | The visibility of the mpv logo on idle. Accepts `yes`, `no`, and `cycle` |
+
+### Auto Profile
+
+This is an example of an auto-profile in `mpv.conf` you can use to set persistent progress bar based on conditions automatically.
+
+```ini
+[Persistent-Bar]
+    profile-desc=Enable persistent bar on window pin or fullscreen
+    profile-cond=ontop and ontop == true or fullscreen
+    profile-restore=copy-equal
+    input-commands=script-message-to modernz persistent-progress yes
+
+[Persistent-Bar-Off]
+    profile-desc=Disable persistent bar when not pinned or not fullscreen
+    profile-cond=not ontop or ontop == false or not fullscreen
+    profile-restore=copy-equal
+    input-commands=script-message-to modernz persistent-progress no
+```
