@@ -165,3 +165,20 @@ Customize the button function based on mouse action same as you would in `input.
 |                      | ch_prev_mbtn_right_command     | `script-binding select/select-chapter; script-message-to modernz osc-hide`      |
 |                      | ch_next_mbtn_left_command      | `no-osd add chapter 1`                                                          |
 |                      | ch_next_mbtn_right_command     | `script-binding select/select-chapter; script-message-to modernz osc-hide`      |
+
+### Auto Profile
+
+Below is an example of an auto-profile in `mpv.conf` you can use to set any of ModernZ options based on certain conditions, in this case `when window is pinned or fullscreen`.
+
+```ini
+[ModernZ-Custom]
+    profile-desc=Apply ModernZ options on pin or fullscreen
+    profile-cond=ontop and ontop == true or fullscreen
+    profile-restore=copy-equal
+    script-opts-append=modernz-persistentprogress=yes
+    script-opts-append=modernz-seekbarfg_color=#FF0000
+    script-opts-append=modernz-bottomhover=no
+    #...etc
+```
+
+More information about auto profiles available on [mpv's manual](https://mpv.io/manual/master/#conditional-auto-profiles).
