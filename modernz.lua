@@ -2970,7 +2970,10 @@ mp.register_script_message("osc-visibility", visibility_mode)
 mp.register_script_message("osc-show", show_osc)
 mp.register_script_message("osc-hide", hide_osc)
 mp.add_key_binding(nil, "visibility", function() visibility_mode("cycle") end)
-
+mp.add_key_binding(nil, "progress-toggle", function()
+    state.persistentprogresstoggle = not state.persistentprogresstoggle
+    request_init()
+end)
 mp.register_script_message("osc-idlescreen", idlescreen_visibility)
 mp.register_script_message("thumbfast-info", function(json)
     local data = utils.parse_json(json)
@@ -2979,17 +2982,6 @@ mp.register_script_message("thumbfast-info", function(json)
     else
         thumbfast = data
     end
-end)
-
-mp.add_key_binding(nil, "progress-toggle", function()
-    state.persistentprogresstoggle = not state.persistentprogresstoggle
-    request_init()
-end)
-
-mp.register_script_message("persistent-progress", function(value)
-    value = (value == "true" or value == "yes") and true or false
-    state.persistentprogresstoggle = value
-    request_init()
 end)
 
 -- Validate string type user options
