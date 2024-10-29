@@ -42,7 +42,8 @@ Create `modernz.conf` in your mpv script-opts directory:
 
 | Option                | Value         | Description                                                                                                                                                   |
 | --------------------- | ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| hovereffect           | yes           | whether buttons have a glowing effect when hovered over                                                                                                       |
+| hovereffect           | glow          | what type of hover effect buttons have: `glow`, `size`. Hover effect is disabled if left empty.                                                               |
+| hover_button_size     | 115           | the relative size (%) of a hovered button if the size effect is selected                                                                                      |
 | showplaylist          | no            | show `playlist` button                                                                                                                                        |
 | showjump              | yes           | show `jump forward/backward 10 seconds` buttons                                                                                                               |
 | showskip              | no            | show the `skip back/forward (chapter)` buttons                                                                                                                |

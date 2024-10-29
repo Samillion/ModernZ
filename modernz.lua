@@ -37,7 +37,8 @@ local user_opts = {
     thumbnailborder_color = "#111111",     -- color of border for thumbnail (with thumbfast)
 
     -- Buttons
-    hovereffect = true,                    -- whether buttons have a glowing effect when hovered over
+    hovereffect = "glow",                  -- button hover effect: none, glow, size
+    hover_button_size = 115,                -- the relative size of a hovered button if the size effect is selected
 
     showjump = true,                       -- show "jump forward/backward 10 seconds" buttons 
     showskip = false,                      -- show the chapter skip back and forward buttons
@@ -309,7 +310,7 @@ local function set_osc_styles()
         WindowTitle = "{\\blur1\\bord0.5\\1c&H" .. osc_color_convert(user_opts.window_title_color) .. "&\\3c&H0&\\fs".. 30 .. "\\q2\\fn" .. user_opts.font .. "}",
         WinCtrl = "{\\blur1\\bord0.5\\1c&H" .. osc_color_convert(user_opts.window_controls_color) .. "&\\3c&H0&\\fs".. 25 .. "\\fnmpv-osd-symbols}",
         elementDown = "{\\1c&H" .. osc_color_convert(user_opts.held_element_color) .. "&}",
-        elementHover = "{\\blur5\\2c&HFFFFFF&}",
+        elementHover = "{" .. (user_opts.hovereffect == "glow" and "\\blur5" or "") .. "\\2c&HFFFFFF&" .. (user_opts.hovereffect == "size" and string.format("\\fscx%s\\fscy%s", user_opts.hover_button_size, user_opts.hover_button_size) or "") .. "}",
         wcBar = "{\\1c&H" .. osc_color_convert(user_opts.osc_color) .. "&}",
     }
 end
@@ -999,6 +1000,18 @@ local function render_elements(master_ass)
             end
 
         elseif element.type == "button" then
+            if user_opts.hovereffect == "size" then
+                -- add suze hover effect
+                local button_lo = element.layout.button
+                local is_clickable = element.eventresponder and (
+                    element.eventresponder["mbtn_left_down"] ~= nil or
+                    element.eventresponder["mbtn_left_up"] ~= nil
+                )
+                if mouse_hit(element) and is_clickable and element.enabled then
+                    elem_ass:append(button_lo.hoverstyle)
+                end
+            end
+
             local buttontext
             if type(element.content) == "function" then
                 buttontext = element.content() -- function objects
@@ -1060,8 +1073,8 @@ local function render_elements(master_ass)
                 end
             end
 
-            if user_opts.hovereffect == true then
-                -- add hover effect
+            if user_opts.hovereffect == "glow" then
+                -- add glow hover effect
                 -- source: https://github.com/Zren/mpvz/issues/13
                 local button_lo = element.layout.button
                 local is_clickable = element.eventresponder and (
