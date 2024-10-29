@@ -95,13 +95,13 @@ local user_opts = {
     showtitle = true,                      -- show title in OSC (above seekbar)
     showwindowtitle = true,                -- show window title in borderless/fullscreen mode
     showwindowcontrols = true,             -- show window controls (close, min, max) in borderless/fullscreen
+    show_chapter_title = true,             -- show chapter title next to timestamp (below seekbar)
     titleBarStrip = false,                 -- whether to make the title bar a singular bar instead of a black fade
     title = "${media-title}",              -- title above seekbar. ${media-title} or ${filename} (can use /no-ext)
     windowcontrols_title = "${media-title}", -- Same as title but for windowcontrols
     font = "mpv-osd-symbols",              -- mpv-osd-symbols = default osc font (or the one set in mpv.conf)
     titlefontsize = 30,                    -- the font size of the title text (above seekbar)
     chapter_fmt = "Chapter: %s",           -- chapter print format for seekbar-hover. "no" to disable
-    show_chapter_title = true,             -- show chapter title next to timestamp (below seekbar)
 
     playpause_size = 30,                   -- icon size for the play-pause button
     midbuttons_size = 24,                  -- icon size for the middle buttons
@@ -1556,18 +1556,18 @@ layouts = function ()
 
     -- Time
     lo = add_layout("tc_left")
-    lo.geometry = {x = 25, y = refY - 84, an = 7, w = 100, h = 20}
+    lo.geometry = {x = 25, y = refY - 84, an = 7, w = 55, h = 20}
     lo.style = osc_styles.Time
         
     lo = add_layout("tc_right")
-    lo.geometry = {x = osc_geo.w - 25 , y = refY -84, an = 9, w = 100, h = 20}
+    lo.geometry = {x = osc_geo.w - 25 , y = refY -84, an = 9, w = 55, h = 20}
     lo.style = osc_styles.Time
 
     -- Chapter Title (next to timestamp)
     if user_opts.show_chapter_title then
         local possec = mp.get_property_number("playback-time", 0)    
         lo = add_layout("chapter_title")
-        lo.geometry = {x = 73 + (state.tc_ms and 30 or 0) + ((possec >= 3600 or user_opts.time_format ~= "dynamic") and 23 or 0), y = refY - 84, an = 7, w = 100, h = 20}
+        lo.geometry = {x = 73 + (state.tc_ms and 30 or 0) + ((possec >= 3600 or user_opts.time_format ~= "dynamic") and 23 or 0), y = refY - 84, an = 7, w = 200, h = 20}
         lo.style = osc_styles.chapter_title
     end
 
@@ -2267,7 +2267,7 @@ local function osc_init()
         request_init()
     end
 
-    -- Chapter title
+    -- Chapter title (below seekbar)
     local chapter_index = mp.get_property_number("chapter", -1)
     ne = new_element("chapter_title", "button")
     ne.visible = chapter_index >= 0
