@@ -105,12 +105,12 @@ Create `modernz.conf` in your mpv script-opts directory:
 | showtitle                | yes              | show title in OSC (above seekbar)                                          |
 | showwindowtitle          | yes              | show window title in borderless/fullscreen mode                            |
 | showwindowcontrols       | yes              | show window controls (close, min, max) in borderless/fullscreen            |
+| show_chapter_title       | yes              | show chapter title next to timestamp (below seekbar)                       |
 | titleBarStrip            | no               | whether to make the title bar a singular bar instead of a black fade       |
 | title                    | `${media-title}` | title above seekbar. `${media-title}` or `${filename}` (can use `/no-ext`) |
 | font                     | mpv-osd-symbols  | mpv-osd-symbols = default osc font (or the one set in mpv.conf)            |
 | titlefontsize            | 30               | the font size of the title text (above seekbar)                            |
 | chapter_fmt              | Chapter: %s      | chapter print format for seekbar-hover. `no` to disable                    |
-| show_chapter_title       | yes              | show chapter title next to timestamp (below seekbar)                       |
 | playpause_size           | 30               | icon size for the play-pause button                                        |
 | midbuttons_size          | 24               | icon size for the middle buttons                                           |
 | sidebuttons_size         | 24               | icon size for the side buttons                                             |
