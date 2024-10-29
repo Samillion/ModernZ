@@ -32,6 +32,7 @@ Create `modernz.conf` in your mpv script-opts directory:
 | vol_bar_match_seek    | no      | match volume bar color with seekbar color? ignores `side_buttons_color`  |
 | title_color           | #FFFFFF | color of the title (above seekbar)                                       |
 | time_color            | #FFFFFF | color of timestamps (below seekbar)                                      |
+| chapter_title_color   | #FFFFFF | color of chapter title next to timestamp (below seekbar)                 |
 | side_buttons_color    | #FFFFFF | color of side buttons (audio, sub, playlist, vol, loop, info..etc)       |
 | middle_buttons_color  | #FFFFFF | color of middle buttons (skip, jump, chapter...etc)                      |
 | playpause_color       | #FFFFFF | color of play/pause button                                               |
@@ -109,6 +110,7 @@ Create `modernz.conf` in your mpv script-opts directory:
 | font                     | mpv-osd-symbols  | mpv-osd-symbols = default osc font (or the one set in mpv.conf)            |
 | titlefontsize            | 30               | the font size of the title text (above seekbar)                            |
 | chapter_fmt              | Chapter: %s      | chapter print format for seekbar-hover. `no` to disable                    |
+| show_chapter_title       | yes              | show chapter title next to timestamp (below seekbar)                       |
 | playpause_size           | 30               | icon size for the play-pause button                                        |
 | midbuttons_size          | 24               | icon size for the middle buttons                                           |
 | sidebuttons_size         | 24               | icon size for the side buttons                                             |
