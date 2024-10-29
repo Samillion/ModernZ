@@ -1556,11 +1556,11 @@ layouts = function ()
 
     -- Time
     lo = add_layout("tc_left")
-    lo.geometry = {x = 25, y = refY - 84, an = 7, w = 55, h = 20}
+    lo.geometry = {x = 25, y = refY - 84, an = 7, w = 50, h = 20}
     lo.style = osc_styles.Time
         
     lo = add_layout("tc_right")
-    lo.geometry = {x = osc_geo.w - 25 , y = refY -84, an = 9, w = 55, h = 20}
+    lo.geometry = {x = osc_geo.w - 25 , y = refY -84, an = 9, w = 50, h = 20}
     lo.style = osc_styles.Time
 
     -- Chapter Title (next to timestamp)
@@ -2277,8 +2277,15 @@ local function osc_init()
             local chapters = mp.get_property_native("chapter-list", {})
             local chapter_title = (chapters[chapter_index + 1] and chapters[chapter_index + 1].title ~= "") and chapters[chapter_index + 1].title or texts.na
             chapter_title = mp.command_native({"escape-ass", chapter_title})
-            return string.format(user_opts.chapter_fmt, chapter_title)
+            local current_time = mp.get_property_number("playback-time", 0)
+            local end_time = (chapters[chapter_index + 2] and chapters[chapter_index + 2].time) or mp.get_property_number("duration", 0)
+            local remaining_time = end_time - current_time
+            local minutes = math.floor(remaining_time / 60)
+            local seconds = math.floor(remaining_time % 60)
+            local remaining_str = string.format("%02d:%02d", minutes, seconds)
+            return "-  " .. string.format(user_opts.chapter_fmt, chapter_title) .. " -" .. remaining_str
         end
+        return "" -- fallback
     end
     ne.eventresponder["mbtn_left_down"] = function() mp.command("script-binding select/select-chapter; script-message-to modernz osc-hide") end
     ne.eventresponder["mbtn_right_down"] = function() mp.command("show-text ${chapter-list} 3000") end
