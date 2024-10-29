@@ -101,7 +101,7 @@ local user_opts = {
     windowcontrols_title = "${media-title}", -- Same as title but for windowcontrols
     font = "mpv-osd-symbols",              -- mpv-osd-symbols = default osc font (or the one set in mpv.conf)
     titlefontsize = 30,                    -- the font size of the title text (above seekbar)
-    chapter_fmt = "Chapter: %s",           -- chapter print format for seekbar-hover. "no" to disable
+    chapter_fmt = "%s",                    -- chapter print format for seekbar-hover. "no" to disable
 
     playpause_size = 30,                   -- icon size for the play-pause button
     midbuttons_size = 24,                  -- icon size for the middle buttons
@@ -2277,13 +2277,7 @@ local function osc_init()
             local chapters = mp.get_property_native("chapter-list", {})
             local chapter_title = (chapters[chapter_index + 1] and chapters[chapter_index + 1].title ~= "") and chapters[chapter_index + 1].title or texts.na
             chapter_title = mp.command_native({"escape-ass", chapter_title})
-            local current_time = mp.get_property_number("playback-time", 0)
-            local end_time = (chapters[chapter_index + 2] and chapters[chapter_index + 2].time) or mp.get_property_number("duration", 0)
-            local remaining_time = end_time - current_time
-            local minutes = math.floor(remaining_time / 60)
-            local seconds = math.floor(remaining_time % 60)
-            local remaining_str = string.format("%02d:%02d", minutes, seconds)
-            return "-  " .. string.format(user_opts.chapter_fmt, chapter_title) .. " -" .. remaining_str
+            return "●  " .. string.format(user_opts.chapter_fmt, chapter_title)
         end
         return "" -- fallback
     end
