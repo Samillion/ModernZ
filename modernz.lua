@@ -30,7 +30,7 @@ local user_opts = {
     seekbarbg_color = "#FFFFFF",           -- color of the remaining seekbar
     vol_bar_match_seek = false,            -- match volume bar color with seekbar color? ignores side_buttons_color
     time_color = "#FFFFFF",                -- color of timestamps (below seekbar)
-    chapter_title_color = "#FFFFFF",       -- color of chapter title next to left timestamp
+    chapter_title_color = "#FFFFFF",       -- color of chapter title next to timestamp (below seekbar)
     side_buttons_color = "#FFFFFF",        -- color of side buttons (audio, sub, playlist, vol, loop, info..etc)
     middle_buttons_color = "#FFFFFF",      -- color of middle buttons (skip, jump, chapter...etc)
     playpause_color = "#FFFFFF",           -- color of play/pause button
@@ -101,7 +101,7 @@ local user_opts = {
     font = "mpv-osd-symbols",              -- mpv-osd-symbols = default osc font (or the one set in mpv.conf)
     titlefontsize = 30,                    -- the font size of the title text (above seekbar)
     chapter_fmt = "Chapter: %s",           -- chapter print format for seekbar-hover. "no" to disable
-    show_chapter_title = true,             -- show chapter title next to left timestamp
+    show_chapter_title = true,             -- show chapter title next to timestamp (below seekbar)
 
     playpause_size = 30,                   -- icon size for the play-pause button
     midbuttons_size = 24,                  -- icon size for the middle buttons
@@ -1567,7 +1567,7 @@ layouts = function ()
     if user_opts.show_chapter_title then
         local possec = mp.get_property_number("playback-time", 0)    
         lo = add_layout("chapter_title")
-        lo.geometry = {x = 73 + (state.tc_ms and 30 or 0) + (possec >= 3600 and 23 or 0), y = refY - 84, an = 7, w = 100, h = 20}
+        lo.geometry = {x = 73 + (state.tc_ms and 30 or 0) + ((possec >= 3600 or user_opts.time_format ~= "dynamic") and 23 or 0), y = refY - 84, an = 7, w = 100, h = 20}
         lo.style = osc_styles.chapter_title
     end
 
