@@ -36,10 +36,12 @@ local user_opts = {
     playpause_color = "#FFFFFF",           -- color of play/pause button
     held_element_color = "#999999",        -- color of an element while held down
     thumbnailborder_color = "#111111",     -- color of border for thumbnail (with thumbfast)
+    hovereffect_color = "#CCCCCC",         -- color of a hovered button when hovereffect is: color
 
     -- Buttons
-    hovereffect = "size",                  -- button hover effect: none, glow, size
-    hover_button_size = 110,               -- the relative size of a hovered button if the size effect is selected
+    hovereffect = "size,glow,color",       -- list of active button hover effects seperated by comma: glow, size, color
+    hover_button_size = 110,               -- the relative size of a hovered button if the size effect is active
+    button_glow_amount = 5,                -- the amount of glow a hovered button receives if the glow effect is active
 
     showjump = true,                       -- show "jump forward/backward 10 seconds" buttons 
     showskip = false,                      -- show the chapter skip back and forward buttons
@@ -272,6 +274,24 @@ local function set_osc_texts()
     texts = language[user_opts.language] or language["en"]
 end
 
+local function contains(list, item)
+    local t = {}
+    if type(list) ~= "table" then
+        for str in string.gmatch(list, '([^,]+)') do
+            str = str:gsub("%s+", "")
+            table.insert(t, str)
+        end
+    else
+        t = list
+    end
+    for _, v in ipairs(t) do
+        if v == item then
+            return true
+        end
+    end
+    return false
+end
+
 local thumbfast = {
     width = 0,
     height = 0,
@@ -315,7 +335,7 @@ local function set_osc_styles()
         WindowTitle = "{\\blur1\\bord0.5\\1c&H" .. osc_color_convert(user_opts.window_title_color) .. "&\\3c&H0&\\fs".. 30 .. "\\q2\\fn" .. user_opts.font .. "}",
         WinCtrl = "{\\blur1\\bord0.5\\1c&H" .. osc_color_convert(user_opts.window_controls_color) .. "&\\3c&H0&\\fs".. 25 .. "\\fnmpv-osd-symbols}",
         elementDown = "{\\1c&H" .. osc_color_convert(user_opts.held_element_color) .. "&}",
-        elementHover = "{" .. (user_opts.hovereffect == "glow" and "\\blur5" or "") .. "\\2c&HFFFFFF&" .. (user_opts.hovereffect == "size" and string.format("\\fscx%s\\fscy%s", user_opts.hover_button_size, user_opts.hover_button_size) or "") .. "}",
+        elementHover = "{" .. (contains(user_opts.hovereffect, "color") and "\\1c&H" .. osc_color_convert(user_opts.hovereffect_color) or "") .."\\2c&HFFFFFF&" .. (contains(user_opts.hovereffect, "size") and string.format("\\fscx%s\\fscy%s", user_opts.hover_button_size, user_opts.hover_button_size) or "") .. "}",
         wcBar = "{\\1c&H" .. osc_color_convert(user_opts.osc_color) .. "&}",
     }
 end
@@ -1005,18 +1025,6 @@ local function render_elements(master_ass)
             end
 
         elseif element.type == "button" then
-            if user_opts.hovereffect == "size" then
-                -- add size hover effect
-                local button_lo = element.layout.button
-                local is_clickable = element.eventresponder and (
-                    element.eventresponder["mbtn_left_down"] ~= nil or
-                    element.eventresponder["mbtn_left_up"] ~= nil
-                )
-                if mouse_hit(element) and is_clickable and element.enabled then
-                    elem_ass:append(button_lo.hoverstyle)
-                end
-            end
-
             local buttontext
             if type(element.content) == "function" then
                 buttontext = element.content() -- function objects
@@ -1040,7 +1048,26 @@ local function render_elements(master_ass)
                 buttontext = string.format("{\\fscx%f}%s{\\r}", stretch, buttontext)
             end
 
+
+            -- add hover effects
+            local button_lo = element.layout.button
+            local is_clickable = element.eventresponder and (
+                element.eventresponder["mbtn_left_down"] ~= nil or
+                element.eventresponder["mbtn_left_up"] ~= nil
+            )
+            local hovered = mouse_hit(element) and is_clickable and element.enabled and state.mouse_down_counter == 0
+            if hovered and (contains(user_opts.hovereffect, "size") or contains(user_opts.hovereffect, "color") or contains(user_opts.hovereffect, "glow")) then
+                elem_ass:append(button_lo.hoverstyle)
+            end
+            -- add button icon/text
             elem_ass:append(buttontext)
+            -- add blur effect
+            if hovered and contains(user_opts.hovereffect, "glow") then
+                local shadow_ass = assdraw.ass_new()
+                shadow_ass:merge(style_ass)
+                shadow_ass:append("{\\blur" .. user_opts.button_glow_amount .. "}" .. button_lo.hoverstyle .. buttontext)
+                elem_ass:merge(shadow_ass)
+            end
 
             -- add tooltip for audio and subtitle tracks
             if element.tooltipF ~= nil then
@@ -1075,22 +1102,6 @@ local function render_elements(master_ass)
                     elem_ass:an(an)
                     elem_ass:append(element.tooltip_style)
                     elem_ass:append(tooltiplabel)
-                end
-            end
-
-            if user_opts.hovereffect == "glow" then
-                -- add glow hover effect
-                -- source: https://github.com/Zren/mpvz/issues/13
-                local button_lo = element.layout.button
-                local is_clickable = element.eventresponder and (
-                    element.eventresponder["mbtn_left_down"] ~= nil or
-                    element.eventresponder["mbtn_left_up"] ~= nil
-                )
-                if mouse_hit(element) and is_clickable and element.enabled then
-                    local shadow_ass = assdraw.ass_new()
-                    shadow_ass:merge(style_ass)
-                    shadow_ass:append(button_lo.hoverstyle .. buttontext)
-                    elem_ass:merge(shadow_ass)
                 end
             end
         end
