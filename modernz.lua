@@ -37,8 +37,8 @@ local user_opts = {
     thumbnailborder_color = "#111111",     -- color of border for thumbnail (with thumbfast)
 
     -- Buttons
-    hovereffect = "glow",                  -- button hover effect: none, glow, size
-    hover_button_size = 115,                -- the relative size of a hovered button if the size effect is selected
+    hovereffect = "size",                  -- button hover effect: none, glow, size
+    hover_button_size = 115,               -- the relative size of a hovered button if the size effect is selected
 
     showjump = true,                       -- show "jump forward/backward 10 seconds" buttons 
     showskip = false,                      -- show the chapter skip back and forward buttons
