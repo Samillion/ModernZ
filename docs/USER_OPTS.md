@@ -68,7 +68,6 @@ Create `modernz.conf` in your mpv script-opts directory:
 | vidscale          | yes   | whether to scale the controller with the video |
 | scalewindowed     | 1.0   | scaling of the controller when windowed        |
 | scalefullscreen   | 1.0   | scaling of the controller when fullscreen      |
-| scaleforcedwindow | 1.0   | scaling when rendered on a forced window       |
 
 ### Time & Volume
 
