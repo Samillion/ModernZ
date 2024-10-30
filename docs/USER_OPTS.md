@@ -59,7 +59,6 @@ Create `modernz.conf` in your mpv script-opts directory:
 | jump_softrepeat       | yes           | holding jump seek buttons repeats toggle                                                                                                                      |
 | downloadbutton        | yes           | show download button on web videos (requires yt-dlp and ffmpeg)                                                                                               |
 | download_path         | ~~desktop/mpv | the download path for videos [[paths](https://mpv.io/manual/master/#paths)]                                                                                   |
-| ytdlp_format          |               | optional parameters for yt-dlp <br>example `-f bv[vcodec^=avc][ext=mp4]+ba[ext=m4a]/b[ext=mp4]`                                                               |
 
 ### Scaling
 
