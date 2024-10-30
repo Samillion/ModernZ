@@ -36,11 +36,12 @@ local user_opts = {
     playpause_color = "#FFFFFF",           -- color of play/pause button
     held_element_color = "#999999",        -- color of an element while held down
     thumbnailborder_color = "#111111",     -- color of border for thumbnail (with thumbfast)
-    hovereffect_color = "#BBBBBB",         -- color of a hovered button when hovereffect is: color
+    hovereffect_color = "#CCCCCC",         -- color of a hovered button when hovereffect is: color
 
     -- Buttons
     hovereffect = "size, glow",            -- list of active button hover effects seperated by comma: glow, size, color
-    hover_button_size = 110,               -- the relative size of a hovered button if the size effect is selected
+    hover_button_size = 110,               -- the relative size of a hovered button if the size effect is active
+    button_glow_amount = 5,                -- the amount of glow a hovered button receives if the glow effect is active
 
     showjump = true,                       -- show "jump forward/backward 10 seconds" buttons 
     showskip = false,                      -- show the chapter skip back and forward buttons
@@ -1064,7 +1065,7 @@ local function render_elements(master_ass)
             if hovered and contains(user_opts.hovereffect, "glow") then
                 local shadow_ass = assdraw.ass_new()
                 shadow_ass:merge(style_ass)
-                shadow_ass:append("{\\blur5}" .. button_lo.hoverstyle .. buttontext)
+                shadow_ass:append("{\\blur" .. user_opts.button_glow_amount .. "}" .. button_lo.hoverstyle .. buttontext)
                 elem_ass:merge(shadow_ass)
             end
 
