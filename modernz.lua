@@ -38,7 +38,8 @@ local user_opts = {
     thumbnailborder_color = "#111111",     -- color of border for thumbnail (with thumbfast)
 
     -- Buttons
-    hovereffect = true,                    -- whether buttons have a glowing effect when hovered over
+    hovereffect = "size",                  -- button hover effect: none, glow, size
+    hover_button_size = 115,               -- the relative size of a hovered button if the size effect is selected
 
     showjump = true,                       -- show "jump forward/backward 10 seconds" buttons 
     showskip = false,                      -- show the chapter skip back and forward buttons
@@ -61,10 +62,9 @@ local user_opts = {
                                            -- example "-f bv[vcodec^=avc][ext=mp4]+ba[ext=m4a]/b[ext=mp4]"
 
     -- Scaling
-    vidscale = true,                       -- whether to scale the controller with the video
+    vidscale = "auto",                     -- whether to scale the controller with the video
     scalewindowed = 1.0,                   -- scaling of the controller when windowed
     scalefullscreen = 1.0,                 -- scaling of the controller when fullscreen
-    scaleforcedwindow = 1.0,               -- scaling when rendered on a forced window
 
     -- Time & Volume
     unicodeminus = false,                  -- whether to use the Unicode minus sign character in remaining time
@@ -312,7 +312,7 @@ local function set_osc_styles()
         WindowTitle = "{\\blur1\\bord0.5\\1c&H" .. osc_color_convert(user_opts.window_title_color) .. "&\\3c&H0&\\fs".. 30 .. "\\q2\\fn" .. user_opts.font .. "}",
         WinCtrl = "{\\blur1\\bord0.5\\1c&H" .. osc_color_convert(user_opts.window_controls_color) .. "&\\3c&H0&\\fs".. 25 .. "\\fnmpv-osd-symbols}",
         elementDown = "{\\1c&H" .. osc_color_convert(user_opts.held_element_color) .. "&}",
-        elementHover = "{\\blur5\\2c&HFFFFFF&}",
+        elementHover = "{" .. (user_opts.hovereffect == "glow" and "\\blur5" or "") .. "\\2c&HFFFFFF&" .. (user_opts.hovereffect == "size" and string.format("\\fscx%s\\fscy%s", user_opts.hover_button_size, user_opts.hover_button_size) or "") .. "}",
         wcBar = "{\\1c&H" .. osc_color_convert(user_opts.osc_color) .. "&}",
     }
 end
@@ -1002,6 +1002,18 @@ local function render_elements(master_ass)
             end
 
         elseif element.type == "button" then
+            if user_opts.hovereffect == "size" then
+                -- add suze hover effect
+                local button_lo = element.layout.button
+                local is_clickable = element.eventresponder and (
+                    element.eventresponder["mbtn_left_down"] ~= nil or
+                    element.eventresponder["mbtn_left_up"] ~= nil
+                )
+                if mouse_hit(element) and is_clickable and element.enabled then
+                    elem_ass:append(button_lo.hoverstyle)
+                end
+            end
+
             local buttontext
             if type(element.content) == "function" then
                 buttontext = element.content() -- function objects
@@ -1063,8 +1075,8 @@ local function render_elements(master_ass)
                 end
             end
 
-            if user_opts.hovereffect == true then
-                -- add hover effect
+            if user_opts.hovereffect == "glow" then
+                -- add glow hover effect
                 -- source: https://github.com/Zren/mpvz/issues/13
                 local button_lo = element.layout.button
                 local is_clickable = element.eventresponder and (
@@ -1709,18 +1721,23 @@ local function osc_init()
 
     -- set canvas resolution according to display aspect and scaling setting
     local baseResY = 720
-    local display_w, display_h, display_aspect = mp.get_osd_size()
-    local scale = 1
+    local _, display_h, display_aspect = mp.get_osd_size()
+    local scale
 
-    if mp.get_property("video") == "no" then -- dummy/forced window
-        scale = user_opts.scaleforcedwindow
-    elseif state.fullscreen then
+    if state.fullscreen then
         scale = user_opts.scalefullscreen
     else
         scale = user_opts.scalewindowed
     end
 
-    if user_opts.vidscale then
+    local scale_with_video
+    if user_opts.vidscale == "auto" then
+        scale_with_video = mp.get_property_native("osd-scale-by-window")
+    else
+        scale_with_video = user_opts.vidscale == "yes"
+    end
+
+    if scale_with_video then
         osc_param.unscaled_y = baseResY
     else
         osc_param.unscaled_y = display_h
