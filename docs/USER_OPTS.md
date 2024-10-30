@@ -48,6 +48,7 @@ Create `modernz.conf` in your mpv script-opts directory:
 | button_glow_amount         | 5               | the amount of glow a hovered button receives if the glow effect is active                                                                                     |
 | showplaylist               | no              | show `playlist` button                                                                                                                                        |
 | hide_empty_playlist_button | yes             | hides `playlist` button when a playlist does not exist                                                                                                        |
+| gray_empty_playlist_button | yes             | grays `playlist` button when no playlist exists                                                                                             |
 | showjump                   | yes             | show `jump forward/backward 10 seconds` buttons                                                                                                               |
 | showskip                   | no              | show the `skip back/forward (chapter)` buttons                                                                                                                |
 | shownextprev               | yes             | show the `next/previous playlist track` buttons                                                                                                               |

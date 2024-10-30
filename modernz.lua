@@ -49,6 +49,7 @@ local user_opts = {
 
     showplaylist = false,                  -- show playlist button? LClick: simple playlist, RClick: interactive playlist
     hide_empty_playlist_button = true,     -- hide playlist button when no playlist exists
+    gray_empty_playlist_button = true,     -- grays out the playlist button when no playlist exists
     showinfo = false,                      -- show the info button
     showloop = true,                       -- show the loop button
     showfullscreen_button = true,          -- show fullscreen toggle button
@@ -800,7 +801,7 @@ local function prepare_elements()
         -- style it accordingly and kill the eventresponders
         if not element.enabled then
             element.layout.alpha[1] = 215
-            if not (element.name == "sub_track" or element.name == "audio_track") then -- keep these to display tooltips
+            if not (element.name == "sub_track" or element.name == "audio_track" or element.name == "tog_playlist") then -- keep these to display tooltips
                 element.eventresponder = nil
             end
         end
@@ -1932,10 +1933,13 @@ local function osc_init()
 
     --tog_playlist
     ne = new_element("tog_playlist", "button")
+    ne.enabled = have_pl or not user_opts.gray_empty_playlist_button
+    ne.off = have_pl and user_opts.gray_empty_playlist_button
     ne.visible = (osc_param.playresx >= 700 - outeroffset)
     ne.content = icons.playlist
     ne.tooltip_style = osc_styles.Tooltip
     ne.tooltipF = pl_count > 0 and texts.playlist .. " [" .. pl_pos .. "/" .. pl_count .. "]" or texts.playlist
+    ne.nothingavailable = texts.nolist
     ne.eventresponder["mbtn_left_up"] = command_callback(user_opts.playlist_mbtn_left_command)
     ne.eventresponder["mbtn_right_up"] = command_callback(user_opts.playlist_mbtn_right_command)
 
