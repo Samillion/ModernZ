@@ -60,10 +60,9 @@ local user_opts = {
                                            -- example "-f bv[vcodec^=avc][ext=mp4]+ba[ext=m4a]/b[ext=mp4]"
 
     -- Scaling
-    vidscale = true,                       -- whether to scale the controller with the video
+    vidscale = "auto",                     -- whether to scale the controller with the video
     scalewindowed = 1.0,                   -- scaling of the controller when windowed
     scalefullscreen = 1.0,                 -- scaling of the controller when fullscreen
-    scaleforcedwindow = 1.0,               -- scaling when rendered on a forced window
 
     -- Time & Volume
     unicodeminus = false,                  -- whether to use the Unicode minus sign character in remaining time
@@ -1698,18 +1697,23 @@ local function osc_init()
 
     -- set canvas resolution according to display aspect and scaling setting
     local baseResY = 720
-    local display_w, display_h, display_aspect = mp.get_osd_size()
-    local scale = 1
+    local _, display_h, display_aspect = mp.get_osd_size()
+    local scale
 
-    if mp.get_property("video") == "no" then -- dummy/forced window
-        scale = user_opts.scaleforcedwindow
-    elseif state.fullscreen then
+    if state.fullscreen then
         scale = user_opts.scalefullscreen
     else
         scale = user_opts.scalewindowed
     end
 
-    if user_opts.vidscale then
+    local scale_with_video
+    if user_opts.vidscale == "auto" then
+        scale_with_video = mp.get_property_native("osd-scale-by-window")
+    else
+        scale_with_video = user_opts.vidscale == "yes"
+    end
+
+    if scale_with_video then
         osc_param.unscaled_y = baseResY
     else
         osc_param.unscaled_y = display_h
