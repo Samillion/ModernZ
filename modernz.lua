@@ -39,7 +39,7 @@ local user_opts = {
 
     -- Buttons
     hovereffect = "size",                  -- button hover effect: none, glow, size
-    hover_button_size = 115,               -- the relative size of a hovered button if the size effect is selected
+    hover_button_size = 110,               -- the relative size of a hovered button if the size effect is selected
 
     showjump = true,                       -- show "jump forward/backward 10 seconds" buttons 
     showskip = false,                      -- show the chapter skip back and forward buttons
@@ -2294,7 +2294,7 @@ local function osc_init()
             local chapters = mp.get_property_native("chapter-list", {})
             local chapter_title = (chapters[chapter_index + 1] and chapters[chapter_index + 1].title ~= "") and chapters[chapter_index + 1].title or texts.na
             chapter_title = mp.command_native({"escape-ass", chapter_title})
-            return "●  " .. string.format(user_opts.chapter_fmt, chapter_title)
+            return "•  " .. string.format(user_opts.chapter_fmt, chapter_title)
         end
         return "" -- fallback
     end
