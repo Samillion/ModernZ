@@ -63,7 +63,6 @@ local user_opts = {
     vidscale = "auto",                     -- whether to scale the controller with the video
     scalewindowed = 1.0,                   -- scaling of the controller when windowed
     scalefullscreen = 1.0,                 -- scaling of the controller when fullscreen
-    scaleforcedwindow = 1.0,               -- scaling when rendered on a forced window
 
     -- Time & Volume
     unicodeminus = false,                  -- whether to use the Unicode minus sign character in remaining time
