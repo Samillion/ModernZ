@@ -41,25 +41,25 @@ Create `modernz.conf` in your mpv script-opts directory:
 
 ### Buttons
 
-| Option                | Value         | Description                                                                                                                                                   |
-| --------------------- | ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| hovereffect           | size          | list of active button hover effects seperated by comma: glow, size, color. Ex. `hovereffect=glow, size, color`                                                |
-| hover_button_size     | 115           | the relative size (%) of a hovered button if the size effect is selected                                                                                      |
-| button_glow_amount    | 5             | the amount of glow a hovered button receives if the glow effect is active                                                                                     |
-| showplaylist          | no            | show `playlist` button                                                                                                                                        |
-| showjump              | yes           | show `jump forward/backward 10 seconds` buttons                                                                                                               |
-| showskip              | no            | show the `skip back/forward (chapter)` buttons                                                                                                                |
-| shownextprev          | yes           | show the `next/previous playlist track` buttons                                                                                                               |
-| showinfo              | no            | show the `info (stats)` button                                                                                                                                |
-| showloop              | yes           | show the `loop` button                                                                                                                                        |
-| showfullscreen_button | yes           | show the `fullscreen toggle` button                                                                                                                           |
-| showontop             | yes           | show `window on top (pin)` button                                                                                                                             |
-| showscreenshot        | no            | show `screenshot` button                                                                                                                                      |
-| screenshot_flag       | subtitles     | flag for the screenshot button. `subtitles` `video` `window` `each-frame` [[details](https://mpv.io/manual/master/#command-interface-screenshot-%3Cflags%3E)] |
-| chapter_softrepeat    | yes           | holding chapter skip buttons repeats toggle                                                                                                                   |
-| jump_softrepeat       | yes           | holding jump seek buttons repeats toggle                                                                                                                      |
-| downloadbutton        | yes           | show download button on web videos (requires yt-dlp and ffmpeg)                                                                                               |
-| download_path         | ~~desktop/mpv | the download path for videos [[paths](https://mpv.io/manual/master/#paths)]                                                                                   |
+| Option                | Value           | Description                                                                                                                                                   |
+| --------------------- | --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| hovereffect           | size,glow,color | list of active button hover effects seperated by comma: glow, size, color. Ex. `hovereffect=glow, size, color`                                                |
+| hover_button_size     | 115             | the relative size (%) of a hovered button if the size effect is selected                                                                                      |
+| button_glow_amount    | 5               | the amount of glow a hovered button receives if the glow effect is active                                                                                     |
+| showplaylist          | no              | show `playlist` button                                                                                                                                        |
+| showjump              | yes             | show `jump forward/backward 10 seconds` buttons                                                                                                               |
+| showskip              | no              | show the `skip back/forward (chapter)` buttons                                                                                                                |
+| shownextprev          | yes             | show the `next/previous playlist track` buttons                                                                                                               |
+| showinfo              | no              | show the `info (stats)` button                                                                                                                                |
+| showloop              | yes             | show the `loop` button                                                                                                                                        |
+| showfullscreen_button | yes             | show the `fullscreen toggle` button                                                                                                                           |
+| showontop             | yes             | show `window on top (pin)` button                                                                                                                             |
+| showscreenshot        | no              | show `screenshot` button                                                                                                                                      |
+| screenshot_flag       | subtitles       | flag for the screenshot button. `subtitles` `video` `window` `each-frame` [[details](https://mpv.io/manual/master/#command-interface-screenshot-%3Cflags%3E)] |
+| chapter_softrepeat    | yes             | holding chapter skip buttons repeats toggle                                                                                                                   |
+| jump_softrepeat       | yes             | holding jump seek buttons repeats toggle                                                                                                                      |
+| downloadbutton        | yes             | show download button on web videos (requires yt-dlp and ffmpeg)                                                                                               |
+| download_path         | ~~desktop/mpv   | the download path for videos [[paths](https://mpv.io/manual/master/#paths)]                                                                                   |
 
 ### Scaling
 
