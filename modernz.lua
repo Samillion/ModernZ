@@ -58,8 +58,6 @@ local user_opts = {
 
     downloadbutton = true,                 -- show download button on web videos (requires yt-dlp and ffmpeg)
     download_path = "~~desktop/mpv",       -- the download path for videos https://mpv.io/manual/master/#paths
-    ytdlp_format = "",                     -- optional format parameters for yt-dlp 
-                                           -- example "-f bv[vcodec^=avc][ext=mp4]+ba[ext=m4a]/b[ext=mp4]"
 
     -- Scaling
     vidscale = "auto",                     -- whether to scale the controller with the video
@@ -1003,7 +1001,7 @@ local function render_elements(master_ass)
 
         elseif element.type == "button" then
             if user_opts.hovereffect == "size" then
-                -- add suze hover effect
+                -- add size hover effect
                 local button_lo = element.layout.button
                 local is_clickable = element.eventresponder and (
                     element.eventresponder["mbtn_left_down"] ~= nil or
@@ -1246,6 +1244,10 @@ local function check_path_url()
         path = string.gsub(path, "ytdl://", "https://") -- Replace "ytdl://" with "https://"
     end
 
+    -- use current or default ytdl-format
+    local mpv_ytdl = mp.get_property("file-local-options/ytdl-format") or mp.get_property("ytdl-format") or ""
+    local ytdl_format = (mpv_ytdl and mpv_ytdl ~= "") and "-f " .. mpv_ytdl or "-f " .. "bestvideo+bestaudio/best"
+
     if is_url(path) then
         state.isWebVideo = true
         state.web_video_path = path
@@ -1255,7 +1257,7 @@ local function check_path_url()
             msg.info("Fetching file size...")
             local command = { 
                 "yt-dlp",
-                user_opts.ytdlp_format,
+                ytdl_format,
                 "--no-download",
                 "-O",
                 "%(filesize,filesize_approx)s", -- Fetch file size or approximate size
@@ -2064,9 +2066,12 @@ local function osc_init()
             else
                 mp.command("show-text Downloading...")
                 state.downloading = true
+                -- use current or default ytdl-format
+                local mpv_ytdl = mp.get_property("file-local-options/ytdl-format") or mp.get_property("ytdl-format") or ""
+                local ytdl_format = (mpv_ytdl and mpv_ytdl ~= "") and "-f " .. mpv_ytdl or "-f " .. "bestvideo+bestaudio/best"
                 local command = {
                     "yt-dlp",
-                    user_opts.ytdlp_format,
+                    ytdl_format,
                     "--remux", "mp4",
                     "--add-metadata",
                     "--embed-subs",
