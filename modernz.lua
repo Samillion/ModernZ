@@ -30,6 +30,7 @@ local user_opts = {
     seekbarbg_color = "#FFFFFF",           -- color of the remaining seekbar
     vol_bar_match_seek = false,            -- match volume bar color with seekbar color? ignores side_buttons_color
     time_color = "#FFFFFF",                -- color of timestamps (below seekbar)
+    chapter_title_color = "#FFFFFF",       -- color of chapter title next to timestamp (below seekbar)
     side_buttons_color = "#FFFFFF",        -- color of side buttons (audio, sub, playlist, vol, loop, info..etc)
     middle_buttons_color = "#FFFFFF",      -- color of middle buttons (skip, jump, chapter...etc)
     playpause_color = "#FFFFFF",           -- color of play/pause button
@@ -38,7 +39,7 @@ local user_opts = {
 
     -- Buttons
     hovereffect = "size",                  -- button hover effect: none, glow, size
-    hover_button_size = 115,               -- the relative size of a hovered button if the size effect is selected
+    hover_button_size = 110,               -- the relative size of a hovered button if the size effect is selected
 
     showjump = true,                       -- show "jump forward/backward 10 seconds" buttons 
     showskip = false,                      -- show the chapter skip back and forward buttons
@@ -94,12 +95,13 @@ local user_opts = {
     showtitle = true,                      -- show title in OSC (above seekbar)
     showwindowtitle = true,                -- show window title in borderless/fullscreen mode
     showwindowcontrols = true,             -- show window controls (close, min, max) in borderless/fullscreen
+    show_chapter_title = true,             -- show chapter title next to timestamp (below seekbar)
     titleBarStrip = false,                 -- whether to make the title bar a singular bar instead of a black fade
     title = "${media-title}",              -- title above seekbar. ${media-title} or ${filename} (can use /no-ext)
     windowcontrols_title = "${media-title}", -- Same as title but for windowcontrols
     font = "mpv-osd-symbols",              -- mpv-osd-symbols = default osc font (or the one set in mpv.conf)
     titlefontsize = 30,                    -- the font size of the title text (above seekbar)
-    chapter_fmt = "Chapter: %s",           -- chapter print format for seekbar-hover. "no" to disable
+    chapter_fmt = "%s",                    -- chapter print format for seekbar-hover. "no" to disable
 
     playpause_size = 30,                   -- icon size for the play-pause button
     midbuttons_size = 24,                  -- icon size for the middle buttons
@@ -303,6 +305,7 @@ local function set_osc_styles()
         Ctrl2Flip = "{\\blur0\\bord0\\1c&H" .. osc_color_convert(user_opts.middle_buttons_color) .. "&\\3c&HFFFFFF&\\fs" .. midbuttons_size .. "\\fn" .. iconfont .. "\\fry180}",
         Ctrl3 = "{\\blur0\\bord0\\1c&H" .. osc_color_convert(user_opts.side_buttons_color) .. "&\\3c&HFFFFFF&\\fs" .. sidebuttons_size .. "\\fn" .. iconfont .. "}",
         Time = "{\\blur0\\bord0\\1c&H" .. osc_color_convert(user_opts.time_color) .. "&\\3c&H000000&\\fs" .. user_opts.timefontsize .. "\\fn" .. user_opts.font .. "}",
+        chapter_title = "{\\blur0\\bord0\\1c&H" .. osc_color_convert(user_opts.chapter_title_color) .. "&\\3c&H000000&\\fs" .. user_opts.timefontsize .. "\\fn" .. user_opts.font .. "}",
         Tooltip = "{\\blur1\\bord0.5\\1c&HFFFFFF&\\3c&H000000&\\fs" .. user_opts.timefontsize .. "\\fn" .. user_opts.font .. "}",
         thumbnail = "{\\blur1\\bord0.5\\1c&H" .. osc_color_convert(user_opts.thumbnailborder_color) .. "&\\3c&H000000&}",
         Title = "{\\blur1\\bord0.5\\1c&H" .. osc_color_convert(user_opts.title_color) .. "&\\3c&H0&\\fs".. user_opts.titlefontsize .."\\q2\\fn" .. user_opts.font .. "}",
@@ -952,7 +955,7 @@ local function render_elements(master_ass)
                                     mp.commandv("script-message-to", "thumbfast", "thumb", hover_sec, thumbX, thumbY)
                                 end
 
-                                -- chapter title
+                                -- chapter title tooltip
                                 local se, ae = state.slider_element, elements[state.active_element]
                                 if user_opts.chapter_fmt ~= "no" and state.touchingprogressbar then
                                     local dur = mp.get_property_number("duration", 0)
@@ -1565,12 +1568,20 @@ layouts = function ()
 
     -- Time
     lo = add_layout("tc_left")
-    lo.geometry = {x = 25, y = refY - 84, an = 7, w = 100, h = 20}
+    lo.geometry = {x = 25, y = refY - 84, an = 7, w = 50, h = 20}
     lo.style = osc_styles.Time
         
     lo = add_layout("tc_right")
-    lo.geometry = {x = osc_geo.w - 25 , y = refY -84, an = 9, w = 100, h = 20}
+    lo.geometry = {x = osc_geo.w - 25 , y = refY -84, an = 9, w = 50, h = 20}
     lo.style = osc_styles.Time
+
+    -- Chapter Title (next to timestamp)
+    if user_opts.show_chapter_title then
+        local possec = mp.get_property_number("playback-time", 0)    
+        lo = add_layout("chapter_title")
+        lo.geometry = {x = 73 + (state.tc_ms and 30 or 0) + ((possec >= 3600 or user_opts.time_format ~= "dynamic") and 23 or 0), y = refY - 84, an = 7, w = 200, h = 20}
+        lo.style = osc_styles.chapter_title
+    end
 
     -- Audio
     lo = add_layout("audio_track")
@@ -2272,6 +2283,23 @@ local function osc_init()
         state.tc_ms = not state.tc_ms
         request_init()
     end
+
+    -- Chapter title (below seekbar)
+    local chapter_index = mp.get_property_number("chapter", -1)
+    ne = new_element("chapter_title", "button")
+    ne.visible = chapter_index >= 0
+    ne.content = function()
+        if user_opts.chapter_fmt ~= "no" and chapter_index >= 0 then
+            request_init()
+            local chapters = mp.get_property_native("chapter-list", {})
+            local chapter_title = (chapters[chapter_index + 1] and chapters[chapter_index + 1].title ~= "") and chapters[chapter_index + 1].title or texts.na
+            chapter_title = mp.command_native({"escape-ass", chapter_title})
+            return "•  " .. string.format(user_opts.chapter_fmt, chapter_title)
+        end
+        return "" -- fallback
+    end
+    ne.eventresponder["mbtn_left_down"] = function() mp.command("script-binding select/select-chapter; script-message-to modernz osc-hide") end
+    ne.eventresponder["mbtn_right_down"] = function() mp.command("show-text ${chapter-list} 3000") end
 
     -- Total/remaining time display
     ne = new_element("tc_right", "button")
@@ -2992,7 +3020,7 @@ end)
 
 mp.register_script_message("osc-visibility", visibility_mode)
 mp.register_script_message("osc-show", show_osc)
-mp.register_script_message("osc-hide", hide_osc)
+mp.register_script_message("osc-hide", function() osc_visible(false) end)
 mp.add_key_binding(nil, "visibility", function() visibility_mode("cycle") end)
 mp.add_key_binding(nil, "progress-toggle", function()
     state.persistentprogresstoggle = not state.persistentprogresstoggle
@@ -3054,7 +3082,8 @@ local function validate_user_opts()
         user_opts.osc_color, user_opts.seekbarfg_color, user_opts.seekbarbg_color, 
         user_opts.title_color, user_opts.time_color, user_opts.side_buttons_color, 
         user_opts.middle_buttons_color, user_opts.playpause_color, user_opts.window_title_color, 
-        user_opts.window_controls_color, user_opts.held_element_color, user_opts.thumbnailborder_color,
+        user_opts.window_controls_color, user_opts.held_element_color, user_opts.thumbnailborder_color, 
+        user_opts.chapter_title_color
     }
 
     for _, color in pairs(colors) do

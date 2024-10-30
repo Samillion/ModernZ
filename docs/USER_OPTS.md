@@ -32,6 +32,7 @@ Create `modernz.conf` in your mpv script-opts directory:
 | vol_bar_match_seek    | no      | match volume bar color with seekbar color? ignores `side_buttons_color`  |
 | title_color           | #FFFFFF | color of the title (above seekbar)                                       |
 | time_color            | #FFFFFF | color of timestamps (below seekbar)                                      |
+| chapter_title_color   | #FFFFFF | color of chapter title next to timestamp (below seekbar)                 |
 | side_buttons_color    | #FFFFFF | color of side buttons (audio, sub, playlist, vol, loop, info..etc)       |
 | middle_buttons_color  | #FFFFFF | color of middle buttons (skip, jump, chapter...etc)                      |
 | playpause_color       | #FFFFFF | color of play/pause button                                               |
@@ -67,7 +68,6 @@ Create `modernz.conf` in your mpv script-opts directory:
 | vidscale          | yes   | whether to scale the controller with the video |
 | scalewindowed     | 1.0   | scaling of the controller when windowed        |
 | scalefullscreen   | 1.0   | scaling of the controller when fullscreen      |
-| scaleforcedwindow | 1.0   | scaling when rendered on a forced window       |
 
 ### Time & Volume
 
@@ -105,6 +105,7 @@ Create `modernz.conf` in your mpv script-opts directory:
 | showtitle                | yes              | show title in OSC (above seekbar)                                          |
 | showwindowtitle          | yes              | show window title in borderless/fullscreen mode                            |
 | showwindowcontrols       | yes              | show window controls (close, min, max) in borderless/fullscreen            |
+| show_chapter_title       | yes              | show chapter title next to timestamp (below seekbar)                       |
 | titleBarStrip            | no               | whether to make the title bar a singular bar instead of a black fade       |
 | title                    | `${media-title}` | title above seekbar. `${media-title}` or `${filename}` (can use `/no-ext`) |
 | font                     | mpv-osd-symbols  | mpv-osd-symbols = default osc font (or the one set in mpv.conf)            |
