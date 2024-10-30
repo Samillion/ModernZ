@@ -36,9 +36,10 @@ local user_opts = {
     playpause_color = "#FFFFFF",           -- color of play/pause button
     held_element_color = "#999999",        -- color of an element while held down
     thumbnailborder_color = "#111111",     -- color of border for thumbnail (with thumbfast)
+    hovereffect_color = "#CCCCCC",         -- color of a hovered button when hovereffect is: color
 
     -- Buttons
-    hovereffect = "size",                  -- button hover effect: none, glow, size
+    hovereffect = "size",                  -- button hover effect: none, glow, size, color
     hover_button_size = 110,               -- the relative size of a hovered button if the size effect is selected
 
     showjump = true,                       -- show "jump forward/backward 10 seconds" buttons 
@@ -315,7 +316,7 @@ local function set_osc_styles()
         WindowTitle = "{\\blur1\\bord0.5\\1c&H" .. osc_color_convert(user_opts.window_title_color) .. "&\\3c&H0&\\fs".. 30 .. "\\q2\\fn" .. user_opts.font .. "}",
         WinCtrl = "{\\blur1\\bord0.5\\1c&H" .. osc_color_convert(user_opts.window_controls_color) .. "&\\3c&H0&\\fs".. 25 .. "\\fnmpv-osd-symbols}",
         elementDown = "{\\1c&H" .. osc_color_convert(user_opts.held_element_color) .. "&}",
-        elementHover = "{" .. (user_opts.hovereffect == "glow" and "\\blur5" or "") .. "\\2c&HFFFFFF&" .. (user_opts.hovereffect == "size" and string.format("\\fscx%s\\fscy%s", user_opts.hover_button_size, user_opts.hover_button_size) or "") .. "}",
+        elementHover = "{" .. (user_opts.hovereffect == "glow" and "\\blur5" or "") .. (user_opts.hovereffect == "color" and "\\1c&H" .. osc_color_convert(user_opts.hovereffect_color) or "") .."\\2c&HFFFFFF&" .. (user_opts.hovereffect == "size" and string.format("\\fscx%s\\fscy%s", user_opts.hover_button_size, user_opts.hover_button_size) or "") .. "}",
         wcBar = "{\\1c&H" .. osc_color_convert(user_opts.osc_color) .. "&}",
     }
 end
@@ -1005,8 +1006,8 @@ local function render_elements(master_ass)
             end
 
         elseif element.type == "button" then
-            if user_opts.hovereffect == "size" then
-                -- add size hover effect
+            if user_opts.hovereffect == "size" or user_opts.hovereffect == "color" then
+                -- add size and color hover effect
                 local button_lo = element.layout.button
                 local is_clickable = element.eventresponder and (
                     element.eventresponder["mbtn_left_down"] ~= nil or
