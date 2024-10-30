@@ -134,8 +134,9 @@ local user_opts = {
 
     -- Mouse commands
     -- customize the button function based on mouse action
-    -- same as you would in input.conf
-    -- details: https://mpv.io/manual/master/#list-of-input-commands
+
+    -- seekbar mouse wheel mode. accepts: "speed" or "seek". speed adjusts playback speed.
+    seekbar_track_wheel_mode = "seek",
 
     -- title above seekbar mouse actions
     title_mbtn_left_command = "show-text ${media-title}",
@@ -145,8 +146,8 @@ local user_opts = {
     playlist_mbtn_left_command = "script-binding select/select-playlist; script-message-to modernz osc-hide",
     playlist_mbtn_right_command = "show-text ${playlist} 3000",
 
-    -- volume control icon mouse actions
-    volumectrl_mbtn_right_command = "script-binding select/select-audio-device; script-message-to modernz osc-hide",
+    -- volume mouse actions
+    vol_ctrl_mbtn_right_command = "script-binding select/select-audio-device; script-message-to modernz osc-hide",
 
     -- audio button mouse actions
     audio_track_mbtn_left_command = "script-binding select/select-aid; script-message-to modernz osc-hide",
@@ -161,11 +162,15 @@ local user_opts = {
     sub_track_wheel_up_command = "osd-msg cycle sub down",
 
     -- chapter skip buttons mouse actions
-    ch_prev_mbtn_left_command = "osd-msg add chapter -1",
-    ch_prev_mbtn_right_command = "script-binding select/select-chapter; script-message-to modernz osc-hide",
+    chapter_prev_mbtn_left_command = "osd-msg add chapter -1",
+    chapter_prev_mbtn_right_command = "script-binding select/select-chapter; script-message-to modernz osc-hide",
 
-    ch_next_mbtn_left_command = "osd-msg add chapter 1",
-    ch_next_mbtn_right_command = "script-binding select/select-chapter; script-message-to modernz osc-hide",
+    chapter_next_mbtn_left_command = "osd-msg add chapter 1",
+    chapter_next_mbtn_right_command = "script-binding select/select-chapter; script-message-to modernz osc-hide",
+
+    -- chapter title (below seekbar) mouse actions
+    chapter_title_mbtn_left_command = "script-binding select/select-chapter; script-message-to modernz osc-hide",
+    chapter_title_mbtn_right_command = "show-text ${chapter-list} 3000",
 }
 
 local osc_param = { -- calculated by osc_init()
@@ -1854,8 +1859,8 @@ local function osc_init()
     ne.softrepeat = user_opts.chapter_softrepeat == true
     ne.content = icons.rewind
     ne.enabled = (have_ch) -- disables button when no chapters available.
-    ne.eventresponder["mbtn_left_down"] = command_callback(user_opts.ch_prev_mbtn_left_command)
-    ne.eventresponder["mbtn_right_down"] = command_callback(user_opts.ch_prev_mbtn_right_command)
+    ne.eventresponder["mbtn_left_down"] = command_callback(user_opts.chapter_prev_mbtn_left_command)
+    ne.eventresponder["mbtn_right_down"] = command_callback(user_opts.chapter_prev_mbtn_right_command)
     ne.eventresponder["shift+mbtn_left_down"] = function () mp.commandv("seek", -60, jumpmode) end
     ne.eventresponder["shift+mbtn_right_down"] = function () mp.command("show-text ${chapter-list} 3000") end
 
@@ -1865,8 +1870,8 @@ local function osc_init()
     ne.softrepeat = user_opts.chapter_softrepeat == true
     ne.content = icons.forward
     ne.enabled = (have_ch) -- disables button when no chapters available.
-    ne.eventresponder["mbtn_left_down"] = command_callback(user_opts.ch_next_mbtn_left_command)
-    ne.eventresponder["mbtn_right_down"] = command_callback(user_opts.ch_next_mbtn_right_command)
+    ne.eventresponder["mbtn_left_down"] = command_callback(user_opts.chapter_next_mbtn_left_command)
+    ne.eventresponder["mbtn_right_down"] = command_callback(user_opts.chapter_next_mbtn_right_command)
     ne.eventresponder["shift+mbtn_left_down"] = function () mp.commandv("seek", 60, jumpmode) end
     ne.eventresponder["shift+mbtn_right_down"] = function () mp.command("show-text ${chapter-list} 3000") end
 
@@ -1939,7 +1944,7 @@ local function osc_init()
         end
     end
     ne.eventresponder["mbtn_left_up"] = function () mp.commandv("cycle", "mute") end
-    ne.eventresponder["mbtn_right_up"] = command_callback(user_opts.volumectrl_mbtn_right_command)
+    ne.eventresponder["mbtn_right_up"] = command_callback(user_opts.vol_ctrl_mbtn_right_command)
     ne.eventresponder["wheel_up_press"] = function () 
         if state.mute then mp.commandv("cycle", "mute") end
         mp.commandv("add", "volume", 5)
@@ -2206,8 +2211,22 @@ local function osc_init()
             state.playingWhilstSeeking = false
         end
     end
-    ne.eventresponder["wheel_up_press"] = function () mp.commandv("seek",  10) end
-    ne.eventresponder["wheel_down_press"] = function () mp.commandv("seek", -10) end
+    ne.eventresponder["wheel_up_press"] = function () 
+        if user_opts.seekbar_track_wheel_mode == "speed" then
+            local current_speed = mp.get_property_number("speed")
+            mp.commandv("osd-msg", "set", "speed", math.min(100, current_speed + 0.1))
+        else
+            mp.commandv("seek", 10)
+        end
+    end
+    ne.eventresponder["wheel_down_press"] = function () 
+        if user_opts.seekbar_track_wheel_mode == "speed" then
+            local current_speed = mp.get_property_number("speed")
+            mp.commandv("osd-msg", "set", "speed", math.max(0.1, current_speed - 0.1))
+        else
+            mp.commandv("seek", -10)
+        end
+    end
 
     --persistent seekbar
     ne = new_element("persistentseekbar", "slider")
@@ -2303,8 +2322,8 @@ local function osc_init()
         end
         return "" -- fallback
     end
-    ne.eventresponder["mbtn_left_down"] = function() mp.command("script-binding select/select-chapter; script-message-to modernz osc-hide") end
-    ne.eventresponder["mbtn_right_down"] = function() mp.command("show-text ${chapter-list} 3000") end
+    ne.eventresponder["mbtn_left_down"] = command_callback(user_opts.chapter_title_mbtn_left_command)
+    ne.eventresponder["mbtn_right_down"] = command_callback(user_opts.chapter_title_mbtn_right_command)
 
     -- Total/remaining time display
     ne = new_element("tc_right", "button")
