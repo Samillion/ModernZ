@@ -48,6 +48,7 @@ local user_opts = {
     shownextprev = true,                   -- show the next/previous playlist track buttons
 
     showplaylist = false,                  -- show playlist button? LClick: simple playlist, RClick: interactive playlist
+    hide_empty_playlist_button = true,     -- hide playlist button when no playlist exists
     showinfo = false,                      -- show the info button
     showloop = true,                       -- show the loop button
     showfullscreen_button = true,          -- show fullscreen toggle button
@@ -1532,7 +1533,7 @@ layouts = function ()
     local showinfo = user_opts.showinfo
     local showontop = user_opts.showontop
     local showscreenshot = user_opts.showscreenshot
-    local showplaylist = user_opts.showplaylist
+    local showplaylist = user_opts.showplaylist and (not user_opts.hide_empty_playlist_button or mp.get_property_number("playlist-count", 0) > 1)
 
     local offset = showjump and 60 or 0
     local outeroffset = (showskip and 0 or 100) + (showjump and 0 or 100)
