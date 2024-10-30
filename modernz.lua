@@ -1054,7 +1054,7 @@ local function render_elements(master_ass)
                 element.eventresponder["mbtn_left_down"] ~= nil or
                 element.eventresponder["mbtn_left_up"] ~= nil
             )
-            local hovered = mouse_hit(element) and is_clickable and element.enabled
+            local hovered = mouse_hit(element) and is_clickable and element.enabled and state.mouse_down_counter == 0
             if hovered and (contains(user_opts.hovereffect, "size") or contains(user_opts.hovereffect, "color") or contains(user_opts.hovereffect, "glow")) then
                 elem_ass:append(button_lo.hoverstyle)
             end
