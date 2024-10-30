@@ -39,7 +39,7 @@ local user_opts = {
     hovereffect_color = "#CCCCCC",         -- color of a hovered button when hovereffect is: color
 
     -- Buttons
-    hovereffect = "size, glow",            -- list of active button hover effects seperated by comma: glow, size, color
+    hovereffect = "size",            -- list of active button hover effects seperated by comma: glow, size, color
     hover_button_size = 110,               -- the relative size of a hovered button if the size effect is active
     button_glow_amount = 5,                -- the amount of glow a hovered button receives if the glow effect is active
 
