@@ -139,7 +139,7 @@ local user_opts = {
     seekbar_track_wheel_mode = "seek",
 
     -- title above seekbar mouse actions
-    title_mbtn_left_command = "script-binding select/select-playlist; script-message-to osc osc-hide",
+    title_mbtn_left_command = "script-binding select/select-playlist; script-message-to modernz osc-hide",
     title_mbtn_right_command = "script-binding stats/display-page-5",
 
     -- playlist button mouse actions
