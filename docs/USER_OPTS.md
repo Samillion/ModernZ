@@ -150,8 +150,8 @@ Customize the button function based on mouse actions.
 | Type                          | Option                           | Function                                                                                 |
 | ----------------------------- | -------------------------------- | ---------------------------------------------------------------------------------------- |
 | Seekbar Mode (mouse wheel)    | seekbar_track_wheel_mode         | default: `seek`<br> accepts `seek` or `speed`.<br>`speed` changes playback speed up/down |
-| Title (above seekbar)         | title_mbtn_left_command          | `show-text ${media-title}`                                                               |
-|                               | title_mbtn_right_command         | `show-text ${filename}`                                                                  |
+| Title (above seekbar)         | title_mbtn_left_command          | `script-binding select/select-playlist; script-message-to osc osc-hide`                                                               |
+|                               | title_mbtn_right_command         | `script-binding stats/display-page-5`                                                                  |
 | Playlist Button               | playlist_mbtn_left_command       | `script-binding select/select-playlist; script-message-to modernz osc-hide`              |
 |                               | playlist_mbtn_right_command      | `show-text ${playlist} 3000`                                                             |
 | Volume Control                | vol_ctrl_mbtn_right_command      | `script-binding select/select-audio-device; script-message-to modernz osc-hide`          |
