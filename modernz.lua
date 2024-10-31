@@ -14,7 +14,7 @@ local utils = require "mp.utils"
 -- do not touch, change them in modernz.conf
 local user_opts = {
     -- General
-    language = "en",                       -- For other langs: https://github.com/Samillion/ModernZ#osc-language
+    language = "en",                       -- See https://github.com/Samillion/ModernZ/blob/main/docs/TRANSLATIONS.md for other languages
     idlescreen = true,                     -- show mpv logo on idle
     windowcontrols = "auto",               -- whether to show OSC window controls, "auto", "yes" or "no"
     showwindowed = true,                   -- show OSC when windowed?
@@ -99,8 +99,10 @@ local user_opts = {
     showwindowcontrols = true,             -- show window controls (close, min, max) in borderless/fullscreen
     show_chapter_title = true,             -- show chapter title next to timestamp (below seekbar)
     titleBarStrip = false,                 -- whether to make the title bar a singular bar instead of a black fade
-    title = "${media-title}",              -- title above seekbar. ${media-title} or ${filename} (can use /no-ext)
-    windowcontrols_title = "${media-title}", -- Same as title but for windowcontrols
+    title = "${!playlist-count==1:[${playlist-pos-1}/${playlist-count}] }${media-title}",
+                                           -- title above seekbar
+    windowcontrols_title = "${media-title}",
+                                           -- title in windowcontrols
     font = "mpv-osd-symbols",              -- mpv-osd-symbols = default osc font (or the one set in mpv.conf)
     titlefontsize = 30,                    -- the font size of the title text (above seekbar)
     chapter_fmt = "%s",                    -- chapter print format for seekbar-hover. "no" to disable

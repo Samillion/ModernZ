@@ -14,6 +14,7 @@ Create `modernz.conf` in your mpv script-opts directory:
 
 | Option         | Value | Description                                              |
 | -------------- | ----- | -------------------------------------------------------- |
+| language       | en    | See [TRANSLATIONS.md](https://github.com/Samillion/ModernZ/blob/main/docs/TRANSLATIONS.md) for other languages
 | idlescreen     | yes   | show mpv logo on idle                                    |
 | windowcontrols | auto  | whether to show OSC window controls. `auto`, `yes`, `no` |
 | showwindowed   | yes   | show OSC when windowed                                   |
@@ -65,11 +66,11 @@ Create `modernz.conf` in your mpv script-opts directory:
 
 ### Scaling
 
-| Option            | Value | Description                                    |
-| ----------------- | ----- | ---------------------------------------------- |
-| vidscale          | yes   | whether to scale the controller with the video |
-| scalewindowed     | 1.0   | scaling of the controller when windowed        |
-| scalefullscreen   | 1.0   | scaling of the controller when fullscreen      |
+| Option            | Value | Description                                                     |
+| ----------------- | ----- | ----------------------------------------------                  |
+| vidscale          | auto  | whether to scale the controller with the video. `no` to disable |
+| scalewindowed     | 1.0   | scaling of the controller when windowed                         |
+| scalefullscreen   | 1.0   | scaling of the controller when fullscreen                       |
 
 ### Time & Volume
 
@@ -102,25 +103,26 @@ Create `modernz.conf` in your mpv script-opts directory:
 
 ### UI [elements]
 
-| Option                          | Value            | Description                                                                |
-| ------------------------------- | ---------------- | -------------------------------------------------------------------------- |
-| showtitle                       | yes              | show title in OSC (above seekbar)                                          |
-| showwindowtitle                 | yes              | show window title in borderless/fullscreen mode                            |
-| showwindowcontrols              | yes              | show window controls (close, min, max) in borderless/fullscreen            |
-| show_chapter_title              | yes              | show chapter title next to timestamp (below seekbar)                       |
-| titleBarStrip                   | no               | whether to make the title bar a singular bar instead of a black fade       |
-| title                           | `${media-title}` | title above seekbar. `${media-title}` or `${filename}` (can use `/no-ext`) |
-| font                            | mpv-osd-symbols  | mpv-osd-symbols = default osc font (or the one set in mpv.conf)            |
-| titlefontsize                   | 30               | the font size of the title text (above seekbar)                            |
-| chapter_fmt                     | Chapter: %s      | chapter print format for seekbar-hover. `no` to disable                    |
-| tooltips_for_disabled_elements  | yes              | enables tooltips for disabled buttons and elements                         |
-| tooltip_hints                   | yes              | enables text hints for the information, loop, ontop and screenshot buttons |
-| playpause_size                  | 30               | icon size for the play-pause button                                        |
-| midbuttons_size                 | 24               | icon size for the middle buttons                                           |
-| sidebuttons_size                | 24               | icon size for the side buttons                                             |
-| persistentprogress              | no               | always show a small progress line at the bottom of the screen              |
-| persistentprogressheight        | 17               | the height of the persistentprogress bar                                   |
-| persistentbuffer                | no               | on web videos, show the buffer on the persistent progress line             |
+| Option                          | Value            | Description                                                                         |
+| ------------------------------- | ---------------- | --------------------------------------------------------------------------          |
+| showtitle                       | yes              | show title in OSC (above seekbar)                                                   |
+| showwindowtitle                 | yes              | show window title in borderless/fullscreen mode                                     |
+| showwindowcontrols              | yes              | show window controls (close, min, max) in borderless/fullscreen                     |
+| show_chapter_title              | yes              | show chapter title next to timestamp (below seekbar)                                |
+| titleBarStrip                   | no               | whether to make the title bar a singular bar instead of a black fade                |
+| title                           | `${!playlist-count==1:[${playlist-pos-1}/${playlist-count}] }${media-title}` | title above seekbar     |
+| windowcontrols_title            | `${media-title}` | title in windowcontrols                                                             |
+| font                            | mpv-osd-symbols  | mpv-osd-symbols = default osc font (or the one set in mpv.conf)                     |
+| titlefontsize                   | 30               | the font size of the title text (above seekbar)                                     |
+| chapter_fmt                     | %s               | chapter print format for seekbar-hover. `no` to disable                             |
+| tooltips_for_disabled_elements  | yes              | enables tooltips for disabled buttons and elements                                  |
+| tooltip_hints                   | yes              | enables text hints for the information, loop, ontop and screenshot buttons          |
+| playpause_size                  | 30               | icon size for the play-pause button                                                 |
+| midbuttons_size                 | 24               | icon size for the middle buttons                                                    |
+| sidebuttons_size                | 24               | icon size for the side buttons                                                      |
+| persistentprogress              | no               | always show a small progress line at the bottom of the screen                       |
+| persistentprogressheight        | 17               | the height of the persistentprogress bar                                            |
+| persistentbuffer                | no               | on web videos, show the buffer on the persistent progress line                      |
 
 ### UI [behavior]
 
@@ -155,8 +157,8 @@ Customize the button function based on mouse actions.
 | Type                          | Option                           | Function                                                                                 |
 | ----------------------------- | -------------------------------- | ---------------------------------------------------------------------------------------- |
 | Seekbar Mode (mouse wheel)    | seekbar_track_wheel_mode         | default: `seek`<br> accepts `seek` or `speed`.<br>`speed` changes playback speed up/down |
-| Title (above seekbar)         | title_mbtn_left_command          | `script-binding select/select-playlist; script-message-to modernz osc-hide`                                                               |
-|                               | title_mbtn_right_command         | `script-binding stats/display-page-5`                                                                  |
+| Title (above seekbar)         | title_mbtn_left_command          | `script-binding select/select-playlist; script-message-to modernz osc-hide`              |
+|                               | title_mbtn_right_command         | `script-binding stats/display-page-5`                                                    |
 | Playlist Button               | playlist_mbtn_left_command       | `script-binding select/select-playlist; script-message-to modernz osc-hide`              |
 |                               | playlist_mbtn_right_command      | `show-text ${playlist} 3000`                                                             |
 | Volume Control                | vol_ctrl_mbtn_right_command      | `script-binding select/select-audio-device; script-message-to modernz osc-hide`          |
