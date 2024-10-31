@@ -318,25 +318,25 @@ local function set_osc_styles()
     local midbuttons_size = user_opts.midbuttons_size or 24
     local sidebuttons_size = user_opts.sidebuttons_size or 24
     osc_styles = {
+        background_bar = "{\\1c&H" .. osc_color_convert(user_opts.osc_color) .. "&}",
         box_bg = "{\\blur100\\bord" .. user_opts.OSCfadealpha .. "\\1c&H000000&\\3c&H" .. osc_color_convert(user_opts.osc_color) .. "&}",
-        SeekbarBg = "{\\blur0\\bord0\\1c&H" .. osc_color_convert(user_opts.seekbarbg_color) .. "&}",
-        SeekbarFg = "{\\blur1\\bord1\\1c&H" .. osc_color_convert(user_opts.seekbarfg_color) .. "&}",
-        VolumebarBg = "{\\blur0\\bord0\\1c&H999999&}",
-        VolumebarFg = "{\\blur1\\bord1\\1c&H" .. osc_color_convert(user_opts.side_buttons_color) .. "&}",
-        Ctrl1 = "{\\blur0\\bord0\\1c&H" .. osc_color_convert(user_opts.playpause_color) .. "&\\3c&HFFFFFF&\\fs" .. playpause_size .. "\\fn" .. iconfont .. "}",
-        Ctrl2 = "{\\blur0\\bord0\\1c&H" .. osc_color_convert(user_opts.middle_buttons_color) .. "&\\3c&HFFFFFF&\\fs" .. midbuttons_size .. "\\fn" .. iconfont .. "}",
-        Ctrl2Flip = "{\\blur0\\bord0\\1c&H" .. osc_color_convert(user_opts.middle_buttons_color) .. "&\\3c&HFFFFFF&\\fs" .. midbuttons_size .. "\\fn" .. iconfont .. "\\fry180}",
-        Ctrl3 = "{\\blur0\\bord0\\1c&H" .. osc_color_convert(user_opts.side_buttons_color) .. "&\\3c&HFFFFFF&\\fs" .. sidebuttons_size .. "\\fn" .. iconfont .. "}",
-        Time = "{\\blur0\\bord0\\1c&H" .. osc_color_convert(user_opts.time_color) .. "&\\3c&H000000&\\fs" .. user_opts.timefontsize .. "\\fn" .. user_opts.font .. "}",
         chapter_title = "{\\blur0\\bord0\\1c&H" .. osc_color_convert(user_opts.chapter_title_color) .. "&\\3c&H000000&\\fs" .. user_opts.timefontsize .. "\\fn" .. user_opts.font .. "}",
-        Tooltip = "{\\blur1\\bord0.5\\1c&HFFFFFF&\\3c&H000000&\\fs" .. user_opts.timefontsize .. "\\fn" .. user_opts.font .. "}",
+        control_1 = "{\\blur0\\bord0\\1c&H" .. osc_color_convert(user_opts.playpause_color) .. "&\\3c&HFFFFFF&\\fs" .. playpause_size .. "\\fn" .. iconfont .. "}",
+        control_2 = "{\\blur0\\bord0\\1c&H" .. osc_color_convert(user_opts.middle_buttons_color) .. "&\\3c&HFFFFFF&\\fs" .. midbuttons_size .. "\\fn" .. iconfont .. "}",
+        control_2_flip = "{\\blur0\\bord0\\1c&H" .. osc_color_convert(user_opts.middle_buttons_color) .. "&\\3c&HFFFFFF&\\fs" .. midbuttons_size .. "\\fn" .. iconfont .. "\\fry180}",
+        control_3 = "{\\blur0\\bord0\\1c&H" .. osc_color_convert(user_opts.side_buttons_color) .. "&\\3c&HFFFFFF&\\fs" .. sidebuttons_size .. "\\fn" .. iconfont .. "}",
+        element_down = "{\\1c&H" .. osc_color_convert(user_opts.held_element_color) .. "&}",
+        element_hover = "{" .. (contains(user_opts.hovereffect, "color") and "\\1c&H" .. osc_color_convert(user_opts.hovereffect_color) or "") .."\\2c&HFFFFFF&" .. (contains(user_opts.hovereffect, "size") and string.format("\\fscx%s\\fscy%s", user_opts.hover_button_size, user_opts.hover_button_size) or "") .. "}",
+        seekbar_bg = "{\\blur0\\bord0\\1c&H" .. osc_color_convert(user_opts.seekbarbg_color) .. "&}",
+        seekbar_fg = "{\\blur1\\bord1\\1c&H" .. osc_color_convert(user_opts.seekbarfg_color) .. "&}",
         thumbnail = "{\\blur1\\bord0.5\\1c&H" .. osc_color_convert(user_opts.thumbnailborder_color) .. "&\\3c&H000000&}",
-        Title = "{\\blur1\\bord0.5\\1c&H" .. osc_color_convert(user_opts.title_color) .. "&\\3c&H0&\\fs".. user_opts.titlefontsize .."\\q2\\fn" .. user_opts.font .. "}",
-        WindowTitle = "{\\blur1\\bord0.5\\1c&H" .. osc_color_convert(user_opts.window_title_color) .. "&\\3c&H0&\\fs".. 30 .. "\\q2\\fn" .. user_opts.font .. "}",
-        WinCtrl = "{\\blur1\\bord0.5\\1c&H" .. osc_color_convert(user_opts.window_controls_color) .. "&\\3c&H0&\\fs".. 25 .. "\\fnmpv-osd-symbols}",
-        elementDown = "{\\1c&H" .. osc_color_convert(user_opts.held_element_color) .. "&}",
-        elementHover = "{" .. (contains(user_opts.hovereffect, "color") and "\\1c&H" .. osc_color_convert(user_opts.hovereffect_color) or "") .."\\2c&HFFFFFF&" .. (contains(user_opts.hovereffect, "size") and string.format("\\fscx%s\\fscy%s", user_opts.hover_button_size, user_opts.hover_button_size) or "") .. "}",
-        wcBar = "{\\1c&H" .. osc_color_convert(user_opts.osc_color) .. "&}",
+        time = "{\\blur0\\bord0\\1c&H" .. osc_color_convert(user_opts.time_color) .. "&\\3c&H000000&\\fs" .. user_opts.timefontsize .. "\\fn" .. user_opts.font .. "}",
+        title = "{\\blur1\\bord0.5\\1c&H" .. osc_color_convert(user_opts.title_color) .. "&\\3c&H0&\\fs".. user_opts.titlefontsize .."\\q2\\fn" .. user_opts.font .. "}",
+        tooltip = "{\\blur1\\bord0.5\\1c&HFFFFFF&\\3c&H000000&\\fs" .. user_opts.timefontsize .. "\\fn" .. user_opts.font .. "}",
+        volumebar_bg = "{\\blur0\\bord0\\1c&H999999&}",
+        volumebar_fg = "{\\blur1\\bord1\\1c&H" .. osc_color_convert(user_opts.side_buttons_color) .. "&}",
+        window_control = "{\\blur1\\bord0.5\\1c&H" .. osc_color_convert(user_opts.window_controls_color) .. "&\\3c&H0&\\fs25\\fnmpv-osd-symbols}",
+        window_title = "{\\blur1\\bord0.5\\1c&H" .. osc_color_convert(user_opts.window_title_color) .. "&\\3c&H0&\\fs30\\q2\\fn" .. user_opts.font .. "}",
     }
 end
 
@@ -860,7 +860,7 @@ local function render_elements(master_ass)
             if mouse_hit(element) then
                 -- mouse down styling
                 if element.styledown then
-                    style_ass:append(osc_styles.elementDown)
+                    style_ass:append(osc_styles.element_down)
                 end
                 if element.softrepeat and state.mouse_down_counter >= 15
                     and state.mouse_down_counter % 5 == 0 then
@@ -1317,7 +1317,7 @@ local function add_layout(name)
         if elements[name].type == "button" then
             elements[name].layout.button = {
                 maxchars = nil,
-                hoverstyle = osc_styles.elementHover,
+                hoverstyle = osc_styles.element_hover,
             }
         elseif elements[name].type == "slider" then
             -- slider defaults
@@ -1371,7 +1371,7 @@ local function window_controls()
         lo = add_layout("wcbar")
         lo.geometry = wc_geo
         lo.layer = 10
-        lo.style = osc_styles.wcBar
+        lo.style = osc_styles.background_bar
         lo.alpha[1] = user_opts.boxalpha
     end
 
@@ -1393,7 +1393,7 @@ local function window_controls()
         ne.eventresponder["mbtn_left_up"] = function () mp.commandv("quit") end
         lo = add_layout("close")
         lo.geometry = third_geo
-        lo.style = osc_styles.WinCtrl
+        lo.style = osc_styles.window_control
         lo.button.hoverstyle = "{\\c&H2311E8&}"
 
         -- Minimize: 🗕
@@ -1402,7 +1402,7 @@ local function window_controls()
         ne.eventresponder["mbtn_left_up"] = function () mp.commandv("cycle", "window-minimized") end
         lo = add_layout("minimize")
         lo.geometry = first_geo
-        lo.style = osc_styles.WinCtrl
+        lo.style = osc_styles.window_control
         lo.button.hoverstyle = "{\\c&H00D7FF&}" -- gold
     
         -- Maximize: 🗖 /🗗
@@ -1417,7 +1417,7 @@ local function window_controls()
         end
         lo = add_layout("maximize")
         lo.geometry = second_geo
-        lo.style = osc_styles.WinCtrl
+        lo.style = osc_styles.window_control
         lo.button.hoverstyle = "{\\c&H00D7FF&}" -- gold
     end
 
@@ -1439,7 +1439,7 @@ local function window_controls()
         local clip_y1 = wc_geo.y - wc_geo.h 
         local clip_x2 = titlebox_right - right_pad
         local clip_y2 = wc_geo.y + wc_geo.h
-        lo.style = string.format("%s{\\clip(%f,%f,%f,%f)}", osc_styles.WindowTitle, clip_x1, clip_y1, clip_x2, clip_y2)
+        lo.style = string.format("%s{\\clip(%f,%f,%f,%f)}", osc_styles.window_title, clip_x1, clip_y1, clip_x2, clip_y2)
         lo.button.maxchars = geo.w / 10
 
         add_area("window-controls-title", titlebox_left, 0, titlebox_right, wc_geo.h)
@@ -1502,21 +1502,21 @@ layouts = function ()
     lo = add_layout("seekbarbg")
     lo.geometry = {x = refX , y = refY - 100, an = 5, w = osc_geo.w - 50, h = 2}
     lo.layer = 13
-    lo.style = osc_styles.SeekbarBg
+    lo.style = osc_styles.seekbar_bg
     lo.alpha[1] = 128
     lo.alpha[3] = 128
 
     lo = add_layout("seekbar")
     lo.geometry = {x = refX, y = refY - 100, an = 5, w = osc_geo.w - 50, h = 16}
-    lo.style = osc_styles.SeekbarFg
+    lo.style = osc_styles.seekbar_fg
     lo.slider.gap = 7
-    lo.slider.tooltip_style = osc_styles.Tooltip
+    lo.slider.tooltip_style = osc_styles.tooltip
     lo.slider.tooltip_an = 2
     
     if user_opts.persistentprogress or state.persistentprogresstoggle then
         lo = add_layout("persistentseekbar")
         lo.geometry = {x = refX, y = refY, an = 5, w = osc_geo.w, h = user_opts.persistentprogressheight}
-        lo.style = osc_styles.SeekbarFg
+        lo.style = osc_styles.seekbar_fg
         lo.slider.gap = 7
         lo.slider.tooltip_an = 0   
     end
@@ -1538,7 +1538,7 @@ layouts = function ()
     geo = {x = 25, y = refY - 122 + 0, an = 1, w = osc_geo.w - 50, h = 35}
     lo = add_layout("title")
     lo.geometry = geo
-    lo.style = string.format("%s{\\clip(0,%f,%f,%f)}", osc_styles.Title,
+    lo.style = string.format("%s{\\clip(0,%f,%f,%f)}", osc_styles.title,
                              geo.y - geo.h, geo.x + geo.w, geo.y + geo.h)
     lo.alpha[3] = 0
     lo.button.maxchars = geo.w / 11
@@ -1547,51 +1547,51 @@ layouts = function ()
     if shownextprev then
         lo = add_layout("playlist_prev")
         lo.geometry = {x = refX - (60 + (showskip and 60 or 0)) - offset, y = refY - 40 , an = 5, w = 30, h = 24}
-        lo.style = osc_styles.Ctrl2
+        lo.style = osc_styles.control_2
     end
 
     if showskip then 
         lo = add_layout("chapter_backward")
         lo.geometry = {x = refX - 60 - offset, y = refY - 40 , an = 5, w = 30, h = 24}
-        lo.style = osc_styles.Ctrl2
+        lo.style = osc_styles.control_2
     end
 
     if showjump then
         lo = add_layout("jump_backward")
         lo.geometry = {x = refX - 60, y = refY - 40 , an = 5, w = 30, h = 24}
-        lo.style = (user_opts.jumpiconnumber and icons.jumpicons[user_opts.jumpamount] ~= nil) and osc_styles.Ctrl2 or osc_styles.Ctrl2Flip
+        lo.style = (user_opts.jumpiconnumber and icons.jumpicons[user_opts.jumpamount] ~= nil) and osc_styles.control_2 or osc_styles.control_2_flip
     end
 
     lo = add_layout("play_pause")
     lo.geometry = {x = refX, y = refY - 40 , an = 5, w = 45, h = 45}
-    lo.style = osc_styles.Ctrl1
+    lo.style = osc_styles.control_1
 
     if showjump then
         lo = add_layout("jump_forward")
         lo.geometry = {x = refX + 60, y = refY - 40 , an = 5, w = 30, h = 24}
-        lo.style = osc_styles.Ctrl2
+        lo.style = osc_styles.control_2
     end
 
     if showskip then
         lo = add_layout("chapter_forward")
         lo.geometry = {x = refX + 60 + offset, y = refY - 40 , an = 5, w = 30, h = 24}
-        lo.style = osc_styles.Ctrl2
+        lo.style = osc_styles.control_2
     end
 
     if shownextprev then
         lo = add_layout("playlist_next")
         lo.geometry = {x = refX + (60 + (showskip and 60 or 0)) + offset, y = refY - 40 , an = 5, w = 30, h = 24}
-        lo.style = osc_styles.Ctrl2
+        lo.style = osc_styles.control_2
     end
 
     -- Time
     lo = add_layout("tc_left")
     lo.geometry = {x = 25, y = refY - 84, an = 7, w = 50, h = 20}
-    lo.style = osc_styles.Time
+    lo.style = osc_styles.time
         
     lo = add_layout("tc_right")
     lo.geometry = {x = osc_geo.w - 25 , y = refY -84, an = 9, w = 50, h = 20}
-    lo.style = osc_styles.Time
+    lo.style = osc_styles.time
 
     -- Chapter Title (next to timestamp)
     if user_opts.show_chapter_title then
@@ -1604,27 +1604,27 @@ layouts = function ()
     -- Audio
     lo = add_layout("audio_track")
     lo.geometry = {x = 37, y = refY - 40, an = 5, w = 24, h = 24}
-    lo.style = osc_styles.Ctrl3
+    lo.style = osc_styles.control_3
     lo.visible = (osc_param.playresx >= 500 - outeroffset)
 
     -- Subtitle
     lo = add_layout("sub_track")
     lo.geometry = {x = 82, y = refY - 40, an = 5, w = 24, h = 24}
-    lo.style = osc_styles.Ctrl3
+    lo.style = osc_styles.control_3
     lo.visible = (osc_param.playresx >= 600 - outeroffset)
 
     -- Playlist
     if showplaylist then
         lo = add_layout("tog_playlist")
         lo.geometry = {x = 127, y = refY - 40, an = 5, w = 24, h = 24}
-        lo.style = osc_styles.Ctrl3
+        lo.style = osc_styles.control_3
         lo.visible = (osc_param.playresx >= 600 - outeroffset)
     end
 
     -- Volume
     lo = add_layout("vol_ctrl")
     lo.geometry = {x = 172 - (showplaylist and 0 or 45), y = refY - 40, an = 5, w = 24, h = 24}
-    lo.style = osc_styles.Ctrl3
+    lo.style = osc_styles.control_3
     lo.visible = (osc_param.playresx >= 600 - outeroffset)
 
     -- Volumebar
@@ -1634,55 +1634,55 @@ layouts = function ()
     lo.geometry = {x = 200 - (showplaylist and 0 or 45), y = refY - 40, an = 4, w = 80, h = 2}
     lo.layer = 13
     lo.alpha[1] = 128
-    lo.style = user_opts.vol_bar_match_seek and osc_styles.SeekbarBg or osc_styles.VolumebarBg
+    lo.style = user_opts.vol_bar_match_seek and osc_styles.SeekbarBg or osc_styles.volumebar_bg
     
     lo = add_layout("volumebar")
     lo.geometry = {x = 200 - (showplaylist and 0 or 45), y = refY - 40, an = 4, w = 80, h = 8}
-    lo.style = user_opts.vol_bar_match_seek and osc_styles.SeekbarFg or osc_styles.VolumebarFg
+    lo.style = user_opts.vol_bar_match_seek and osc_styles.seekbar_fg or osc_styles.volumebar_fg
     lo.slider.gap = 3
-    lo.slider.tooltip_style = osc_styles.Tooltip
+    lo.slider.tooltip_style = osc_styles.tooltip
     lo.slider.tooltip_an = 2
 
     -- Fullscreen/Info/Loop/Pin/Screenshot
     if showfullscreen then
         lo = add_layout("tog_fullscreen")
         lo.geometry = {x = osc_geo.w - 37, y = refY - 40, an = 5, w = 24, h = 24}
-        lo.style = osc_styles.Ctrl3
+        lo.style = osc_styles.control_3
         lo.visible = (osc_param.playresx >= 250 - outeroffset)
     end
 
     if showinfo then
         lo = add_layout("tog_info")
         lo.geometry = {x = osc_geo.w - 82 + (showfullscreen and 0 or 45), y = refY - 40, an = 5, w = 24, h = 24}
-        lo.style = osc_styles.Ctrl3
+        lo.style = osc_styles.control_3
         lo.visible = (osc_param.playresx >= 300 - outeroffset)
     end
 
     if showloop then
         lo = add_layout("tog_loop")
         lo.geometry = {x = osc_geo.w - 127 + (showinfo and 0 or 45) + (showfullscreen and 0 or 45), y = refY - 40, an = 5, w = 24, h = 24}
-        lo.style = osc_styles.Ctrl3
+        lo.style = osc_styles.control_3
         lo.visible = (osc_param.playresx >= 400 - outeroffset)
     end
 
     if showontop then
         lo = add_layout("tog_ontop")
         lo.geometry = {x = osc_geo.w - 172 + (showloop and 0 or 45) + (showinfo and 0 or 45) + (showfullscreen and 0 or 45), y = refY - 40, an = 5, w = 24, h = 24}
-        lo.style = osc_styles.Ctrl3
+        lo.style = osc_styles.control_3
         lo.visible = (osc_param.playresx >= 500 - outeroffset)
     end
 
     if showscreenshot then
         lo = add_layout("screenshot")
         lo.geometry = {x = osc_geo.w - 217 + (showontop and 0 or 45) + (showloop and 0 or 45) + (showinfo and 0 or 45) + (showfullscreen and 0 or 45), y = refY - 40, an = 5, w = 24, h = 24}
-        lo.style = osc_styles.Ctrl3
+        lo.style = osc_styles.control_3
         lo.visible = (osc_param.playresx >= 600 - outeroffset)
     end
     
     if user_opts.downloadbutton then
         lo = add_layout("download")
         lo.geometry = {x = osc_geo.w - 262 + (showscreenshot and 0 or 45) + (showontop and 0 or 45) + (showloop and 0 or 45) + (showinfo and 0 or 45) + (showfullscreen and 0 or 45), y = refY - 40, an = 5, w = 24, h = 24}
-        lo.style = osc_styles.Ctrl3
+        lo.style = osc_styles.control_3
         lo.visible = (osc_param.playresx >= 400 - outeroffset)
     end
 end
@@ -1894,7 +1894,7 @@ local function osc_init()
     ne.off = audio_track_count == 0
     ne.visible = (osc_param.playresx >= 550 - outeroffset)
     ne.content = icons.audio
-    ne.tooltip_style = osc_styles.Tooltip
+    ne.tooltip_style = osc_styles.tooltip
     ne.tooltipF = function ()
         local prop = mp.get_property("current-tracks/audio/title") or mp.get_property("current-tracks/audio/lang") or texts.na
         return (texts.audio .. " " ..
@@ -1913,7 +1913,7 @@ local function osc_init()
     ne.off = sub_track_count == 0
     ne.visible = (osc_param.playresx >= 600 - outeroffset)
     ne.content = icons.subtitle
-    ne.tooltip_style = osc_styles.Tooltip
+    ne.tooltip_style = osc_styles.tooltip
     ne.tooltipF = function ()
         local prop = mp.get_property("current-tracks/sub/title") or mp.get_property("current-tracks/sub/lang") or texts.na
         return (texts.subtitle .. " " ..
@@ -1930,7 +1930,7 @@ local function osc_init()
     ne = new_element("tog_playlist", "button")
     ne.visible = (osc_param.playresx >= 700 - outeroffset)
     ne.content = icons.playlist
-    ne.tooltip_style = osc_styles.Tooltip
+    ne.tooltip_style = osc_styles.tooltip
     ne.tooltipF = pl_count > 0 and texts.playlist .. " [" .. pl_pos .. "/" .. pl_count .. "]" or texts.playlist
     ne.eventresponder["mbtn_left_up"] = command_callback(user_opts.playlist_mbtn_left_command)
     ne.eventresponder["mbtn_right_up"] = command_callback(user_opts.playlist_mbtn_right_command)
@@ -2006,7 +2006,7 @@ local function osc_init()
     --tog_info
     ne = new_element("tog_info", "button")
     ne.content = icons.info
-    ne.tooltip_style = osc_styles.Tooltip
+    ne.tooltip_style = osc_styles.tooltip
     ne.tooltipF = texts.statsinfo
     ne.visible = (osc_param.playresx >= 600 - outeroffset - (user_opts.showfullscreen and 0 or 100))
     ne.eventresponder["mbtn_left_up"] = function () mp.commandv("script-binding", "stats/display-stats-toggle") end
@@ -2015,7 +2015,7 @@ local function osc_init()
     ne = new_element("tog_loop", "button")
     ne.content = function () return state.looping and icons.loop_on or icons.loop_off end
     ne.visible = (osc_param.playresx >= 700 - outeroffset - (user_opts.showinfo and 0 or 100) - (user_opts.showfullscreen and 0 or 100))
-    ne.tooltip_style = osc_styles.Tooltip
+    ne.tooltip_style = osc_styles.tooltip
     ne.tooltipF = function () return state.looping and texts.loopdisable or texts.loopenable end
     ne.eventresponder["mbtn_left_up"] = function ()
         if state.looping then
@@ -2030,7 +2030,7 @@ local function osc_init()
     --tog_ontop
     ne = new_element("tog_ontop", "button")
     ne.content = function () return mp.get_property("ontop") == "no" and icons.ontop_on or icons.ontop_off end
-    ne.tooltip_style = osc_styles.Tooltip
+    ne.tooltip_style = osc_styles.tooltip
     ne.tooltipF = function () return mp.get_property("ontop") == "no" and texts.ontop or texts.ontopdisable end
     ne.visible = (osc_param.playresx >= 760 - outeroffset - (user_opts.showloop and 0 or 100) - (user_opts.showinfo and 0 or 100) - (user_opts.showfullscreen and 0 or 100))
     ne.eventresponder["mbtn_left_up"] = function () 
@@ -2053,7 +2053,7 @@ local function osc_init()
     --screenshot
     ne = new_element("screenshot", "button")
     ne.content = icons.screenshot
-    ne.tooltip_style = osc_styles.Tooltip
+    ne.tooltip_style = osc_styles.tooltip
     ne.tooltipF = texts.screenshot
     ne.visible = (osc_param.playresx >= 870 - outeroffset - (user_opts.showontop and 0 or 100) - (user_opts.showloop and 0 or 100) - (user_opts.showinfo and 0 or 100) - (user_opts.showfullscreen and 0 or 100))
     ne.eventresponder["mbtn_left_up"] = function ()
@@ -2069,7 +2069,7 @@ local function osc_init()
     ne = new_element("download", "button")
     ne.content = function () return state.downloading and icons.downloading or icons.download end
     ne.visible = (osc_param.playresx >= 1000 - outeroffset - (user_opts.showscreenshot and 0 or 100) - (user_opts.showontop and 0 or 100) - (user_opts.showloop and 0 or 100) - (user_opts.showinfo and 0 or 100) - (user_opts.showfullscreen and 0 or 100)) and state.isWebVideo
-    ne.tooltip_style = osc_styles.Tooltip
+    ne.tooltip_style = osc_styles.tooltip
     ne.tooltipF = function () return state.downloading and "Downloading..." or state.fileSizeNormalised end
     ne.eventresponder["mbtn_left_up"] = function ()
         if not state.videoCantBeDownloaded then
