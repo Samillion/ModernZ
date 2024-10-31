@@ -12,14 +12,14 @@ Create `modernz.conf` in your mpv script-opts directory:
 
 ### General
 
-| Option         | Value | Description                                              |
-| -------------- | ----- | -------------------------------------------------------- |
-| language       | en    | See [TRANSLATIONS.md](https://github.com/Samillion/ModernZ/blob/main/docs/TRANSLATIONS.md) for other languages
-| idlescreen     | yes   | show mpv logo on idle                                    |
-| windowcontrols | auto  | whether to show OSC window controls. `auto`, `yes`, `no` |
-| showwindowed   | yes   | show OSC when windowed                                   |
-| showfullscreen | yes   | show OSC when fullscreen                                 |
-| greenandgrumpy | no    | disable santa hat in December                            |
+| Option         | Value | Description                                                                                                    |
+| -------------- | ----- | -------------------------------------------------------------------------------------------------------------- |
+| language       | en    | See [TRANSLATIONS.md](https://github.com/Samillion/ModernZ/blob/main/docs/TRANSLATIONS.md) for other languages |
+| idlescreen     | yes   | show mpv logo on idle                                                                                          |
+| windowcontrols | auto  | whether to show OSC window controls. `auto`, `yes`, `no`                                                       |
+| showwindowed   | yes   | show OSC when windowed                                                                                         |
+| showfullscreen | yes   | show OSC when fullscreen                                                                                       |
+| greenandgrumpy | no    | disable santa hat in December                                                                                  |
 
 ### Colors
 
