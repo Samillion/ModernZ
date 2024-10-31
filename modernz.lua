@@ -1591,12 +1591,13 @@ layouts = function ()
 
     -- Time
     local possec = mp.get_property_number("playback-time", 0)
+    local remsec = mp.get_property_number("playtime-remaining", 0)
     lo = add_layout("tc_left")
     lo.geometry = {x = 25, y = refY - 84, an = 7, w = 50 + (state.tc_ms and 30 or 0) + ((possec >= 3600 or user_opts.time_format ~= "dynamic") and 23 or 0), h = 20}
     lo.style = osc_styles.time
         
     lo = add_layout("tc_right")
-    lo.geometry = {x = osc_geo.w - 25 , y = refY -84, an = 9, w = 50 + (state.tc_ms and 30 or 0) + ((possec >= 3600 or user_opts.time_format ~= "dynamic") and 23 or 0) + (state.rightTC_trem and 15 or 0), h = 20}
+    lo.geometry = {x = osc_geo.w - 25 , y = refY -84, an = 9, w = 50 + (state.tc_ms and 30 or 0) + ((remsec >= 3600 or user_opts.time_format ~= "dynamic") and 23 or 0) + (state.rightTC_trem and 15 or 0), h = 20}
     lo.style = osc_styles.time
 
     -- Chapter Title (next to timestamp)
