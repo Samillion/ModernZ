@@ -1778,9 +1778,9 @@ local function osc_init()
 
     -- some often needed stuff
     local pl_count = mp.get_property_number("playlist-count", 0)
-    local have_pl = (pl_count > 1)
+    local have_pl = pl_count > 1
     local pl_pos = mp.get_property_number("playlist-pos", 0) + 1
-    local have_ch = (mp.get_property_number("chapters", 0) > 0)
+    local have_ch = mp.get_property_number("chapters", 0) > 0
     local loop = mp.get_property("loop-playlist", "no")
 
     local nojumpoffset = user_opts.showjump and 0 or 100
@@ -1934,7 +1934,7 @@ local function osc_init()
     --tog_playlist
     ne = new_element("tog_playlist", "button")
     ne.enabled = have_pl or not user_opts.gray_empty_playlist_button
-    ne.off = have_pl and user_opts.gray_empty_playlist_button
+    ne.off = not have_pl and user_opts.gray_empty_playlist_button
     ne.visible = (osc_param.playresx >= 700 - outeroffset)
     ne.content = icons.playlist
     ne.tooltip_style = osc_styles.tooltip
