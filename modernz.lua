@@ -36,13 +36,13 @@ local user_opts = {
     playpause_color = "#FFFFFF",           -- color of play/pause button
     held_element_color = "#999999",        -- color of an element while held down
     thumbnailborder_color = "#111111",     -- color of border for thumbnail (with thumbfast)
-    hovereffect_color = "#CCCCCC",         -- color of a hovered button when hovereffect is: color
+    hovereffect_color = "#CB7050",         -- color of a hovered button when hovereffect is: color
 
     -- Buttons
     hovereffect = "glow,color",            -- list of active button hover effects seperated by comma: glow, size, color
     hover_button_size = 110,               -- the relative size of a hovered button if the size effect is active
     button_glow_amount = 5,                -- the amount of glow a hovered button receives if the glow effect is active
-    hovereffect_for_sliders = false,       -- apply button hovereffects to slide handles
+    hovereffect_for_sliders = true,        -- apply button hovereffects to slide handles
 
     showjump = true,                       -- show "jump forward/backward 10 seconds" buttons 
     showskip = false,                      -- show the chapter skip back and forward buttons
