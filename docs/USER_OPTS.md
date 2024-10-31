@@ -41,25 +41,27 @@ Create `modernz.conf` in your mpv script-opts directory:
 
 ### Buttons
 
-| Option                | Value           | Description                                                                                                                                                   |
-| --------------------- | --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| hovereffect           | size,glow,color | list of active button hover effects seperated by comma: glow, size, color. Ex. `hovereffect=glow, size, color`                                                |
-| hover_button_size     | 115             | the relative size (%) of a hovered button if the size effect is selected                                                                                      |
-| button_glow_amount    | 5               | the amount of glow a hovered button receives if the glow effect is active                                                                                     |
-| showplaylist          | no              | show `playlist` button                                                                                                                                        |
-| showjump              | yes             | show `jump forward/backward 10 seconds` buttons                                                                                                               |
-| showskip              | no              | show the `skip back/forward (chapter)` buttons                                                                                                                |
-| shownextprev          | yes             | show the `next/previous playlist track` buttons                                                                                                               |
-| showinfo              | no              | show the `info (stats)` button                                                                                                                                |
-| showloop              | yes             | show the `loop` button                                                                                                                                        |
-| showfullscreen_button | yes             | show the `fullscreen toggle` button                                                                                                                           |
-| showontop             | yes             | show `window on top (pin)` button                                                                                                                             |
-| showscreenshot        | no              | show `screenshot` button                                                                                                                                      |
-| screenshot_flag       | subtitles       | flag for the screenshot button. `subtitles` `video` `window` `each-frame` [[details](https://mpv.io/manual/master/#command-interface-screenshot-%3Cflags%3E)] |
-| chapter_softrepeat    | yes             | holding chapter skip buttons repeats toggle                                                                                                                   |
-| jump_softrepeat       | yes             | holding jump seek buttons repeats toggle                                                                                                                      |
-| downloadbutton        | yes             | show download button on web videos (requires yt-dlp and ffmpeg)                                                                                               |
-| download_path         | ~~desktop/mpv   | the download path for videos [[paths](https://mpv.io/manual/master/#paths)]                                                                                   |
+| Option                     | Value           | Description                                                                                                                                                   |
+| -------------------------- | --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| hovereffect                | size,glow,color | list of active button hover effects seperated by comma: glow, size, color. Ex. `hovereffect=glow, size, color`                                                |
+| hover_button_size          | 115             | the relative size (%) of a hovered button if the size effect is selected                                                                                      |
+| button_glow_amount         | 5               | the amount of glow a hovered button receives if the glow effect is active                                                                                     |
+| showplaylist               | no              | show `playlist` button                                                                                                                                        |
+| hide_empty_playlist_button | yes             | hides `playlist` button when a playlist does not exist                                                                                                        |
+| gray_empty_playlist_button | yes             | grays `playlist` button when no playlist exists                                                                                             |
+| showjump                   | yes             | show `jump forward/backward 10 seconds` buttons                                                                                                               |
+| showskip                   | no              | show the `skip back/forward (chapter)` buttons                                                                                                                |
+| shownextprev               | yes             | show the `next/previous playlist track` buttons                                                                                                               |
+| showinfo                   | no              | show the `info (stats)` button                                                                                                                                |
+| showloop                   | yes             | show the `loop` button                                                                                                                                        |
+| showfullscreen_button      | yes             | show the `fullscreen toggle` button                                                                                                                           |
+| showontop                  | yes             | show `window on top (pin)` button                                                                                                                             |
+| showscreenshot             | no              | show `screenshot` button                                                                                                                                      |
+| screenshot_flag            | subtitles       | flag for the screenshot button. `subtitles` `video` `window` `each-frame` [[details](https://mpv.io/manual/master/#command-interface-screenshot-%3Cflags%3E)] |
+| chapter_softrepeat         | yes             | holding chapter skip buttons repeats toggle                                                                                                                   |
+| jump_softrepeat            | yes             | holding jump seek buttons repeats toggle                                                                                                                      |
+| downloadbutton             | yes             | show download button on web videos (requires yt-dlp and ffmpeg)                                                                                               |
+| download_path              | ~~desktop/mpv   | the download path for videos [[paths](https://mpv.io/manual/master/#paths)]                                                                                   |
 
 ### Scaling
 
@@ -100,23 +102,25 @@ Create `modernz.conf` in your mpv script-opts directory:
 
 ### UI [elements]
 
-| Option                   | Value            | Description                                                                |
-| ------------------------ | ---------------- | -------------------------------------------------------------------------- |
-| showtitle                | yes              | show title in OSC (above seekbar)                                          |
-| showwindowtitle          | yes              | show window title in borderless/fullscreen mode                            |
-| showwindowcontrols       | yes              | show window controls (close, min, max) in borderless/fullscreen            |
-| show_chapter_title       | yes              | show chapter title next to timestamp (below seekbar)                       |
-| titleBarStrip            | no               | whether to make the title bar a singular bar instead of a black fade       |
-| title                    | `${media-title}` | title above seekbar. `${media-title}` or `${filename}` (can use `/no-ext`) |
-| font                     | mpv-osd-symbols  | mpv-osd-symbols = default osc font (or the one set in mpv.conf)            |
-| titlefontsize            | 30               | the font size of the title text (above seekbar)                            |
-| chapter_fmt              | Chapter: %s      | chapter print format for seekbar-hover. `no` to disable                    |
-| playpause_size           | 30               | icon size for the play-pause button                                        |
-| midbuttons_size          | 24               | icon size for the middle buttons                                           |
-| sidebuttons_size         | 24               | icon size for the side buttons                                             |
-| persistentprogress       | no               | always show a small progress line at the bottom of the screen              |
-| persistentprogressheight | 17               | the height of the persistentprogress bar                                   |
-| persistentbuffer         | no               | on web videos, show the buffer on the persistent progress line             |
+| Option                          | Value            | Description                                                                |
+| ------------------------------- | ---------------- | -------------------------------------------------------------------------- |
+| showtitle                       | yes              | show title in OSC (above seekbar)                                          |
+| showwindowtitle                 | yes              | show window title in borderless/fullscreen mode                            |
+| showwindowcontrols              | yes              | show window controls (close, min, max) in borderless/fullscreen            |
+| show_chapter_title              | yes              | show chapter title next to timestamp (below seekbar)                       |
+| titleBarStrip                   | no               | whether to make the title bar a singular bar instead of a black fade       |
+| title                           | `${media-title}` | title above seekbar. `${media-title}` or `${filename}` (can use `/no-ext`) |
+| font                            | mpv-osd-symbols  | mpv-osd-symbols = default osc font (or the one set in mpv.conf)            |
+| titlefontsize                   | 30               | the font size of the title text (above seekbar)                            |
+| chapter_fmt                     | Chapter: %s      | chapter print format for seekbar-hover. `no` to disable                    |
+| tooltips_for_disabled_elements  | yes              | enables tooltips for disabled buttons and elements                         |
+| tooltip_hints                   | yes              | enables text hints for the information, loop, ontop and screenshot buttons |
+| playpause_size                  | 30               | icon size for the play-pause button                                        |
+| midbuttons_size                 | 24               | icon size for the middle buttons                                           |
+| sidebuttons_size                | 24               | icon size for the side buttons                                             |
+| persistentprogress              | no               | always show a small progress line at the bottom of the screen              |
+| persistentprogressheight        | 17               | the height of the persistentprogress bar                                   |
+| persistentbuffer                | no               | on web videos, show the buffer on the persistent progress line             |
 
 ### UI [behavior]
 

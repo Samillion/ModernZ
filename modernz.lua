@@ -48,6 +48,8 @@ local user_opts = {
     shownextprev = true,                   -- show the next/previous playlist track buttons
 
     showplaylist = false,                  -- show playlist button? LClick: simple playlist, RClick: interactive playlist
+    hide_empty_playlist_button = true,     -- hide playlist button when no playlist exists
+    gray_empty_playlist_button = true,     -- grays out the playlist button when no playlist exists
     showinfo = false,                      -- show the info button
     showloop = true,                       -- show the loop button
     showfullscreen_button = true,          -- show fullscreen toggle button
@@ -102,6 +104,9 @@ local user_opts = {
     font = "mpv-osd-symbols",              -- mpv-osd-symbols = default osc font (or the one set in mpv.conf)
     titlefontsize = 30,                    -- the font size of the title text (above seekbar)
     chapter_fmt = "%s",                    -- chapter print format for seekbar-hover. "no" to disable
+
+    tooltips_for_disabled_elements = true, -- enables tooltips for disabled buttons and elements
+    tooltip_hints = true,                  -- enables text hints for the information, loop, ontop and screenshot buttons
 
     playpause_size = 30,                   -- icon size for the play-pause button
     midbuttons_size = 24,                  -- icon size for the middle buttons
@@ -796,7 +801,7 @@ local function prepare_elements()
         -- style it accordingly and kill the eventresponders
         if not element.enabled then
             element.layout.alpha[1] = 215
-            if not (element.name == "sub_track" or element.name == "audio_track") then -- keep these to display tooltips
+            if not (element.name == "sub_track" or element.name == "audio_track" or element.name == "tog_playlist") then -- keep these to display tooltips
                 element.eventresponder = nil
             end
         end
@@ -1070,7 +1075,7 @@ local function render_elements(master_ass)
             end
 
             -- add tooltip for audio and subtitle tracks
-            if element.tooltipF ~= nil then
+            if element.tooltipF ~= nil and (user_opts.tooltips_for_disabled_elements or element.enabled) then
                 if mouse_hit(element) then
                     local tooltiplabel = element.tooltipF
                     local an = 1
@@ -1529,7 +1534,7 @@ layouts = function ()
     local showinfo = user_opts.showinfo
     local showontop = user_opts.showontop
     local showscreenshot = user_opts.showscreenshot
-    local showplaylist = user_opts.showplaylist
+    local showplaylist = user_opts.showplaylist and (not user_opts.hide_empty_playlist_button or mp.get_property_number("playlist-count", 0) > 1)
 
     local offset = showjump and 60 or 0
     local outeroffset = (showskip and 0 or 100) + (showjump and 0 or 100)
@@ -1773,9 +1778,9 @@ local function osc_init()
 
     -- some often needed stuff
     local pl_count = mp.get_property_number("playlist-count", 0)
-    local have_pl = (pl_count > 1)
+    local have_pl = pl_count > 1
     local pl_pos = mp.get_property_number("playlist-pos", 0) + 1
-    local have_ch = (mp.get_property_number("chapters", 0) > 0)
+    local have_ch = mp.get_property_number("chapters", 0) > 0
     local loop = mp.get_property("loop-playlist", "no")
 
     local nojumpoffset = user_opts.showjump and 0 or 100
@@ -1928,10 +1933,13 @@ local function osc_init()
 
     --tog_playlist
     ne = new_element("tog_playlist", "button")
+    ne.enabled = have_pl or not user_opts.gray_empty_playlist_button
+    ne.off = not have_pl and user_opts.gray_empty_playlist_button
     ne.visible = (osc_param.playresx >= 700 - outeroffset)
     ne.content = icons.playlist
     ne.tooltip_style = osc_styles.tooltip
     ne.tooltipF = pl_count > 0 and texts.playlist .. " [" .. pl_pos .. "/" .. pl_count .. "]" or texts.playlist
+    ne.nothingavailable = texts.nolist
     ne.eventresponder["mbtn_left_up"] = command_callback(user_opts.playlist_mbtn_left_command)
     ne.eventresponder["mbtn_right_up"] = command_callback(user_opts.playlist_mbtn_right_command)
 
@@ -2007,7 +2015,9 @@ local function osc_init()
     ne = new_element("tog_info", "button")
     ne.content = icons.info
     ne.tooltip_style = osc_styles.tooltip
-    ne.tooltipF = texts.statsinfo
+    if user_opts.tooltip_hints then
+        ne.tooltipF = texts.statsinfo
+    end
     ne.visible = (osc_param.playresx >= 600 - outeroffset - (user_opts.showfullscreen and 0 or 100))
     ne.eventresponder["mbtn_left_up"] = function () mp.commandv("script-binding", "stats/display-stats-toggle") end
 
@@ -2016,7 +2026,9 @@ local function osc_init()
     ne.content = function () return state.looping and icons.loop_on or icons.loop_off end
     ne.visible = (osc_param.playresx >= 700 - outeroffset - (user_opts.showinfo and 0 or 100) - (user_opts.showfullscreen and 0 or 100))
     ne.tooltip_style = osc_styles.tooltip
-    ne.tooltipF = function () return state.looping and texts.loopdisable or texts.loopenable end
+    if user_opts.tooltip_hints then
+        ne.tooltipF = function () return state.looping and texts.loopdisable or texts.loopenable end
+    end
     ne.eventresponder["mbtn_left_up"] = function ()
         if state.looping then
             mp.command("show-text '" .. texts.loopdisable .. "'")
@@ -2031,7 +2043,9 @@ local function osc_init()
     ne = new_element("tog_ontop", "button")
     ne.content = function () return mp.get_property("ontop") == "no" and icons.ontop_on or icons.ontop_off end
     ne.tooltip_style = osc_styles.tooltip
-    ne.tooltipF = function () return mp.get_property("ontop") == "no" and texts.ontop or texts.ontopdisable end
+    if user_opts.tooltip_hints then
+        ne.tooltipF = function () return mp.get_property("ontop") == "no" and texts.ontop or texts.ontopdisable end
+    end
     ne.visible = (osc_param.playresx >= 760 - outeroffset - (user_opts.showloop and 0 or 100) - (user_opts.showinfo and 0 or 100) - (user_opts.showfullscreen and 0 or 100))
     ne.eventresponder["mbtn_left_up"] = function () 
         mp.commandv("cycle", "ontop") 
@@ -2054,7 +2068,9 @@ local function osc_init()
     ne = new_element("screenshot", "button")
     ne.content = icons.screenshot
     ne.tooltip_style = osc_styles.tooltip
-    ne.tooltipF = texts.screenshot
+    if user_opts.tooltip_hints then
+        ne.tooltipF = texts.screenshot
+    end
     ne.visible = (osc_param.playresx >= 870 - outeroffset - (user_opts.showontop and 0 or 100) - (user_opts.showloop and 0 or 100) - (user_opts.showinfo and 0 or 100) - (user_opts.showfullscreen and 0 or 100))
     ne.eventresponder["mbtn_left_up"] = function ()
         local tempSubPosition = mp.get_property("sub-pos")
