@@ -1600,9 +1600,13 @@ layouts = function ()
     lo.style = osc_styles.time
 
     -- Chapter Title (next to timestamp)
-    if user_opts.show_chapter_title then    
+    if user_opts.show_chapter_title then
+        lo = add_layout("separator")
+        lo.geometry = {x = 73 + (state.tc_ms and 32 or 0) + ((possec >= 3600 or user_opts.time_format ~= "dynamic") and 20 or 0), y = refY - 84, an = 7, w = 30, h = 20}
+        lo.style = osc_styles.time
+        
         lo = add_layout("chapter_title")
-        lo.geometry = {x = 73 + (state.tc_ms and 30 or 0) + ((possec >= 3600 or user_opts.time_format ~= "dynamic") and 23 or 0), y = refY - 84, an = 7, w = 200, h = 20}
+        lo.geometry = {x = 86 + (state.tc_ms and 32 or 0) + ((possec >= 3600 or user_opts.time_format ~= "dynamic") and 20 or 0), y = refY - 84, an = 7, w = 200, h = 20}
         lo.style = osc_styles.chapter_title
     end
 
@@ -2337,6 +2341,10 @@ local function osc_init()
 
     -- Chapter title (below seekbar)
     local chapter_index = mp.get_property_number("chapter", -1)
+    ne = new_element("separator", "button")
+    ne.visible = chapter_index >= 0
+    ne.content = " • "
+
     ne = new_element("chapter_title", "button")
     ne.visible = chapter_index >= 0
     ne.content = function()
@@ -2345,7 +2353,7 @@ local function osc_init()
             local chapters = mp.get_property_native("chapter-list", {})
             local chapter_title = (chapters[chapter_index + 1] and chapters[chapter_index + 1].title ~= "") and chapters[chapter_index + 1].title or texts.na
             chapter_title = mp.command_native({"escape-ass", chapter_title})
-            return "•  " .. string.format(user_opts.chapter_fmt, chapter_title)
+            return string.format(user_opts.chapter_fmt, chapter_title)
         end
         return "" -- fallback
     end
