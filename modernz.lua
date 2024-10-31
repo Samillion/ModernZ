@@ -39,7 +39,7 @@ local user_opts = {
     hovereffect_color = "#CCCCCC",         -- color of a hovered button when hovereffect is: color
 
     -- Buttons
-    hovereffect = "size,glow,color",       -- list of active button hover effects seperated by comma: glow, size, color
+    hovereffect = "glow,color",            -- list of active button hover effects seperated by comma: glow, size, color
     hover_button_size = 110,               -- the relative size of a hovered button if the size effect is active
     button_glow_amount = 5,                -- the amount of glow a hovered button receives if the glow effect is active
 
@@ -1590,24 +1590,28 @@ layouts = function ()
     end
 
     -- Time
+    local remsec = mp.get_property_number("playtime-remaining", 0)
     local possec = mp.get_property_number("playback-time", 0)
     local dur = mp.get_property_number("duration", 0)
+
+    local show_hours = possec >= 3600 or user_opts.time_format ~= "dynamic"
     lo = add_layout("tc_left")
-    lo.geometry = {x = 25, y = refY - 84, an = 7, w = 50 + (state.tc_ms and 30 or 0) + ((possec >= 3600 or user_opts.time_format ~= "dynamic") and 23 or 0), h = 20}
+    lo.geometry = {x = 25, y = refY - 84, an = 7, w = 45 + (state.tc_ms and 30 or 0) + (show_hours and 20 or 0), h = 20}
     lo.style = osc_styles.time
-        
+
+    local show_remhours = (state.tc_right_rem and remsec >= 3600) or (not state.tc_right_rem and dur >= 3600) or user_opts.time_format ~= "dynamic"
     lo = add_layout("tc_right")
-    lo.geometry = {x = osc_geo.w - 25 , y = refY -84, an = 9, w = 42 + (state.tc_ms and 30 or 0) + (state.tc_right_rem and 25 or 0) + ((dur >= 3600 and not state.tc_right_rem) and 25 or 0), h = 20}
+    lo.geometry = {x = osc_geo.w - 25 , y = refY -84, an = 9, w = 50 + (state.tc_ms and 30 or 0) + (show_remhours and 25 or 0), h = 20}
     lo.style = osc_styles.time
 
     -- Chapter Title (next to timestamp)
     if user_opts.show_chapter_title then
         lo = add_layout("separator")
-        lo.geometry = {x = 73 + (state.tc_ms and 32 or 0) + ((possec >= 3600 or user_opts.time_format ~= "dynamic") and 20 or 0), y = refY - 84, an = 7, w = 30, h = 20}
+        lo.geometry = {x = 73 + (state.tc_ms and 32 or 0) + (show_hours and 20 or 0), y = refY - 84, an = 7, w = 30, h = 20}
         lo.style = osc_styles.time
-        
+
         lo = add_layout("chapter_title")
-        lo.geometry = {x = 86 + (state.tc_ms and 32 or 0) + ((possec >= 3600 or user_opts.time_format ~= "dynamic") and 20 or 0), y = refY - 84, an = 7, w = 200, h = 20}
+        lo.geometry = {x = 86 + (state.tc_ms and 32 or 0) + (show_hours and 20 or 0), y = refY - 84, an = 7, w = 200, h = 20}
         lo.style = osc_styles.chapter_title
     end
 
