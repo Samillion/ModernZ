@@ -46,9 +46,10 @@ Create `modernz.conf` in your mpv script-opts directory:
 | hovereffect                | size,glow,color | list of active button hover effects seperated by comma: glow, size, color. Ex. `hovereffect=glow, size, color`                                                |
 | hover_button_size          | 115             | the relative size (%) of a hovered button if the size effect is selected                                                                                      |
 | button_glow_amount         | 5               | the amount of glow a hovered button receives if the glow effect is active                                                                                     |
+| hovereffect_for_sliders    | no              | apply button hovereffects to slide handles                                                                                                                    |
 | showplaylist               | no              | show `playlist` button                                                                                                                                        |
 | hide_empty_playlist_button | yes             | hides `playlist` button when a playlist does not exist                                                                                                        |
-| gray_empty_playlist_button | yes             | grays `playlist` button when no playlist exists                                                                                             |
+| gray_empty_playlist_button | yes             | grays `playlist` button when no playlist exists                                                                                                               |
 | showjump                   | yes             | show `jump forward/backward 10 seconds` buttons                                                                                                               |
 | showskip                   | no              | show the `skip back/forward (chapter)` buttons                                                                                                                |
 | shownextprev               | yes             | show the `next/previous playlist track` buttons                                                                                                               |
@@ -155,8 +156,8 @@ Customize the button function based on mouse actions.
 | Type                          | Option                           | Function                                                                                 |
 | ----------------------------- | -------------------------------- | ---------------------------------------------------------------------------------------- |
 | Seekbar Mode (mouse wheel)    | seekbar_track_wheel_mode         | default: `seek`<br> accepts `seek` or `speed`.<br>`speed` changes playback speed up/down |
-| Title (above seekbar)         | title_mbtn_left_command          | `script-binding select/select-playlist; script-message-to modernz osc-hide`                                                               |
-|                               | title_mbtn_right_command         | `script-binding stats/display-page-5`                                                                  |
+| Title (above seekbar)         | title_mbtn_left_command          | `script-binding select/select-playlist; script-message-to modernz osc-hide`              |
+|                               | title_mbtn_right_command         | `script-binding stats/display-page-5`                                                    |
 | Playlist Button               | playlist_mbtn_left_command       | `script-binding select/select-playlist; script-message-to modernz osc-hide`              |
 |                               | playlist_mbtn_right_command      | `show-text ${playlist} 3000`                                                             |
 | Volume Control                | vol_ctrl_mbtn_right_command      | `script-binding select/select-audio-device; script-message-to modernz osc-hide`          |

@@ -42,6 +42,7 @@ local user_opts = {
     hovereffect = "size,glow,color",       -- list of active button hover effects seperated by comma: glow, size, color
     hover_button_size = 110,               -- the relative size of a hovered button if the size effect is active
     button_glow_amount = 5,                -- the amount of glow a hovered button receives if the glow effect is active
+    hovereffect_for_sliders = false,       -- apply button hovereffects to slide handles
 
     showjump = true,                       -- show "jump forward/backward 10 seconds" buttons 
     showskip = false,                      -- show the chapter skip back and forward buttons
@@ -331,7 +332,7 @@ local function set_osc_styles()
         control_2_flip = "{\\blur0\\bord0\\1c&H" .. osc_color_convert(user_opts.middle_buttons_color) .. "&\\3c&HFFFFFF&\\fs" .. midbuttons_size .. "\\fn" .. iconfont .. "\\fry180}",
         control_3 = "{\\blur0\\bord0\\1c&H" .. osc_color_convert(user_opts.side_buttons_color) .. "&\\3c&HFFFFFF&\\fs" .. sidebuttons_size .. "\\fn" .. iconfont .. "}",
         element_down = "{\\1c&H" .. osc_color_convert(user_opts.held_element_color) .. "&}",
-        element_hover = "{" .. (contains(user_opts.hovereffect, "color") and "\\1c&H" .. osc_color_convert(user_opts.hovereffect_color) or "") .."\\2c&HFFFFFF&" .. (contains(user_opts.hovereffect, "size") and string.format("\\fscx%s\\fscy%s", user_opts.hover_button_size, user_opts.hover_button_size) or "") .. "}",
+        element_hover = "{" .. (contains(user_opts.hovereffect, "color") and "\\1c&H" .. osc_color_convert(user_opts.hovereffect_color) .. "&" or "") .."\\2c&HFFFFFF&" .. (contains(user_opts.hovereffect, "size") and string.format("\\fscx%s\\fscy%s", user_opts.hover_button_size, user_opts.hover_button_size) or "") .. "}",
         seekbar_bg = "{\\blur0\\bord0\\1c&H" .. osc_color_convert(user_opts.seekbarbg_color) .. "&}",
         seekbar_fg = "{\\blur1\\bord1\\1c&H" .. osc_color_convert(user_opts.seekbarfg_color) .. "&}",
         thumbnail = "{\\blur1\\bord0.5\\1c&H" .. osc_color_convert(user_opts.thumbnailborder_color) .. "&\\3c&H000000&}",
@@ -897,8 +898,24 @@ local function render_elements(master_ass)
                 
                 if pos then
                     xp = get_slider_ele_pos_for(element, pos)
+                    local handle_hovered = mouse_hit_coords(element.hitbox.x1+xp-rh, element.hitbox.y1+elem_geo.h/2-rh, element.hitbox.x1+xp+rh, element.hitbox.y1+elem_geo.h/2+rh)
+                    if handle_hovered and user_opts.hovereffect_for_sliders then
+                        -- apply size & color hovereffects (glow is not supported)
+                        if contains(user_opts.hovereffect, "size") then
+                            rh = rh*(user_opts.hover_button_size/100)
+                        end
+                        if contains(user_opts.hovereffect, "color") then
+                            elem_ass.text = elem_ass.text:gsub(element.layout.style, element.layout.slider.hoverstyle)
+                        end
+                    end
                     ass_draw_cir_cw(elem_ass, xp, elem_geo.h/2, rh)
-                    elem_ass:rect_cw(0, slider_lo.gap, xp, elem_geo.h - slider_lo.gap)
+                    if handle_hovered and user_opts.hovereffect_for_sliders  then
+                        elem_ass:draw_stop()
+                        elem_ass:merge(element.style_ass)
+                        ass_append_alpha(elem_ass, element.layout.alpha, 0)
+                        elem_ass:merge(element.static_ass)
+                    end
+                    elem_ass:rect_cw(0, slider_lo.gap, xp-rh, elem_geo.h - slider_lo.gap)
                 end
 
                 if seekRanges then
@@ -1335,6 +1352,7 @@ local function add_layout(name)
                 tooltip_style = "",
                 tooltip_an = 2,
                 alpha = {[1] = 0, [2] = 255, [3] = 88, [4] = 255},
+                hoverstyle = osc_styles.element_hover:gsub("\\fscx%d+\\fscy%d+", ""), -- font scales messes with handle positions in werid ways
             }
         elseif elements[name].type == "box" then
             elements[name].layout.box = {radius = 0, hexagon = false}
