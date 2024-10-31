@@ -1590,17 +1590,17 @@ layouts = function ()
     end
 
     -- Time
+    local possec = mp.get_property_number("playback-time", 0)
     lo = add_layout("tc_left")
-    lo.geometry = {x = 25, y = refY - 84, an = 7, w = 50, h = 20}
+    lo.geometry = {x = 25, y = refY - 84, an = 7, w = 50 + (state.tc_ms and 30 or 0) + ((possec >= 3600 or user_opts.time_format ~= "dynamic") and 23 or 0), h = 20}
     lo.style = osc_styles.time
         
     lo = add_layout("tc_right")
-    lo.geometry = {x = osc_geo.w - 25 , y = refY -84, an = 9, w = 50, h = 20}
+    lo.geometry = {x = osc_geo.w - 25 , y = refY -84, an = 9, w = 50 + (state.tc_ms and 30 or 0) + ((possec >= 3600 or user_opts.time_format ~= "dynamic") and 23 or 0), h = 20}
     lo.style = osc_styles.time
 
     -- Chapter Title (next to timestamp)
-    if user_opts.show_chapter_title then
-        local possec = mp.get_property_number("playback-time", 0)    
+    if user_opts.show_chapter_title then    
         lo = add_layout("chapter_title")
         lo.geometry = {x = 73 + (state.tc_ms and 30 or 0) + ((possec >= 3600 or user_opts.time_format ~= "dynamic") and 23 or 0), y = refY - 84, an = 7, w = 200, h = 20}
         lo.style = osc_styles.chapter_title
@@ -1938,7 +1938,7 @@ local function osc_init()
     ne.visible = (osc_param.playresx >= 700 - outeroffset)
     ne.content = icons.playlist
     ne.tooltip_style = osc_styles.tooltip
-    ne.tooltipF = pl_count > 0 and texts.playlist .. " [" .. pl_pos .. "/" .. pl_count .. "]" or texts.playlist
+    ne.tooltipF = have_pl and texts.playlist .. " [" .. pl_pos .. "/" .. pl_count .. "]" or texts.playlist
     ne.nothingavailable = texts.nolist
     ne.eventresponder["mbtn_left_up"] = command_callback(user_opts.playlist_mbtn_left_command)
     ne.eventresponder["mbtn_right_up"] = command_callback(user_opts.playlist_mbtn_right_command)
