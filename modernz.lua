@@ -99,8 +99,7 @@ local user_opts = {
     showwindowcontrols = true,             -- show window controls (close, min, max) in borderless/fullscreen
     show_chapter_title = true,             -- show chapter title next to timestamp (below seekbar)
     titleBarStrip = false,                 -- whether to make the title bar a singular bar instead of a black fade
-    title = "${!playlist-count==1:[${playlist-pos-1}/${playlist-count}] }${media-title}",
-                                           -- title above seekbar
+    title = "${media-title}",              -- title above seekbar
     windowcontrols_title = "${media-title}", -- title in windowcontrols
     font = "mpv-osd-symbols",              -- mpv-osd-symbols = default osc font (or the one set in mpv.conf)
     titlefontsize = 30,                    -- the font size of the title text (above seekbar)
