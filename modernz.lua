@@ -1597,7 +1597,7 @@ layouts = function ()
     lo.style = osc_styles.time
         
     lo = add_layout("tc_right")
-    lo.geometry = {x = osc_geo.w - 25 , y = refY -84, an = 9, w = 50 + (state.tc_ms and 30 or 0) + (state.tc_right_rem and 20 or 0) + ((dur >= 3600 and not state.tc_right_rem) and 23 or 0), h = 20}
+    lo.geometry = {x = osc_geo.w - 25 , y = refY -84, an = 9, w = 42 + (state.tc_ms and 30 or 0) + (state.tc_right_rem and 25 or 0) + ((dur >= 3600 and not state.tc_right_rem) and 25 or 0), h = 20}
     lo.style = osc_styles.time
 
     -- Chapter Title (next to timestamp)
