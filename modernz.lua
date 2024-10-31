@@ -356,7 +356,7 @@ local state = {
     mouse_down_counter = 0,                 -- used for softrepeat
     active_element = nil,                   -- nil = none, 0 = background, 1+ = see elements[]
     active_event_source = nil,              -- the "button" that issued the current event
-    rightTC_trem = not user_opts.timetotal, -- if the right timecode should display total or remaining time
+    tc_right_rem = not user_opts.timetotal, -- if the right timecode should display total or remaining time
     tc_ms = user_opts.timems,               -- Should the timecodes display their time with milliseconds
     screen_sizeX = nil, screen_sizeY = nil, -- last screen-resolution, to detect resolution changes to issue reINITs
     initREQ = false,                        -- is a re-init request pending?
@@ -445,7 +445,7 @@ end
 
 local function set_time_styles(timetotal_changed, timems_changed)
     if timetotal_changed then
-        state.rightTC_trem = not user_opts.timetotal
+        state.tc_right_rem = not user_opts.timetotal
     end
     if timems_changed then
         state.tc_ms = user_opts.timems
@@ -1591,13 +1591,13 @@ layouts = function ()
 
     -- Time
     local possec = mp.get_property_number("playback-time", 0)
-    local remsec = mp.get_property_number("playtime-remaining", 0)
+    local dur = mp.get_property_number("duration", 0)
     lo = add_layout("tc_left")
     lo.geometry = {x = 25, y = refY - 84, an = 7, w = 50 + (state.tc_ms and 30 or 0) + ((possec >= 3600 or user_opts.time_format ~= "dynamic") and 23 or 0), h = 20}
     lo.style = osc_styles.time
         
     lo = add_layout("tc_right")
-    lo.geometry = {x = osc_geo.w - 25 , y = refY -84, an = 9, w = 50 + (state.tc_ms and 30 or 0) + ((remsec >= 3600 or user_opts.time_format ~= "dynamic") and 23 or 0) + (state.rightTC_trem and 15 or 0), h = 20}
+    lo.geometry = {x = osc_geo.w - 25 , y = refY -84, an = 9, w = 50 + (state.tc_ms and 30 or 0) + (state.tc_right_rem and 20 or 0) + ((dur >= 3600 and not state.tc_right_rem) and 23 or 0), h = 20}
     lo.style = osc_styles.time
 
     -- Chapter Title (next to timestamp)
@@ -2368,16 +2368,16 @@ local function osc_init()
         local duration = mp.get_property_number("duration", 0)
         if duration <= 0 then return "--:--" end
 
-        local time_to_display = state.rightTC_trem and 
+        local time_to_display = state.tc_right_rem and 
             mp.get_property_number("playtime-remaining", 0) or duration
 
-        local prefix = state.rightTC_trem and 
+        local prefix = state.tc_right_rem and 
             (user_opts.unicodeminus and UNICODE_MINUS or "-") or ""
 
         return prefix .. format_time(time_to_display)
     end
     ne.eventresponder["mbtn_left_up"] = function()
-        state.rightTC_trem = not state.rightTC_trem
+        state.tc_right_rem = not state.tc_right_rem
     end
 
     -- load layout
