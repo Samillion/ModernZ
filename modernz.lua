@@ -39,8 +39,8 @@ local user_opts = {
     hovereffect_color = "#CB7050",         -- color of a hovered button when hovereffect is: color
 
     -- Buttons
-    hovereffect = "glow,color",            -- list of active button hover effects seperated by comma: glow, size, color
-    hover_button_size = 110,               -- the relative size of a hovered button if the size effect is active
+    hovereffect = "size,glow,color",       -- list of active button hover effects seperated by comma: glow, size, color
+    hover_button_size = 115,               -- the relative size of a hovered button if the size effect is active
     button_glow_amount = 5,                -- the amount of glow a hovered button receives if the glow effect is active
     hovereffect_for_sliders = true,        -- apply button hovereffects to slide handles
 
@@ -1070,7 +1070,6 @@ local function render_elements(master_ass)
                 buttontext = string.format("{\\fscx%f}%s{\\r}", stretch, buttontext)
             end
 
-
             -- add hover effects
             local button_lo = element.layout.button
             local is_clickable = element.eventresponder and (
@@ -1078,16 +1077,22 @@ local function render_elements(master_ass)
                 element.eventresponder["mbtn_left_up"] ~= nil
             )
             local hovered = mouse_hit(element) and is_clickable and element.enabled and state.mouse_down_counter == 0
+            local hoverstyle = button_lo.hoverstyle
             if hovered and (contains(user_opts.hovereffect, "size") or contains(user_opts.hovereffect, "color") or contains(user_opts.hovereffect, "glow")) then
-                elem_ass:append(button_lo.hoverstyle)
+                -- remove font scale tags for these elements, it looks out of place
+                if element.name == "title" or element.name == "tc_left" or element.name == "tc_right" or element.name == "chapter_title" then
+                    hoverstyle = hoverstyle:gsub("\\fscx%d+\\fscy%d+", "")
+                end
+                elem_ass:append(hoverstyle .. buttontext)
+            else
+                elem_ass:append(buttontext)
             end
-            -- add button icon/text
-            elem_ass:append(buttontext)
-            -- add blur effect
+
+            -- apply blur effect if "glow" is in hover effects
             if hovered and contains(user_opts.hovereffect, "glow") then
                 local shadow_ass = assdraw.ass_new()
                 shadow_ass:merge(style_ass)
-                shadow_ass:append("{\\blur" .. user_opts.button_glow_amount .. "}" .. button_lo.hoverstyle .. buttontext)
+                shadow_ass:append("{\\blur" .. user_opts.button_glow_amount .. "}" .. hoverstyle .. buttontext)
                 elem_ass:merge(shadow_ass)
             end
 
