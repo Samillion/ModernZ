@@ -1666,12 +1666,12 @@ layouts = function ()
 
     -- Volumebar
     lo = new_element("volumebarbg", "box")
-    lo.visible = (osc_param.playresx >= 1000 - outeroffset) and user_opts.volumecontrol
+    lo.visible = (osc_param.playresx >= 950 - outeroffset) and user_opts.volumecontrol
     lo = add_layout("volumebarbg")
     lo.geometry = {x = 200 - (showplaylist and 0 or 45), y = refY - 40, an = 4, w = 80, h = 2}
     lo.layer = 13
     lo.alpha[1] = 128
-    lo.style = user_opts.vol_bar_match_seek and osc_styles.SeekbarBg or osc_styles.volumebar_bg
+    lo.style = user_opts.vol_bar_match_seek and osc_styles.seekbar_bg or osc_styles.volumebar_bg
     
     lo = add_layout("volumebar")
     lo.geometry = {x = 200 - (showplaylist and 0 or 45), y = refY - 40, an = 4, w = 80, h = 8}
@@ -1948,7 +1948,7 @@ local function osc_init()
     ne = new_element("sub_track", "button")
     ne.enabled = sub_track_count > 0
     ne.off = sub_track_count == 0 or not mp.get_property_native("sid")
-    ne.visible = (osc_param.playresx >= 600 - outeroffset)
+    ne.visible = (osc_param.playresx >= 650 - outeroffset)
     ne.content = icons.subtitle
     ne.tooltip_style = osc_styles.tooltip
     ne.tooltipF = function ()
@@ -1967,7 +1967,7 @@ local function osc_init()
     ne = new_element("tog_playlist", "button")
     ne.enabled = have_pl or not user_opts.gray_empty_playlist_button
     ne.off = not have_pl and user_opts.gray_empty_playlist_button
-    ne.visible = (osc_param.playresx >= 700 - outeroffset)
+    ne.visible = (osc_param.playresx >= 750 - outeroffset)
     ne.content = icons.playlist
     ne.tooltip_style = osc_styles.tooltip
     ne.tooltipF = have_pl and texts.playlist .. " [" .. pl_pos .. "/" .. pl_count .. "]" or texts.playlist
@@ -1979,7 +1979,7 @@ local function osc_init()
     ne = new_element("vol_ctrl", "button")
     ne.enabled = audio_track_count > 0
     ne.off = audio_track_count == 0
-    ne.visible = (osc_param.playresx >= 760 - outeroffset) and user_opts.volumecontrol
+    ne.visible = (osc_param.playresx >= 850 - outeroffset) and user_opts.volumecontrol
     ne.content = function ()
         local volume = mp.get_property_number("volume", 0)
         if state.mute then
@@ -2007,7 +2007,7 @@ local function osc_init()
 
     --volumebar
     ne = new_element("volumebar", "slider")
-    ne.visible = (osc_param.playresx >= 1000 - outeroffset) and user_opts.volumecontrol
+    ne.visible = (osc_param.playresx >= 950 - outeroffset) and user_opts.volumecontrol
     ne.enabled = audio_track_count > 0
     ne.slider.markerF = function () return {} end
     ne.slider.seekRangesF = function() return nil end
@@ -2050,13 +2050,13 @@ local function osc_init()
     if user_opts.tooltip_hints then
         ne.tooltipF = texts.statsinfo
     end
-    ne.visible = (osc_param.playresx >= 600 - outeroffset - (user_opts.showfullscreen and 0 or 100))
+    ne.visible = (osc_param.playresx >= 650 - outeroffset - (user_opts.showfullscreen and 0 or 100))
     ne.eventresponder["mbtn_left_up"] = function () mp.commandv("script-binding", "stats/display-stats-toggle") end
 
     --tog_loop
     ne = new_element("tog_loop", "button")
     ne.content = function () return state.looping and icons.loop_on or icons.loop_off end
-    ne.visible = (osc_param.playresx >= 700 - outeroffset - (user_opts.showinfo and 0 or 100) - (user_opts.showfullscreen and 0 or 100))
+    ne.visible = (osc_param.playresx >= 750 - outeroffset - (user_opts.showinfo and 0 or 100) - (user_opts.showfullscreen and 0 or 100))
     ne.tooltip_style = osc_styles.tooltip
     if user_opts.tooltip_hints then
         ne.tooltipF = function () return state.looping and texts.loopdisable or texts.loopenable end
@@ -2078,7 +2078,7 @@ local function osc_init()
     if user_opts.tooltip_hints then
         ne.tooltipF = function () return mp.get_property("ontop") == "no" and texts.ontop or texts.ontopdisable end
     end
-    ne.visible = (osc_param.playresx >= 760 - outeroffset - (user_opts.showloop and 0 or 100) - (user_opts.showinfo and 0 or 100) - (user_opts.showfullscreen and 0 or 100))
+    ne.visible = (osc_param.playresx >= 850 - outeroffset - (user_opts.showloop and 0 or 100) - (user_opts.showinfo and 0 or 100) - (user_opts.showfullscreen and 0 or 100))
     ne.eventresponder["mbtn_left_up"] = function () 
         mp.commandv("cycle", "ontop") 
         if state.initialborder == "yes" then
@@ -2103,7 +2103,7 @@ local function osc_init()
     if user_opts.tooltip_hints then
         ne.tooltipF = texts.screenshot
     end
-    ne.visible = (osc_param.playresx >= 870 - outeroffset - (user_opts.showontop and 0 or 100) - (user_opts.showloop and 0 or 100) - (user_opts.showinfo and 0 or 100) - (user_opts.showfullscreen and 0 or 100))
+    ne.visible = (osc_param.playresx >= 950 - outeroffset - (user_opts.showontop and 0 or 100) - (user_opts.showloop and 0 or 100) - (user_opts.showinfo and 0 or 100) - (user_opts.showfullscreen and 0 or 100))
     ne.eventresponder["mbtn_left_up"] = function ()
         local tempSubPosition = mp.get_property("sub-pos")
         if user_opts.screenshot_flag == "subtitles" or user_opts.screenshot_flag == "subtitles+each-frame" then 
@@ -2116,7 +2116,7 @@ local function osc_init()
     --download
     ne = new_element("download", "button")
     ne.content = function () return state.downloading and icons.downloading or icons.download end
-    ne.visible = (osc_param.playresx >= 1000 - outeroffset - (user_opts.showscreenshot and 0 or 100) - (user_opts.showontop and 0 or 100) - (user_opts.showloop and 0 or 100) - (user_opts.showinfo and 0 or 100) - (user_opts.showfullscreen and 0 or 100)) and state.isWebVideo
+    ne.visible = (osc_param.playresx >= 1050 - outeroffset - (user_opts.showscreenshot and 0 or 100) - (user_opts.showontop and 0 or 100) - (user_opts.showloop and 0 or 100) - (user_opts.showinfo and 0 or 100) - (user_opts.showfullscreen and 0 or 100)) and state.isWebVideo
     ne.tooltip_style = osc_styles.tooltip
     ne.tooltipF = function () return state.downloading and "Downloading..." or state.fileSizeNormalised end
     ne.eventresponder["mbtn_left_up"] = function ()
