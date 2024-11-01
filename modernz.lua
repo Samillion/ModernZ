@@ -1078,7 +1078,7 @@ local function render_elements(master_ass)
             )
             local hovered = mouse_hit(element) and is_clickable and element.enabled and state.mouse_down_counter == 0
             local hoverstyle = button_lo.hoverstyle
-            if hovered and (contains(user_opts.hovereffect, "size") or contains(user_opts.hovereffect, "color") or contains(user_opts.hovereffect, "glow")) then
+            if hovered and (contains(user_opts.hovereffect, "size") or contains(user_opts.hovereffect, "color")) then
                 -- remove font scale tags for these elements, it looks out of place
                 if element.name == "title" or element.name == "tc_left" or element.name == "tc_right" or element.name == "chapter_title" then
                     hoverstyle = hoverstyle:gsub("\\fscx%d+\\fscy%d+", "")
