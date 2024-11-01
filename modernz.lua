@@ -1928,7 +1928,7 @@ local function osc_init()
     --audio_track
     ne = new_element("audio_track", "button")
     ne.enabled = audio_track_count > 0
-    ne.off = audio_track_count == 0
+    ne.off = audio_track_count == 0 or not mp.get_property_native("aid")
     ne.visible = (osc_param.playresx >= 550 - outeroffset)
     ne.content = icons.audio
     ne.tooltip_style = osc_styles.tooltip
@@ -1947,7 +1947,7 @@ local function osc_init()
     --sub_track
     ne = new_element("sub_track", "button")
     ne.enabled = sub_track_count > 0
-    ne.off = sub_track_count == 0
+    ne.off = sub_track_count == 0 or not mp.get_property_native("sid")
     ne.visible = (osc_param.playresx >= 600 - outeroffset)
     ne.content = icons.subtitle
     ne.tooltip_style = osc_styles.tooltip
