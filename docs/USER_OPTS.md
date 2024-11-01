@@ -39,6 +39,7 @@ Create `modernz.conf` in your mpv script-opts directory:
 | playpause_color       | #FFFFFF | color of play/pause button                                               |
 | held_element_color    | #999999 | color of an element while held down                                      |
 | thumbnailborder_color | #111111 | color of border for thumbnail (with thumbfast)                           |
+| hovereffect_color     | #CB7050 | color of a hovered button when hovereffect includes: `color`             |
 
 ### Buttons
 
@@ -47,7 +48,7 @@ Create `modernz.conf` in your mpv script-opts directory:
 | hovereffect                | size,glow,color | list of active button hover effects seperated by comma: glow, size, color. Ex. `hovereffect=glow, size, color`                                                |
 | hover_button_size          | 115             | the relative size (%) of a hovered button if the size effect is selected                                                                                      |
 | button_glow_amount         | 5               | the amount of glow a hovered button receives if the glow effect is active                                                                                     |
-| hovereffect_for_sliders    | no              | apply button hovereffects to slide handles                                                                                                                    |
+| hovereffect_for_sliders    | yes             | apply button hovereffects to slide handles                                                                                                                    |
 | showplaylist               | no              | show `playlist` button                                                                                                                                        |
 | hide_empty_playlist_button | yes             | hides `playlist` button when a playlist does not exist                                                                                                        |
 | gray_empty_playlist_button | yes             | grays `playlist` button when no playlist exists                                                                                                               |
