@@ -36,13 +36,13 @@ local user_opts = {
     playpause_color = "#FFFFFF",           -- color of play/pause button
     held_element_color = "#999999",        -- color of an element while held down
     thumbnailborder_color = "#111111",     -- color of border for thumbnail (with thumbfast)
-    hovereffect_color = "#CCCCCC",         -- color of a hovered button when hovereffect is: color
+    hovereffect_color = "#CB7050",         -- color of a hovered button when hovereffect is: color
 
     -- Buttons
-    hovereffect = "size,glow,color",       -- list of active button hover effects seperated by comma: glow, size, color
+    hovereffect = "glow,color",            -- list of active button hover effects seperated by comma: glow, size, color
     hover_button_size = 110,               -- the relative size of a hovered button if the size effect is active
     button_glow_amount = 5,                -- the amount of glow a hovered button receives if the glow effect is active
-    hovereffect_for_sliders = false,       -- apply button hovereffects to slide handles
+    hovereffect_for_sliders = true,        -- apply button hovereffects to slide handles
 
     showjump = true,                       -- show "jump forward/backward 10 seconds" buttons 
     showskip = false,                      -- show the chapter skip back and forward buttons
@@ -357,7 +357,7 @@ local state = {
     mouse_down_counter = 0,                 -- used for softrepeat
     active_element = nil,                   -- nil = none, 0 = background, 1+ = see elements[]
     active_event_source = nil,              -- the "button" that issued the current event
-    rightTC_trem = not user_opts.timetotal, -- if the right timecode should display total or remaining time
+    tc_right_rem = not user_opts.timetotal, -- if the right timecode should display total or remaining time
     tc_ms = user_opts.timems,               -- Should the timecodes display their time with milliseconds
     screen_sizeX = nil, screen_sizeY = nil, -- last screen-resolution, to detect resolution changes to issue reINITs
     initREQ = false,                        -- is a re-init request pending?
@@ -446,7 +446,7 @@ end
 
 local function set_time_styles(timetotal_changed, timems_changed)
     if timetotal_changed then
-        state.rightTC_trem = not user_opts.timetotal
+        state.tc_right_rem = not user_opts.timetotal
     end
     if timems_changed then
         state.tc_ms = user_opts.timems
@@ -1608,19 +1608,28 @@ layouts = function ()
     end
 
     -- Time
+    local remsec = mp.get_property_number("playtime-remaining", 0)
+    local possec = mp.get_property_number("playback-time", 0)
+    local dur = mp.get_property_number("duration", 0)
+
+    local show_hours = possec >= 3600 or user_opts.time_format ~= "dynamic"
     lo = add_layout("tc_left")
-    lo.geometry = {x = 25, y = refY - 84, an = 7, w = 50, h = 20}
+    lo.geometry = {x = 25, y = refY - 84, an = 7, w = 45 + (state.tc_ms and 30 or 0) + (show_hours and 20 or 0), h = 20}
     lo.style = osc_styles.time
-        
+
+    local show_remhours = (state.tc_right_rem and remsec >= 3600) or (not state.tc_right_rem and dur >= 3600) or user_opts.time_format ~= "dynamic"
     lo = add_layout("tc_right")
-    lo.geometry = {x = osc_geo.w - 25 , y = refY -84, an = 9, w = 50, h = 20}
+    lo.geometry = {x = osc_geo.w - 25 , y = refY -84, an = 9, w = 50 + (state.tc_ms and 30 or 0) + (show_remhours and 25 or 0), h = 20}
     lo.style = osc_styles.time
 
     -- Chapter Title (next to timestamp)
     if user_opts.show_chapter_title then
-        local possec = mp.get_property_number("playback-time", 0)    
+        lo = add_layout("separator")
+        lo.geometry = {x = 73 + (state.tc_ms and 32 or 0) + (show_hours and 20 or 0), y = refY - 84, an = 7, w = 30, h = 20}
+        lo.style = osc_styles.time
+
         lo = add_layout("chapter_title")
-        lo.geometry = {x = 73 + (state.tc_ms and 30 or 0) + ((possec >= 3600 or user_opts.time_format ~= "dynamic") and 23 or 0), y = refY - 84, an = 7, w = 200, h = 20}
+        lo.geometry = {x = 86 + (state.tc_ms and 32 or 0) + (show_hours and 20 or 0), y = refY - 84, an = 7, w = 200, h = 20}
         lo.style = osc_styles.chapter_title
     end
 
@@ -1956,7 +1965,7 @@ local function osc_init()
     ne.visible = (osc_param.playresx >= 700 - outeroffset)
     ne.content = icons.playlist
     ne.tooltip_style = osc_styles.tooltip
-    ne.tooltipF = pl_count > 0 and texts.playlist .. " [" .. pl_pos .. "/" .. pl_count .. "]" or texts.playlist
+    ne.tooltipF = have_pl and texts.playlist .. " [" .. pl_pos .. "/" .. pl_count .. "]" or texts.playlist
     ne.nothingavailable = texts.nolist
     ne.eventresponder["mbtn_left_up"] = command_callback(user_opts.playlist_mbtn_left_command)
     ne.eventresponder["mbtn_right_up"] = command_callback(user_opts.playlist_mbtn_right_command)
@@ -2355,6 +2364,10 @@ local function osc_init()
 
     -- Chapter title (below seekbar)
     local chapter_index = mp.get_property_number("chapter", -1)
+    ne = new_element("separator", "button")
+    ne.visible = chapter_index >= 0
+    ne.content = " • "
+
     ne = new_element("chapter_title", "button")
     ne.visible = chapter_index >= 0
     ne.content = function()
@@ -2363,7 +2376,7 @@ local function osc_init()
             local chapters = mp.get_property_native("chapter-list", {})
             local chapter_title = (chapters[chapter_index + 1] and chapters[chapter_index + 1].title ~= "") and chapters[chapter_index + 1].title or texts.na
             chapter_title = mp.command_native({"escape-ass", chapter_title})
-            return "•  " .. string.format(user_opts.chapter_fmt, chapter_title)
+            return string.format(user_opts.chapter_fmt, chapter_title)
         end
         return "" -- fallback
     end
@@ -2377,16 +2390,16 @@ local function osc_init()
         local duration = mp.get_property_number("duration", 0)
         if duration <= 0 then return "--:--" end
 
-        local time_to_display = state.rightTC_trem and 
+        local time_to_display = state.tc_right_rem and 
             mp.get_property_number("playtime-remaining", 0) or duration
 
-        local prefix = state.rightTC_trem and 
+        local prefix = state.tc_right_rem and 
             (user_opts.unicodeminus and UNICODE_MINUS or "-") or ""
 
         return prefix .. format_time(time_to_display)
     end
     ne.eventresponder["mbtn_left_up"] = function()
-        state.rightTC_trem = not state.rightTC_trem
+        state.tc_right_rem = not state.tc_right_rem
     end
 
     -- load layout
