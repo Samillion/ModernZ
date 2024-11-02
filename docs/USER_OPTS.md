@@ -147,6 +147,7 @@ Create `modernz.conf` in your mpv script-opts directory:
 | Option                        | Value  | Description                                            |
 | ----------------------------- | ------ | ------------------------------------------------------ |
 | hidetimeout                   | 2000   | duration in ms until OSC hides if no mouse movement    |
+| seek_resets_hidetimeout       | yes    | if seeking should reset the hidetimeout                |
 | fadeduration                  | 250    | duration of fade out in ms, `0` = no fade              |
 | minmousemove                  | 0      | amount of pixels the mouse has to move for OSC to show |
 | tick_delay                    | 0.0167 | minimum interval between OSC redraws in seconds        |

@@ -134,6 +134,7 @@ local user_opts = {
 
     -- UI [time-based]
     hidetimeout = 1500,                    -- duration in ms until OSC hides if no mouse movement
+    seek_resets_hidetimeout = true,        -- if seeking should reset the hidetimeout
     fadeduration = 250,                    -- duration of fade out in ms, 0 = no fade
     minmousemove = 0,                      -- amount of pixels the mouse has to move for OSC to show
 
@@ -2921,7 +2922,9 @@ mp.observe_property("playback-time", "native", function(_, time)
     request_tick()
 end)
 mp.observe_property("seeking", "native", function(_, seeking)
-    reset_timeout()
+    if user_opts.seek_resets_hidetimeout then
+        reset_timeout()
+    end
     if seeking and user_opts.osc_on_seek and not new_file_flag then
         show_osc()
     end
