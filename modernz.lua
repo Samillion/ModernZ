@@ -1076,7 +1076,7 @@ local function render_elements(master_ass)
                                 if dur > 0 then
                                     local ch = get_chapter(state.sliderpos * dur / 100)
                                     if ch and ch.title and ch.title ~= "" then
-                                        tooltip_content = tooltip_content .. " " .. string.format(user_opts.chapter_fmt, ch.title)
+                                        tooltip_content = tooltip_content .. " • " .. string.format(user_opts.chapter_fmt, ch.title)
                                     end
                                 end
                             end
