@@ -2047,17 +2047,19 @@ local function osc_init()
     ne.eventresponder["mbtn_right_up"] = command_callback(user_opts.vol_ctrl_mbtn_right_command)
     ne.eventresponder["wheel_up_press"] = function () 
         if state.mute then mp.commandv("cycle", "mute") end
-        mp.commandv("add", "volume", 5)
+        mp.commandv("osd-msg", "add", "volume", 5)
     end
     ne.eventresponder["wheel_down_press"] = function () 
         if state.mute then mp.commandv("cycle", "mute") end
-        mp.commandv("add", "volume", -5)
+        mp.commandv("osd-msg", "add", "volume", -5)
     end
 
     --volumebar
+    local volume_max = mp.get_property_number("volume-max") > 0 and mp.get_property_number("volume-max") or 100
     ne = new_element("volumebar", "slider")
     ne.visible = (osc_param.playresx >= 950 - outeroffset) and user_opts.volumecontrol
     ne.enabled = audio_track_count > 0
+    ne.slider = {min = {value = 0}, max = {value = volume_max}}
     ne.slider.markerF = function () return {} end
     ne.slider.seekRangesF = function() return nil end
     ne.slider.posF = function ()
@@ -2074,17 +2076,17 @@ local function osc_init()
         local setvol = set_volume(pos)
         if element.state.lastseek == nil or
             element.state.lastseek ~= setvol then
-                mp.commandv("set", "volume", setvol)
+                mp.commandv("osd-msg", "set", "volume", setvol)
                 element.state.lastseek = setvol
         end
     end
     ne.eventresponder["mbtn_left_down"] = function (element)
         local pos = get_slider_value(element)
-        mp.commandv("set", "volume", set_volume(pos))
+        mp.commandv("osd-msg", "set", "volume", set_volume(pos))
     end
     ne.eventresponder["reset"] = function (element) element.state.lastseek = nil end
-    ne.eventresponder["wheel_up_press"] = function () mp.commandv("add", "volume", 5) end
-    ne.eventresponder["wheel_down_press"] = function () mp.commandv("add", "volume", -5) end
+    ne.eventresponder["wheel_up_press"] = function () mp.commandv("osd-msg", "add", "volume", 5) end
+    ne.eventresponder["wheel_down_press"] = function () mp.commandv("osd-msg", "add", "volume", -5) end
 
     --tog_fullscreen
     ne = new_element("tog_fullscreen", "button")
