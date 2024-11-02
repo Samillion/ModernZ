@@ -927,7 +927,7 @@ local function render_elements(master_ass)
                 
                 if pos then
                     xp = get_slider_ele_pos_for(element, pos)
-                    local handle_hovered = mouse_hit_coords(element.hitbox.x1+xp-rh, element.hitbox.y1+elem_geo.h/2-rh, element.hitbox.x1+xp+rh, element.hitbox.y1+elem_geo.h/2+rh)
+                    local handle_hovered = mouse_hit_coords(element.hitbox.x1+xp-rh, element.hitbox.y1+elem_geo.h/2-rh, element.hitbox.x1+xp+rh, element.hitbox.y1+elem_geo.h/2+rh) and element.enabled
                     if handle_hovered and user_opts.hovereffect_for_sliders then
                         -- apply size & color hovereffects (glow is not supported)
                         if contains(user_opts.hovereffect, "size") then
@@ -938,7 +938,7 @@ local function render_elements(master_ass)
                         end
                     end
                     ass_draw_cir_cw(elem_ass, xp, elem_geo.h/2, rh)
-                    if handle_hovered and user_opts.hovereffect_for_sliders  then
+                    if handle_hovered and user_opts.hovereffect_for_sliders then
                         elem_ass:draw_stop()
                         elem_ass:merge(element.style_ass)
                         ass_append_alpha(elem_ass, element.layout.alpha, 0)
