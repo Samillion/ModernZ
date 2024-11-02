@@ -131,15 +131,15 @@ https://github.com/user-attachments/assets/f47a2eb6-d926-4f3b-8a5d-19301c70c7a5
 
 ModernZ is currently available in English, but you can easily switch it to your preferred language! Here's how:
 
-**1. Download the locale pack:**
+1. **Download the locale pack:**
 
-Grab the [modernz-locale.lua](/extras/locale/modernz-locale.lua) file from this repository. This file holds translations for various languages.
+Grab the [modernz-locale.json](/extras/locale/modernz-locale.json) file from this repository. This file holds translations for various languages.
 
-**2. Add the locales to mpv:**
+2. **Add the locales to mpv:**
 
-Copy the downloaded `modernz-locale.lua` file to your mpv's `/scripts` folder.
+Copy the downloaded `modernz-locale.json` file to your mpv's `/script-opts` folder.
 
-**3. Choose our language:**
+3. **Choose your language:**
 
 There are two ways to set your preferred language:
 
@@ -147,7 +147,8 @@ There are two ways to set your preferred language:
 
   ```ini
   # Example configuration in modernz.conf
-  language = "zh"  # Set language to Simplified Chinese
+  # Set language to Simplified Chinese
+  language=zh
   ```
 
 - **Alternative:** Edit the `modernz.lua` script

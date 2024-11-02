@@ -183,6 +183,8 @@ local user_opts = {
     chapter_title_mbtn_right_command = "show-text ${chapter-list} 3000",
 }
 
+mp.observe_property("osc", "bool", function(name, value) if value == true then mp.set_property("osc", "no") end end)
+
 local osc_param = { -- calculated by osc_init()
     playresy = 0,                           -- canvas size Y
     playresx = 0,                           -- canvas size X
@@ -227,52 +229,75 @@ local icons = {
     }
 }
 
---- Localization
+--- localization
 local language = {
     ["en"] = {
-        welcome = "{\\fs24\\1c&H0&\\1c&HFFFFFF&}Drop files or URLs to play here",
-        off = "OFF",
-        na = "n/a",
-        none = "None available",
+        welcome = "Drop files or URLs here to play",
+        na = "Not available",
         video = "Video",
         audio = "Audio",
         subtitle = "Subtitle",
         nosub = "No subtitles available",
         noaudio = "No audio tracks available",
-        track = " tracks:",
         playlist = "Playlist",
-        nolist = "Empty playlist.",
+        nolist = "Playlist is empty",
         chapter = "Chapter",
-        nochapter = "No chapters.",
+        nochapter = "No chapters available",
         ontop = "Pin window",
         ontopdisable = "Unpin window",
         loopenable = "Enable loop",
         loopdisable = "Disable loop",
         screenshot = "Screenshot",
-        screenshotsaved = "Screenshot saved",
         statsinfo = "Information",
     },
 }
 
-mp.observe_property("osc", "bool", function(name, value) if value == true then mp.set_property("osc", "no") end end)
+-- locale JSON file handler
+function get_locale_from_json(path)
+    local expand_path = mp.command_native({'expand-path', path})
 
--- Load external locales if available
-local locale_file = mp.find_config_file("scripts/modernz-locale.lua")
-if locale_file then
-    local success, external = pcall(function()
-        return loadfile(locale_file)()
-    end)
-    
-    if success and external then
-        -- Merge external locales
-        for lang, strings in pairs(external) do
+    local file_info = utils.file_info(expand_path)
+    if not file_info or not file_info.is_file then
+        return nil
+    end
+
+    local json_file = io.open(expand_path, 'r')
+    if not json_file then
+        return nil
+    end
+
+    local json = json_file:read('*all')
+    json_file:close()
+
+    local json_table, parse_error = utils.parse_json(json)
+    if not json_table then
+        mp.msg.error("JSON parse error:" .. parse_error)
+    end
+    return json_table
+end
+
+-- load external locales if available
+local locale_path = "~~/script-opts/modernz-locale.json"
+local external = get_locale_from_json(locale_path)
+
+if external then
+    for lang, strings in pairs(external) do
+        if type(strings) == "table" then
             language[lang] = strings
-            -- Fill in any missing locales with English
+
+            -- fill in missing locales with English defaults
             for key, value in pairs(language["en"]) do
                 if strings[key] == nil then
-                    strings[key] = value
+                    strings[key] = value or ""  -- fallback to empty string if key is missing
+                end
+
+                -- debug log to verify all keys are populated
+                if strings[key] == nil then
+                    mp.msg.warn("Locale key '" .. key .. "' is nil in language: " .. lang)
                 end
             end
+        else
+            mp.msg.warn("Locale data for language " .. lang .. " is not in the correct format.")
         end
     end
 end
@@ -280,6 +305,8 @@ end
 local texts
 local function set_osc_texts()
     texts = language[user_opts.language] or language["en"]
+    local welcome_ass_tags = "{\\fs24\\1c&H0&\\1c&HFFFFFF&}"
+    texts.welcome = welcome_ass_tags .. texts.welcome
 end
 
 local function contains(list, item)
@@ -3194,7 +3221,7 @@ local function validate_user_opts()
         user_opts.title_color, user_opts.time_color, user_opts.side_buttons_color, 
         user_opts.middle_buttons_color, user_opts.playpause_color, user_opts.window_title_color, 
         user_opts.window_controls_color, user_opts.held_element_color, user_opts.thumbnailborder_color, 
-        user_opts.chapter_title_color
+        user_opts.chapter_title_color, user_opts.seekbar_cache_color, user_opts.hovereffect_color
     }
 
     for _, color in pairs(colors) do
