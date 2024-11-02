@@ -17,12 +17,15 @@ To get started with translations:
 
 1. **Locate the translation file:** Open the `modernz-locale.json` file from the repository (typically found at [modernz-locale.json](/extras/locale/modernz-locale.json)).
 2. **Edit Translations:** Use the following format to add or modify translations:
-   ```json
+
+```json
+{
     "language-code": {
         "welcome": "Your translation",
         "na": "Your translation",
     },
-   ```
+}
+```
 
 Replace `"language-code"` with your language code (e.g. `"es"` for Spanish).
 
@@ -45,7 +48,8 @@ ModernZ currently has translations for the following languages:
 3. **Choose a language code**: Pick a unique code representing your language (e.g. `"it"` for Italian).
 4. **Copy an existing template**: Use an existing language section as a base. For example, use the English template:
 
-   ```json
+```json
+{
     "en": {
         "welcome": "Drop files or URLs here to play",
         "na": "Not available",
@@ -65,17 +69,20 @@ ModernZ currently has translations for the following languages:
         "screenshot": "Screenshot",
         "statsinfo": "Information"
     },
-   ```
+}
+```
 
 5. **Translate the strings**: Replace the English text with your translations, keeping the same keys.
 
-   ```json
+```json
+{
     "es": {
         "welcome": "Suelta archivos o URLs aquí para reproducirlos",
         "na": "No disponible",
         "video": "Video",
     },
-   ```
+}
+```
 
 ## Updating existing translations
 
@@ -112,7 +119,5 @@ If you'd like to share your translations with the community:
 1. **Fork the repository**: Visit the ModernZ GitHub page (https://github.com/Samillion/ModernZ) and click "Fork" to create your own copy of the project.
 2. **Edit the** `modernz-locale.json` **file** Add your translations to the file in your forked repository.
 3. **Submit a Pull Request** Create a pull request on GitHub to propose your changes for review and integration.
-
----
 
 Thank you for contributing ❤️ Every translation helps make the project better!
