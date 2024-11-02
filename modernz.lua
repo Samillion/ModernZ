@@ -3221,7 +3221,7 @@ local function validate_user_opts()
         user_opts.title_color, user_opts.time_color, user_opts.side_buttons_color, 
         user_opts.middle_buttons_color, user_opts.playpause_color, user_opts.window_title_color, 
         user_opts.window_controls_color, user_opts.held_element_color, user_opts.thumbnailborder_color, 
-        user_opts.chapter_title_color
+        user_opts.chapter_title_color, user_opts.seekbar_cache_color, user_opts.hovereffect_color
     }
 
     for _, color in pairs(colors) do
