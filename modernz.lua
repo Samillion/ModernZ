@@ -28,6 +28,7 @@ local user_opts = {
     title_color = "#FFFFFF",               -- color of the title (above seekbar)
     seekbarfg_color = "#BE4D25",           -- color of the seekbar progress and handle
     seekbarbg_color = "#FFFFFF",           -- color of the remaining seekbar
+    seekbar_cache_color = "#BF9B24",       -- color of the cache ranges on the seekbar
     vol_bar_match_seek = false,            -- match volume bar color with seekbar color? ignores side_buttons_color
     time_color = "#FFFFFF",                -- color of timestamps (below seekbar)
     chapter_title_color = "#FFFFFF",       -- color of chapter title next to timestamp (below seekbar)
@@ -922,12 +923,32 @@ local function render_elements(master_ass)
                     elem_ass:draw_stop()
                     elem_ass:merge(element.style_ass)
                     ass_append_alpha(elem_ass, element.layout.alpha, user_opts.seekrangealpha)
+                    elem_ass:append("{\\1cH&" .. osc_color_convert(user_opts.seekbar_cache_color) .. "&}")
                     elem_ass:merge(element.static_ass)
 
                     for _,range in pairs(seekRanges) do
                         local pstart = get_slider_ele_pos_for(element, range["start"])
                         local pend = get_slider_ele_pos_for(element, range["end"])
-                        elem_ass:rect_cw(pstart - rh, slider_lo.gap, pend + rh, elem_geo.h - slider_lo.gap)
+
+                        local cache_starts_in_handle = pstart >= xp-rh and pstart <= xp + rh
+                        local cache_ends_in_handle = pend >= xp-rh and pend <= xp + rh
+                        local cache_passes_handle = pstart < xp-rh and pend > xp + rh
+                        if cache_starts_in_handle or cache_ends_in_handle then
+                            if cache_starts_in_handle and cache_ends_in_handle then
+                                pstart = 0
+                                pend = 0
+                            elseif cache_starts_in_handle then
+                                pstart = xp+rh
+                            elseif cache_ends_in_handle then
+                                pend = xp-rh
+                            end
+                        elseif cache_passes_handle then
+                            -- split range rendering to avoid rendering above handle
+                            elem_ass:rect_cw(pstart, slider_lo.gap, xp - rh, elem_geo.h - slider_lo.gap)
+                            pstart = xp + rh
+                        end
+
+                        elem_ass:rect_cw(pstart, slider_lo.gap, pend, elem_geo.h - slider_lo.gap)
                     end
                 end
 
