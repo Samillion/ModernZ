@@ -139,7 +139,7 @@ Grab the [modernz-locale.json](/extras/locale/modernz-locale.json) file from thi
 
 Copy the downloaded `modernz-locale.json` file to your mpv's `/script-opts` folder.
 
-**3. Choose our language:**
+**3. Choose your language:**
 
 There are two ways to set your preferred language:
 
