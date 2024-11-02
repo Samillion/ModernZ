@@ -30,6 +30,7 @@ Create `modernz.conf` in your mpv script-opts directory:
 | window_controls_color | #FFFFFF | color of window controls (close, min, max) in borderless/fullscreen mode |
 | seekbarfg_color       | #BE4D25 | color of the seekbar progress and handle                                 |
 | seekbarbg_color       | #FFFFFF | color of the remaining seekbar                                           |
+| seekbar_cache_color   | #BF9B24 | color of the cache ranges on the seekbar                                 |
 | vol_bar_match_seek    | no      | match volume bar color with seekbar color? ignores `side_buttons_color`  |
 | title_color           | #FFFFFF | color of the title (above seekbar)                                       |
 | time_color            | #FFFFFF | color of timestamps (below seekbar)                                      |
