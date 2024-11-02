@@ -983,7 +983,7 @@ local function render_elements(master_ass)
                 elem_ass:draw_stop()
                 
                 -- add tooltip
-                if element.slider.tooltipF ~= nil then
+                if element.slider.tooltipF ~= nil and element.enabled then
                     if mouse_hit(element) then
                         local sliderpos = get_slider_value(element)
                         local tooltiplabel = element.slider.tooltipF(sliderpos)
@@ -1863,6 +1863,7 @@ local function osc_init()
     local pl_pos = mp.get_property_number("playlist-pos", 0) + 1
     local have_ch = mp.get_property_number("chapters", 0) > 0
     local loop = mp.get_property("loop-playlist", "no")
+    local is_image = mp.get_property_number("estimated-frame-count", 0) < 2 and audio_track_count == 0
 
     local nojumpoffset = user_opts.showjump and 0 or 100
     local noskipoffset = user_opts.showskip and 0 or 100
@@ -1903,6 +1904,7 @@ local function osc_init()
     --play control buttons
     --play_pause
     ne = new_element("play_pause", "button")
+    ne.enabled = not is_image
     ne.content = function ()
         if mp.get_property("eof-reached") == "yes" then
             return icons.replay
@@ -1936,6 +1938,7 @@ local function osc_init()
 
     --jump_backward
     ne = new_element("jump_backward", "button")
+    ne.enabled = not is_image
     ne.softrepeat = user_opts.jump_softrepeat == true
     ne.content = jump_icon[1]
     ne.eventresponder["mbtn_left_down"] = function () mp.commandv("seek", -jumpamount, jumpmode) end
@@ -1944,6 +1947,7 @@ local function osc_init()
 
     --jump_forward
     ne = new_element("jump_forward", "button")
+    ne.enabled = not is_image
     ne.softrepeat = user_opts.jump_softrepeat == true
     ne.content = jump_icon[2]
     ne.eventresponder["mbtn_left_down"] = function () mp.commandv("seek", jumpamount, jumpmode) end
@@ -2106,6 +2110,7 @@ local function osc_init()
 
     --tog_loop
     ne = new_element("tog_loop", "button")
+    ne.enabled = not is_image
     ne.content = function () return state.looping and icons.loop_on or icons.loop_off end
     ne.visible = (osc_param.playresx >= 750 - outeroffset - (user_opts.showinfo and 0 or 100) - (user_opts.showfullscreen and 0 or 100))
     ne.tooltip_style = osc_styles.tooltip
@@ -2149,6 +2154,7 @@ local function osc_init()
 
     --screenshot
     ne = new_element("screenshot", "button")
+    ne.enabled = not is_image
     ne.content = icons.screenshot
     ne.tooltip_style = osc_styles.tooltip
     if user_opts.tooltip_hints then
@@ -2204,7 +2210,7 @@ local function osc_init()
 
     --seekbar
     ne = new_element("seekbar", "slider")
-    ne.enabled = mp.get_property("percent-pos") ~= nil
+    ne.enabled = mp.get_property("percent-pos") ~= nil and not is_image
     ne.thumbnailable = true
     state.slider_element = ne.enabled and ne or nil  -- used for forced_title
     ne.slider.markerF = function ()
@@ -2409,6 +2415,7 @@ local function osc_init()
 
     -- Current position time display
     ne = new_element("tc_left", "button")
+    ne.enabled = not is_image
     ne.content = function()
         local playback_time = mp.get_property_number("playback-time", 0)
         return format_time(playback_time)
@@ -2441,6 +2448,7 @@ local function osc_init()
 
     -- Total/remaining time display
     ne = new_element("tc_right", "button")
+    ne.enabled = not is_image
     ne.visible = (mp.get_property_number("duration", 0) > 0)
     ne.content = function()
         local duration = mp.get_property_number("duration", 0)
