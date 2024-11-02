@@ -15,7 +15,7 @@ This guide provides everything you need to use, modify, and add translations for
 
 To get started with translations:
 
-1. **Locate the translation file:** Open the `modernz-locale.json` file from the repository (typically found at [modernz-locale.json](../extras/locale/modernz-locale.json)).
+1. **Locate the translation file:** Open the `modernz-locale.json` file from the repository (typically found at [modernz-locale.json](/extras/locale/modernz-locale.json)).
 2. **Edit Translations:** Use the following format to add or modify translations:
    ```json
     "language-code": {
@@ -24,7 +24,7 @@ To get started with translations:
     },
    ```
 
-- Replace `"language-code"` with your language code (e.g. `"es"` for Spanish).
+Replace `"language-code"` with your language code (e.g. `"es"` for Spanish).
 
 ## Available Languages
 
@@ -110,11 +110,9 @@ ModernZ currently has translations for the following languages:
 If you'd like to share your translations with the community:
 
 1. **Fork the repository**: Visit the ModernZ GitHub page (https://github.com/Samillion/ModernZ) and click "Fork" to create your own copy of the project.
-
 2. **Edit the** `modernz-locale.json` **file** Add your translations to the file in your forked repository.
-
 3. **Submit a Pull Request** Create a pull request on GitHub to propose your changes for review and integration.
 
 ---
 
-Thanks for contributing ❤️ Every translation helps make the project better!
+Thank you for contributing ❤️ Every translation helps make the project better!
