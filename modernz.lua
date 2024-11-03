@@ -1,8 +1,14 @@
--- Samillion/ModernZ: https://github.com/Samillion/ModernZ
---- forked from zydezu/ModernX: https://github.com/zydezu/ModernX
----- forked from dexeonify: https://github.com/dexeonify/mpv-config/blob/main/scripts/modernx.lua
------ forked from cyl0: https://github.com/cyl0/ModernX
------- forked from maoiscat: https://github.com/maoiscat/mpv-osc-modern
+-- ModernZ (https://github.com/Samillion/ModernZ)
+--
+-- This script is a derivative of the original mpv-osc-modern by maoiscat 
+-- and subsequent forks:
+--   * cyl0/ModernX
+--   * dexeonify/ModernX
+--   * zydezu/ModernX
+--
+-- It is based on the official osc.lua from mpv, licensed under the 
+-- GNU Lesser General Public License v2.1 (LGPLv2.1). 
+-- Full license: https://www.gnu.org/licenses/old-licenses/lgpl-2.1.html
 
 local assdraw = require "mp.assdraw"
 local msg = require "mp.msg"
@@ -13,134 +19,136 @@ local utils = require "mp.utils"
 -- default user option values
 -- do not touch, change them in modernz.conf
 local user_opts = {
-    -- General
-    language = "en",                       -- See https://github.com/Samillion/ModernZ/blob/main/docs/TRANSLATIONS.md for other languages
-    idlescreen = true,                     -- show mpv logo on idle
-    windowcontrols = "auto",               -- whether to show OSC window controls, "auto", "yes" or "no"
-    showwindowed = true,                   -- show OSC when windowed?
-    showfullscreen = true,                 -- show OSC when fullscreen?
-    greenandgrumpy = false,                -- disable santa hat in December
+    -- Language and display  
+    language = "en",                       -- set language (for available options, see: https://github.com/Samillion/ModernZ/blob/main/docs/TRANSLATIONS.md) 
+    font = "mpv-osd-symbols",              -- font for the OSC (default: mpv-osd-symbols or the one set in mpv.conf)
+    
+    idlescreen = true,                     -- show mpv logo when idle
+    windowcontrols = "auto",               -- show OSC window controls: "auto", "yes", or "no"
+    showwindowed = true,                   -- show OSC when windowed
+    showfullscreen = true,                 -- show OSC when fullscreen
+    showonpause = true,                    -- show OSC when paused
+    keeponpause = true,                    -- disable OSC hide timeout when paused 
+    greenandgrumpy = false,                -- disable Santa hat in December
 
-    -- Colors
-    osc_color = "#000000",                 -- accent of the OSC and the title bar
-    window_title_color = "#FFFFFF",        -- color of title in borderless/fullscreen mode
-    window_controls_color = "#FFFFFF",     -- color of window controls (close, min, max) in borderless/fullscreen mode
+    -- OSC behaviour and scaling
+    hidetimeout = 1500,                    -- time (in ms) before OSC hides if no mouse movement
+    seek_resets_hidetimeout = true,        -- if seeking should reset the hidetimeout
+    fadeduration = 250,                    -- fade-out duration (in ms), set to 0 for no fade
+    minmousemove = 0,                      -- minimum mouse movement (in pixels) required to show OSC
+    bottomhover = true,                    -- show OSC only when hovering at the bottom
+    bottomhover_zone = 160,                -- height of hover zone for bottomhover (in pixels)
+    osc_on_seek = false,                   -- show OSC when seeking
+    mouse_seek_pause = true,               -- pause video while seeking with mouse move (on button hold)
+
+    vidscale = "auto",                     -- scale osc with the video
+    scalewindowed = 1.0,                   -- osc scale factor when windowed
+    scalefullscreen = 1.0,                 -- osc scale factor when fullscreen
+
+    -- Time and title display
+    showtitle = true,                      -- show title in the OSC (above seekbar)
+    title = "${media-title}",              -- title above seekbar format: "${media-title}" or "${filename}"
+    titlefontsize = 30,                    -- font size of the title text (above seekbar)
+    
+    show_chapter_title = true,             -- show chapter title alongside timestamp (below seekbar)
+    chapter_fmt = "%s",                    -- format for chapter display on seekbar hover (set to "no" to disable)
+
+    timetotal = true,                      -- show total time instead of remaining time
+    timems = false,                        -- show timecodes with milliseconds
+    unicodeminus = false,                  -- use the Unicode minus sign in remaining time
+    time_format = "dynamic",               -- "dynamic" or "fixed". dynamic shows MM:SS when possible, fixed always shows HH:MM:SS
+    timefontsize = 18,                     -- font size of the time display
+
+    -- Title bar settings
+    showwindowtitle = true,                -- show window title in borderless/fullscreen mode
+    showwindowcontrols = true,             -- show window controls (close, minimize, maximize) in borderless/fullscreen
+    titleBarStrip = false,                 -- show title bar as a single bar instead of a black fade
+    windowcontrols_title = "${media-title}", -- same as title but for windowcontrols
+
+    -- Subtitle display settings
+    raisesubs = true,                      -- raise subtitles above the OSC when shown
+    raisesubamount = 175,                  -- amount by which subtitles are raised when the OSC is shown (in pixels)
+
+    -- Buttons display and functionality
+    showjump = true,                       -- show "jump forward/backward 10 seconds" buttons
+    jumpamount = 10,                       -- jump amount in seconds
+    jumpiconnumber = true,                 -- show different icon for 5, 10, or 30 second jumps
+    jumpmode = "relative",                 -- seek mode for jump buttons
+    jump_softrepeat = true,                -- enable continuous jumping when holding down seek buttons
+    showskip = false,                      -- show the skip back and forward (chapter) buttons
+    chapter_softrepeat = true,             -- enable continuous skipping when holding down chapter skip buttons
+    shownextprev = true,                   -- show next/previous playlist track buttons
+
+    volumecontrol = true,                  -- show mute button and volume slider
+    volumecontroltype = "linear",          -- volume scale type: "linear" or "logarithmic"
+    showplaylist = false,                  -- show playlist button: Left-click for simple playlist, Right-click for interactive playlist
+    hide_empty_playlist_button = true,     -- hide playlist button when no playlist exists
+    gray_empty_playlist_button = true,     -- gray out the playlist button when no playlist exists
+
+    downloadbutton = true,                 -- show download button on web videos (requires yt-dlp and ffmpeg)
+    download_path = "~~desktop/mpv",       -- default download directory for videos (https://mpv.io/manual/master/#paths)
+    showscreenshot = false,                -- show screenshot button
+    screenshot_flag = "subtitles",         -- flag for screenshot button: "subtitles", "video", "window", "each-frame" (https://mpv.io/manual/master/#command-interface-screenshot-%3Cflags%3E)
+    showontop = true,                      -- show window on top button
+    showloop = true,                       -- show loop button
+    loopinpause = true,                    -- enable looping by right-clicking pause
+    showinfo = false,                      -- show info button
+    showfullscreen_button = true,          -- show fullscreen toggle button
+
+    playpause_size = 30,                   -- icon size for the play/pause button
+    midbuttons_size = 24,                  -- icon size for the middle buttons
+    sidebuttons_size = 24,                 -- icon size for the side buttons
+
+    -- Colors and style
+    osc_color = "#000000",                 -- accent color of the OSC and title bar
+    window_title_color = "#FFFFFF",        -- color of the title in borderless/fullscreen mode
+    window_controls_color = "#FFFFFF",     -- color of the window controls (close, minimize, maximize) in borderless/fullscreen mode
     title_color = "#FFFFFF",               -- color of the title (above seekbar)
     seekbarfg_color = "#BE4D25",           -- color of the seekbar progress and handle
     seekbarbg_color = "#FFFFFF",           -- color of the remaining seekbar
     seekbar_cache_color = "#BF9B24",       -- color of the cache ranges on the seekbar
-    vol_bar_match_seek = false,            -- match volume bar color with seekbar color? ignores side_buttons_color
-    time_color = "#FFFFFF",                -- color of timestamps (below seekbar)
-    chapter_title_color = "#FFFFFF",       -- color of chapter title next to timestamp (below seekbar)
-    side_buttons_color = "#FFFFFF",        -- color of side buttons (audio, sub, playlist, vol, loop, info..etc)
-    middle_buttons_color = "#FFFFFF",      -- color of middle buttons (skip, jump, chapter...etc)
-    playpause_color = "#FFFFFF",           -- color of play/pause button
-    held_element_color = "#999999",        -- color of an element while held down
-    thumbnailborder_color = "#111111",     -- color of border for thumbnail (with thumbfast)
-    hovereffect_color = "#CB7050",         -- color of a hovered button when hovereffect is: color
+    vol_bar_match_seek = false,            -- match volume bar color with seekbar color (ignores side_buttons_color)
+    time_color = "#FFFFFF",                -- color of the timestamps (below seekbar)
+    chapter_title_color = "#FFFFFF",       -- color of the chapter title next to timestamp (below seekbar)
+    side_buttons_color = "#FFFFFF",        -- color of the side buttons (audio, subtitles, playlist, etc.)
+    middle_buttons_color = "#FFFFFF",      -- color of the middle buttons (skip, jump, chapter, etc.)
+    playpause_color = "#FFFFFF",           -- color of the play/pause button
+    held_element_color = "#999999",        -- color of the element when held down (pressed)
+    hovereffect_color = "#CB7050",         -- color of a hovered button when hovereffect includes "color"
+    thumbnailborder_color = "#111111",     -- color of the border for thumbnails (with thumbfast)
 
-    -- Buttons
-    hovereffect = "size,glow,color",       -- list of active button hover effects seperated by comma: glow, size, color
-    hover_button_size = 115,               -- the relative size of a hovered button if the size effect is active
-    button_glow_amount = 5,                -- the amount of glow a hovered button receives if the glow effect is active
-    hovereffect_for_sliders = true,        -- apply button hovereffects to slide handles
+    OSCfadealpha = 150,                    -- alpha of the OSC background box
+    boxalpha = 75,                         -- alpha of the window title bar
+    thumbnailborder = 2,                   -- width of the thumbnail border (for thumbfast)
 
-    showjump = true,                       -- show "jump forward/backward 10 seconds" buttons 
-    showskip = false,                      -- show the chapter skip back and forward buttons
-    shownextprev = true,                   -- show the next/previous playlist track buttons
+    -- Button hover effects
+    hovereffect = "size,glow,color",       -- active button hover effects: "glow", "size", "color"; can use multiple separated by commas
+    hover_button_size = 115,               -- relative size of a hovered button if "size" effect is active
+    button_glow_amount = 5,                -- glow intensity when "glow" hover effect is active
+    hovereffect_for_sliders = true,        -- apply hover effects to slider handles
 
-    showplaylist = false,                  -- show playlist button? LClick: simple playlist, RClick: interactive playlist
-    hide_empty_playlist_button = true,     -- hide playlist button when no playlist exists
-    gray_empty_playlist_button = true,     -- grays out the playlist button when no playlist exists
-    showinfo = false,                      -- show the info button
-    showloop = true,                       -- show the loop button
-    showfullscreen_button = true,          -- show fullscreen toggle button
-    showontop = true,                      -- show window on top button
-    showscreenshot = false,                -- show screenshot button
-    screenshot_flag = "subtitles",         -- flag for the screenshot button. subtitles, video, window, each-frame
-                                           -- https://mpv.io/manual/master/#command-interface-screenshot-%3Cflags%3E
-    chapter_softrepeat = true,             -- holding chapter skip buttons repeats toggle
-    jump_softrepeat = true,                -- holding jump seek buttons repeats toggle
+    -- Tooltips and hints
+    tooltips_for_disabled_elements = true, -- enable tooltips for disabled buttons and elements
+    tooltip_hints = true,                  -- enable text hints for info, loop, ontop, and screenshot buttons
 
-    downloadbutton = true,                 -- show download button on web videos (requires yt-dlp and ffmpeg)
-    download_path = "~~desktop/mpv",       -- the download path for videos https://mpv.io/manual/master/#paths
-
-    -- Scaling
-    vidscale = "auto",                     -- whether to scale the controller with the video
-    scalewindowed = 1.0,                   -- scaling of the controller when windowed
-    scalefullscreen = 1.0,                 -- scaling of the controller when fullscreen
-
-    -- Time & Volume
-    unicodeminus = false,                  -- whether to use the Unicode minus sign character in remaining time
-    timetotal = true,                      -- display total time instead of remaining time?
-    timems = false,                        -- display timecodes with milliseconds?
-    time_format = "dynamic",               -- "dynamic" or "fixed". dynamic shows MM:SS when possible, fixed always shows HH:MM:SS
-    timefontsize = 18,                     -- the font size of the time
-    jumpamount = 10,                       -- change the jump amount (in seconds by default)
-    jumpiconnumber = true,                 -- show different icon when jumpamount is 5, 10, or 30
-    jumpmode = "relative",                 -- seek mode for jump buttons
-    volumecontrol = true,                  -- whether to show mute button and volume slider
-    volumecontroltype = "linear",          -- use "linear" or "log" (logarithmic) volume scale
-
-    -- Seeking
+    -- Progress bar settings 
+    seekbarhandlesize = 0.8,               -- size ratio of the seekbar handle (range: 0 ~ 1)
+    seekrange = true,                      -- show seek range overlay
+    seekrangealpha = 150,                  -- transparency of the seek range
+    livemarkers = true,                    -- update chapter markers on the seekbar when duration changes
     seekbarkeyframes = false,              -- use keyframes when dragging the seekbar
-    seekbarhandlesize = 0.8,               -- size ratio of the slider handle, range 0 ~ 1
-    seekrange = true,                      -- show seekrange overlay
-    seekrangealpha = 150,                  -- transparency of seekranges
-    livemarkers = true,                    -- update seekbar chapter markers on duration change
-
-    osc_on_seek = false,                   -- show osc when seeking? or input.conf: x script-message-to modernz osc-show
-    mouse_seek_pause = true,               -- should the video pause while seeking with mouse move? (on button hold)
-
-    automatickeyframemode = true,          -- set seekbarkeyframes based on video length to prevent laggy scrubbing on long videos 
-    automatickeyframelimit = 600,          -- videos of above this length (in seconds) will have seekbarkeyframes on
-
-    -- UI [elements]
-    showtitle = true,                      -- show title in OSC (above seekbar)
-    showwindowtitle = true,                -- show window title in borderless/fullscreen mode
-    showwindowcontrols = true,             -- show window controls (close, min, max) in borderless/fullscreen
-    show_chapter_title = true,             -- show chapter title next to timestamp (below seekbar)
-    titleBarStrip = false,                 -- whether to make the title bar a singular bar instead of a black fade
-    title = "${media-title}",              -- title above seekbar
-    windowcontrols_title = "${media-title}", -- title in windowcontrols
-    font = "mpv-osd-symbols",              -- mpv-osd-symbols = default osc font (or the one set in mpv.conf)
-    titlefontsize = 30,                    -- the font size of the title text (above seekbar)
-    chapter_fmt = "%s",                    -- chapter print format for seekbar-hover. "no" to disable
-
-    tooltips_for_disabled_elements = true, -- enables tooltips for disabled buttons and elements
-    tooltip_hints = true,                  -- enables text hints for the information, loop, ontop and screenshot buttons
-
-    playpause_size = 30,                   -- icon size for the play-pause button
-    midbuttons_size = 24,                  -- icon size for the middle buttons
-    sidebuttons_size = 24,                 -- icon size for the side buttons
+    
+    automatickeyframemode = true,          -- automatically set keyframes for the seekbar based on video length
+    automatickeyframelimit = 600,          -- videos longer than this (in seconds) will have keyframes on the seekbar 
 
     persistentprogress = false,            -- always show a small progress line at the bottom of the screen
-    persistentprogressheight = 17,         -- the height of the persistentprogress bar
-    persistentbuffer = false,              -- on web videos, show the buffer on the persistent progress line
+    persistentprogressheight = 17,         -- height of the persistent progress bar
+    persistentbuffer = false,              -- show buffer status on web videos in the persistent progress line
 
-    -- UI [behavior]
-    showonpause = true,                    -- whether to show osc when paused
-    keeponpause = true,                    -- whether to disable the hide timeout on pause
-    bottomhover = true,                    -- if the osc should only display when hovering at the bottom
-    bottomhover_zone = 160,                -- height of show/hide zone for bottomhover
-    raisesubs = true,                      -- whether to raise subtitles above the osc when it's shown
-    raisesubamount = 175,                  -- how much subtitles rise when the osc is shown
-    thumbnailborder = 2,                   -- the width of the thumbnail border (thumbfast)
-
-    OSCfadealpha = 150,                    -- alpha of the background box for the OSC
-    boxalpha = 75,                         -- alpha of the window title bar
-
-    loopinpause = true,                    -- activate looping by right clicking pause
+    -- Miscellaneous settings
     visibility = "auto",                   -- only used at init to set visibility_mode(...)
-
-    -- UI [time-based]
-    hidetimeout = 1500,                    -- duration in ms until OSC hides if no mouse movement
-    seek_resets_hidetimeout = true,        -- if seeking should reset the hidetimeout
-    fadeduration = 250,                    -- duration of fade out in ms, 0 = no fade
-    minmousemove = 0,                      -- amount of pixels the mouse has to move for OSC to show
-
-    tick_delay = 1 / 60,                   -- minimum interval between OSC redraws in seconds
-    tick_delay_follow_display_fps = false, -- use display fps as the minimum interval
+    tick_delay = 1 / 60,                   -- minimum interval between OSC redraws (in seconds)
+    tick_delay_follow_display_fps = false, -- use display FPS as the minimum redraw interval
 
     -- Mouse commands
     -- customize the button function based on mouse action
@@ -712,7 +720,7 @@ end
 -- convert slider_pos to logarithmic depending on volumecontrol user_opts
 local function set_volume(slider_pos)
     local volume = slider_pos
-    if user_opts.volumecontroltype == "log" then
+    if user_opts.volumecontroltype == "logarithmic" then
         volume = slider_pos^2 / 100
     end
     return math.floor(volume)
@@ -2064,7 +2072,7 @@ local function osc_init()
     ne.slider.seekRangesF = function() return nil end
     ne.slider.posF = function ()
         local volume = mp.get_property_number("volume")
-        if user_opts.volumecontrol == "log" then
+        if user_opts.volumecontrol == "logarithmic" then
             return math.sqrt(volume * 100)
         else
             return volume
@@ -3186,7 +3194,7 @@ local function validate_user_opts()
     end
 
     if user_opts.volumecontroltype ~= "linear" and
-       user_opts.volumecontroltype ~= "log" then
+       user_opts.volumecontroltype ~= "logarithmic" then
           msg.warn("volumecontrol cannot be '" .. user_opts.volumecontroltype .. "'. Ignoring.")
           user_opts.volumecontroltype = "linear"
     end
