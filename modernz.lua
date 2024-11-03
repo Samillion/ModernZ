@@ -2202,10 +2202,10 @@ local function osc_init()
                 local command = {
                     "yt-dlp",
                     ytdl_format,
-                    "--remux", "mp4",
+                    is_image and "" or "--remux", is_image and "" or "mp4",
                     "--add-metadata",
                     "--embed-subs",
-                    "-o", "%(title)s",
+                    "-o", "%(title)s.%(ext)s",
                     "-P", localpath,
                     state.web_video_path
                 }
