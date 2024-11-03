@@ -2985,8 +2985,9 @@ local function set_tick_delay(_, display_fps)
     end
     tick_delay = 1 / display_fps
 end
-
+local new_file_flag = false -- flag to detect new file starts
 mp.register_event("file-loaded", function() 
+    new_file_flag = true
     state.fileSizeNormalised = "Approximating size..."
     check_path_url()
 end)
@@ -3002,15 +3003,7 @@ mp.observe_property("chapter-list", "native", function(_, list)
     request_init()
 end)
 
-local last_time = -1 -- last known playback time
-local new_file_flag = false -- flag to detect new file starts
 mp.observe_property("playback-time", "native", function(_, time)
-    if time == nil or time < last_time then
-        new_file_flag = true
-    elseif time and time > 1 then
-        new_file_flag = false
-    end
-    last_time = time or 0
     request_tick()
 end)
 mp.observe_property("seeking", "native", function(_, seeking)
@@ -3019,6 +3012,8 @@ mp.observe_property("seeking", "native", function(_, seeking)
     end
     if seeking and user_opts.osc_on_seek and not new_file_flag then
         show_osc()
+    elseif new_file_flag then
+        new_file_flag = false
     end
 end)
 
