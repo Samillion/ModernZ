@@ -2591,7 +2591,6 @@ local function osc_init()
     end
 
     -- load layout
-    is_image() -- init check if it's an image file
     if state.is_image then
         layouts["modern-image"]()
     else
@@ -3082,6 +3081,7 @@ local function set_tick_delay(_, display_fps)
 end
 
 mp.register_event("file-loaded", function() 
+    is_image() -- check if file is an image
     state.fileSizeNormalised = "Approximating size..."
     check_path_url()
 end)
