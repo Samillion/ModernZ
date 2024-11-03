@@ -1839,12 +1839,12 @@ layouts["modern-image"] = function ()
     local outeroffset = 100 + 100
 
     -- Title
-    geo = {x = 50 - (showplaylist and 0 or 25), y = refY - 26, an = 1, w = osc_geo.w * 0.25, h = 35,}
+    geo = {x = 50 - (showplaylist and 0 or 25), y = refY - 26, an = 1, w = (osc_geo.w / 2) - 100, h = 35,}
     lo = add_layout("title")
     lo.geometry = geo
     lo.style = string.format("%s{\\clip(0,%f,%f,%f)}", osc_styles.title, geo.y - geo.h, geo.x + geo.w, geo.y + geo.h)
     lo.alpha[3] = 0
-    lo.button.maxchars = geo.w / 1
+    lo.button.maxchars = geo.w / 13
 
     -- buttons
     if shownextprev then
@@ -2016,7 +2016,7 @@ local function osc_init()
     -- playlist buttons
     -- prev
     ne = new_element("playlist_prev", "button")
-    ne.visible = (osc_param.playresx >= 500 - nojumpoffset - noskipoffset*(nojumpoffset == 0 and 1 or 10))
+    ne.visible = (osc_param.playresx >= (state.is_image and 300 or 500) - nojumpoffset - noskipoffset*(nojumpoffset == 0 and 1 or 10))
     ne.content = icons.previous
     ne.enabled = (pl_pos > 1) or (loop ~= "no")
     ne.eventresponder["mbtn_left_up"] = function () mp.commandv("playlist-prev", "weak") end
@@ -2025,7 +2025,7 @@ local function osc_init()
 
     --next
     ne = new_element("playlist_next", "button")
-    ne.visible = (osc_param.playresx >= 500 - nojumpoffset - noskipoffset*(nojumpoffset == 0 and 1 or 10))
+    ne.visible = (osc_param.playresx >= (state.is_image and 300 or 500) - nojumpoffset - noskipoffset*(nojumpoffset == 0 and 1 or 10))
     ne.content = icons.next
     ne.enabled = (have_pl and (pl_pos < pl_count)) or (loop ~= "no")
     ne.eventresponder["mbtn_left_up"] = function () mp.commandv("playlist-next", "weak") end
@@ -2150,7 +2150,7 @@ local function osc_init()
     ne = new_element("tog_playlist", "button")
     ne.enabled = have_pl or not user_opts.gray_empty_playlist_button
     ne.off = not have_pl and user_opts.gray_empty_playlist_button
-    ne.visible = (osc_param.playresx >= 750 - outeroffset)
+    ne.visible = (osc_param.playresx >= (state.is_image and 250 or 750) - outeroffset)
     ne.content = icons.playlist
     ne.tooltip_style = osc_styles.tooltip
     ne.tooltipF = have_pl and texts.playlist .. " [" .. pl_pos .. "/" .. pl_count .. "]" or texts.playlist
