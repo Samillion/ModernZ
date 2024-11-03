@@ -1831,10 +1831,10 @@ layouts["modern-image"] = function ()
 
     local shownextprev = user_opts.shownextprev
     local showfullscreen = user_opts.showfullscreen_button
-    local showloop = user_opts.showloop and should_show
+    local showloop = user_opts.showloop
     local showinfo = user_opts.showinfo
     local showontop = user_opts.showontop
-    local showscreenshot = user_opts.showscreenshot and should_show
+    local showscreenshot = user_opts.showscreenshot
     local showplaylist = user_opts.showplaylist and (not user_opts.hide_empty_playlist_button or mp.get_property_number("playlist-count", 0) > 1)
 
     local offset = 0
@@ -1864,7 +1864,7 @@ layouts["modern-image"] = function ()
         lo = add_layout("tog_playlist")
         lo.geometry = {x = 25, y = refY - 40, an = 5, w = 24, h = 24}
         lo.style = osc_styles.control_3
-        lo.visible = (osc_param.playresx >= 600 - outeroffset)
+        lo.visible = (osc_param.playresx >= 250 - outeroffset)
     end
 
     -- Fullscreen/Info/Loop/Pin/Screenshot
