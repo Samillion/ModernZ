@@ -969,8 +969,8 @@ local function render_elements(master_ass)
                         local pend = get_slider_ele_pos_for(element, range["end"])
 
                         local cache_starts_in_handle = pstart >= xp-rh and pstart <= xp + rh
-                        local cache_ends_in_handle = pend >= xp-rh and pend <= xp + rh
-                        local cache_passes_handle = pstart < xp-rh and pend > xp + rh
+                        local cache_ends_in_handle = pend >= xp-rh and pend <= xp
+                        local cache_passes_handle = pstart < xp-rh and pend > xp
                         if cache_starts_in_handle or cache_ends_in_handle then
                             if cache_starts_in_handle and cache_ends_in_handle then
                                 pstart = 0
@@ -982,11 +982,13 @@ local function render_elements(master_ass)
                             end
                         elseif cache_passes_handle then
                             -- split range rendering to avoid rendering above handle
-                            elem_ass:rect_cw(pstart, slider_lo.gap, xp - rh, elem_geo.h - slider_lo.gap)
+                            elem_ass:rect_cw(pstart - rh, slider_lo.gap, xp - rh, elem_geo.h - slider_lo.gap)
                             pstart = xp + rh
+                        else
+                            pstart = pstart - rh
                         end
 
-                        elem_ass:rect_cw(pstart, slider_lo.gap, pend, elem_geo.h - slider_lo.gap)
+                        elem_ass:rect_cw(pstart, slider_lo.gap, pend + (cache_ends_in_handle and 0 or rh), elem_geo.h - slider_lo.gap)
                     end
                 end
 
