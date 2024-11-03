@@ -35,11 +35,12 @@ Don't like the default white buttons and text? ModernZ is fully customizable! Ch
 
 ![modernz-colors-bottom](https://github.com/user-attachments/assets/6d686c53-843b-46f9-b630-a396e88b95be)
 
-See the [Color Customization](docs/USER_OPTS.md#colors) section in the configuration guide for details on how to customize colors and buttons.
+See the [Color Customization](docs/USER_OPTS.md#colors-and-style) section in the configuration guide for details on how to customize colors and buttons.
 
 ## Installation
 
 1. **Disable Stock OSC**
+
    - Add `osc=no` in your `mpv.conf`
 
 2. **Copy Files**
@@ -72,7 +73,7 @@ See the [Color Customization](docs/USER_OPTS.md#colors) section in the configura
 
 1. Create `modernz.conf` in the `/script-opts` folder to customize settings
 
-   - [Download default modernz.conf](https://github.com/Samillion/ModernZ/blob/main/modernz.conf)
+   - [Download default modernz.conf](./modernz.conf)
 
 2. Example short configuration:
 
@@ -188,7 +189,8 @@ For even more useful scripts, check out the [mpv User Scripts Wiki](https://gith
     - forked from [maoiscat/mpv-osc-modern](https://github.com/maoiscat/mpv-osc-modern)
 
 **Why fork yet again?**
-- To add many features in: [Color Customization](docs/USER_OPTS.md#colors), [Options](docs/USER_OPTS.md) and [Locale Integration](docs/TRANSLATIONS.md)
+
+- To add many features in: [Color Customization](docs/USER_OPTS.md#colors-and-style), [Options](docs/USER_OPTS.md) and [Locale Integration](docs/TRANSLATIONS.md)
 - To integrate console and select into the osc, which inspired mpv to apply it in the stock osc. [ref [#1](https://github.com/mpv-player/mpv/pull/15016), [#2](https://github.com/mpv-player/mpv/pull/15031)]
 - To re-do the project entirely to match mpv's stock osc standards, to ensure compatibility
 - To eliminate old bugs and redundancy within the code
@@ -198,4 +200,5 @@ In essence, to modernize and revive the `Modern` origin.
 Having said that, ModernZ still uses parts of the old code, and every previous and current fork author and contributor deserve credit (including mpv's stock osc), that is why they're mentioned in detail.
 
 #### Credits:
+
 Fluent System Icons font was modified by [Xurdejl](https://github.com/Xurdejl) for use on ModernZ, they also contributed with code, reports and tests. 😻
