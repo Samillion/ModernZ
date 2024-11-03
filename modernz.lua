@@ -1957,13 +1957,15 @@ local function osc_init()
         end
     end
     ne.eventresponder["mbtn_right_down"] = function ()
-        if state.looping then
-            mp.command("show-text '" .. texts.loopdisable .. "'")
-        else
-            mp.command("show-text '" .. texts.loopenable .. "'")
-        end    
-        state.looping = not state.looping
-        mp.set_property_native("loop-file", state.looping)
+        if user_opts.loopinpause then
+            if state.looping then
+                mp.command("show-text '" .. texts.loopdisable .. "'")
+            else
+                mp.command("show-text '" .. texts.loopenable .. "'")
+            end    
+            state.looping = not state.looping
+            mp.set_property_native("loop-file", state.looping)
+        end
     end
 
     local jumpamount = user_opts.jumpamount
