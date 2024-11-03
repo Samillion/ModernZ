@@ -1634,7 +1634,7 @@ layouts = function ()
     lo.style = string.format("%s{\\clip(0,%f,%f,%f)}", osc_styles.title,
                              geo.y - geo.h, geo.x + geo.w, geo.y + geo.h)
     lo.alpha[3] = 0
-    lo.button.maxchars = geo.w / 11
+    lo.button.maxchars = geo.w / (should_show and 11 or 25)
 
     -- buttons
     if shownextprev then
