@@ -982,11 +982,13 @@ local function render_elements(master_ass)
                             end
                         elseif cache_passes_handle then
                             -- split range rendering to avoid rendering above handle
-                            elem_ass:rect_cw(pstart, slider_lo.gap, xp - rh, elem_geo.h - slider_lo.gap)
+                            elem_ass:rect_cw(pstart - rh, slider_lo.gap, xp - rh, elem_geo.h - slider_lo.gap)
                             pstart = xp + rh
+                        else
+                            pstart = pstart - rh
                         end
 
-                        elem_ass:rect_cw(pstart - rh, slider_lo.gap, pend + rh, elem_geo.h - slider_lo.gap)
+                        elem_ass:rect_cw(pstart, slider_lo.gap, pend + rh, elem_geo.h - slider_lo.gap)
                     end
                 end
 
