@@ -1871,7 +1871,8 @@ local function osc_init()
     local pl_pos = mp.get_property_number("playlist-pos", 0) + 1
     local have_ch = mp.get_property_number("chapters", 0) > 0
     local loop = mp.get_property("loop-playlist", "no")
-    local is_image = mp.get_property_number("estimated-frame-count", 0) < 2 and audio_track_count == 0
+    local current_track = mp.get_property_native("current-tracks/video")
+    local is_image = current_track and current_track.image and not current_track.albumart and mp.get_property_number("estimated-frame-count", 0) < 2 and audio_track_count == 0
 
     local nojumpoffset = user_opts.showjump and 0 or 100
     local noskipoffset = user_opts.showskip and 0 or 100
