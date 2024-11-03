@@ -99,6 +99,8 @@ local user_opts = {
     midbuttons_size = 24,                  -- icon size for the middle buttons
     sidebuttons_size = 24,                 -- icon size for the side buttons
 
+    hide_elements_for_image = true,        -- hides irrelevant elements when viewing images
+
     -- Colors and style
     osc_color = "#000000",                 -- accent color of the OSC and title bar
     window_title_color = "#FFFFFF",        -- color of the title in borderless/fullscreen mode
@@ -428,7 +430,7 @@ local state = {
     downloading = false,
     fileSizeBytes = 0,
     fileSizeNormalised = "Approximating size...",
-    isWebVideo = false,
+    isURL = false,
     web_video_path = "",                    -- used for yt-dlp downloading
     videoCantBeDownloaded = false,
 }
@@ -935,7 +937,7 @@ local function render_elements(master_ass)
                 
                 if pos then
                     xp = get_slider_ele_pos_for(element, pos)
-                    local handle_hovered = mouse_hit_coords(element.hitbox.x1+xp-rh, element.hitbox.y1+elem_geo.h/2-rh, element.hitbox.x1+xp+rh, element.hitbox.y1+elem_geo.h/2+rh)
+                    local handle_hovered = mouse_hit_coords(element.hitbox.x1+xp-rh, element.hitbox.y1+elem_geo.h/2-rh, element.hitbox.x1+xp+rh, element.hitbox.y1+elem_geo.h/2+rh) and element.enabled
                     if handle_hovered and user_opts.hovereffect_for_sliders then
                         -- apply size & color hovereffects (glow is not supported)
                         if contains(user_opts.hovereffect, "size") then
@@ -946,7 +948,7 @@ local function render_elements(master_ass)
                         end
                     end
                     ass_draw_cir_cw(elem_ass, xp, elem_geo.h/2, rh)
-                    if handle_hovered and user_opts.hovereffect_for_sliders  then
+                    if handle_hovered and user_opts.hovereffect_for_sliders then
                         elem_ass:draw_stop()
                         elem_ass:merge(element.style_ass)
                         ass_append_alpha(elem_ass, element.layout.alpha, 0)
@@ -991,7 +993,7 @@ local function render_elements(master_ass)
                 elem_ass:draw_stop()
                 
                 -- add tooltip
-                if element.slider.tooltipF ~= nil then
+                if element.slider.tooltipF ~= nil and element.enabled then
                     if mouse_hit(element) then
                         local sliderpos = get_slider_value(element)
                         local tooltiplabel = element.slider.tooltipF(sliderpos)
@@ -1332,7 +1334,7 @@ local function exec(args, callback)
 end
 
 local function check_path_url()
-    state.isWebVideo = false
+    state.isURL = false
     state.downloading = false
 
     local path = mp.get_property("path")
@@ -1349,9 +1351,9 @@ local function check_path_url()
     local ytdl_format = (mpv_ytdl and mpv_ytdl ~= "") and "-f " .. mpv_ytdl or "-f " .. "bestvideo+bestaudio/best"
 
     if is_url(path) then
-        state.isWebVideo = true
+        state.isURL = true
         state.web_video_path = path
-        msg.info("Web video detected.")
+        msg.info("URL detected.")
 
         if user_opts.downloadbutton then
             msg.info("Fetching file size...")
@@ -1544,6 +1546,10 @@ layouts = function ()
         h = 180
     }
 
+    local current_track = mp.get_property_native("current-tracks/video")
+    local is_image = current_track and current_track.image and not current_track.albumart and mp.get_property_number("estimated-frame-count", 0) < 2 and audio_track_count == 0
+    local should_show = not is_image or not user_opts.hide_elements_for_image
+
     -- origin of the controllers, left/bottom corner
     local posX = 0
     local posY = osc_param.playresy
@@ -1583,55 +1589,60 @@ layouts = function ()
     local refY = posY
         
     -- Seekbar
-    new_element("seekbarbg", "box")
-    lo = add_layout("seekbarbg")
-    lo.geometry = {x = refX , y = refY - 100, an = 5, w = osc_geo.w - 50, h = 2}
-    lo.layer = 13
-    lo.style = osc_styles.seekbar_bg
-    lo.alpha[1] = 128
-    lo.alpha[3] = 128
+    if should_show then
+        new_element("seekbarbg", "box")
+        lo = add_layout("seekbarbg")
+        lo.geometry = {x = refX , y = refY - 100, an = 5, w = osc_geo.w - 50, h = 2}
+        lo.layer = 13
+        lo.style = osc_styles.seekbar_bg
+        lo.alpha[1] = 128
+        lo.alpha[3] = 128
 
-    lo = add_layout("seekbar")
-    lo.geometry = {x = refX, y = refY - 100, an = 5, w = osc_geo.w - 50, h = 16}
-    lo.style = osc_styles.seekbar_fg
-    lo.slider.gap = 7
-    lo.slider.tooltip_style = osc_styles.tooltip
-    lo.slider.tooltip_an = 2
-    
-    if user_opts.persistentprogress or state.persistentprogresstoggle then
-        lo = add_layout("persistentseekbar")
-        lo.geometry = {x = refX, y = refY, an = 5, w = osc_geo.w, h = user_opts.persistentprogressheight}
+        lo = add_layout("seekbar")
+        lo.geometry = {x = refX, y = refY - 100, an = 5, w = osc_geo.w - 50, h = 16}
         lo.style = osc_styles.seekbar_fg
         lo.slider.gap = 7
-        lo.slider.tooltip_an = 0   
+        lo.slider.tooltip_style = osc_styles.tooltip
+        lo.slider.tooltip_an = 2
+        
+        if user_opts.persistentprogress or state.persistentprogresstoggle then
+            lo = add_layout("persistentseekbar")
+            lo.geometry = {x = refX, y = refY, an = 5, w = osc_geo.w, h = user_opts.persistentprogressheight}
+            lo.style = osc_styles.seekbar_fg
+            lo.slider.gap = 7
+            lo.slider.tooltip_an = 0   
+        end
     end
 
-    local showjump = user_opts.showjump
-    local showskip = user_opts.showskip
+    local showjump = user_opts.showjump and should_show
+    local showskip = user_opts.showskip and should_show
     local shownextprev = user_opts.shownextprev
     local showfullscreen = user_opts.showfullscreen_button
-    local showloop = user_opts.showloop
+    local showloop = user_opts.showloop and should_show
     local showinfo = user_opts.showinfo
     local showontop = user_opts.showontop
-    local showscreenshot = user_opts.showscreenshot
+    local showscreenshot = user_opts.showscreenshot and should_show
     local showplaylist = user_opts.showplaylist and (not user_opts.hide_empty_playlist_button or mp.get_property_number("playlist-count", 0) > 1)
 
     local offset = showjump and 60 or 0
-    local outeroffset = (showskip and 0 or 100) + (showjump and 0 or 100)
+    local outeroffset = (showskip and 0 or 100) + (showjump and 20 or 100)
 
     -- Title
-    geo = {x = 25, y = refY - 122 + 0, an = 1, w = osc_geo.w - 50, h = 35}
+    geo = {
+        x = should_show and 25 or (50 - (showplaylist and 0 or 25)), 
+        y = refY - (should_show and 122 or 26), an = 1, 
+        w = (should_show and osc_geo.w - 50 or osc_geo.w * 0.25), h = 35,
+    }
     lo = add_layout("title")
     lo.geometry = geo
-    lo.style = string.format("%s{\\clip(0,%f,%f,%f)}", osc_styles.title,
-                             geo.y - geo.h, geo.x + geo.w, geo.y + geo.h)
+    lo.style = string.format("%s{\\clip(0,%f,%f,%f)}", osc_styles.title, geo.y - geo.h, geo.x + geo.w, geo.y + geo.h)
     lo.alpha[3] = 0
-    lo.button.maxchars = geo.w / 11
+    lo.button.maxchars = geo.w / (should_show and 11 or 1)
 
     -- buttons
     if shownextprev then
         lo = add_layout("playlist_prev")
-        lo.geometry = {x = refX - (60 + (showskip and 60 or 0)) - offset, y = refY - 40 , an = 5, w = 30, h = 24}
+        lo.geometry = {x = refX - ((should_show and 60 or 20) + (showskip and 60 or 0)) - offset, y = refY - 40 , an = 5, w = 30, h = 24}
         lo.style = osc_styles.control_2
     end
 
@@ -1647,9 +1658,11 @@ layouts = function ()
         lo.style = (user_opts.jumpiconnumber and icons.jumpicons[user_opts.jumpamount] ~= nil) and osc_styles.control_2 or osc_styles.control_2_flip
     end
 
-    lo = add_layout("play_pause")
-    lo.geometry = {x = refX, y = refY - 40 , an = 5, w = 45, h = 45}
-    lo.style = osc_styles.control_1
+    if should_show then
+        lo = add_layout("play_pause")
+        lo.geometry = {x = refX, y = refY - 40 , an = 5, w = 45, h = 45}
+        lo.style = osc_styles.control_1
+    end
 
     if showjump then
         lo = add_layout("jump_forward")
@@ -1665,7 +1678,7 @@ layouts = function ()
 
     if shownextprev then
         lo = add_layout("playlist_next")
-        lo.geometry = {x = refX + (60 + (showskip and 60 or 0)) + offset, y = refY - 40 , an = 5, w = 30, h = 24}
+        lo.geometry = {x = refX + ((should_show and 60 or 20) + (showskip and 60 or 0)) + offset, y = refY - 40 , an = 5, w = 30, h = 24}
         lo.style = osc_styles.control_2
     end
 
@@ -1675,9 +1688,11 @@ layouts = function ()
     local dur = mp.get_property_number("duration", 0)
 
     local show_hours = possec >= 3600 or user_opts.time_format ~= "dynamic"
-    lo = add_layout("tc_left")
-    lo.geometry = {x = 25, y = refY - 84, an = 7, w = 45 + (state.tc_ms and 30 or 0) + (show_hours and 20 or 0), h = 20}
-    lo.style = osc_styles.time
+    if should_show then
+        lo = add_layout("tc_left")
+        lo.geometry = {x = 25, y = refY - 84, an = 7, w = 45 + (state.tc_ms and 30 or 0) + (show_hours and 20 or 0), h = 20}
+        lo.style = osc_styles.time
+    end
 
     local show_remhours = (state.tc_right_rem and remsec >= 3600) or (not state.tc_right_rem and dur >= 3600) or user_opts.time_format ~= "dynamic"
     lo = add_layout("tc_right")
@@ -1696,46 +1711,54 @@ layouts = function ()
     end
 
     -- Audio
-    lo = add_layout("audio_track")
-    lo.geometry = {x = 37, y = refY - 40, an = 5, w = 24, h = 24}
-    lo.style = osc_styles.control_3
-    lo.visible = (osc_param.playresx >= 500 - outeroffset)
+    if should_show then
+        lo = add_layout("audio_track")
+        lo.geometry = {x = 37, y = refY - 40, an = 5, w = 24, h = 24}
+        lo.style = osc_styles.control_3
+        lo.visible = (osc_param.playresx >= 500 - outeroffset)
+    end
 
     -- Subtitle
-    lo = add_layout("sub_track")
-    lo.geometry = {x = 82, y = refY - 40, an = 5, w = 24, h = 24}
-    lo.style = osc_styles.control_3
-    lo.visible = (osc_param.playresx >= 600 - outeroffset)
+    if should_show then
+        lo = add_layout("sub_track")
+        lo.geometry = {x = 82, y = refY - 40, an = 5, w = 24, h = 24}
+        lo.style = osc_styles.control_3
+        lo.visible = (osc_param.playresx >= 600 - outeroffset)
+    end
 
     -- Playlist
     if showplaylist then
         lo = add_layout("tog_playlist")
-        lo.geometry = {x = 127, y = refY - 40, an = 5, w = 24, h = 24}
+        lo.geometry = {x = should_show and 127 or 25, y = refY - 40, an = 5, w = 24, h = 24}
         lo.style = osc_styles.control_3
         lo.visible = (osc_param.playresx >= 600 - outeroffset)
     end
 
     -- Volume
-    lo = add_layout("vol_ctrl")
-    lo.geometry = {x = 172 - (showplaylist and 0 or 45), y = refY - 40, an = 5, w = 24, h = 24}
-    lo.style = osc_styles.control_3
-    lo.visible = (osc_param.playresx >= 600 - outeroffset)
+    if should_show then
+        lo = add_layout("vol_ctrl")
+        lo.geometry = {x = 172 - (showplaylist and 0 or 45), y = refY - 40, an = 5, w = 24, h = 24}
+        lo.style = osc_styles.control_3
+        lo.visible = (osc_param.playresx >= 600 - outeroffset)
+    end
 
     -- Volumebar
-    lo = new_element("volumebarbg", "box")
-    lo.visible = (osc_param.playresx >= 950 - outeroffset) and user_opts.volumecontrol
-    lo = add_layout("volumebarbg")
-    lo.geometry = {x = 200 - (showplaylist and 0 or 45), y = refY - 40, an = 4, w = 80, h = 2}
-    lo.layer = 13
-    lo.alpha[1] = 128
-    lo.style = user_opts.vol_bar_match_seek and osc_styles.seekbar_bg or osc_styles.volumebar_bg
-    
-    lo = add_layout("volumebar")
-    lo.geometry = {x = 200 - (showplaylist and 0 or 45), y = refY - 40, an = 4, w = 80, h = 8}
-    lo.style = user_opts.vol_bar_match_seek and osc_styles.seekbar_fg or osc_styles.volumebar_fg
-    lo.slider.gap = 3
-    lo.slider.tooltip_style = osc_styles.tooltip
-    lo.slider.tooltip_an = 2
+    if should_show then
+        lo = new_element("volumebarbg", "box")
+        lo.visible = (osc_param.playresx >= 950 - outeroffset) and user_opts.volumecontrol
+        lo = add_layout("volumebarbg")
+        lo.geometry = {x = 200 - (showplaylist and 0 or 45), y = refY - 40, an = 4, w = 80, h = 2}
+        lo.layer = 13
+        lo.alpha[1] = 128
+        lo.style = user_opts.vol_bar_match_seek and osc_styles.seekbar_bg or osc_styles.volumebar_bg
+        
+        lo = add_layout("volumebar")
+        lo.geometry = {x = 200 - (showplaylist and 0 or 45), y = refY - 40, an = 4, w = 80, h = 8}
+        lo.style = user_opts.vol_bar_match_seek and osc_styles.seekbar_fg or osc_styles.volumebar_fg
+        lo.slider.gap = 3
+        lo.slider.tooltip_style = osc_styles.tooltip
+        lo.slider.tooltip_an = 2
+    end
 
     -- Fullscreen/Info/Loop/Pin/Screenshot
     if showfullscreen then
@@ -1871,6 +1894,8 @@ local function osc_init()
     local pl_pos = mp.get_property_number("playlist-pos", 0) + 1
     local have_ch = mp.get_property_number("chapters", 0) > 0
     local loop = mp.get_property("loop-playlist", "no")
+    local current_track = mp.get_property_native("current-tracks/video")
+    local is_image = current_track and current_track.image and not current_track.albumart and mp.get_property_number("estimated-frame-count", 0) < 2 and audio_track_count == 0
 
     local nojumpoffset = user_opts.showjump and 0 or 100
     local noskipoffset = user_opts.showskip and 0 or 100
@@ -1911,6 +1936,7 @@ local function osc_init()
     --play control buttons
     --play_pause
     ne = new_element("play_pause", "button")
+    ne.enabled = not is_image
     ne.content = function ()
         if mp.get_property("eof-reached") == "yes" then
             return icons.replay
@@ -1944,6 +1970,7 @@ local function osc_init()
 
     --jump_backward
     ne = new_element("jump_backward", "button")
+    ne.enabled = not is_image
     ne.softrepeat = user_opts.jump_softrepeat == true
     ne.content = jump_icon[1]
     ne.eventresponder["mbtn_left_down"] = function () mp.commandv("seek", -jumpamount, jumpmode) end
@@ -1952,6 +1979,7 @@ local function osc_init()
 
     --jump_forward
     ne = new_element("jump_forward", "button")
+    ne.enabled = not is_image
     ne.softrepeat = user_opts.jump_softrepeat == true
     ne.content = jump_icon[2]
     ne.eventresponder["mbtn_left_down"] = function () mp.commandv("seek", jumpamount, jumpmode) end
@@ -2114,6 +2142,7 @@ local function osc_init()
 
     --tog_loop
     ne = new_element("tog_loop", "button")
+    ne.enabled = not is_image
     ne.content = function () return state.looping and icons.loop_on or icons.loop_off end
     ne.visible = (osc_param.playresx >= 750 - outeroffset - (user_opts.showinfo and 0 or 100) - (user_opts.showfullscreen and 0 or 100))
     ne.tooltip_style = osc_styles.tooltip
@@ -2157,6 +2186,7 @@ local function osc_init()
 
     --screenshot
     ne = new_element("screenshot", "button")
+    ne.enabled = not is_image
     ne.content = icons.screenshot
     ne.tooltip_style = osc_styles.tooltip
     if user_opts.tooltip_hints then
@@ -2175,7 +2205,7 @@ local function osc_init()
     --download
     ne = new_element("download", "button")
     ne.content = function () return state.downloading and icons.downloading or icons.download end
-    ne.visible = (osc_param.playresx >= 1050 - outeroffset - (user_opts.showscreenshot and 0 or 100) - (user_opts.showontop and 0 or 100) - (user_opts.showloop and 0 or 100) - (user_opts.showinfo and 0 or 100) - (user_opts.showfullscreen and 0 or 100)) and state.isWebVideo
+    ne.visible = (osc_param.playresx >= 1050 - outeroffset - (user_opts.showscreenshot and 0 or 100) - (user_opts.showontop and 0 or 100) - (user_opts.showloop and 0 or 100) - (user_opts.showinfo and 0 or 100) - (user_opts.showfullscreen and 0 or 100)) and state.isURL
     ne.tooltip_style = osc_styles.tooltip
     ne.tooltipF = function () return state.downloading and "Downloading..." or state.fileSizeNormalised end
     ne.eventresponder["mbtn_left_up"] = function ()
@@ -2194,11 +2224,11 @@ local function osc_init()
                 local ytdl_format = (mpv_ytdl and mpv_ytdl ~= "") and "-f " .. mpv_ytdl or "-f " .. "bestvideo+bestaudio/best"
                 local command = {
                     "yt-dlp",
-                    ytdl_format,
-                    "--remux", "mp4",
+                    is_image and "" or ytdl_format,
+                    is_image and "" or "--remux", is_image and "" or "mp4",
                     "--add-metadata",
                     "--embed-subs",
-                    "-o", "%(title)s",
+                    "-o", "%(title)s.%(ext)s",
                     "-P", localpath,
                     state.web_video_path
                 }
@@ -2212,7 +2242,7 @@ local function osc_init()
 
     --seekbar
     ne = new_element("seekbar", "slider")
-    ne.enabled = mp.get_property("percent-pos") ~= nil
+    ne.enabled = mp.get_property("percent-pos") ~= nil and not is_image
     ne.thumbnailable = true
     state.slider_element = ne.enabled and ne or nil  -- used for forced_title
     ne.slider.markerF = function ()
@@ -2417,6 +2447,7 @@ local function osc_init()
 
     -- Current position time display
     ne = new_element("tc_left", "button")
+    ne.enabled = not is_image
     ne.content = function()
         local playback_time = mp.get_property_number("playback-time", 0)
         return format_time(playback_time)
@@ -2449,6 +2480,7 @@ local function osc_init()
 
     -- Total/remaining time display
     ne = new_element("tc_right", "button")
+    ne.enabled = not is_image
     ne.visible = (mp.get_property_number("duration", 0) > 0)
     ne.content = function()
         local duration = mp.get_property_number("duration", 0)

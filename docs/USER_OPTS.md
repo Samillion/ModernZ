@@ -100,6 +100,7 @@ Create `modernz.conf` in your mpv script-opts directory:
 | playpause_size             | 30            | icon size for the play/pause button                                                                                                                                                                    |
 | midbuttons_size            | 24            | icon size for the middle buttons                                                                                                                                                                       |
 | sidebuttons_size           | 24            | icon size for the side buttons                                                                                                                                                                         |
+| hide_elements_for_image    | yes           | hides irrelevant elements when viewing images                                                                                                                                                          |
 
 ### Colors and style
 
