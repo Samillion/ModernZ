@@ -984,7 +984,7 @@ local function render_elements(master_ass)
                             pstart = xp + rh
                         end
 
-                        elem_ass:rect_cw(pstart, slider_lo.gap, pend, elem_geo.h - slider_lo.gap)
+                        elem_ass:rect_cw(pstart - rh, slider_lo.gap, pend + rh, elem_geo.h - slider_lo.gap)
                     end
                 end
 
