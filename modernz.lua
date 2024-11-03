@@ -3082,7 +3082,8 @@ local function set_tick_delay(_, display_fps)
     tick_delay = 1 / display_fps
 end
 local new_file_flag = false -- flag to detect new file starts
-mp.register_event("file-loaded", function() 
+mp.register_event("file-loaded", function()
+    is_image() -- check if file is an image
     new_file_flag = true
     state.fileSizeNormalised = "Approximating size..."
     check_path_url()
