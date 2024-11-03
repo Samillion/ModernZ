@@ -430,7 +430,7 @@ local state = {
     downloading = false,
     fileSizeBytes = 0,
     fileSizeNormalised = "Approximating size...",
-    isWebVideo = false,
+    isURL = false,
     web_video_path = "",                    -- used for yt-dlp downloading
     videoCantBeDownloaded = false,
 }
@@ -1334,7 +1334,7 @@ local function exec(args, callback)
 end
 
 local function check_path_url()
-    state.isWebVideo = false
+    state.isURL = false
     state.downloading = false
 
     local path = mp.get_property("path")
@@ -1351,9 +1351,9 @@ local function check_path_url()
     local ytdl_format = (mpv_ytdl and mpv_ytdl ~= "") and "-f " .. mpv_ytdl or "-f " .. "bestvideo+bestaudio/best"
 
     if is_url(path) then
-        state.isWebVideo = true
+        state.isURL = true
         state.web_video_path = path
-        msg.info("Web video detected.")
+        msg.info("URL detected.")
 
         if user_opts.downloadbutton then
             msg.info("Fetching file size...")
@@ -1628,13 +1628,16 @@ layouts = function ()
     local outeroffset = (showskip and 0 or 100) + (showjump and 20 or 100)
 
     -- Title
-    geo = {x = should_show and 25 or (50 - (showplaylist and 0 or 25)), y = refY - (should_show and 122 or 26), an = 1, w = osc_geo.w - 50, h = 35}
+    geo = {
+        x = should_show and 25 or (50 - (showplaylist and 0 or 25)), 
+        y = refY - (should_show and 122 or 26), an = 1, 
+        w = (should_show and osc_geo.w - 50 or osc_geo.w * 0.25), h = 35,
+    }
     lo = add_layout("title")
     lo.geometry = geo
-    lo.style = string.format("%s{\\clip(0,%f,%f,%f)}", osc_styles.title,
-                             geo.y - geo.h, geo.x + geo.w, geo.y + geo.h)
+    lo.style = string.format("%s{\\clip(0,%f,%f,%f)}", osc_styles.title, geo.y - geo.h, geo.x + geo.w, geo.y + geo.h)
     lo.alpha[3] = 0
-    lo.button.maxchars = geo.w / (should_show and 11 or 25)
+    lo.button.maxchars = geo.w / (should_show and 11 or 1)
 
     -- buttons
     if shownextprev then
@@ -2202,7 +2205,7 @@ local function osc_init()
     --download
     ne = new_element("download", "button")
     ne.content = function () return state.downloading and icons.downloading or icons.download end
-    ne.visible = (osc_param.playresx >= 1050 - outeroffset - (user_opts.showscreenshot and 0 or 100) - (user_opts.showontop and 0 or 100) - (user_opts.showloop and 0 or 100) - (user_opts.showinfo and 0 or 100) - (user_opts.showfullscreen and 0 or 100)) and state.isWebVideo
+    ne.visible = (osc_param.playresx >= 1050 - outeroffset - (user_opts.showscreenshot and 0 or 100) - (user_opts.showontop and 0 or 100) - (user_opts.showloop and 0 or 100) - (user_opts.showinfo and 0 or 100) - (user_opts.showfullscreen and 0 or 100)) and state.isURL
     ne.tooltip_style = osc_styles.tooltip
     ne.tooltipF = function () return state.downloading and "Downloading..." or state.fileSizeNormalised end
     ne.eventresponder["mbtn_left_up"] = function ()
@@ -2221,7 +2224,7 @@ local function osc_init()
                 local ytdl_format = (mpv_ytdl and mpv_ytdl ~= "") and "-f " .. mpv_ytdl or "-f " .. "bestvideo+bestaudio/best"
                 local command = {
                     "yt-dlp",
-                    ytdl_format,
+                    is_image and "" or ytdl_format,
                     is_image and "" or "--remux", is_image and "" or "mp4",
                     "--add-metadata",
                     "--embed-subs",
