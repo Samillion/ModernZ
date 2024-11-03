@@ -1831,10 +1831,8 @@ layouts["modern-image"] = function ()
 
     local shownextprev = user_opts.shownextprev
     local showfullscreen = user_opts.showfullscreen_button
-    local showloop = user_opts.showloop
     local showinfo = user_opts.showinfo
     local showontop = user_opts.showontop
-    local showscreenshot = user_opts.showscreenshot
     local showplaylist = user_opts.showplaylist and (not user_opts.hide_empty_playlist_button or mp.get_property_number("playlist-count", 0) > 1)
 
     local offset = 0
@@ -1882,30 +1880,16 @@ layouts["modern-image"] = function ()
         lo.visible = (osc_param.playresx >= 300 - outeroffset)
     end
 
-    if showloop then
-        lo = add_layout("tog_loop")
-        lo.geometry = {x = osc_geo.w - 127 + (showinfo and 0 or 45) + (showfullscreen and 0 or 45), y = refY - 40, an = 5, w = 24, h = 24}
-        lo.style = osc_styles.control_3
-        lo.visible = (osc_param.playresx >= 400 - outeroffset)
-    end
-
     if showontop then
         lo = add_layout("tog_ontop")
-        lo.geometry = {x = osc_geo.w - 172 + (showloop and 0 or 45) + (showinfo and 0 or 45) + (showfullscreen and 0 or 45), y = refY - 40, an = 5, w = 24, h = 24}
+        lo.geometry = {x = osc_geo.w - 127 + (showinfo and 0 or 45) + (showfullscreen and 0 or 45), y = refY - 40, an = 5, w = 24, h = 24}
         lo.style = osc_styles.control_3
         lo.visible = (osc_param.playresx >= 500 - outeroffset)
-    end
-
-    if showscreenshot then
-        lo = add_layout("screenshot")
-        lo.geometry = {x = osc_geo.w - 217 + (showontop and 0 or 45) + (showloop and 0 or 45) + (showinfo and 0 or 45) + (showfullscreen and 0 or 45), y = refY - 40, an = 5, w = 24, h = 24}
-        lo.style = osc_styles.control_3
-        lo.visible = (osc_param.playresx >= 600 - outeroffset)
     end
     
     if user_opts.downloadbutton then
         lo = add_layout("download")
-        lo.geometry = {x = osc_geo.w - 262 + (showscreenshot and 0 or 45) + (showontop and 0 or 45) + (showloop and 0 or 45) + (showinfo and 0 or 45) + (showfullscreen and 0 or 45), y = refY - 40, an = 5, w = 24, h = 24}
+        lo.geometry = {x = osc_geo.w - 172 + (showontop and 0 or 45) + (showinfo and 0 or 45) + (showfullscreen and 0 or 45), y = refY - 40, an = 5, w = 24, h = 24}
         lo.style = osc_styles.control_3
         lo.visible = (osc_param.playresx >= 400 - outeroffset)
     end
