@@ -60,7 +60,7 @@ local user_opts = {
     timefontsize = 18,                     -- font size of the time display
 
     -- Title bar settings
-    showwindowtitle = true,                -- show window title in borderless/fullscreen mode
+    showwindowtitle = false,               -- show window title in borderless/fullscreen mode
     showwindowcontrols = true,             -- show window controls (close, minimize, maximize) in borderless/fullscreen
     titleBarStrip = false,                 -- show title bar as a single bar instead of a black fade
     windowcontrols_title = "${media-title}", -- same as title but for windowcontrols
@@ -106,7 +106,7 @@ local user_opts = {
     title_color = "#FFFFFF",               -- color of the title (above seekbar)
     seekbarfg_color = "#BE4D25",           -- color of the seekbar progress and handle
     seekbarbg_color = "#FFFFFF",           -- color of the remaining seekbar
-    seekbar_cache_color = "#BF9B24",       -- color of the cache ranges on the seekbar
+    seekbar_cache_color = "#BE254A",       -- color of the cache ranges on the seekbar
     vol_bar_match_seek = false,            -- match volume bar color with seekbar color (ignores side_buttons_color)
     time_color = "#FFFFFF",                -- color of the timestamps (below seekbar)
     chapter_title_color = "#FFFFFF",       -- color of the chapter title next to timestamp (below seekbar)
@@ -2444,8 +2444,8 @@ local function osc_init()
         end
         return "" -- fallback
     end
-    ne.eventresponder["mbtn_left_down"] = command_callback(user_opts.chapter_title_mbtn_left_command)
-    ne.eventresponder["mbtn_right_down"] = command_callback(user_opts.chapter_title_mbtn_right_command)
+    ne.eventresponder["mbtn_left_up"] = command_callback(user_opts.chapter_title_mbtn_left_command)
+    ne.eventresponder["mbtn_right_up"] = command_callback(user_opts.chapter_title_mbtn_right_command)
 
     -- Total/remaining time display
     ne = new_element("tc_right", "button")
