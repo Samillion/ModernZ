@@ -99,8 +99,6 @@ local user_opts = {
     midbuttons_size = 24,                  -- icon size for the middle buttons
     sidebuttons_size = 24,                 -- icon size for the side buttons
 
-    hide_elements_for_image = true,        -- hides irrelevant elements when viewing images
-
     -- Colors and style
     osc_color = "#000000",                 -- accent color of the OSC and title bar
     window_title_color = "#FFFFFF",        -- color of the title in borderless/fullscreen mode
@@ -119,8 +117,8 @@ local user_opts = {
     hovereffect_color = "#FFFFFF",         -- color of a hovered button when hovereffect includes "color"
     thumbnailborder_color = "#111111",     -- color of the border for thumbnails (with thumbfast)
 
-    OSCfadealpha = 150,                    -- alpha of the OSC background box
-    boxalpha = 75,                         -- alpha of the window title bar
+    fade_alpha = 150,                      -- alpha of the OSC background box
+    window_fade_alpha = 75,                -- alpha of the window title bar
     thumbnailborder = 2,                   -- width of the thumbnail border (for thumbfast)
 
     -- Button hover effects
@@ -364,7 +362,7 @@ local function set_osc_styles()
     local sidebuttons_size = user_opts.sidebuttons_size or 24
     osc_styles = {
         background_bar = "{\\1c&H" .. osc_color_convert(user_opts.osc_color) .. "&}",
-        box_bg = "{\\blur100\\bord" .. user_opts.OSCfadealpha .. "\\1c&H000000&\\3c&H" .. osc_color_convert(user_opts.osc_color) .. "&}",
+        box_bg = "{\\blur100\\bord" .. user_opts.fade_alpha .. "\\1c&H000000&\\3c&H" .. osc_color_convert(user_opts.osc_color) .. "&}",
         chapter_title = "{\\blur0\\bord0\\1c&H" .. osc_color_convert(user_opts.chapter_title_color) .. "&\\3c&H000000&\\fs" .. user_opts.timefontsize .. "\\fn" .. user_opts.font .. "}",
         control_1 = "{\\blur0\\bord0\\1c&H" .. osc_color_convert(user_opts.playpause_color) .. "&\\3c&HFFFFFF&\\fs" .. playpause_size .. "\\fn" .. iconfont .. "}",
         control_2 = "{\\blur0\\bord0\\1c&H" .. osc_color_convert(user_opts.middle_buttons_color) .. "&\\3c&HFFFFFF&\\fs" .. midbuttons_size .. "\\fn" .. iconfont .. "}",
@@ -1462,7 +1460,7 @@ local function window_controls()
         lo.geometry = wc_geo
         lo.layer = 10
         lo.style = osc_styles.background_bar
-        lo.alpha[1] = user_opts.boxalpha
+        lo.alpha[1] = user_opts.window_fade_alpha
     end
 
     local button_y = wc_geo.y - (wc_geo.h / 2)
@@ -1839,23 +1837,14 @@ layouts["modern-image"] = function ()
     local outeroffset = 100 + 100
 
     -- Title
-    geo = {x = 50 - (showplaylist and 0 or 25), y = refY - 26, an = 1, w = osc_geo.w * 0.25, h = 35,}
+    geo = {x = 105 - (showplaylist and 0 or 25) - (shownextprev and 0 or 50), y = refY - 26, an = 1, w = osc_geo.w - 250, h = 35,}
     lo = add_layout("title")
     lo.geometry = geo
     lo.style = string.format("%s{\\clip(0,%f,%f,%f)}", osc_styles.title, geo.y - geo.h, geo.x + geo.w, geo.y + geo.h)
     lo.alpha[3] = 0
-    lo.button.maxchars = geo.w / 1
+    lo.button.maxchars = geo.w / 14
 
     -- buttons
-    if shownextprev then
-        lo = add_layout("playlist_prev")
-        lo.geometry = {x = refX - 20 - offset, y = refY - 40 , an = 5, w = 30, h = 24}
-        lo.style = osc_styles.control_2
-
-        lo = add_layout("playlist_next")
-        lo.geometry = {x = refX + 20 + offset, y = refY - 40 , an = 5, w = 30, h = 24}
-        lo.style = osc_styles.control_2
-    end
 
     -- Playlist
     if showplaylist then
@@ -1865,7 +1854,18 @@ layouts["modern-image"] = function ()
         lo.visible = (osc_param.playresx >= 250 - outeroffset)
     end
 
-    -- Fullscreen/Info/Loop/Pin/Screenshot
+    if shownextprev then
+        lo = add_layout("playlist_prev")
+        lo.geometry = {x = 55 - (showplaylist and 0 or 25), y = refY - 40 , an = 5, w = 30, h = 24}
+        lo.style = osc_styles.control_2
+
+        lo = add_layout("playlist_next")
+        lo.geometry = {x = 80 - (showplaylist and 0 or 25), y = refY - 40 , an = 5, w = 30, h = 24}
+        lo.style = osc_styles.control_2
+    end
+
+
+    -- Fullscreen/Info/Pin
     if showfullscreen then
         lo = add_layout("tog_fullscreen")
         lo.geometry = {x = osc_geo.w - 37, y = refY - 40, an = 5, w = 24, h = 24}
@@ -1928,8 +1928,7 @@ end
 
 local function is_image()
     local current_track = mp.get_property_native("current-tracks/video")
-    if current_track and current_track.image and not current_track.albumart 
-       and mp.get_property_number("estimated-frame-count", 0) < 2 and audio_track_count == 0 then
+    if current_track and current_track.image and not current_track.albumart then
         state.is_image = true
     else
         state.is_image = false
@@ -2016,7 +2015,7 @@ local function osc_init()
     -- playlist buttons
     -- prev
     ne = new_element("playlist_prev", "button")
-    ne.visible = (osc_param.playresx >= 500 - nojumpoffset - noskipoffset*(nojumpoffset == 0 and 1 or 10))
+    ne.visible = (osc_param.playresx >= (state.is_image and 300 or 500) - nojumpoffset - noskipoffset*(nojumpoffset == 0 and 1 or 10))
     ne.content = icons.previous
     ne.enabled = (pl_pos > 1) or (loop ~= "no")
     ne.eventresponder["mbtn_left_up"] = function () mp.commandv("playlist-prev", "weak") end
@@ -2025,7 +2024,7 @@ local function osc_init()
 
     --next
     ne = new_element("playlist_next", "button")
-    ne.visible = (osc_param.playresx >= 500 - nojumpoffset - noskipoffset*(nojumpoffset == 0 and 1 or 10))
+    ne.visible = (osc_param.playresx >= (state.is_image and 300 or 500) - nojumpoffset - noskipoffset*(nojumpoffset == 0 and 1 or 10))
     ne.content = icons.next
     ne.enabled = (have_pl and (pl_pos < pl_count)) or (loop ~= "no")
     ne.eventresponder["mbtn_left_up"] = function () mp.commandv("playlist-next", "weak") end
@@ -2150,7 +2149,7 @@ local function osc_init()
     ne = new_element("tog_playlist", "button")
     ne.enabled = have_pl or not user_opts.gray_empty_playlist_button
     ne.off = not have_pl and user_opts.gray_empty_playlist_button
-    ne.visible = (osc_param.playresx >= 750 - outeroffset)
+    ne.visible = (osc_param.playresx >= (state.is_image and 250 or 750) - outeroffset)
     ne.content = icons.playlist
     ne.tooltip_style = osc_styles.tooltip
     ne.tooltipF = have_pl and texts.playlist .. " [" .. pl_pos .. "/" .. pl_count .. "]" or texts.playlist
