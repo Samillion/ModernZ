@@ -121,6 +121,7 @@ local user_opts = {
     thumbnail_border_color = "#111111",    -- color of the border for thumbnails (with thumbfast)
 
     fade_alpha = 150,                      -- alpha of the OSC background box
+    fade_blur_amount = 100,                -- blur level for the OSC background fade. caution: high values can take a lot of CPU time to render.
     window_fade_alpha = 75,                -- alpha of the window title bar
     thumbnail_border = 2,                  -- width of the thumbnail border (for thumbfast)
 
@@ -365,7 +366,7 @@ local function set_osc_styles()
     local sidebuttons_size = user_opts.sidebuttons_size or 24
     osc_styles = {
         background_bar = "{\\1c&H" .. osc_color_convert(user_opts.osc_color) .. "&}",
-        box_bg = "{\\blur100\\bord" .. user_opts.fade_alpha .. "\\1c&H000000&\\3c&H" .. osc_color_convert(user_opts.osc_color) .. "&}",
+        box_bg = "{\\blur" .. user_opts.fade_blur_amount .. "\\bord" .. user_opts.fade_alpha .. "\\1c&H000000&\\3c&H" .. osc_color_convert(user_opts.osc_color) .. "&}",
         chapter_title = "{\\blur0\\bord0\\1c&H" .. osc_color_convert(user_opts.chapter_title_color) .. "&\\3c&H000000&\\fs" .. user_opts.time_font_size .. "\\fn" .. user_opts.font .. "}",
         control_1 = "{\\blur0\\bord0\\1c&H" .. osc_color_convert(user_opts.playpause_color) .. "&\\3c&HFFFFFF&\\fs" .. playpause_size .. "\\fn" .. iconfont .. "}",
         control_2 = "{\\blur0\\bord0\\1c&H" .. osc_color_convert(user_opts.middle_buttons_color) .. "&\\3c&HFFFFFF&\\fs" .. midbuttons_size .. "\\fn" .. iconfont .. "}",
