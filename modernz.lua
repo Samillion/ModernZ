@@ -870,6 +870,85 @@ local function get_chapter(possec)
     end
 end
 
+-- Draws a handle on the slider according to user_opts
+-- Returns handle posistion and radius
+local function draw_slider_handle(element, elem_ass, override_alpha)
+    local pos = element.slider.posF()
+    if not pos then
+        return 0, 0
+    end
+    local elem_geo = element.layout.geometry
+    local rh = user_opts.seekbarhandlesize * elem_geo.h / 2 -- handle radius
+    local xp = get_slider_ele_pos_for(element, pos) -- handle position
+    local handle_hovered = mouse_hit_coords(element.hitbox.x1+xp-rh, element.hitbox.y1+elem_geo.h/2-rh, element.hitbox.x1+xp+rh, element.hitbox.y1+elem_geo.h/2+rh) and element.enabled
+    if handle_hovered and user_opts.hover_effect_for_sliders then
+        -- apply size & color hover_effects (glow is not supported)
+        if contains(user_opts.hover_effect, "size") then
+            rh = rh*(user_opts.hover_button_size/100)
+        end
+        if contains(user_opts.hover_effect, "color") then
+            elem_ass.text = elem_ass.text:gsub(element.layout.style, element.layout.slider.hoverstyle)
+        end
+    end
+    ass_draw_cir_cw(elem_ass, xp, elem_geo.h/2, rh)
+    if handle_hovered and user_opts.hover_effect_for_sliders then
+        elem_ass:draw_stop()
+        elem_ass:merge(element.style_ass)
+        ass_append_alpha(elem_ass, element.layout.alpha, override_alpha or 0)
+        elem_ass:merge(element.static_ass)
+    end
+
+    return xp, rh
+end
+
+-- Draws slider seekranges according to user_opts 
+local function draw_slider_seekranges(element, elem_ass, xp, rh, override_alpha)
+    rh = rh or 0
+    local handle = true
+    if not xp then
+        handle = false
+        xp = 0
+    end
+    local slider_lo = element.layout.slider
+    local elem_geo = element.layout.geometry
+    local seekRanges = element.slider.seekRangesF()
+    if not seekRanges then
+        return
+    end
+    elem_ass:draw_stop()
+    elem_ass:merge(element.style_ass)
+    ass_append_alpha(elem_ass, element.layout.alpha, override_alpha or user_opts.seekrangealpha)
+    elem_ass:append("{\\1cH&" .. osc_color_convert(user_opts.seekbar_cache_color) .. "&}")
+    elem_ass:merge(element.static_ass)
+
+    for _,range in pairs(seekRanges) do
+        local pstart = get_slider_ele_pos_for(element, range["start"])
+        local pend = get_slider_ele_pos_for(element, range["end"])
+
+        local cache_starts_in_handle = pstart >= xp-rh and pstart <= xp + rh and handle
+        local cache_ends_in_handle = pend >= xp-rh and pend <= xp and handle
+        local cache_passes_handle = pstart < xp-rh and pend > xp and handle
+        if cache_starts_in_handle or cache_ends_in_handle then
+            if cache_starts_in_handle and cache_ends_in_handle then
+                pstart = 0
+                pend = 0
+            elseif cache_starts_in_handle then
+                pstart = xp+rh
+            elseif cache_ends_in_handle then
+                pend = xp-rh
+            end
+        elseif cache_passes_handle then
+            -- split range rendering to avoid rendering above handle
+            elem_ass:rect_cw(pstart - rh, slider_lo.gap, xp - rh, elem_geo.h - slider_lo.gap)
+            pstart = xp + rh
+        else
+            pstart = pstart - rh
+        end
+
+        elem_ass:rect_cw(pstart, slider_lo.gap, pend + (cache_ends_in_handle and 0 or rh), elem_geo.h - slider_lo.gap)
+    end
+end
+
 local function render_elements(master_ass)
     -- when the slider is dragged or hovered and we have a target chapter name
     -- then we use it instead of the normal title. we calculate it before the
@@ -931,68 +1010,10 @@ local function render_elements(master_ass)
                 local elem_geo = element.layout.geometry
                 local s_min = element.slider.min.value
                 local s_max = element.slider.max.value
-                -- draw pos marker
-                local pos = element.slider.posF()
-                local seekRanges = element.slider.seekRangesF()
-                local rh = user_opts.seekbarhandlesize * elem_geo.h / 2 -- Handle radius
-                local xp
-                
-                if pos then
-                    xp = get_slider_ele_pos_for(element, pos)
-                    local handle_hovered = mouse_hit_coords(element.hitbox.x1+xp-rh, element.hitbox.y1+elem_geo.h/2-rh, element.hitbox.x1+xp+rh, element.hitbox.y1+elem_geo.h/2+rh) and element.enabled
-                    if handle_hovered and user_opts.hover_effect_for_sliders then
-                        -- apply size & color hover_effects (glow is not supported)
-                        if contains(user_opts.hover_effect, "size") then
-                            rh = rh*(user_opts.hover_button_size/100)
-                        end
-                        if contains(user_opts.hover_effect, "color") then
-                            elem_ass.text = elem_ass.text:gsub(element.layout.style, element.layout.slider.hoverstyle)
-                        end
-                    end
-                    ass_draw_cir_cw(elem_ass, xp, elem_geo.h/2, rh)
-                    if handle_hovered and user_opts.hover_effect_for_sliders then
-                        elem_ass:draw_stop()
-                        elem_ass:merge(element.style_ass)
-                        ass_append_alpha(elem_ass, element.layout.alpha, 0)
-                        elem_ass:merge(element.static_ass)
-                    end
-                    elem_ass:rect_cw(0, slider_lo.gap, xp-rh, elem_geo.h - slider_lo.gap)
-                end
 
-                if seekRanges then
-                    elem_ass:draw_stop()
-                    elem_ass:merge(element.style_ass)
-                    ass_append_alpha(elem_ass, element.layout.alpha, user_opts.seekrangealpha)
-                    elem_ass:append("{\\1cH&" .. osc_color_convert(user_opts.seekbar_cache_color) .. "&}")
-                    elem_ass:merge(element.static_ass)
-
-                    for _,range in pairs(seekRanges) do
-                        local pstart = get_slider_ele_pos_for(element, range["start"])
-                        local pend = get_slider_ele_pos_for(element, range["end"])
-
-                        local cache_starts_in_handle = pstart >= xp-rh and pstart <= xp + rh
-                        local cache_ends_in_handle = pend >= xp-rh and pend <= xp
-                        local cache_passes_handle = pstart < xp-rh and pend > xp
-                        if cache_starts_in_handle or cache_ends_in_handle then
-                            if cache_starts_in_handle and cache_ends_in_handle then
-                                pstart = 0
-                                pend = 0
-                            elseif cache_starts_in_handle then
-                                pstart = xp+rh
-                            elseif cache_ends_in_handle then
-                                pend = xp-rh
-                            end
-                        elseif cache_passes_handle then
-                            -- split range rendering to avoid rendering above handle
-                            elem_ass:rect_cw(pstart - rh, slider_lo.gap, xp - rh, elem_geo.h - slider_lo.gap)
-                            pstart = xp + rh
-                        else
-                            pstart = pstart - rh
-                        end
-
-                        elem_ass:rect_cw(pstart, slider_lo.gap, pend + (cache_ends_in_handle and 0 or rh), elem_geo.h - slider_lo.gap)
-                    end
-                end
+                local xp, rh = draw_slider_handle(element, elem_ass) -- handle posistion, handle radius
+                elem_ass:rect_cw(0, slider_lo.gap, xp-rh, elem_geo.h - slider_lo.gap)
+                draw_slider_seekranges(element, elem_ass, xp, rh)
 
                 elem_ass:draw_stop()
                 
@@ -1206,48 +1227,31 @@ local function render_persistentprogressbar(master_ass)
         if element.name == "persistentseekbar" then
             local style_ass = assdraw.ass_new()
             style_ass:merge(element.style_ass)
-            ass_append_alpha(style_ass, element.layout.alpha, 0, true)
+            if state.animation or not state.osc_visible then
+                ass_append_alpha(style_ass, element.layout.alpha, 0, true)
             
-            if not state.animation and state.osc_visible then
-                ass_append_alpha(style_ass, element.layout.alpha, 255)
-            end
-            
-            local elem_ass = assdraw.ass_new()
-            elem_ass:merge(style_ass)
-            if element.type ~= "button" then
-                elem_ass:merge(element.static_ass)
-            end
-
-            local slider_lo = element.layout.slider
-            local elem_geo = element.layout.geometry
-            local s_min = element.slider.min.value
-            local s_max = element.slider.max.value
-            -- draw pos marker
-            local pos = element.slider.posF()
-            local seekRanges = element.slider.seekRangesF()
-            local rh = 0 -- Handle radius
-            local xp
-                
-            if pos then
-                xp = get_slider_ele_pos_for(element, pos)
-                ass_draw_cir_cw(elem_ass, xp, elem_geo.h/2, rh)
-                elem_ass:rect_cw(0, slider_lo.gap, xp, elem_geo.h - slider_lo.gap)
-            end
-
-            if user_opts.persistentbuffer and seekRanges then
-                elem_ass:draw_stop()
-                elem_ass:merge(element.style_ass)
-                ass_append_alpha(elem_ass, element.layout.alpha, user_opts.seekrangealpha, true)
-                elem_ass:merge(element.static_ass)
-                for _,range in pairs(seekRanges) do
-                    local pstart = get_slider_ele_pos_for(element, range["start"])
-                    local pend = get_slider_ele_pos_for(element, range["end"])
-                    elem_ass:rect_cw(pstart - rh, slider_lo.gap, pend + rh, elem_geo.h - slider_lo.gap)
+                local elem_ass = assdraw.ass_new()
+                elem_ass:merge(style_ass)
+                if element.type ~= "button" then
+                    elem_ass:merge(element.static_ass)
                 end
-            end
 
-            elem_ass:draw_stop()
-            master_ass:merge(elem_ass)
+                local slider_lo = element.layout.slider
+                local elem_geo = element.layout.geometry
+                -- draw pos marker
+                local pos = element.slider.posF()
+                if pos then
+                    local xp = get_slider_ele_pos_for(element, pos)
+                    elem_ass:rect_cw(0, slider_lo.gap, xp, elem_geo.h - slider_lo.gap)
+                end
+
+                if user_opts.persistentbuffer then
+                    draw_slider_seekranges(element, elem_ass, nil, slider_lo.gap) -- pass gap as radius to avoid missing cache fill in
+                end
+
+                elem_ass:draw_stop()
+                master_ass:merge(elem_ass)
+            end
         end
     end
 end
