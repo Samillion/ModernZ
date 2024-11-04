@@ -44,96 +44,95 @@ Create `modernz.conf` in your mpv script-opts directory:
 
 | Option             | Value            | Description                                                                      |
 | ------------------ | ---------------- | -------------------------------------------------------------------------------- |
-| showtitle          | yes              | show title in the OSC (above seekbar)                                            |
+| show_title         | yes              | show title in the OSC (above seekbar)                                            |
 | title              | `${media-title}` | title above seekbar format: `"${media-title}"` or `"${filename}"`                |
-| titlefontsize      | 30               | font size of the title text (above seekbar)                                      |
+| title_font_size    | 30               | font size of the title text (above seekbar)                                      |
 | show_chapter_title | yes              | show chapter title alongside timestamp (below seekbar)                           |
 | chapter_fmt        | %s               | format for chapter display on seekbar hover (set to `"no"` to disable)           |
 | timetotal          | yes              | show total time instead of remaining time                                        |
 | timems             | no               | show timecodes with milliseconds                                                 |
 | unicodeminus       | no               | use the Unicode minus sign in remaining time                                     |
 | time_format        | dynamic          | `"dynamic"` or `"fixed"`. shows MM:SS when possible, fixed always shows HH:MM:SS |
-| timefontsize       | 18               | font size of the time display                                                    |
+| time_font_size     | 18               | font size of the time display                                                    |
 
 ### Title bar settings
 
 | Option               | Value            | Description                                                               |
 | -------------------- | ---------------- | ------------------------------------------------------------------------- |
-| showwindowtitle      | no               | show window title in borderless/fullscreen mode                           |
-| showwindowcontrols   | yes              | show window controls (close, minimize, maximize) in borderless/fullscreen |
-| titleBarStrip        | no               | show title bar as a single bar instead of a black fade                    |
+| window_title         | no               | show window title in borderless/fullscreen mode                           |
+| window_controls      | yes              | show window controls (close, minimize, maximize) in borderless/fullscreen |
+| title_bar_box        | no               | show title bar as a box instead of a black fade                           |
 | windowcontrols_title | `${media-title}` | same as title but for windowcontrols                                      |
 
 ### Subtitle display settings
 
-| Option         | Value | Description                                                            |
-| -------------- | ----- | ---------------------------------------------------------------------- |
-| raisesubs      | yes   | raise subtitles above the OSC when shown                               |
-| raisesubamount | 175   | amount by which subtitles are raised when the OSC is shown (in pixels) |
+| Option                | Value | Description                                                            |
+| --------------------- | ----- | ---------------------------------------------------------------------- |
+| raise_subtitles       | yes   | raise subtitles above the OSC when shown                               |
+| raise_subtitle_amount | 175   | amount by which subtitles are raised when the OSC is shown (in pixels) |
 
 ### Buttons display and functionality
 
 | Option                     | Value         | Description                                                                                                                                                                                            |
 | -------------------------- | ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| showjump                   | yes           | show "jump forward/backward 10 seconds" buttons                                                                                                                                                        |
-| jumpamount                 | 10            | jump amount in seconds                                                                                                                                                                                 |
-| jumpiconnumber             | yes           | show different icon for `5`, `10`, or `30` second jumps                                                                                                                                                |
-| jumpmode                   | relative      | seek mode for jump buttons                                                                                                                                                                             |
+| jump_buttons               | yes           | show "jump forward/backward 10 seconds" buttons                                                                                                                                                        |
+| jump_amount                | 10            | jump amount in seconds                                                                                                                                                                                 |
+| jump_icon_number           | yes           | show different icon for `5`, `10`, or `30` second jumps                                                                                                                                                |
+| jump_mode                  | relative      | seek mode for jump buttons                                                                                                                                                                             |
 | jump_softrepeat            | yes           | enable continuous jumping when holding down seek buttons                                                                                                                                               |
-| showskip                   | no            | show the skip back and forward (chapter) buttons                                                                                                                                                       |
+| chapter_skip_buttons       | no            | show the skip back and forward (chapter) buttons                                                                                                                                                       |
 | chapter_softrepeat         | yes           | enable continuous skipping when holding down chapter skip buttons                                                                                                                                      |
-| shownextprev               | yes           | show next/previous playlist track buttons                                                                                                                                                              |
-| volumecontrol              | yes           | show mute button and volume slider                                                                                                                                                                     |
-| volumecontroltype          | linear        | volume scale type: `"linear"` or `"logarithmic"`                                                                                                                                                       |
-| showplaylist               | no            | show playlist button: Left-click for simple playlist, Right-click for interactive playlist                                                                                                             |
+| track_nextprev_buttons     | yes           | show next/previous playlist track buttons                                                                                                                                                              |
+| volume_control             | yes           | show mute button and volume slider                                                                                                                                                                     |
+| volume_control_type        | linear        | volume scale type: `"linear"` or `"logarithmic"`                                                                                                                                                       |
+| playlist_button            | no            | show playlist button: Left-click for simple playlist, Right-click for interactive playlist                                                                                                             |
 | hide_empty_playlist_button | yes           | hide playlist button when no playlist exists                                                                                                                                                           |
 | gray_empty_playlist_button | yes           | gray out the playlist button when no playlist exists                                                                                                                                                   |
-| downloadbutton             | yes           | show download button on web videos (requires yt-dlp and ffmpeg)                                                                                                                                        |
+| download_button            | yes           | show download button on web videos (requires yt-dlp and ffmpeg)                                                                                                                                        |
 | download_path              | ~~desktop/mpv | default download directory for videos. [Learn more about setting paths here](https://mpv.io/manual/master/#paths).                                                                                     |
-| showscreenshot             | no            | show screenshot button                                                                                                                                                                                 |
+| screenshot_button          | no            | show screenshot button                                                                                                                                                                                 |
 | screenshot_flag            | subtitles     | Flag options for the screenshot button: `"subtitles"`, `"video"`, `"window"`, `"each-frame"`. [Find out more about these options](https://mpv.io/manual/master/#command-interface-screenshot-<flags>). |
-| showontop                  | yes           | show `window on top (pin)` button                                                                                                                                                                      |
-| showloop                   | yes           | show `loop` button                                                                                                                                                                                     |
-| loopinpause                | yes           | enable looping by right-clicking pause                                                                                                                                                                 |
-| showinfo                   | no            | show `info (stats)` button                                                                                                                                                                             |
-| showfullscreen_button      | yes           | show `fullscreen toggle` button                                                                                                                                                                        |
+| ontop_button               | yes           | show `window on top (pin)` button                                                                                                                                                                      |
+| loop_button                | yes           | show `loop` button                                                                                                                                                                                     |
+| loop_in_pause              | yes           | enable looping by right-clicking pause                                                                                                                                                                 |
+| info_button                | no            | show `info (stats)` button                                                                                                                                                                             |
+| fullscreen_button          | yes           | show `fullscreen toggle` button                                                                                                                                                                        |
 | playpause_size             | 30            | icon size for the play/pause button                                                                                                                                                                    |
 | midbuttons_size            | 24            | icon size for the middle buttons                                                                                                                                                                       |
 | sidebuttons_size           | 24            | icon size for the side buttons                                                                                                                                                                         |
-| hide_elements_for_image    | yes           | hides irrelevant elements when viewing images                                                                                                                                                          |
 
 ### Colors and style
 
-| Option                | Value     | Description                                                                            |
-| --------------------- | --------- | -------------------------------------------------------------------------------------- |
-| osc_color             | `#000000` | accent color of the OSC and title bar                                                  |
-| window_title_color    | `#FFFFFF` | color of the title in borderless/fullscreen mode                                       |
-| window_controls_color | `#FFFFFF` | color of the window controls (close, minimize, maximize) in borderless/fullscreen mode |
-| title_color           | `#FFFFFF` | color of the title (above seekbar)                                                     |
-| seekbarfg_color       | `#BE4D25` | color of the seekbar progress and handle                                               |
-| seekbarbg_color       | `#FFFFFF` | color of the remaining seekbar                                                         |
-| seekbar_cache_color   | `#BE254A` | color of the cache ranges on the seekbar                                               |
-| vol_bar_match_seek    | no        | match volume bar color with seekbar color (ignores `side_buttons_color`)               |
-| time_color            | `#FFFFFF` | color of the timestamps (below seekbar)                                                |
-| chapter_title_color   | `#FFFFFF` | color of the chapter title next to timestamp (below seekbar)                           |
-| side_buttons_color    | `#FFFFFF` | color of the side buttons (audio, subtitles, playlist, etc.)                           |
-| middle_buttons_color  | `#FFFFFF` | color of the middle buttons (skip, jump, chapter, etc.)                                |
-| playpause_color       | `#FFFFFF` | color of the play/pause button                                                         |
-| held_element_color    | `#999999` | color of the element when held down (pressed)                                          |
-| hovereffect_color     | `#CB7050` | color of a hovered button when hovereffect includes `"color"`                          |
-| thumbnailborder_color | `#111111` | color of the border for thumbnails (with thumbfast)                                    |
-| fade_alpha            | 150       | alpha of the OSC background box                                                        |
-| window_fade_alpha     | 75        | alpha of the window title bar                                                          |
-| thumbnailborder       | 2         | width of the thumbnail border (for thumbfast)                                          |
+| Option                     | Value     | Description                                                                            |
+| -------------------------- | --------- | -------------------------------------------------------------------------------------- |
+| osc_color                  | `#000000` | accent color of the OSC and title bar                                                  |
+| window_title_color         | `#FFFFFF` | color of the title in borderless/fullscreen mode                                       |
+| window_controls_color      | `#FFFFFF` | color of the window controls (close, minimize, maximize) in borderless/fullscreen mode |
+| title_color                | `#FFFFFF` | color of the title (above seekbar)                                                     |
+| seekbarfg_color            | `#BE4D25` | color of the seekbar progress and handle                                               |
+| seekbarbg_color            | `#FFFFFF` | color of the remaining seekbar                                                         |
+| seekbar_cache_color        | `#BE254A` | color of the cache ranges on the seekbar                                               |
+| volumebar_match_seek_color | no        | match volume bar color with seekbar color (ignores `side_buttons_color`)               |
+| time_color                 | `#FFFFFF` | color of the timestamps (below seekbar)                                                |
+| chapter_title_color        | `#FFFFFF` | color of the chapter title next to timestamp (below seekbar)                           |
+| side_buttons_color         | `#FFFFFF` | color of the side buttons (audio, subtitles, playlist, etc.)                           |
+| middle_buttons_color       | `#FFFFFF` | color of the middle buttons (skip, jump, chapter, etc.)                                |
+| playpause_color            | `#FFFFFF` | color of the play/pause button                                                         |
+| held_element_color         | `#999999` | color of the element when held down (pressed)                                          |
+| hover_effect_color         | `#CB7050` | color of a hovered button when `hover_effect` includes `"color"`                       |
+| thumbnail_border_color     | `#111111` | color of the border for thumbnails (with thumbfast)                                    |
+| fade_alpha                 | 150       | alpha of the OSC background box                                                        |
+| window_fade_alpha          | 75        | alpha of the window title bar                                                          |
+| thumbnail_border           | 2         | width of the thumbnail border (for thumbfast)                                          |
 
 ### Button hover effects
 
-| Option                  | Value           | Description                                                                                      |
-| ----------------------- | --------------- | ------------------------------------------------------------------------------------------------ |
-| hovereffect             | size,glow,color | active button hover effects: `"glow"`, `"size"`, `"color"`; can use multiple separated by commas |
-| hover_button_size       | 115             | relative size of a hovered button if "size" effect is active                                     |
-| button_glow_amount      | 5               | glow intensity when `"glow"` hover effect is active                                              |
-| hovereffect_for_sliders | yes             | apply hover effects to slider handles                                                            |
+| Option                   | Value           | Description                                                                                      |
+| ------------------------ | --------------- | ------------------------------------------------------------------------------------------------ |
+| hover_effect             | size,glow,color | active button hover effects: `"glow"`, `"size"`, `"color"`; can use multiple separated by commas |
+| hover_button_size        | 115             | relative size of a hovered button if "size" effect is active                                     |
+| button_glow_amount       | 5               | glow intensity when `"glow"` hover effect is active                                              |
+| hover_effect_for_sliders | yes             | apply hover effects to slider handles                                                            |
 
 ### Tooltips and hints
 
