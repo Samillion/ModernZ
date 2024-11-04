@@ -99,8 +99,6 @@ local user_opts = {
     midbuttons_size = 24,                  -- icon size for the middle buttons
     sidebuttons_size = 24,                 -- icon size for the side buttons
 
-    hide_elements_for_image = true,        -- hides irrelevant elements when viewing images
-
     -- Colors and style
     osc_color = "#000000",                 -- accent color of the OSC and title bar
     window_title_color = "#FFFFFF",        -- color of the title in borderless/fullscreen mode
@@ -119,8 +117,8 @@ local user_opts = {
     hovereffect_color = "#FFFFFF",         -- color of a hovered button when hovereffect includes "color"
     thumbnailborder_color = "#111111",     -- color of the border for thumbnails (with thumbfast)
 
-    OSCfadealpha = 150,                    -- alpha of the OSC background box
-    boxalpha = 75,                         -- alpha of the window title bar
+    fade_alpha = 150,                      -- alpha of the OSC background box
+    window_fade_alpha = 75,                -- alpha of the window title bar
     thumbnailborder = 2,                   -- width of the thumbnail border (for thumbfast)
 
     -- Button hover effects
@@ -364,7 +362,7 @@ local function set_osc_styles()
     local sidebuttons_size = user_opts.sidebuttons_size or 24
     osc_styles = {
         background_bar = "{\\1c&H" .. osc_color_convert(user_opts.osc_color) .. "&}",
-        box_bg = "{\\blur100\\bord" .. user_opts.OSCfadealpha .. "\\1c&H000000&\\3c&H" .. osc_color_convert(user_opts.osc_color) .. "&}",
+        box_bg = "{\\blur100\\bord" .. user_opts.fade_alpha .. "\\1c&H000000&\\3c&H" .. osc_color_convert(user_opts.osc_color) .. "&}",
         chapter_title = "{\\blur0\\bord0\\1c&H" .. osc_color_convert(user_opts.chapter_title_color) .. "&\\3c&H000000&\\fs" .. user_opts.timefontsize .. "\\fn" .. user_opts.font .. "}",
         control_1 = "{\\blur0\\bord0\\1c&H" .. osc_color_convert(user_opts.playpause_color) .. "&\\3c&HFFFFFF&\\fs" .. playpause_size .. "\\fn" .. iconfont .. "}",
         control_2 = "{\\blur0\\bord0\\1c&H" .. osc_color_convert(user_opts.middle_buttons_color) .. "&\\3c&HFFFFFF&\\fs" .. midbuttons_size .. "\\fn" .. iconfont .. "}",
@@ -1462,7 +1460,7 @@ local function window_controls()
         lo.geometry = wc_geo
         lo.layer = 10
         lo.style = osc_styles.background_bar
-        lo.alpha[1] = user_opts.boxalpha
+        lo.alpha[1] = user_opts.window_fade_alpha
     end
 
     local button_y = wc_geo.y - (wc_geo.h / 2)
@@ -1930,8 +1928,7 @@ end
 
 local function is_image()
     local current_track = mp.get_property_native("current-tracks/video")
-    if current_track and current_track.image and not current_track.albumart 
-       and mp.get_property_number("estimated-frame-count", 0) < 2 and audio_track_count == 0 then
+    if current_track and current_track.image and not current_track.albumart then
         state.is_image = true
     else
         state.is_image = false
