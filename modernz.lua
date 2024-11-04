@@ -1839,23 +1839,14 @@ layouts["modern-image"] = function ()
     local outeroffset = 100 + 100
 
     -- Title
-    geo = {x = 50 - (showplaylist and 0 or 25), y = refY - 26, an = 1, w = (osc_geo.w / 2) - 100, h = 35,}
+    geo = {x = 105 - (showplaylist and 0 or 25) - (shownextprev and 0 or 50), y = refY - 26, an = 1, w = osc_geo.w - 250, h = 35,}
     lo = add_layout("title")
     lo.geometry = geo
     lo.style = string.format("%s{\\clip(0,%f,%f,%f)}", osc_styles.title, geo.y - geo.h, geo.x + geo.w, geo.y + geo.h)
     lo.alpha[3] = 0
-    lo.button.maxchars = geo.w / 13
+    lo.button.maxchars = geo.w / 14
 
     -- buttons
-    if shownextprev then
-        lo = add_layout("playlist_prev")
-        lo.geometry = {x = refX - 20 - offset, y = refY - 40 , an = 5, w = 30, h = 24}
-        lo.style = osc_styles.control_2
-
-        lo = add_layout("playlist_next")
-        lo.geometry = {x = refX + 20 + offset, y = refY - 40 , an = 5, w = 30, h = 24}
-        lo.style = osc_styles.control_2
-    end
 
     -- Playlist
     if showplaylist then
@@ -1865,7 +1856,18 @@ layouts["modern-image"] = function ()
         lo.visible = (osc_param.playresx >= 250 - outeroffset)
     end
 
-    -- Fullscreen/Info/Loop/Pin/Screenshot
+    if shownextprev then
+        lo = add_layout("playlist_prev")
+        lo.geometry = {x = 55 - (showplaylist and 0 or 25), y = refY - 40 , an = 5, w = 30, h = 24}
+        lo.style = osc_styles.control_2
+
+        lo = add_layout("playlist_next")
+        lo.geometry = {x = 80 - (showplaylist and 0 or 25), y = refY - 40 , an = 5, w = 30, h = 24}
+        lo.style = osc_styles.control_2
+    end
+
+
+    -- Fullscreen/Info/Pin
     if showfullscreen then
         lo = add_layout("tog_fullscreen")
         lo.geometry = {x = osc_geo.w - 37, y = refY - 40, an = 5, w = 24, h = 24}
