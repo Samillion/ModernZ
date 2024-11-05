@@ -102,6 +102,8 @@ local user_opts = {
     midbuttons_size = 24,                  -- icon size for the middle buttons
     sidebuttons_size = 24,                 -- icon size for the side buttons
 
+    zoom_control = true,                   -- in image viewer mode, show zoom controls
+
     -- Colors and style
     osc_color = "#000000",                 -- accent color of the OSC and title bar
     window_title_color = "#FFFFFF",        -- color of the title in borderless/fullscreen mode
@@ -238,7 +240,10 @@ local icons = {
         [10] = {"\238\171\188", "\238\172\129"}, 
         [30] = {"\238\172\133", "\238\172\134"}, 
         default = {"\238\172\138", "\238\172\138"}, -- second icon is mirrored in layout() 
-    }
+    },
+    
+    zoom_in_icon = "\238\186\142",
+    zoom_out_icon = "\238\186\143",
 }
 
 --- localization
@@ -1840,26 +1845,17 @@ layouts["modern-image"] = function ()
     local info_button = user_opts.info_button
     local ontop_button = user_opts.ontop_button
     local playlist_button = user_opts.playlist_button and (not user_opts.hide_empty_playlist_button or mp.get_property_number("playlist-count", 0) > 1)
+    local zoom_control = user_opts.zoom_control
 
     local offset = 0
-    local outeroffset = 100 + 100
-
-    -- Title
-    geo = {x = 105 - (playlist_button and 0 or 25) - (track_nextprev_buttons and 0 or 50), y = refY - 26, an = 1, w = osc_geo.w - 250, h = 35,}
-    lo = add_layout("title")
-    lo.geometry = geo
-    lo.style = string.format("%s{\\clip(0,%f,%f,%f)}", osc_styles.title, geo.y - geo.h, geo.x + geo.w, geo.y + geo.h)
-    lo.alpha[3] = 0
-    lo.button.maxchars = geo.w / 14
-
-    -- buttons
+    local outeroffset = 90
 
     -- Playlist
     if playlist_button then
         lo = add_layout("tog_playlist")
         lo.geometry = {x = 25, y = refY - 40, an = 5, w = 24, h = 24}
         lo.style = osc_styles.control_3
-        lo.visible = (osc_param.playresx >= 250 - outeroffset)
+        lo.visible = osc_param.playresx >= 250 - outeroffset
     end
 
     if track_nextprev_buttons then
@@ -1872,6 +1868,31 @@ layouts["modern-image"] = function ()
         lo.style = osc_styles.control_2
     end
 
+    if zoom_control then
+        -- zoom control
+        lo = add_layout("zoom_out_icon")
+        lo.geometry = {x = 130 - (playlist_button and 0 or 25) - (track_nextprev_buttons and 0 or 70), y = refY - 40 , an = 5, w = 30, h = 24}
+        lo.style = osc_styles.control_2
+
+        lo = new_element("zoom_control_bg", "box")
+        lo.visible = osc_param.playresx >= 450 - outeroffset and user_opts.zoom_control
+        lo = add_layout("zoom_control_bg")
+        lo.geometry = {x = 145 - (playlist_button and 0 or 25) - (track_nextprev_buttons and 0 or 70), y = refY - 40, an = 4, w = 80, h = 2}
+        lo.layer = 13
+        lo.alpha[1] = 128
+        lo.style = osc_styles.volumebar_bg
+
+        lo = add_layout("zoom_control")
+        lo.geometry = {x = 145 - (playlist_button and 0 or 25) - (track_nextprev_buttons and 0 or 70), y = refY - 40, an = 4, w = 80, h = 8}
+        lo.style = osc_styles.volumebar_fg
+        lo.slider.gap = 3
+        lo.slider.tooltip_style = osc_styles.tooltip
+        lo.slider.tooltip_an = 2
+
+        lo = add_layout("zoom_in_icon")
+        lo.geometry = {x = 240 - (playlist_button and 0 or 25) - (track_nextprev_buttons and 0 or 70), y = refY - 40 , an = 5, w = 30, h = 24}
+        lo.style = osc_styles.control_2
+    end
 
     -- Fullscreen/Info/Pin
     if fullscreen_button then
@@ -2230,6 +2251,47 @@ local function osc_init()
     ne.eventresponder["reset"] = function (element) element.state.lastseek = nil end
     ne.eventresponder["wheel_up_press"] = function () mp.commandv("osd-msg", "add", "volume", 5) end
     ne.eventresponder["wheel_down_press"] = function () mp.commandv("osd-msg", "add", "volume", -5) end
+
+    -- zoom control
+    -- zoom out icon
+    local current_zoom = mp.get_property_number("video-zoom")
+    ne = new_element("zoom_out_icon", "button")
+    ne.visible = (osc_param.playresx >= 500 - outeroffset)
+    ne.content = icons.zoom_out_icon
+    ne.tooltip_style = osc_styles.tooltip
+    ne.tooltipF = "Zoom Out"
+    ne.eventresponder["mbtn_left_up"] = function () mp.commandv("osd-msg", "set", "video-zoom", math.max(0, current_zoom - 0.05)) end
+    ne.eventresponder["mbtn_right_up"] = function () mp.commandv("osd-msg", "set", "video-zoom", 0) end
+
+    -- zoom slider
+    ne = new_element("zoom_control", "slider")
+    ne.slider = {min = {value = 0}, max = {value = 2}}
+    ne.visible = (osc_param.playresx >= 500 - outeroffset) and user_opts.zoom_control and state.is_image
+    ne.slider.markerF = function () return {} end
+    ne.slider.seekRangesF = function() return nil end
+    ne.slider.posF = function () return current_zoom end
+    ne.slider.tooltipF = function (pos) return string.format("%.3f", pos):gsub("%.?0*$", "") end
+    ne.eventresponder["mouse_move"] = function (element)
+        local pos = get_slider_value(element)
+        if element.state.lastseek == nil or
+            element.state.lastseek ~= pos then
+                mp.commandv("osd-msg", "set", "video-zoom", pos)
+                element.state.lastseek = pos
+        end
+    end
+    ne.eventresponder["mbtn_left_down"] = function (element) mp.commandv("osd-msg", "set", "video-zoom", get_slider_value(element)) end
+    ne.eventresponder["reset"] = function (element) element.state.lastseek = nil end
+    ne.eventresponder["wheel_up_press"] = function () mp.commandv("osd-msg", "set", "video-zoom", math.min(2, current_zoom + 0.05)) end
+    ne.eventresponder["wheel_down_press"] = function () mp.commandv("osd-msg", "set", "video-zoom", math.max(0, current_zoom - 0.05)) end
+
+    -- zoom in icon
+    ne = new_element("zoom_in_icon", "button")
+    ne.visible = (osc_param.playresx >= 500 - outeroffset)
+    ne.content = icons.zoom_in_icon
+    ne.tooltip_style = osc_styles.tooltip
+    ne.tooltipF = "Zoom In"
+    ne.eventresponder["mbtn_left_up"] = function () mp.commandv("osd-msg", "set", "video-zoom", math.min(2, current_zoom + 0.05)) end
+    ne.eventresponder["mbtn_right_up"] = function () mp.commandv("osd-msg", "set", "video-zoom", 0) end
 
     --tog_fullscreen
     ne = new_element("tog_fullscreen", "button")
