@@ -2271,7 +2271,7 @@ local function osc_init()
     ne.visible = (osc_param.playresx >= 500 - outeroffset) and user_opts.zoom_control and state.is_image
     ne.slider.markerF = function () return {} end
     ne.slider.seekRangesF = function() return nil end
-    ne.slider.posF = function () return current_zoom end
+    ne.slider.posF = function () return mp.get_property_number("video-zoom") end
     ne.slider.tooltipF = function (pos) return string.format("%.3f", pos):gsub("%.?0*$", "") end
     ne.eventresponder["mouse_move"] = function (element)
         local pos = get_slider_value(element)
