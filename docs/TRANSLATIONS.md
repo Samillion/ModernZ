@@ -67,7 +67,9 @@ ModernZ currently has translations for the following languages:
         "loopenable": "Enable loop",
         "loopdisable": "Disable loop",
         "screenshot": "Screenshot",
-        "statsinfo": "Information"
+        "statsinfo": "Information",
+        "zoom_in": "Zoom In",
+        "zoom_out": "Zoom Out",
     },
 }
 ```
@@ -111,6 +113,8 @@ ModernZ currently has translations for the following languages:
 | loopenable/loopdisable | Loop states             | Action labels               |
 | screenshot             | Screenshot label        | Action label                |
 | statsinfo              | Information label       | Menu label                  |
+| zoom_in                | Zoom label              | Menu label                  |
+| zoom_out               | Zoom label              | Menu label                  |
 
 ## Contributing
 
