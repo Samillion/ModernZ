@@ -103,7 +103,7 @@ local user_opts = {
     midbuttons_size = 24,                  -- icon size for the middle buttons
     sidebuttons_size = 24,                 -- icon size for the side buttons
 
-    zoom_control = true,                   -- in image viewer mode, show zoom controls
+    zoom_control = true,                   -- show zoom controls in image viewer mode
     zoom_in_max = 4,                       -- maximum zoom in value
     zoom_out_min = -1,                     -- minimum zoom out value
 
@@ -156,7 +156,7 @@ local user_opts = {
 
     -- Miscellaneous settings
     visibility = "auto",                   -- only used at init to set visibility_mode(...)
-    tick_delay = 1 / 60,                   -- minimum interval between OSC redraws (in seconds)
+    tick_delay = 0.03,                     -- minimum interval between OSC redraws (in seconds)
     tick_delay_follow_display_fps = false, -- use display FPS as the minimum redraw interval
 
     -- Mouse commands
