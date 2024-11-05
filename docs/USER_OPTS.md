@@ -101,6 +101,10 @@ Create `modernz.conf` in your mpv script-opts directory:
 | playpause_size             | 30            | icon size for the play/pause button                                                                                                                                                                    |
 | midbuttons_size            | 24            | icon size for the middle buttons                                                                                                                                                                       |
 | sidebuttons_size           | 24            | icon size for the side buttons                                                                                                                                                                         |
+| zoom_control               | yes           | show zoom controls in image viewer mode                                                                                                                                                                |
+| zoom_in_max                | 4             | icon size for the side buttons                                                                                                                                                                         |
+| zoom_out_min               | -1            | icon size for the side buttons                                                                                                                                                                         |
+
 
 ### Colors and style
 
@@ -163,7 +167,7 @@ Create `modernz.conf` in your mpv script-opts directory:
 | Option                        | Value  | Description                                       |
 | ----------------------------- | ------ | ------------------------------------------------- |
 | visibility                    | auto   | only used at init to set visibility_mode(...)     |
-| tick_delay                    | 0.0167 | minimum interval between OSC redraws (in seconds) |
+| tick_delay                    | 0.03   | minimum interval between OSC redraws (in seconds) |
 | tick_delay_follow_display_fps | no     | use display FPS as the minimum redraw interval    |
 
 ### Mouse Commands (User Options)
