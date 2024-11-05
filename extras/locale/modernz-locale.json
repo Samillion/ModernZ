@@ -17,6 +17,8 @@
         "loopdisable": "Désactiver la boucle",
         "screenshot": "Capture d'écran",
         "statsinfo": "Informations",
+        "zoom_in": "Agrandir",
+        "zoom_out": "Rétrécir",
     },
     "de": {
         "welcome": "Dateien oder URLs hier ablegen, um sie abzuspielen",
@@ -36,6 +38,8 @@
         "loopdisable": "Schleifen deaktivieren",
         "screenshot": "Screenshot",
         "statsinfo": "Informationen",
+        "zoom_in": "Vergrößern",
+        "zoom_out": "Verkleinern",
     },
     "es": {
         "welcome": "Suelta archivos o URLs aquí para reproducirlos",
@@ -55,6 +59,8 @@
         "loopdisable": "Desactivar bucle",
         "screenshot": "Captura de pantalla",
         "statsinfo": "Información",
+        "zoom_in": "Ampliar",
+        "zoom_out": "Reducir",
     },
     "pl": {
         "welcome": "Upuść plik lub łącze URL do odtworzenia",
@@ -74,6 +80,8 @@
         "loopdisable": "Wyłącz zapętlenie",
         "screenshot": "Zrzut ekranu",
         "statsinfo": "Informacja",
+        "zoom_in": "Powiększ",
+        "zoom_out": "Pomniejsz",
     },
     "jp": {
         "welcome": "ファイルやURLのリンクをここにドロップすると再生されます",
@@ -93,6 +101,8 @@
         "loopdisable": "ループを無効にする",
         "screenshot": "スクリーンショット",
         "statsinfo": "情報",
+        "zoom_in": "拡大",
+        "zoom_out": "縮小",
     },
     "zh": {
         "welcome": "将文件或URL放在这里播放",
@@ -112,6 +122,8 @@
         "loopdisable": "禁用循环",
         "screenshot": "截屏",
         "statsinfo": "信息",
+        "zoom_in": "放大",
+        "zoom_out": "缩小",
     },
     "ar": {
         "welcome": "أسقط الملفات أو الروابط هنا للتشغيل",
@@ -131,5 +143,7 @@
         "loopdisable": "تعطيل التكرار",
         "screenshot": "لقطة شاشة",
         "statsinfo": "معلومات",
+        "zoom_in": "تكبير",
+        "zoom_out": "تصغير",
     },
 }
