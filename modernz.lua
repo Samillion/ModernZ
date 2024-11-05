@@ -70,12 +70,13 @@ local user_opts = {
     raise_subtitle_amount = 175,           -- amount by which subtitles are raised when the OSC is shown (in pixels)
 
     -- Buttons display and functionality
-    jump_buttons = true,                   -- show "jump forward/backward 10 seconds" buttons
-    jump_amount = 10,                      -- jump amount in seconds
-    jump_icon_number = true,               -- show different icon for 5, 10, or 30 second jumps
+    jump_buttons = true,                   -- show the jump backward and forward buttons
+    jump_amount = 10,                      -- change the jump amount in seconds
+    jump_more_amount = 60,                 -- change the jump amount in seconds when right-clicking jump buttons and shift-clicking chapter skip buttons
+    jump_icon_number = true,               -- show different icon when jump_amount is set to 5, 10, or 30
     jump_mode = "relative",                -- seek mode for jump buttons
     jump_softrepeat = true,                -- enable continuous jumping when holding down seek buttons
-    chapter_skip_buttons = false,          -- show the chapter skip back and forward buttons
+    chapter_skip_buttons = false,          -- show the chapter skip backward and forward buttons
     chapter_softrepeat = true,             -- enable continuous skipping when holding down chapter skip buttons
     track_nextprev_buttons = true,         -- show next/previous playlist track buttons
 
@@ -2074,6 +2075,7 @@ local function osc_init()
     end
 
     local jump_amount = user_opts.jump_amount
+    local jump_more_amount = user_opts.jump_more_amount
     local jump_mode = user_opts.jump_mode
     local jump_icon = user_opts.jump_icon_number and icons.jumpicons[jump_amount] or icons.jumpicons.default
 
@@ -2082,7 +2084,7 @@ local function osc_init()
     ne.softrepeat = user_opts.jump_softrepeat == true
     ne.content = jump_icon[1]
     ne.eventresponder["mbtn_left_down"] = function () mp.commandv("seek", -jump_amount, jump_mode) end
-    ne.eventresponder["mbtn_right_down"] = function () mp.commandv("seek", -60, jump_mode) end
+    ne.eventresponder["mbtn_right_down"] = function () mp.commandv("seek", -jump_more_amount, jump_mode) end
     ne.eventresponder["shift+mbtn_left_down"] = function () mp.commandv("frame-back-step") end
 
     --jump_forward
@@ -2090,7 +2092,7 @@ local function osc_init()
     ne.softrepeat = user_opts.jump_softrepeat == true
     ne.content = jump_icon[2]
     ne.eventresponder["mbtn_left_down"] = function () mp.commandv("seek", jump_amount, jump_mode) end
-    ne.eventresponder["mbtn_right_down"] = function () mp.commandv("seek", 60, jump_mode) end
+    ne.eventresponder["mbtn_right_down"] = function () mp.commandv("seek", jump_more_amount, jump_mode) end
     ne.eventresponder["shift+mbtn_left_down"] = function () mp.commandv("frame-step") end
 
     --chapter_backward
@@ -2101,7 +2103,7 @@ local function osc_init()
     ne.enabled = (have_ch) -- disables button when no chapters available.
     ne.eventresponder["mbtn_left_down"] = command_callback(user_opts.chapter_prev_mbtn_left_command)
     ne.eventresponder["mbtn_right_down"] = command_callback(user_opts.chapter_prev_mbtn_right_command)
-    ne.eventresponder["shift+mbtn_left_down"] = function () mp.commandv("seek", -60, jump_mode) end
+    ne.eventresponder["shift+mbtn_left_down"] = function () mp.commandv("seek", -jump_more_amount, jump_mode) end
     ne.eventresponder["shift+mbtn_right_down"] = function () mp.command("show-text ${chapter-list} 3000") end
 
     --chapter_forward
@@ -2112,7 +2114,7 @@ local function osc_init()
     ne.enabled = (have_ch) -- disables button when no chapters available.
     ne.eventresponder["mbtn_left_down"] = command_callback(user_opts.chapter_next_mbtn_left_command)
     ne.eventresponder["mbtn_right_down"] = command_callback(user_opts.chapter_next_mbtn_right_command)
-    ne.eventresponder["shift+mbtn_left_down"] = function () mp.commandv("seek", 60, jump_mode) end
+    ne.eventresponder["shift+mbtn_left_down"] = function () mp.commandv("seek", jump_more_amount, jump_mode) end
     ne.eventresponder["shift+mbtn_right_down"] = function () mp.command("show-text ${chapter-list} 3000") end
 
     update_tracklist()
