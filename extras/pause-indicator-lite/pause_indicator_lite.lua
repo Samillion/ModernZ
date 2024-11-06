@@ -5,46 +5,45 @@
 
 --]]
 
--- options
-local opts = {
+local options = {
     -- indicator icon type
-    indicator_icon = "pause",        -- Which icon to show as indicator? pause, play
-    indicator_stay = true,           -- Should the pause indicator stay visible during pause?
-    indicator_stay_timeout = 0.6,    -- If it doesn't stay, how long should it last? (seconds)
+    indicator_icon = "pause",        -- indicator icon type. "pause", "play"
+    indicator_stay = true,           -- keep indicator visibile during pause
+    indicator_timeout = 0.6,         -- timeout (seconds) if indicator doesn't stay
 
     -- keybind
-    keybind_allow = true,            -- Allow keybind to toggle pause
-    keybind_set = "mbtn_left",       -- The set keybind to toggle pause
-    keybind_mode = "onpause",        -- Mode to activate keybind. onpause, always
+    keybind_allow = true,            -- allow keybind to toggle pause
+    keybind_set = "mbtn_left",       -- the used keybind to toggle pause
+    keybind_mode = "onpause",        -- mode to activate keybind. "onpause", "always"
 
     -- icon colors & opacity
-    icon_color = "#FFFFFF",          -- Icon fill color
-    icon_border_color = "#111111",   -- Icon border color
-    icon_opacity = 40,               -- Icon opacity (0-100)
+    icon_color = "#FFFFFF",          -- icon fill color
+    icon_border_color = "#111111",   -- icon border color
+    icon_opacity = 40,               -- icon opacity (0-100)
 
     -- pause icon
-    rectangles_width = 30,           -- Width of rectangles
-    rectangles_height = 80,          -- Height of rectangles
-    rectangles_spacing = 20,         -- Spacing between the two rectangles
+    rectangles_width = 30,           -- width of rectangles
+    rectangles_height = 80,          -- height of rectangles
+    rectangles_spacing = 20,         -- spacing between the two rectangles
 
     -- play icon
-    triangle_width = 80,             -- Width of triangle
+    triangle_width = 80,             -- width of triangle
     triangle_height = 80,            -- height of triangle
 
     -- best with pause icon
-    flash_play_icon = true,          -- Flash play icon on unpause?
-    flash_icon_timeout = 0.3,        -- How long should the flash last?
-    flash_icon_bigger_by = 0         -- Increase flash icon size from default by (0-100)
+    flash_play_icon = true,          -- flash play icon on unpause
+    flash_icon_timeout = 0.3,        -- timeout (seconds) for flash icon
 }
 
-local msg = require 'mp.msg'
+local msg = require "mp.msg"
 
 -- convert color from hex (credit to mpv/osc.lua)
 local function convert_color(color)
     if color:find("^#%x%x%x%x%x%x$") == nil then
-        msg.warn("'" .. color .. "' is not a valid color")
+        msg.warn("'" .. color .. "' is not a valid color, using default '#FFFFFF'")
+        return "FFFFFF"  -- color fallback
     end
-    return color:sub(6,7) .. color:sub(4,5) ..  color:sub(2,3)
+    return color:sub(6,7) .. color:sub(4,5) .. color:sub(2,3)
 end
 
 -- convert percentage opacity (0-100) to ASS alpha values
@@ -54,109 +53,95 @@ local function convert_opacity(value)
 end
 
 -- colors and opaicty
-local icon_color = convert_color(opts.icon_color)
-local icon_border_color = convert_color(opts.icon_border_color)
-local icon_opacity = convert_opacity(opts.icon_opacity)
+local icon_color = convert_color(options.icon_color)
+local icon_border_color = convert_color(options.icon_border_color)
+local icon_opacity = convert_opacity(options.icon_opacity)
 
--- rectangles parameters
-local rect_width = opts.rectangles_width
-local rect_height = opts.rectangles_height
-local rect_spacing = opts.rectangles_spacing
+-- pause icon
+local function draw_rectangles()
+    return string.format([[{\an5\p1\alpha&H%s\1c&H%s&\3c&H%s&}m 0 0 l %d 0 l %d %d l 0 %d m %d 0 l %d 0 l %d %d l %d %d]],
+        icon_opacity, icon_color, icon_border_color, options.rectangles_width, options.rectangles_width, options.rectangles_height, options.rectangles_height,
+        options.rectangles_width + options.rectangles_spacing, options.rectangles_width * 2 + options.rectangles_spacing, options.rectangles_width * 2 + options.rectangles_spacing, options.rectangles_height,
+        options.rectangles_width + options.rectangles_spacing, options.rectangles_height)
+end
 
--- triangle parameters
-local triangle_width = opts.triangle_width
-local triangle_height = opts.triangle_height
-
--- draw rectangles
-local rectangles = string.format([[{\an5\p1\alpha&H%s\1c&H%s&\3c&H%s&}]], 
-    icon_opacity, icon_color, icon_border_color) ..
-    string.format([[m 0 0 l %d 0 l %d %d l 0 %d m %d 0 l %d 0 l %d %d l %d %d]], 
-    rect_width, rect_width, rect_height, rect_height, rect_width + rect_spacing, 
-    rect_width + rect_spacing + rect_width, rect_width + rect_spacing + rect_width, 
-    rect_height, rect_width + rect_spacing, rect_height)
-
--- draw triangle
-local triangle = string.format([[{\an5\p1\alpha&H%s\1c&H%s&\3c&H%s&}]], 
-    icon_opacity, icon_color, icon_border_color) ..
-    string.format([[m 0 0 l %d %d l 0 %d]], 
-    triangle_width, triangle_height / 2, triangle_height)
+-- play icon
+local function draw_triangle()
+    return string.format([[{\an5\p1\alpha&H%s\1c&H%s&\3c&H%s&}m 0 0 l %d %d l 0 %d]], 
+        icon_opacity, icon_color, icon_border_color, options.triangle_width, options.triangle_height / 2, options.triangle_height)
+end
 
 -- init
 local indicator = mp.create_osd_overlay("ass-events")
 local flash = mp.create_osd_overlay("ass-events")
 
--- draw and update position based on window size
-local function update_pause_indicator_position()
-    local _, _, display_aspect = mp.get_osd_size()
-    if display_aspect == 0 then return end
+-- keep track of pause toggle
+local toggled = false
 
-    local icon = opts.indicator_icon == "play" and triangle or rectangles
-    indicator.data = icon
+-- draw and update indicator
+local function update_indicator()
+    local _, _, display_aspect = mp.get_osd_size()
+    if display_aspect == 0 or (indicator.visible and not toggled) then return end
+
+    indicator.data = options.indicator_icon == "play" and draw_triangle() or draw_rectangles()
+    indicator:update()
+
+    if not options.indicator_stay then
+        mp.add_timeout(options.indicator_timeout, function() indicator:remove() end)
+    end
 end
 
 -- flash play icon
 local function flash_icon()
-    if not opts.flash_play_icon then return flash:remove() end
-
-    local mod = opts.flash_icon_bigger_by
-    -- set parameters for the flash play icon
-    local flash_play = string.format([[{\an5\p1\alpha&H%s\1c&H%s&\3c&H%s&}]], 
-        icon_opacity, icon_color, icon_border_color) ..
-        string.format([[m 0 0 l %d %d l 0 %d]], 
-        triangle_width + mod, (triangle_height + mod) / 2, triangle_height + mod)
-
-    flash.data = flash_play
+    if not options.flash_play_icon then return end
+    flash.data = draw_triangle()
     flash:update()
-
-    -- set timeout for the flash icon
-    mp.add_timeout(opts.flash_icon_timeout, function()
-        flash:remove()
-    end)
+    mp.add_timeout(options.flash_icon_timeout, function() flash:remove() end)
 end
 
--- keep track of pause toggle
-local toggled = false
+-- check if file is video
+local function is_video()
+    local t = mp.get_property_native("current-tracks/video")
+    if t and not (t.image or t.albumart) then
+        return true
+    else
+        indicator:remove()
+        flash:remove()
+        return false
+    end
+end
 
 -- observe when pause state changes
 mp.observe_property("pause", "bool", function(_, paused)
-    mp.add_timeout(0.1, function()
-        if paused then
-            update_pause_indicator_position()
-            indicator:update()
-            toggled = true
-            if not opts.indicator_stay then
-                mp.add_timeout(opts.indicator_stay_timeout, function() indicator:remove() end)
-            end
-            if opts.flash_play_icon then
-                flash:remove()
-            end
-        else
-            indicator:remove()
-            if toggled then
-                flash_icon()
-                toggled = false
-            end
+    if not is_video() then return mp.unobserve_property("pause") end
+    if paused then
+        update_indicator()
+        toggled = true
+    else
+        indicator:remove()
+        if toggled then
+            flash_icon()
+            toggled = false
         end
-    end)
+    end
 
-    -- set keybind (only if opts allow it)
-    if opts.keybind_allow == true then
+    -- keybind setup (if options allow it)
+    if options.keybind_allow == true then
         mp.set_key_bindings({
-           {opts.keybind_set, function() mp.commandv("cycle", "pause") end}
+           {options.keybind_set, function() mp.commandv("cycle", "pause") end}
         }, "pause-indicator", "force")
 
-        if opts.keybind_mode == "always" or (opts.keybind_mode == "onpause" and paused) then
+        if options.keybind_mode == "always" or (options.keybind_mode == "onpause" and paused) then
             mp.enable_key_bindings("pause-indicator")
-        elseif opts.keybind_mode == "onpause" and not paused then
+        else
             mp.disable_key_bindings("pause-indicator")
         end
     end
 end)
 
--- update pause indicator position when window size changes
+-- update pause indicator position if window size changes
 mp.observe_property("osd-dimensions", "native", function()
     if indicator and indicator.visible then
-        update_pause_indicator_position()
-        indicator:update()
+        update_indicator()
     end
 end)
