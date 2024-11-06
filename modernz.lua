@@ -1582,7 +1582,7 @@ layouts["modern"] = function ()
 
     -- Controller Background
     local lo, geo
-    
+
     new_element("box_bg", "box")
     lo = add_layout("box_bg")
     lo.geometry = {x = posX, y = posY, an = 7, w = osc_w, h = 1}
@@ -1598,15 +1598,15 @@ layouts["modern"] = function ()
         lo.layer = 10
         lo.alpha[3] = 0
     end
-        
+
     -- Alignment
     local refX = osc_w / 2
     local refY = posY
-        
+
     -- Seekbar
     new_element("seekbarbg", "box")
     lo = add_layout("seekbarbg")
-    lo.geometry = {x = refX , y = refY - 100, an = 5, w = osc_geo.w - 50, h = 5}
+    lo.geometry = {x = refX, y = refY - 100, an = 5, w = osc_geo.w - 50, h = 6}
     lo.layer = 13
     lo.style = osc_styles.seekbar_bg
     lo.alpha[1] = 128
@@ -1618,7 +1618,7 @@ layouts["modern"] = function ()
     lo.slider.gap = 7
     lo.slider.tooltip_style = osc_styles.tooltip
     lo.slider.tooltip_an = 2
-    
+
     if user_opts.persistentprogress or state.persistentprogresstoggle then
         lo = add_layout("persistentseekbar")
         lo.geometry = {x = refX, y = refY, an = 5, w = osc_geo.w, h = user_opts.persistentprogressheight}
