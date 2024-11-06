@@ -2,7 +2,7 @@
 
 A minimal layout is automatically applied when viewing images while using ModernZ osc, which also features zoom controls.
 
-![image](https://github.com/user-attachments/assets/e602b931-fc78-4171-b49b-6731521c6225)
+![image-viewer](https://github.com/user-attachments/assets/d95942c8-0b62-47f9-bca6-8adfaab63538)
 
 ## Zoom Controls
 
@@ -22,12 +22,18 @@ Reset values on next file:
 reset-on-next-file=video-rotate,video-zoom,panscan,video-unscaled,video-align-x,video-align-y
 ```
 
-Auto profile for images only that applies useful mpv options and ModernZ [user options](/docs/USER_OPTS.md):
+Auto profiles that apply useful mpv options and ModernZ [user options](/docs/USER_OPTS.md) in `Image Viewer` mode:
 ```ini
-[Image-Viewer]
+[Video]
+    profile-cond=p["current-tracks/video"] and not p["current-tracks/video"].image
+    taskbar-progress=yes
+
+[Image]
     profile-desc=Settings for Image Viewer mode with ModernZ osc
     profile-cond=p["current-tracks/video"] and p["current-tracks/video"].image and not p["current-tracks/video"].albumart
+    image-display-duration=inf
     prefetch-playlist=yes
+    taskbar-progress=no
     stop-screensaver=no
     title=${media-title} [${?width:${width}x${height}}]
     script-opts-append=modernz-windowcontrols_title=${media-title} [${?width:${width}x${height}}]
