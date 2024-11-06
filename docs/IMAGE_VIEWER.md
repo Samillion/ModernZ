@@ -22,12 +22,18 @@ Reset values on next file:
 reset-on-next-file=video-rotate,video-zoom,panscan,video-unscaled,video-align-x,video-align-y
 ```
 
-Auto profile for images only that applies useful mpv options and ModernZ [user options](/docs/USER_OPTS.md):
+Auto profiles that apply useful mpv options and ModernZ [user options](/docs/USER_OPTS.md) in `Image Viewer` mode:
 ```ini
-[Image-Viewer]
+[Video]
+    profile-cond=p["current-tracks/video"] and not p["current-tracks/video"].image
+    taskbar-progress=yes
+
+[Image]
     profile-desc=Settings for Image Viewer mode with ModernZ osc
     profile-cond=p["current-tracks/video"] and p["current-tracks/video"].image and not p["current-tracks/video"].albumart
+    image-display-duration=inf
     prefetch-playlist=yes
+    taskbar-progress=no
     stop-screensaver=no
     title=${media-title} [${?width:${width}x${height}}]
     script-opts-append=modernz-windowcontrols_title=${media-title} [${?width:${width}x${height}}]
