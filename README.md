@@ -2,7 +2,7 @@
 
 A sleek and modern OSC for [mpv](https://mpv.io/), this project is a fork of ModernX designed to enhance functionality by adding more features, all while preserving the core standards of mpv's OSC.
 
-![modernz-osc](https://github.com/user-attachments/assets/b642c5b6-b9cb-423e-af4f-c1772652853b)
+![modernz-osc](https://github.com/user-attachments/assets/2f00a1c8-6770-45d4-9758-7962ae2deb31)
 
 <p align="center">
     <a href="#installation"><strong>Installation »</strong></a>
@@ -193,6 +193,7 @@ For even more useful scripts, check out the [mpv User Scripts Wiki](https://gith
 
 - To add many features in: [Color Customization](docs/USER_OPTS.md#colors-and-style), [Options](docs/USER_OPTS.md) and [Locale Integration](docs/TRANSLATIONS.md)
 - To integrate console and select into the osc, which inspired mpv to apply it in the stock osc. [ref [#1](https://github.com/mpv-player/mpv/pull/15016), [#2](https://github.com/mpv-player/mpv/pull/15031)]
+- to add a dedicated layout for images. [[details](/docs/IMAGE_VIEWER.md)]
 - To re-do the project entirely to match mpv's stock osc standards, to ensure compatibility
 - To eliminate old bugs and redundancy within the code
 
