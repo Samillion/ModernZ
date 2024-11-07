@@ -22,7 +22,7 @@ local user_opts = {
     -- Language and display  
     language = "en",                       -- set language (for available options, see: https://github.com/Samillion/ModernZ/blob/main/docs/TRANSLATIONS.md) 
     font = "mpv-osd-symbols",              -- font for the OSC (default: mpv-osd-symbols or the one set in mpv.conf)
-    
+
     idlescreen = true,                     -- show mpv logo when idle
     windowcontrols = "auto",               -- show OSC window controls: "auto", "yes", or "no"
     showwindowed = true,                   -- show OSC when windowed
@@ -49,7 +49,7 @@ local user_opts = {
     show_title = true,                     -- show title in the OSC (above seekbar)
     title = "${media-title}",              -- title above seekbar format: "${media-title}" or "${filename}"
     title_font_size = 30,                  -- font size of the title text (above seekbar)
-    
+
     show_chapter_title = true,             -- show chapter title alongside timestamp (below seekbar)
     chapter_fmt = "%s",                    -- format for chapter display on seekbar hover (set to "no" to disable)
 
@@ -111,6 +111,8 @@ local user_opts = {
     osc_color = "#000000",                 -- accent color of the OSC and title bar
     window_title_color = "#FFFFFF",        -- color of the title in borderless/fullscreen mode
     window_controls_color = "#FFFFFF",     -- color of the window controls (close, minimize, maximize) in borderless/fullscreen mode
+    windowcontrols_close_hover = "#E81123", -- color of close window control on hover
+    windowcontrols_minmax_hover = "#FFD700", -- color of min/max window controls on hover
     title_color = "#FFFFFF",               -- color of the title (above seekbar)
     seekbarfg_color = "#BE4D25",           -- color of the seekbar progress and handle
     seekbarbg_color = "#FFFFFF",           -- color of the remaining seekbar
@@ -146,7 +148,7 @@ local user_opts = {
     seekrangealpha = 150,                  -- transparency of the seek range
     livemarkers = true,                    -- update chapter markers on the seekbar when duration changes
     seekbarkeyframes = false,              -- use keyframes when dragging the seekbar
-    
+
     automatickeyframemode = true,          -- automatically set keyframes for the seekbar based on video length
     automatickeyframelimit = 600,          -- videos longer than this (in seconds) will have keyframes on the seekbar 
 
@@ -1500,7 +1502,7 @@ local function window_controls()
         lo = add_layout("close")
         lo.geometry = third_geo
         lo.style = osc_styles.window_control
-        lo.button.hoverstyle = "{\\c&H2311E8&}"
+        lo.button.hoverstyle = "{\\c&H" .. osc_color_convert(user_opts.windowcontrols_close_hover) .. "&}"
 
         -- Minimize: 🗕
         ne = new_element("minimize", "button")
@@ -1509,7 +1511,7 @@ local function window_controls()
         lo = add_layout("minimize")
         lo.geometry = first_geo
         lo.style = osc_styles.window_control
-        lo.button.hoverstyle = "{\\c&H00D7FF&}" -- gold
+        lo.button.hoverstyle = "{\\c&H" .. osc_color_convert(user_opts.windowcontrols_minmax_hover) .. "&}"
     
         -- Maximize: 🗖 /🗗
         ne = new_element("maximize", "button")
@@ -1524,7 +1526,7 @@ local function window_controls()
         lo = add_layout("maximize")
         lo.geometry = second_geo
         lo.style = osc_styles.window_control
-        lo.button.hoverstyle = "{\\c&H00D7FF&}" -- gold
+        lo.button.hoverstyle = "{\\c&H" .. osc_color_convert(user_opts.windowcontrols_minmax_hover) .. "&}"
     end
 
     -- Window Title
@@ -3439,7 +3441,8 @@ local function validate_user_opts()
         user_opts.title_color, user_opts.time_color, user_opts.side_buttons_color, 
         user_opts.middle_buttons_color, user_opts.playpause_color, user_opts.window_title_color, 
         user_opts.window_controls_color, user_opts.held_element_color, user_opts.thumbnail_border_color, 
-        user_opts.chapter_title_color, user_opts.seekbar_cache_color, user_opts.hover_effect_color
+        user_opts.chapter_title_color, user_opts.seekbar_cache_color, user_opts.hover_effect_color,
+        user_opts.windowcontrols_close_hover, user_opts.windowcontrols_minmax_hover
     }
 
     for _, color in pairs(colors) do
