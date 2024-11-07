@@ -93,7 +93,7 @@ end
 
 -- flash play icon
 local function flash_icon()
-    if not options.flash_play_icon then return end
+    if not options.flash_play_icon then return flash:remove() end
     flash.data = draw_triangle()
     flash:update()
     mp.add_timeout(options.flash_icon_timeout, function() flash:remove() end)
@@ -117,6 +117,7 @@ mp.observe_property("pause", "bool", function(_, paused)
     if paused then
         update_indicator()
         toggled = true
+        if options.flash_play_icon then flash:remove() end
     else
         indicator:remove()
         if toggled then
