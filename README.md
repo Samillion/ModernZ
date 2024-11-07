@@ -193,7 +193,7 @@ For even more useful scripts, check out the [mpv User Scripts Wiki](https://gith
 
 - To add many features in: [Color Customization](docs/USER_OPTS.md#colors-and-style), [Options](docs/USER_OPTS.md) and [Locale Integration](docs/TRANSLATIONS.md)
 - To integrate console and select into the osc, which inspired mpv to apply it in the stock osc. [ref [#1](https://github.com/mpv-player/mpv/pull/15016), [#2](https://github.com/mpv-player/mpv/pull/15031)]
-- to add a dedicated layout for images. [[details](/docs/IMAGE_VIEWER.md)]
+- To add a dedicated layout for images. [[details](/docs/IMAGE_VIEWER.md)]
 - To re-do the project entirely to match mpv's stock osc standards, to ensure compatibility
 - To eliminate old bugs and redundancy within the code
 
