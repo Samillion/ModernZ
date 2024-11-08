@@ -1,0 +1,15 @@
+name: "Request a new Feature"
+description: "Create a request for a new feature"
+labels: ["feature request"]
+body:
+- type: textarea
+  attributes:
+      label: "Expected behavior of the wanted feature"
+      description: >
+          Before requesting a new feature, make sure it hasn't been
+          [requested yet](https://github.com/Samillion/ModernZ/labels/feature%20request).
+
+          If you are not sure about this, please read 
+          [FAQ and issue best practices](https://github.com/Samillion/ModernZ/issues/189) first.
+  validations:
+      required: true

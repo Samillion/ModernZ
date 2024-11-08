@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+  - name: FAQ and issue best practices
+    url: https://github.com/Samillion/ModernZ/issues/189
+    about: Most frequent questions are answered there, also includes best practices for creating issues
+  - name: ModernZ user options manual
+    url: https://github.com/Samillion/ModernZ/blob/main/docs/USER_OPTS.md
+    about: All available user options within ModernZ are described there in detail
+  - name: ModernZ controls manual
+    url: https://github.com/Samillion/ModernZ/blob/main/docs/CONTROLS.md
+    about: Details on how to interact with controls and buttons available in ModernZ
