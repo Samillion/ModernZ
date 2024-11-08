@@ -1,5 +1,7 @@
 # ModernZ Controls Guide
 
+![modernz_osc_buttons](https://github.com/user-attachments/assets/4fc6b414-90e8-4b48-883a-5bf6f404db24)
+
 ## Button Interactions
 
 Below is a list that explains the OSC buttons function depending on how you interact with them.
@@ -83,6 +85,13 @@ Below is a list that explains the OSC buttons function depending on how you inte
 | Left mouse click  | Show an interactive playlist |
 | Right mouse click | Show a simple playlist       |
 
+### Volume
+
+| Action           | Function              |
+| ---------------- | --------------------- |
+| Left mouse click | Toggle mute on/off    |
+| Scroll wheel     | Change volume up/down |
+
 ### Screenshot
 
 | Action           | Function          |
@@ -96,12 +105,25 @@ Below is a list that explains the OSC buttons function depending on how you inte
 | Left mouse click  | Toggle pin and toggle window border    |
 | Right mouse click | Toggle pin without changing the border |
 
-### Volume
+### Loop
 
-| Action           | Function              |
-| ---------------- | --------------------- |
-| Left mouse click | Toggle mute on/off    |
-| Scroll wheel     | Change volume up/down |
+| Action            | Function             |
+| ----------------- | -------------------- |
+| Left mouse click  | Toggle loop on/off   |
+
+### Speed Control
+
+| Action                 | Function                                  |
+| ---------------------- | ----------------------------------------- |
+| Left mouse click       | Increase playing speed by increments of 1 |
+| Right mouse click      | Reset playing speed to normal             |
+| Scroll wheel           | Inc/decrease playing speed by 0.25        |
+
+### Download
+
+| Action            | Function                             |
+| ----------------- | ------------------------------------ |
+| Left mouse click  | Download the current video/image URL |
 
 ## Keybinds
 
