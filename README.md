@@ -22,10 +22,10 @@ A sleek and modern OSC for [mpv](https://mpv.io/), this project is a fork of Mod
 
 - 🎨 Modern, customizable interface [[options](#configuration)]
 - 📷 Image Viewer mode with zoom controls [[details](/docs/IMAGE_VIEWER.md)]
-- 🖼️ Video thumbnail previews on seek (with [thumbfast](https://github.com/po5/thumbfast))
+- 🎛️ Buttons: Download, playlist, speed control, screenshot, pin and more. [[details](/docs/CONTROLS.md)]
 - 📄 Interactive lists for playlist, subtitles, audio tracks, chapter and audio devices [[preview](#interactive-lists)]
-- 🔽 Download button for web videos (with [yt-dlp](https://github.com/yt-dlp/yt-dlp))
 - 🌐 Multi-language support [[locale](#translations)]
+- 🖼️ Video thumbnail previews on seek (with [thumbfast](https://github.com/po5/thumbfast))
 - ⌨️ Configurable controls [[details](#controls)]
 
 ## Customization Showcase
