@@ -1,0 +1,74 @@
+name: "Report an issue or a bug"
+description: "Create a report for an issue or a bug"
+labels: []
+body:
+- type: textarea
+  attributes:
+      label: "mpv Information"
+      placeholder: |
+          mpv v0.39.0-300-g42ff6f92 Copyright © 2000-2024 mpv/MPlayer/mplayer2 projects
+           built on Nov  3 2024 00:06:03
+          libplacebo version: v7.349.0 (v7.349.0-19-g118d810-dirty)
+          FFmpeg version: N-117698-gc325f9c61
+          FFmpeg library versions:
+             libavcodec      61.23.100
+             libavdevice     61.4.100
+             libavfilter     10.6.101
+             libavformat     61.9.100
+             libavutil       59.46.100
+             libswscale      8.9.101
+      description: |
+          Provide the output of `mpv --version`.
+      render: bash
+  validations:
+      required: false
+- type: textarea
+  attributes:
+      label: "Reproduction Steps"
+      description: >
+          Try to reproduce your issue with `--no-config` and mpv's stock osc first. If it is reproducible
+          even then, try to find out which option or script causes your issue.
+
+
+          Describe the reproduction steps as precise as possible. It's very likely that
+          the bug you experience wasn't reproduced by the developer because the workflow
+          differs from your own.
+  validations:
+      required: true
+- type: textarea
+  attributes:
+      label: "Expected Behavior"
+      placeholder: "What were you expecting?"
+  validations:
+      required: true
+- type: textarea
+  attributes:
+      label: "Actual Behavior"
+      placeholder: "What happened instead?"
+  validations:
+      required: true
+- type: textarea
+  attributes:
+      label: "Log File"
+      placeholder: "Drag and drop log file here (Don't paste content directly)"
+      description: >
+          Make a log file with `--log-file=output.txt` and
+          attach it to the issue.
+
+
+          If you have trouble producing a log file, you can alternatively use `-v -v`,
+          save the terminal output to a file, and attach it to the issue.
+
+
+          Disclaimer: The log file may contain identifiable information, such as your username.
+          Review the log file before sharing and redact any sensitive data if necessary.
+  validations:
+      required: true
+- type: checkboxes
+  attributes:
+      label: "I carefully read all instructions and confirm that I did the following:"
+      options:
+          - label: "I tested with the latest mpv version to validate that the issue is not already fixed."
+            required: true
+          - label: "I provided all required information."
+            required: true
