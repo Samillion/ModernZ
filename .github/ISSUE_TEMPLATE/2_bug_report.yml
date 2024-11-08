@@ -1,6 +1,6 @@
 name: "Report an issue or a bug"
 description: "Create a report for an issue or a bug"
-labels: []
+labels: ["bug"]
 body:
 - type: textarea
   attributes:
