@@ -1540,7 +1540,7 @@ local function window_controls()
         local left_pad = 0
         local right_pad = 0
         lo = add_layout("windowtitle")
-        local geo = {x = 20, y = button_y + 18, an = 1, w = osc_param.playresx - 50, h = wc_geo.h}
+        local geo = {x = 20, y = button_y + 17, an = 1, w = osc_param.playresx - 50, h = wc_geo.h}
         lo.geometry = geo
 
         local clip_x1 = titlebox_left + left_pad 
