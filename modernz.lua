@@ -361,7 +361,7 @@ local thumbfast = {
 local tick_delay = 1 / 60
 local audio_track_count = 0
 local sub_track_count = 0
-local window_control_box_width = 138
+local window_control_box_width = 150
 local is_december = os.date("*t").month == 12
 local UNICODE_MINUS = string.char(0xe2, 0x88, 0x92)  -- UTF-8 for U+2212 MINUS SIGN
 local iconfont = "fluent-system-icons"
@@ -1484,9 +1484,9 @@ local function window_controls()
     end
 
     local button_y = wc_geo.y - (wc_geo.h / 2)
-    local first_geo = {x = controlbox_left + 25, y = button_y, an = 5, w = 40, h = wc_geo.h}
-    local second_geo = {x = controlbox_left + 69, y = button_y, an = 5, w = 40, h = wc_geo.h}
-    local third_geo = {x = controlbox_left + 113, y = button_y, an = 5, w = 40, h = wc_geo.h}
+    local first_geo = {x = controlbox_left + 25, y = button_y, an = 5, w = 50, h = wc_geo.h}
+    local second_geo = {x = controlbox_left + 75, y = button_y, an = 5, w = 50, h = wc_geo.h}
+    local third_geo = {x = controlbox_left + 125, y = button_y, an = 5, w = 50, h = wc_geo.h}
 
     -- Window control buttons use symbols in the custom mpv osd font
     -- because the official unicode codepoints are sufficiently
@@ -1540,7 +1540,7 @@ local function window_controls()
         local left_pad = 0
         local right_pad = 0
         lo = add_layout("windowtitle")
-        local geo = {x = 20, y = button_y + 16, an = 1, w = osc_param.playresx - 50, h = wc_geo.h}
+        local geo = {x = 20, y = button_y + 17, an = 1, w = osc_param.playresx - 50, h = wc_geo.h}
         lo.geometry = geo
 
         local clip_x1 = titlebox_left + left_pad 
