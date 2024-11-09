@@ -177,28 +177,27 @@ Create `modernz.conf` in your mpv script-opts directory:
 
 Customize the button function based on mouse actions.
 
-| Type                          | Option                           | Function                                                                                 |
-| ----------------------------- | -------------------------------- | ---------------------------------------------------------------------------------------- |
-| Seekbar Mode (mouse wheel)    | seekbar_track_wheel_mode         | default: `seek`<br> accepts `seek` or `speed`.<br>`speed` changes playback speed up/down |
-| Title (above seekbar)         | title_mbtn_left_command          | `script-binding select/select-playlist; script-message-to modernz osc-hide`              |
-|                               | title_mbtn_right_command         | `script-binding stats/display-page-5`                                                    |
-| Playlist Button               | playlist_mbtn_left_command       | `script-binding select/select-playlist; script-message-to modernz osc-hide`              |
-|                               | playlist_mbtn_right_command      | `show-text ${playlist} 3000`                                                             |
-| Volume Control                | vol_ctrl_mbtn_right_command      | `script-binding select/select-audio-device; script-message-to modernz osc-hide`          |
-| Audio Button                  | audio_track_mbtn_left_command    | `script-binding select/select-aid; script-message-to modernz osc-hide`                   |
-|                               | audio_track_mbtn_right_command   | `cycle audio`                                                                            |
-|                               | audio_track_wheel_down_command   | `cycle audio`                                                                            |
-|                               | audio_track_wheel_up_command     | `cycle audio down`                                                                       |
-| Subtitle Button               | sub_track_mbtn_left_command      | `script-binding select/select-sid; script-message-to modernz osc-hide`                   |
-|                               | sub_track_mbtn_right_command     | `cycle sub`                                                                              |
-|                               | sub_track_wheel_down_command     | `cycle sub`                                                                              |
-|                               | sub_track_wheel_up_command       | `cycle sub down`                                                                         |
-| Chapter Skip Buttons          | chapter_prev_mbtn_left_command   | `no-osd add chapter -1`                                                                  |
-|                               | chapter_prev_mbtn_right_command  | `script-binding select/select-chapter; script-message-to modernz osc-hide`               |
-|                               | chapter_next_mbtn_left_command   | `no-osd add chapter 1`                                                                   |
-|                               | chapter_next_mbtn_right_command  | `script-binding select/select-chapter; script-message-to modernz osc-hide`               |
-| Chapter Title (below seekbar) | chapter_title_mbtn_left_command  | `script-binding select/select-chapter; script-message-to modernz osc-hide`               |
-|                               | chapter_title_mbtn_right_command | `show-text ${chapter-list} 3000`                                                         |
+| Type                          | Option                           | Function                                                                        |
+| ----------------------------- | -------------------------------- | ------------------------------------------------------------------------------- |
+| Title (above seekbar)         | title_mbtn_left_command          | `script-binding select/select-playlist; script-message-to modernz osc-hide`     |
+|                               | title_mbtn_right_command         | `script-binding stats/display-page-5`                                           |
+| Playlist Button               | playlist_mbtn_left_command       | `script-binding select/select-playlist; script-message-to modernz osc-hide`     |
+|                               | playlist_mbtn_right_command      | `show-text ${playlist} 3000`                                                    |
+| Volume Control                | vol_ctrl_mbtn_right_command      | `script-binding select/select-audio-device; script-message-to modernz osc-hide` |
+| Audio Button                  | audio_track_mbtn_left_command    | `script-binding select/select-aid; script-message-to modernz osc-hide`          |
+|                               | audio_track_mbtn_right_command   | `cycle audio`                                                                   |
+|                               | audio_track_wheel_down_command   | `cycle audio`                                                                   |
+|                               | audio_track_wheel_up_command     | `cycle audio down`                                                              |
+| Subtitle Button               | sub_track_mbtn_left_command      | `script-binding select/select-sid; script-message-to modernz osc-hide`          |
+|                               | sub_track_mbtn_right_command     | `cycle sub`                                                                     |
+|                               | sub_track_wheel_down_command     | `cycle sub`                                                                     |
+|                               | sub_track_wheel_up_command       | `cycle sub down`                                                                |
+| Chapter Skip Buttons          | chapter_prev_mbtn_left_command   | `no-osd add chapter -1`                                                         |
+|                               | chapter_prev_mbtn_right_command  | `script-binding select/select-chapter; script-message-to modernz osc-hide`      |
+|                               | chapter_next_mbtn_left_command   | `no-osd add chapter 1`                                                          |
+|                               | chapter_next_mbtn_right_command  | `script-binding select/select-chapter; script-message-to modernz osc-hide`      |
+| Chapter Title (below seekbar) | chapter_title_mbtn_left_command  | `script-binding select/select-chapter; script-message-to modernz osc-hide`      |
+|                               | chapter_title_mbtn_right_command | `show-text ${chapter-list} 3000`                                                |
 
 ### Auto Profile
 
