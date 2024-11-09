@@ -11,7 +11,7 @@ A sleek and modern OSC for [mpv](https://mpv.io/), this project is a fork of Mod
   ·
   <a href="#controls">Controls</a>
   ·
-  <a href="#interactive-lists">Interactive Lists</a>
+  <a href="#interactive-menus">Interactive Menus</a>
   ·
   <a href="#translations">OSC Language</a>
   ·
@@ -23,10 +23,10 @@ A sleek and modern OSC for [mpv](https://mpv.io/), this project is a fork of Mod
 - 🎨 Modern, customizable interface [[options](#configuration)]
 - 📷 Image Viewer mode with zoom controls [[details](/docs/IMAGE_VIEWER.md)]
 - 🎛️ Buttons: download, playlist, speed control, screenshot, pin, loop and more. [[details](/docs/CONTROLS.md)]
-- 📄 Interactive menus for playlist, subtitles, audio tracks, chapters and audio devices [[preview](#interactive-lists)]
-- 🌐 Multi-language support [[locale](#translations)]
-- 🖼️ Video thumbnail previews on seek (with [thumbfast](https://github.com/po5/thumbfast))
+- 📄 Interactive menus for playlist, subtitles, chapters, audio tracks and audio devices [[preview](#interactive-menus)]
+- 🌐 Multi-language support with JSON [locale](#translations) integration
 - ⌨️ Configurable controls [[details](#controls)]
+- 🖼️ Video thumbnail previews with [thumbfast](https://github.com/po5/thumbfast)
 
 ## Customization Showcase
 
@@ -115,9 +115,9 @@ y   script-message-to modernz osc-visibility   # Toggle visibility
 z   script-message-to modernz osc-idlescreen   # Toggle idle screen
 ```
 
-## Interactive Lists
+## Interactive Menus
 
-ModernZ supports mpv's built-in select.lua ([v0.39+](https://github.com/mpv-player/mpv/discussions/14903)) for playlist and chapter navigation.
+ModernZ supports mpv's built-in select.lua ([v0.39+](https://github.com/mpv-player/mpv/discussions/14903)) for playlist, subtitles, chapter navigation and more.
 
 https://github.com/user-attachments/assets/f47a2eb6-d926-4f3b-8a5d-19301c70c7a5
 
@@ -175,7 +175,7 @@ The following scripts are ones I wrote and maintain, feel free to use them if th
 
 - [Pause-Indicator-Lite](/extras/pause-indicator-lite) - A simple script that displays an indicator on pause
 
-- [ytdlAutoFormat](https://github.com/Samillion/mpv-ytdlautoformat) - A simple mpv script to automatically change ytdl-format (yt-dlp) for specified domains.
+- [ytdlAutoFormat](https://github.com/Samillion/mpv-ytdlautoformat) - A simple mpv script to automatically change `ytdl-format` (yt-dlp) for specified domains.
 
 - [BoxtoWide](https://github.com/Samillion/mpv-boxtowide) - A simple mpv script to change 4:3 aspect-ratio of video files/streams to 16:9 automatically.
 
@@ -203,4 +203,8 @@ Having said that, ModernZ still uses parts of the old code, and every previous a
 
 #### Credits:
 
-Fluent System Icons font was modified by [Xurdejl](https://github.com/Xurdejl) for use on ModernZ, they also contributed with code, reports and tests. 😻
+- Font: UI Fluent System Icons [[details](https://github.com/microsoft/fluentui-system-icons)] [[font file](https://github.com/Samillion/ModernZ/blob/main/fluent-system-icons.ttf)]
+- Font modified by [Xurdejl](https://github.com/Xurdejl) for use on ModernZ osc
+- [mpv](https://github.com/mpv-player/mpv) and their [osc.lua](https://github.com/mpv-player/mpv/blob/master/player/lua/osc.lua), as ModernZ osc was re-based on the stock osc standards and applies updates from it
+- All modern osc origin and their forks as mentioned in [history](#history)
+- All [contributors](https://github.com/Samillion/ModernZ/graphs/contributors), testers and users that helped directly or indirectly with ModernZ osc ❤️
