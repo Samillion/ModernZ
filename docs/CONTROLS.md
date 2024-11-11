@@ -1,6 +1,6 @@
 # ModernZ Controls Guide
 
-![modernz_osc_buttons](https://github.com/user-attachments/assets/4fc6b414-90e8-4b48-883a-5bf6f404db24)
+![modernz-osc_buttons](https://github.com/user-attachments/assets/78918891-5442-43dc-b0be-072806b5fd66)
 
 ## Button Interactions
 

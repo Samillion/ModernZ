@@ -3402,6 +3402,11 @@ local function validate_user_opts()
           user_opts.windowcontrols = "auto"
     end
 
+    if user_opts.seekbarhandlesize < 0.3 then
+        msg.warn("seekbarhandlesize must be 0.3 or higher. Setting it to 0.3 (minimum).")
+        user_opts.seekbarhandlesize = 0.3
+    end
+
     if user_opts.volume_control_type ~= "linear" and
        user_opts.volume_control_type ~= "logarithmic" then
           msg.warn("volumecontrol cannot be '" .. user_opts.volume_control_type .. "'. Ignoring.")
