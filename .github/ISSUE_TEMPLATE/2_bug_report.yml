@@ -63,7 +63,7 @@ body:
           Disclaimer: The log file may contain identifiable information, such as your username.
           Review the log file before sharing and redact any sensitive data if necessary.
   validations:
-      required: true
+      required: false
 - type: checkboxes
   attributes:
       label: "I carefully read all instructions and confirm that I did the following:"
