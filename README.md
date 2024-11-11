@@ -119,7 +119,7 @@ z   script-message-to modernz osc-idlescreen   # Toggle idle screen
 
 ModernZ supports mpv's built-in select.lua ([v0.39+](https://github.com/mpv-player/mpv/discussions/14903)) for playlist, subtitles, chapter navigation and more.
 
-https://github.com/user-attachments/assets/f47a2eb6-d926-4f3b-8a5d-19301c70c7a5
+https://github.com/user-attachments/assets/aa7305f3-9f14-4609-9d3e-95e18f003593
 
 > [!TIP]
 > If the font size for the interactive playlist is too small, you can add the following in your `mpv.conf`
