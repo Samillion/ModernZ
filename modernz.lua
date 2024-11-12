@@ -212,18 +212,6 @@ local osc_param = { -- calculated by osc_init()
 }
 
 local icons = {
-    loop_off = "\239\133\178",
-    loop_on = "\239\133\181",
-    speed = "\239\160\177",
-
-    play = "\238\166\143",
-    pause = "\238\163\140",
-    replay = "\238\189\191",
-    previous = "\239\152\167",
-    next = "\239\149\168",
-    rewind = "\238\168\158",
-    forward = "\238\152\135",
-
     audio = "\238\175\139",
     subtitle = "\238\175\141",
     playlist = "\238\161\159",
@@ -232,21 +220,31 @@ local icons = {
     volume_low = "\238\172\189",
     volume_high = "\238\173\130",
 
-    download = "\239\133\144",
-    downloading = "\239\140\174",
-    screenshot = "\238\169\150",
-    ontop_on = "\238\165\190",
-    ontop_off = "\238\166\129",
-    info = "\239\146\164",
-    fullscreen = "\239\133\160",
-    fullscreen_exit = "\239\133\166",
-
-    jumpicons = { 
+    play = "\238\166\143",
+    pause = "\238\163\140",
+    replay = "\238\189\191",
+    previous = "\239\152\167",
+    next = "\239\149\168",
+    rewind = "\238\168\158",
+    forward = "\238\152\135",
+    jump = { 
         [5] = {"\238\171\186", "\238\171\187"}, 
         [10] = {"\238\171\188", "\238\172\129"}, 
         [30] = {"\238\172\133", "\238\172\134"}, 
         default = {"\238\172\138", "\238\172\138"}, -- second icon is mirrored in layout() 
     },
+
+    fullscreen = "\239\133\160",
+    fullscreen_exit = "\239\133\166",
+    info = "\239\146\164",
+    ontop_on = "\238\165\190",
+    ontop_off = "\238\166\129",
+    screenshot = "\238\169\150",
+    loop_off = "\239\133\178",
+    loop_on = "\239\133\181",
+    speed = "\239\160\177",
+    download = "\239\133\144",
+    downloading = "\239\140\174",
 
     zoom_in = "\238\186\142",
     zoom_out = "\238\186\143",
@@ -255,24 +253,23 @@ local icons = {
 --- localization
 local language = {
     ["en"] = {
-        welcome = "Drop files or URLs here to play",
+        idle = "Drop files or URLs here to play",
         na = "Not available",
         video = "Video",
         audio = "Audio",
         subtitle = "Subtitle",
-        nosub = "No subtitles available",
-        noaudio = "No audio tracks available",
+        no_subs = "No subtitles available",
+        no_audio = "No audio tracks available",
         playlist = "Playlist",
-        nolist = "Playlist is empty",
+        no_list = "Playlist is empty",
         chapter = "Chapter",
-        nochapter = "No chapters available",
         ontop = "Pin Window",
-        ontopdisable = "Unpin Window",
-        loopenable = "Loop",
-        loopdisable = "Disable Loop",
+        ontop_disable = "Unpin Window",
+        loop_enable = "Loop",
+        loop_disable = "Disable Loop",
         speed_control = "Speed Control",
         screenshot = "Screenshot",
-        statsinfo = "Information",
+        stats_info = "Information",
         zoom_in = "Zoom In",
         zoom_out = "Zoom Out",
     },
@@ -331,8 +328,8 @@ end
 local locale
 local function set_osc_locale()
     locale = language[user_opts.language] or language["en"]
-    local welcome_ass_tags = "{\\fs24\\1c&H0&\\1c&HFFFFFF&}"
-    locale.welcome = welcome_ass_tags .. locale.welcome
+    local idle_ass_tags = "{\\fs24\\1c&H0&\\1c&HFFFFFF&}"
+    locale.idle = idle_ass_tags .. locale.idle
 end
 
 local function contains(list, item)
@@ -448,7 +445,7 @@ local state = {
     fileSizeNormalised = "Approximating size...",
     is_URL = false,
     is_image = false,
-    web_video_path = "",                    -- used for yt-dlp downloading
+    url_path = "",                           -- used for yt-dlp downloading
     videoCantBeDownloaded = false,
 }
 
@@ -1375,7 +1372,7 @@ local function check_path_url()
 
     if is_url(path) then
         state.is_URL = true
-        state.web_video_path = path
+        state.url_path = path
         msg.info("URL detected.")
 
         if user_opts.download_button then
@@ -1667,7 +1664,7 @@ layouts["modern"] = function ()
     if jump_buttons then
         lo = add_layout("jump_backward")
         lo.geometry = {x = refX - 60, y = refY - 40 , an = 5, w = 30, h = 24}
-        lo.style = (user_opts.jump_icon_number and icons.jumpicons[user_opts.jump_amount] ~= nil) and osc_styles.control_2 or osc_styles.control_2_flip
+        lo.style = (user_opts.jump_icon_number and icons.jump[user_opts.jump_amount] ~= nil) and osc_styles.control_2 or osc_styles.control_2_flip
     end
 
     lo = add_layout("play_pause")
@@ -1890,7 +1887,7 @@ layouts["modern-image"] = function ()
         lo.style = osc_styles.control_2
 
         lo = new_element("zoom_control_bg", "box")
-        lo.visible = osc_param.playresx >= 510 - outeroffset and user_opts.zoom_control
+        lo.visible = osc_param.playresx >= 790 - outeroffset and user_opts.zoom_control
         lo = add_layout("zoom_control_bg")
         lo.geometry = {x = 145 - (playlist_button and 0 or 25) - (track_nextprev_buttons and 0 or 70), y = refY - 40, an = 4, w = 80, h = 4}
         lo.layer = 13
@@ -2099,11 +2096,7 @@ local function osc_init()
     end
     ne.eventresponder["mbtn_right_down"] = function ()
         if user_opts.loop_in_pause then
-            if state.looping then
-                mp.command("show-text '" .. locale.loopdisable .. "'")
-            else
-                mp.command("show-text '" .. locale.loopenable .. "'")
-            end    
+            mp.command("show-text '" .. (state.looping and locale.loop_disable or locale.loop_enable) .. "'")
             state.looping = not state.looping
             mp.set_property_native("loop-file", state.looping)
         end
@@ -2112,7 +2105,7 @@ local function osc_init()
     local jump_amount = user_opts.jump_amount
     local jump_more_amount = user_opts.jump_more_amount
     local jump_mode = user_opts.jump_mode
-    local jump_icon = user_opts.jump_icon_number and icons.jumpicons[jump_amount] or icons.jumpicons.default
+    local jump_icon = user_opts.jump_icon_number and icons.jump[jump_amount] or icons.jump.default
 
     --jump_backward
     ne = new_element("jump_backward", "button")
@@ -2166,7 +2159,7 @@ local function osc_init()
         return (locale.audio .. " " ..
                (mp.get_property_native("aid") or "-") .. "/" .. audio_track_count .. " [" .. prop .. "]")
     end
-    ne.nothingavailable = locale.noaudio
+    ne.nothingavailable = locale.no_audio
     ne.eventresponder["mbtn_left_up"] = command_callback(user_opts.audio_track_mbtn_left_command)
     ne.eventresponder["mbtn_right_up"] = command_callback(user_opts.audio_track_mbtn_right_command)
     ne.eventresponder["shift+mbtn_left_down"] = function () mp.command("show-text ${track-list} 3000") end
@@ -2185,7 +2178,7 @@ local function osc_init()
         return (locale.subtitle .. " " ..
                (mp.get_property_native("sid") or "-") .. "/" .. sub_track_count .. " [" .. prop .. "]")
     end
-    ne.nothingavailable = locale.nosub
+    ne.nothingavailable = locale.no_subs
     ne.eventresponder["mbtn_left_up"] = command_callback(user_opts.sub_track_mbtn_left_command)
     ne.eventresponder["mbtn_right_up"] = command_callback(user_opts.sub_track_mbtn_right_command)
     ne.eventresponder["shift+mbtn_left_down"] = function () mp.command("show-text ${track-list} 3000") end
@@ -2200,7 +2193,7 @@ local function osc_init()
     ne.content = icons.playlist
     ne.tooltip_style = osc_styles.tooltip
     ne.tooltipF = have_pl and locale.playlist .. " [" .. pl_pos .. "/" .. pl_count .. "]" or locale.playlist
-    ne.nothingavailable = locale.nolist
+    ne.nothingavailable = locale.no_list
     ne.eventresponder["mbtn_left_up"] = command_callback(user_opts.playlist_mbtn_left_command)
     ne.eventresponder["mbtn_right_up"] = command_callback(user_opts.playlist_mbtn_right_command)
 
@@ -2254,8 +2247,7 @@ local function osc_init()
     ne.eventresponder["mouse_move"] = function (element)
         local pos = get_slider_value(element)
         local setvol = set_volume(pos)
-        if element.state.lastseek == nil or
-            element.state.lastseek ~= setvol then
+        if element.state.lastseek == nil or element.state.lastseek ~= setvol then
                 mp.commandv("osd-msg", "set", "volume", setvol)
                 element.state.lastseek = setvol
         end
@@ -2275,7 +2267,7 @@ local function osc_init()
     ne.visible = (osc_param.playresx >= 700 - outeroffset)
     ne.content = icons.zoom_out
     ne.tooltip_style = osc_styles.tooltip
-    ne.tooltipF = locale.zoom_out
+    ne.tooltipF = user_opts.tooltip_hints and locale.zoom_out or ""
     ne.eventresponder["mbtn_left_up"] = function () mp.commandv("osd-msg", "set", "video-zoom", math.max(user_opts.zoom_out_min, current_zoom - 0.05)) end
     ne.eventresponder["mbtn_right_up"] = function () mp.commandv("osd-msg", "set", "video-zoom", 0) end
     ne.eventresponder["wheel_up_press"] = function () mp.commandv("osd-msg", "set", "video-zoom", math.min(user_opts.zoom_in_max, current_zoom + 0.05)) end
@@ -2291,8 +2283,7 @@ local function osc_init()
     ne.slider.tooltipF = function (pos) return string.format("%.3f", pos):gsub("%.?0*$", "") end
     ne.eventresponder["mouse_move"] = function (element)
         local pos = get_slider_value(element)
-        if element.state.lastseek == nil or
-            element.state.lastseek ~= pos then
+        if element.state.lastseek == nil or element.state.lastseek ~= pos then
                 mp.commandv("osd-msg", "set", "video-zoom", pos)
                 element.state.lastseek = pos
         end
@@ -2308,7 +2299,7 @@ local function osc_init()
     ne.visible = (osc_param.playresx >= 700 - outeroffset)
     ne.content = icons.zoom_in
     ne.tooltip_style = osc_styles.tooltip
-    ne.tooltipF = locale.zoom_in
+    ne.tooltipF = user_opts.tooltip_hints and locale.zoom_in or ""
     ne.eventresponder["mbtn_left_up"] = function () mp.commandv("osd-msg", "set", "video-zoom", math.min(user_opts.zoom_in_max, current_zoom + 0.05)) end
     ne.eventresponder["mbtn_right_up"] = function () mp.commandv("osd-msg", "set", "video-zoom", 0) end
     ne.eventresponder["wheel_up_press"] = function () mp.commandv("osd-msg", "set", "video-zoom", math.min(user_opts.zoom_in_max, current_zoom + 0.05)) end
@@ -2324,9 +2315,7 @@ local function osc_init()
     ne = new_element("tog_info", "button")
     ne.content = icons.info
     ne.tooltip_style = osc_styles.tooltip
-    if user_opts.tooltip_hints then
-        ne.tooltipF = locale.statsinfo
-    end
+    ne.tooltipF = user_opts.tooltip_hints and locale.stats_info or ""
     ne.visible = (osc_param.playresx >= 650 - outeroffset - (user_opts.fullscreen_button and 0 or 100))
     ne.eventresponder["mbtn_left_up"] = function () mp.commandv("script-binding", "stats/display-stats-toggle") end
 
@@ -2334,9 +2323,7 @@ local function osc_init()
     ne = new_element("tog_ontop", "button")
     ne.content = function () return mp.get_property("ontop") == "no" and icons.ontop_on or icons.ontop_off end
     ne.tooltip_style = osc_styles.tooltip
-    if user_opts.tooltip_hints then
-        ne.tooltipF = function () return mp.get_property("ontop") == "no" and locale.ontop or locale.ontopdisable end
-    end
+    ne.tooltipF = function () return user_opts.tooltip_hints and (mp.get_property("ontop") == "no" and locale.ontop or locale.ontop_disable) or "" end
     ne.visible = (osc_param.playresx >= 850 - outeroffset - (user_opts.info_button and 0 or 100) - (user_opts.fullscreen_button and 0 or 100))
     ne.eventresponder["mbtn_left_up"] = function () 
         mp.commandv("cycle", "ontop") 
@@ -2359,27 +2346,25 @@ local function osc_init()
     ne = new_element("screenshot", "button")
     ne.content = icons.screenshot
     ne.tooltip_style = osc_styles.tooltip
-    if user_opts.tooltip_hints then
-        ne.tooltipF = locale.screenshot
-    end
+    ne.tooltipF = user_opts.tooltip_hints and locale.screenshot or ""
     ne.visible = (osc_param.playresx >= 950 - outeroffset - (user_opts.ontop_button and 0 or 100) - (user_opts.info_button and 0 or 100) - (user_opts.fullscreen_button and 0 or 100))
     ne.eventresponder["mbtn_left_up"] = function ()
-        local tempSubPosition = mp.get_property("sub-pos")
+        local temp_sub_pos = mp.get_property("sub-pos")
         if user_opts.screenshot_flag == "subtitles" or user_opts.screenshot_flag == "subtitles+each-frame" then 
             mp.commandv("set", "sub-pos", 100) 
         end
         mp.commandv("osd-msg", "screenshot", user_opts.screenshot_flag)
-        mp.commandv("set", "sub-pos", tempSubPosition)
+        mp.commandv("set", "sub-pos", temp_sub_pos)
     end
 
     --tog_loop
     ne = new_element("tog_loop", "button")
-    ne.content = state.looping and icons.loop_on or icons.loop_off
+    ne.content = function() return state.looping and icons.loop_on or icons.loop_off end
     ne.visible = (osc_param.playresx >= 1050 - outeroffset - (user_opts.screenshot_button and 0 or 100) - (user_opts.ontop_button and 0 or 100) - (user_opts.info_button and 0 or 100) - (user_opts.fullscreen_button and 0 or 100))
     ne.tooltip_style = osc_styles.tooltip
-    ne.tooltipF = user_opts.tooltip_hints and (state.looping and locale.loopdisable or locale.loopenable) or ""
+    ne.tooltipF = function() return user_opts.tooltip_hints and (state.looping and locale.loop_disable or locale.loop_enable) or "" end
     ne.eventresponder["mbtn_left_up"] = function ()
-        mp.command("show-text '" .. (state.looping and locale.loopdisable or locale.loopenable) .. "'")
+        mp.command("show-text '" .. (state.looping and locale.loop_disable or locale.loop_enable) .. "'")
         state.looping = not state.looping
         mp.set_property_native("loop-file", state.looping)
     end
@@ -2423,7 +2408,7 @@ local function osc_init()
                     "--embed-subs",
                     "-o", "%(title)s.%(ext)s",
                     "-P", localpath,
-                    state.web_video_path
+                    state.url_path
                 }
 
                 local status = exec(command, download_done)
@@ -2514,7 +2499,6 @@ local function osc_init()
             mp.commandv("seek", seekto, flags)
             element.state.lastseek = seekto
         end
-
     end
     ne.eventresponder["mbtn_left_down"] = function (element)
         element.state.mbtnleft = true
@@ -3094,7 +3078,7 @@ tick = function()
             ass:new_event()
             ass:pos(display_w / 2, icon_y + 65)
             ass:an(8)
-            ass:append(locale.welcome)
+            ass:append(locale.idle)
         end
         set_osd(display_w, display_h, ass.text, -1000)
 
