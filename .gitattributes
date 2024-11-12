@@ -1,0 +1,5 @@
+*.conf      linguist-language=INI
+*.conf      text eol=lf
+*.lua       text eol=lf
+*.json      text eol=lf
+*.md        text eol=lf
