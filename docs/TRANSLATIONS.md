@@ -21,7 +21,7 @@ To get started with translations:
 ```json
 {
     "language-code": {
-        "welcome": "Your translation",
+        "idle": "Your translation",
         "na": "Your translation",
     },
 }
@@ -51,24 +51,23 @@ ModernZ currently has translations for the following languages:
 ```json
 {
     "en": {
-        "welcome": "Drop files or URLs here to play",
+        "idle": "Drop files or URLs here to play",
         "na": "Not available",
         "video": "Video",
         "audio": "Audio",
         "subtitle": "Subtitle",
-        "nosub": "No subtitles available",
-        "noaudio": "No audio tracks available",
+        "no_subs": "No subtitles available",
+        "no_audio": "No audio tracks available",
         "playlist": "Playlist",
-        "nolist": "Playlist is empty",
+        "no_list": "Playlist is empty",
         "chapter": "Chapter",
-        "nochapter": "No chapters available",
         "ontop": "Pin Window",
-        "ontopdisable": "Unpin Window",
-        "loopenable": "Loop",
-        "loopdisable": "Disable Loop",
+        "ontop_disable": "Unpin Window",
+        "loop_enable": "Loop",
+        "loop_disable": "Disable Loop",
         "speed_control": "Speed Control",
         "screenshot": "Screenshot",
-        "statsinfo": "Information",
+        "stats_info": "Information",
         "zoom_in": "Zoom In",
         "zoom_out": "Zoom Out",
     },
@@ -80,7 +79,7 @@ ModernZ currently has translations for the following languages:
 ```json
 {
     "es": {
-        "welcome": "Suelta archivos o URLs aquí para reproducirlos",
+        "idle": "Suelta archivos o URLs aquí para reproducirlos",
         "na": "No disponible",
         "video": "Video",
     },
@@ -97,25 +96,24 @@ ModernZ currently has translations for the following languages:
 
 ## Translation Keys Reference
 
-| Key                    | Description             | Format Notes                |
-| ---------------------- | ----------------------- | --------------------------- |
-| welcome                | Welcome message         | Be brief                    |
-| na                     | Not available           | Menu label                  |
-| video                  | Video label             | Menu label                  |
-| audio                  | Audio label             | Menu label                  |
-| subtitle               | Subtitle label          | Menu label                  |
-| nosub                  | No subtitles label      | Menu label                  |
-| noaudio                | No audio label          | Menu label                  |
-| playlist               | Playlist label          | Menu label                  |
-| nolist                 | No playlist label       | Menu label                  |
-| chapter                | Chapter label           | Menu label                  |
-| nochapter              | No chapter label        | Menu label                  |
-| ontop/ontopdisable     | Window pin states       | Action labels               |
-| loopenable/loopdisable | Loop states             | Action labels               |
-| screenshot             | Screenshot label        | Action label                |
-| statsinfo              | Information label       | Menu label                  |
-| zoom_in                | Zoom label              | Menu label                  |
-| zoom_out               | Zoom label              | Menu label                  |
+| Key                      | Description             | Format Notes                |
+| ------------------------ | ----------------------- | --------------------------- |
+| idle                     | Idle state message      | Be brief                    |
+| na                       | Not available           | Menu label                  |
+| video                    | Video label             | Menu label                  |
+| audio                    | Audio label             | Menu label                  |
+| subtitle                 | Subtitle label          | Menu label                  |
+| no_subs                  | No subtitles label      | Menu label                  |
+| no_audio                 | No audio label          | Menu label                  |
+| playlist                 | Playlist label          | Menu label                  |
+| no_list                  | No playlist label       | Menu label                  |
+| chapter                  | Chapter label           | Menu label                  |
+| ontop/ontop_disable      | Window pin states       | Action labels               |
+| loop_enable/loop_disable | Loop states             | Action labels               |
+| screenshot               | Screenshot label        | Action label                |
+| stats_info               | Information label       | Menu label                  |
+| zoom_in                  | Zoom label              | Menu label                  |
+| zoom_out                 | Zoom label              | Menu label                  |
 
 ## Contributing
 
