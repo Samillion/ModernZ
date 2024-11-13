@@ -23,7 +23,7 @@ A sleek and modern OSC for [mpv](https://mpv.io/), this project is a fork of Mod
 - 🎨 Modern, customizable interface [[options](#configuration)]
 - 📷 Image Viewer mode with zoom controls [[details](/docs/IMAGE_VIEWER.md)]
 - 🎛️ Buttons: download, playlist, speed control, screenshot, pin, loop and more. [[details](/docs/CONTROLS.md)]
-- 📄 Interactive menus for playlist, subtitles, chapters, audio tracks and audio devices [[preview](#interactive-menus)]
+- 📄 Interactive menus for playlist, subtitles, chapters, audio tracks and audio devices [[details](#interactive-menus)]
 - 🌐 Multi-language support with JSON [locale](#translations) integration
 - ⌨️ Configurable controls [[details](#controls)]
 - 🖼️ Video thumbnail previews with [thumbfast](https://github.com/po5/thumbfast)
@@ -119,15 +119,8 @@ z   script-message-to modernz osc-idlescreen   # Toggle idle screen
 
 ModernZ supports mpv's built-in select.lua ([v0.39+](https://github.com/mpv-player/mpv/discussions/14903)) for playlist, subtitles, chapter navigation and more.
 
-https://github.com/user-attachments/assets/aa7305f3-9f14-4609-9d3e-95e18f003593
+[![click_preview](https://github.com/user-attachments/assets/a9be167e-682c-4b29-b001-77bb012590a1)](/docs/INTERACTIVE_MENUS.md)
 
-> [!TIP]
-> If the font size for the interactive playlist is too small, you can add the following in your `mpv.conf`
->
-> ```ini
-> # change font size for console and select
-> script-opts-append=console-font_size=25
-> ```
 
 ## Translations
 
