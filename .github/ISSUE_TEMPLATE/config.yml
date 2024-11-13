@@ -1,8 +1,8 @@
 blank_issues_enabled: false
 contact_links:
-  - name: FAQ and issue best practices
-    url: https://github.com/Samillion/ModernZ/issues/189
-    about: Most frequent questions are answered there, also includes best practices for creating issues
+  - name: FAQ and guidelines (Important)
+    url: https://github.com/Samillion/ModernZ/blob/main/docs/FAQ.md
+    about: Frequent questions are answered there, also includes useful guidelines
   - name: ModernZ user options manual
     url: https://github.com/Samillion/ModernZ/blob/main/docs/USER_OPTS.md
     about: All available user options within ModernZ are described there in detail
