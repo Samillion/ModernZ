@@ -53,7 +53,7 @@ body:
       placeholder: "Drag and drop log file here (Don't paste content directly)"
       description: >
           Make a log file with `--log-file=output.txt` and
-          attach it to the issue.
+          attach it to the issue. [[details](https://mpv.io/manual/master/#options-log-file)]
 
 
           If you have trouble producing a log file, you can alternatively use `-v -v`,
