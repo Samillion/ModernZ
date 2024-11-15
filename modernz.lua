@@ -24,7 +24,7 @@ local user_opts = {
     font = "mpv-osd-symbols",              -- font for the OSC (default: mpv-osd-symbols or the one set in mpv.conf)
 
     idlescreen = true,                     -- show mpv logo when idle
-    windowcontrols = "auto",               -- show OSC window controls: "auto", "yes", or "no"
+    window_top_bar = "auto",               -- show OSC window top bar: "auto", "yes", or "no" (borderless/fullscreen)
     showwindowed = true,                   -- show OSC when windowed
     showfullscreen = true,                 -- show OSC when fullscreen
     showonpause = true,                    -- show OSC when paused
@@ -745,7 +745,7 @@ end
 
 -- WindowControl helpers
 local function window_controls_enabled()
-    local val = user_opts.windowcontrols
+    local val = user_opts.window_top_bar
     if val == "auto" then
         return not (state.border and state.title_bar) or state.fullscreen
     else
@@ -1591,7 +1591,9 @@ layouts["modern"] = function ()
     lo.layer = 10
     lo.alpha[3] = 0
 
-    if not user_opts.title_bar_box and (not (state.border and state.title_bar) or state.fullscreen) then
+    local top_titlebar = window_controls_enabled() and (user_opts.window_title or user_opts.window_controls)
+
+    if not user_opts.title_bar_box and (not (state.border and state.title_bar) or state.fullscreen) and top_titlebar then
         new_element("title_alpha_bg", "box")
         lo = add_layout("title_alpha_bg")
         lo.geometry = {x = posX, y = -100, an = 7, w = osc_w, h = -1}
@@ -1840,7 +1842,9 @@ layouts["modern-image"] = function ()
     lo.layer = 10
     lo.alpha[3] = 0
 
-    if not user_opts.title_bar_box and (not (state.border and state.title_bar) or state.fullscreen) then
+    local top_titlebar = window_controls_enabled() and (user_opts.window_title or user_opts.window_controls)
+
+    if not user_opts.title_bar_box and (not (state.border and state.title_bar) or state.fullscreen) and top_titlebar then
         new_element("title_alpha_bg", "box")
         lo = add_layout("title_alpha_bg")
         lo.geometry = {x = posX, y = -100, an = 7, w = osc_w, h = -1}
@@ -1848,7 +1852,7 @@ layouts["modern-image"] = function ()
         lo.layer = 10
         lo.alpha[3] = 0
     end
-        
+
     -- Alignment
     local refX = osc_w / 2
     local refY = posY
@@ -2811,7 +2815,9 @@ local function process_event(source, what)
                 )
             ) then
                 if user_opts.bottomhover then -- if enabled, only show osc if mouse is hovering at the bottom of the screen (where the UI elements are)
-                    if mouseY > osc_param.playresy - (user_opts.bottomhover_zone or 145) or (not (state.border and state.title_bar) or state.fullscreen) and mouseY < 40 then -- account for scaling options
+                    local top_hover = window_controls_enabled() and (user_opts.window_title or user_opts.window_controls)
+                    if mouseY > osc_param.playresy - (user_opts.bottomhover_zone or 145) 
+                    or (not (state.border and state.title_bar) or state.fullscreen) and (mouseY < 40 and top_hover) then
                         show_osc()
                     else
                         state.touchtime = nil  
@@ -3380,11 +3386,11 @@ end)
 
 -- Validate string type user options
 local function validate_user_opts()
-    if user_opts.windowcontrols ~= "auto" and 
-       user_opts.windowcontrols ~= "yes" and
-       user_opts.windowcontrols ~= "no" then
-          msg.warn("windowcontrols cannot be '" .. user_opts.windowcontrols .. "'. Ignoring.")
-          user_opts.windowcontrols = "auto"
+    if user_opts.window_top_bar ~= "auto" and 
+       user_opts.window_top_bar ~= "yes" and
+       user_opts.window_top_bar ~= "no" then
+          msg.warn("window_top_bar cannot be '" .. user_opts.window_top_bar .. "'. Ignoring.")
+          user_opts.window_top_bar = "auto"
     end
 
     if user_opts.seekbarhandlesize < 0.3 then

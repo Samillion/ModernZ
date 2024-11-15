@@ -17,7 +17,7 @@ Create `modernz.conf` in your mpv script-opts directory:
 | language       | en              | set language (for available options, see: [Translations](https://github.com/Samillion/ModernZ/blob/main/docs/TRANSLATIONS.md)) |
 | font           | mpv-osd-symbols | font for the OSC (default: mpv-osd-symbols or the one set in mpv.conf)                                                         |
 | idlescreen     | yes             | show mpv logo when idle                                                                                                        |
-| windowcontrols | auto            | show OSC window controls: `"auto"`, `"yes"`, or `"no"`                                                                         |
+| window_top_bar | auto            | show OSC window top bar: `"auto"`, `"yes"`, or `"no"` (borderless/fullscreen)                                                  |
 | showwindowed   | yes             | show OSC when windowed                                                                                                         |
 | showfullscreen | yes             | show OSC when fullscreen                                                                                                       |
 | showonpause    | yes             | show OSC when paused                                                                                                           |
@@ -62,7 +62,7 @@ Create `modernz.conf` in your mpv script-opts directory:
 | window_title         | no               | show window title in borderless/fullscreen mode                           |
 | window_controls      | yes              | show window controls (close, minimize, maximize) in borderless/fullscreen |
 | title_bar_box        | no               | show title bar as a box instead of a black fade                           |
-| windowcontrols_title | `${media-title}` | same as title but for windowcontrols                                      |
+| windowcontrols_title | `${media-title}` | same as title but for window_top_bar                                      |
 
 ### Subtitle display settings
 
