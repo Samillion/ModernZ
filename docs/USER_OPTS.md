@@ -17,7 +17,7 @@ Create `modernz.conf` in your mpv script-opts directory:
 | language       | en              | set language (for available options, see: [Translations](https://github.com/Samillion/ModernZ/blob/main/docs/TRANSLATIONS.md)) |
 | font           | mpv-osd-symbols | font for the OSC (default: mpv-osd-symbols or the one set in mpv.conf)                                                         |
 | idlescreen     | yes             | show mpv logo when idle                                                                                                        |
-| window_top_bar | auto            | show OSC window top bar: "auto", "yes", or "no" (borderless/fullscreen)                                                        |
+| window_top_bar | auto            | show OSC window top bar: `"auto"`, `"yes"`, or `"no"` (borderless/fullscreen)                                                  |
 | showwindowed   | yes             | show OSC when windowed                                                                                                         |
 | showfullscreen | yes             | show OSC when fullscreen                                                                                                       |
 | showonpause    | yes             | show OSC when paused                                                                                                           |
