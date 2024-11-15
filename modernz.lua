@@ -439,6 +439,7 @@ local state = {
     playingWhilstSeeking = false,
     playingWhilstSeekingWaitingForEnd = false,
     persistentprogresstoggle = user_opts.persistentprogress,
+    original_subpos = mp.get_property_number("sub-pos") or 100,
     downloadedOnce = false,
     downloading = false,
     fileSizeBytes = 0,
@@ -1958,14 +1959,14 @@ local function adjust_subtitles(visible)
                 raise_factor = raise_factor * (0.8 + (scale - 0.5) * 0.5)  -- slight decrease when scale < 1
             end
 
-            local subpos = math.floor((osc_param.playresy - raise_factor) / osc_param.playresy * 100)
-            if subpos < 0 then
-                subpos = 100 -- original position if out of bounds
+            local adjusted_subpos = math.floor((osc_param.playresy - raise_factor) / osc_param.playresy * 100)
+            if adjusted_subpos < 0 then
+                adjusted_subpos = state.original_subpos -- original position if out of bounds
             end
-            mp.commandv("set", "sub-pos", subpos)
+            mp.commandv("set", "sub-pos", adjusted_subpos)
         end
     elseif user_opts.raise_subtitles then
-        mp.commandv("set", "sub-pos", 100)
+        mp.commandv("set", "sub-pos", state.original_subpos)
     end
 end
 
