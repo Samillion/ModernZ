@@ -1593,7 +1593,7 @@ layouts["modern"] = function ()
 
     local top_titlebar = window_controls_enabled() and (user_opts.window_title or user_opts.window_controls)
 
-    if not user_opts.title_bar_box and (not (state.border and state.title_bar) or state.fullscreen) and top_titlebar then
+    if not user_opts.title_bar_box and (top_titlebar or state.fullscreen) then
         new_element("title_alpha_bg", "box")
         lo = add_layout("title_alpha_bg")
         lo.geometry = {x = posX, y = -100, an = 7, w = osc_w, h = -1}
@@ -1844,7 +1844,7 @@ layouts["modern-image"] = function ()
 
     local top_titlebar = window_controls_enabled() and (user_opts.window_title or user_opts.window_controls)
 
-    if not user_opts.title_bar_box and (not (state.border and state.title_bar) or state.fullscreen) and top_titlebar then
+    if not user_opts.title_bar_box and (top_titlebar or state.fullscreen) then
         new_element("title_alpha_bg", "box")
         lo = add_layout("title_alpha_bg")
         lo.geometry = {x = posX, y = -100, an = 7, w = osc_w, h = -1}
