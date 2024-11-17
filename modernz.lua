@@ -747,7 +747,7 @@ end
 local function window_controls_enabled()
     local val = user_opts.window_top_bar
     if val == "auto" then
-        return not (state.border and state.title_bar) or state.fullscreen
+        return not (state.border and state.title_bar) or state.fullscreen or top_titlebar
     else
         return val ~= "no"
     end
@@ -2817,7 +2817,7 @@ local function process_event(source, what)
                 if user_opts.bottomhover then -- if enabled, only show osc if mouse is hovering at the bottom of the screen (where the UI elements are)
                     local top_hover = window_controls_enabled() and (user_opts.window_title or user_opts.window_controls)
                     if mouseY > osc_param.playresy - (user_opts.bottomhover_zone or 145) 
-                    or (not (state.border and state.title_bar) or state.fullscreen) and (mouseY < 40 and top_hover) then
+                    or (state.border and state.title_bar and mouseY < 40 and top_hover) or state.fullscreen then
                         show_osc()
                     else
                         state.touchtime = nil  
