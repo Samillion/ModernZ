@@ -747,9 +747,9 @@ end
 local function window_controls_enabled()
     local val = user_opts.window_top_bar
     if val == "auto" then
-        return not (state.border and state.title_bar) or state.fullscreen or top_titlebar
+        return not (state.border and state.title_bar) or state.fullscreen
     else
-        return val ~= "no"
+        return val == "yes"
     end
 end
 
@@ -1593,7 +1593,7 @@ layouts["modern"] = function ()
 
     local top_titlebar = window_controls_enabled() and (user_opts.window_title or user_opts.window_controls)
 
-    if not user_opts.title_bar_box and (not (state.border and state.title_bar) or state.fullscreen) and top_titlebar then
+    if not user_opts.title_bar_box and ((user_opts.window_top_bar == "yes" or not (state.border and state.title_bar)) or state.fullscreen) and top_titlebar then
         new_element("title_alpha_bg", "box")
         lo = add_layout("title_alpha_bg")
         lo.geometry = {x = posX, y = -100, an = 7, w = osc_w, h = -1}
@@ -1844,7 +1844,7 @@ layouts["modern-image"] = function ()
 
     local top_titlebar = window_controls_enabled() and (user_opts.window_title or user_opts.window_controls)
 
-    if not user_opts.title_bar_box and (not (state.border and state.title_bar) or state.fullscreen) and top_titlebar then
+    if not user_opts.title_bar_box and ((user_opts.window_top_bar == "yes" or not (state.border and state.title_bar)) or state.fullscreen) and top_titlebar then
         new_element("title_alpha_bg", "box")
         lo = add_layout("title_alpha_bg")
         lo.geometry = {x = posX, y = -100, an = 7, w = osc_w, h = -1}
@@ -2817,7 +2817,7 @@ local function process_event(source, what)
                 if user_opts.bottomhover then -- if enabled, only show osc if mouse is hovering at the bottom of the screen (where the UI elements are)
                     local top_hover = window_controls_enabled() and (user_opts.window_title or user_opts.window_controls)
                     if mouseY > osc_param.playresy - (user_opts.bottomhover_zone or 145) 
-                    or (state.border and state.title_bar and mouseY < 40 and top_hover) or state.fullscreen then
+                    or ((user_opts.window_top_bar == "yes" or not (state.border and state.title_bar)) or state.fullscreen) and (mouseY < 40 and top_hover) then
                         show_osc()
                     else
                         state.touchtime = nil  
