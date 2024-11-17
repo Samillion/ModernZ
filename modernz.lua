@@ -146,6 +146,7 @@ local user_opts = {
 
     -- Progress bar settings 
     seekbarhandlesize = 0.8,               -- size ratio of the seekbar handle (range: 0 ~ 1)
+    handle_always_visible = true,          -- control handle visibility: "true" always visible, "false" show on slider hover
     seekrange = true,                      -- show seek range overlay
     seekrangealpha = 150,                  -- transparency of the seek range
     livemarkers = true,                    -- update chapter markers on the seekbar when duration changes
@@ -884,7 +885,7 @@ local function get_chapter(possec)
 end
 
 -- Draws a handle on the slider according to user_opts
--- Returns handle posistion and radius
+-- Returns handle position and radius
 local function draw_slider_handle(element, elem_ass, override_alpha)
     local pos = element.slider.posF()
     if not pos then
@@ -893,22 +894,37 @@ local function draw_slider_handle(element, elem_ass, override_alpha)
     local elem_geo = element.layout.geometry
     local rh = user_opts.seekbarhandlesize * elem_geo.h / 2 -- handle radius
     local xp = get_slider_ele_pos_for(element, pos) -- handle position
-    local handle_hovered = mouse_hit_coords(element.hitbox.x1+xp-rh, element.hitbox.y1+elem_geo.h/2-rh, element.hitbox.x1+xp+rh, element.hitbox.y1+elem_geo.h/2+rh) and element.enabled
-    if handle_hovered and user_opts.hover_effect_for_sliders then
-        -- apply size & color hover_effects (glow is not supported)
-        if contains(user_opts.hover_effect, "size") then
-            rh = rh*(user_opts.hover_button_size/100)
-        end
-        if contains(user_opts.hover_effect, "color") then
-            elem_ass.text = elem_ass.text:gsub(element.layout.style, element.layout.slider.hoverstyle)
-        end
+
+    local handle_hovered = mouse_hit_coords(element.hitbox.x1 + xp - rh, element.hitbox.y1 + elem_geo.h / 2 - rh, element.hitbox.x1 + xp + rh, element.hitbox.y1 + elem_geo.h / 2 + rh) and element.enabled
+
+    local is_button_held = state.mouse_down_counter > 0
+
+    local should_display_handle
+    if user_opts.handle_always_visible then
+        should_display_handle = true
+    else
+        should_display_handle = mouse_hit_coords(element.hitbox.x1, element.hitbox.y1, element.hitbox.x2, element.hitbox.y2) or is_button_held
     end
-    ass_draw_cir_cw(elem_ass, xp, elem_geo.h/2, rh)
-    if handle_hovered and user_opts.hover_effect_for_sliders then
-        elem_ass:draw_stop()
-        elem_ass:merge(element.style_ass)
-        ass_append_alpha(elem_ass, element.layout.alpha, override_alpha or 0)
-        elem_ass:merge(element.static_ass)
+
+    if should_display_handle then
+        -- Apply size & color hover_effects only if hovering over the handle
+        if handle_hovered and user_opts.hover_effect_for_sliders then
+            if contains(user_opts.hover_effect, "size") then
+                rh = rh * (user_opts.hover_button_size / 100)
+            end
+            if contains(user_opts.hover_effect, "color") then
+                elem_ass.text = elem_ass.text:gsub(element.layout.style, element.layout.slider.hoverstyle)
+            end
+        end
+
+        ass_draw_cir_cw(elem_ass, xp, elem_geo.h / 2, rh)
+
+        if user_opts.hover_effect_for_sliders then
+            elem_ass:draw_stop()
+            elem_ass:merge(element.style_ass)
+            ass_append_alpha(elem_ass, element.layout.alpha, override_alpha or 0)
+            elem_ass:merge(element.static_ass)
+        end
     end
 
     return xp, rh
