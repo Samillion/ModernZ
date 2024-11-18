@@ -884,9 +884,9 @@ local function get_chapter(possec)
     end
 end
 
--- Draws a handle on the slider according to user_opts
+-- Draws a handle on the seekbar according to user_opts
 -- Returns handle position and radius
-local function draw_slider_handle(element, elem_ass, override_alpha)
+local function draw_seekbar_handle(element, elem_ass, override_alpha)
     local pos = element.slider.posF()
     if not pos then
         return 0, 0
@@ -925,18 +925,17 @@ local function draw_slider_handle(element, elem_ass, override_alpha)
             ass_append_alpha(elem_ass, element.layout.alpha, override_alpha or 0)
             elem_ass:merge(element.static_ass)
         end
-    end
 
-    return xp, rh
+        return xp, rh
+    end
+    return xp, 0
 end
 
--- Draws slider seekranges according to user_opts 
-local function draw_slider_seek_ranges(element, elem_ass, xp, rh, override_alpha)
+-- Draws seekbar ranges according to user_opts 
+local function draw_seekbar_ranges(element, elem_ass, xp, rh, override_alpha)
+    local handle = xp and (mouse_hit_coords(element.hitbox.x1, element.hitbox.y1, element.hitbox.x2, element.hitbox.y2) or state.mouse_down_counter > 0)
+    xp = xp or 0
     rh = rh or 0
-    local handle = xp and user_opts.handle_always_visible
-    if not xp then
-        xp = 0
-    end
     local slider_lo = element.layout.slider
     local elem_geo = element.layout.geometry
     local seekRanges = element.slider.seekRangesF()
@@ -950,8 +949,8 @@ local function draw_slider_seek_ranges(element, elem_ass, xp, rh, override_alpha
     elem_ass:merge(element.static_ass)
 
     for _,range in pairs(seekRanges) do
-        local pstart = get_slider_ele_pos_for(element, range["start"])
-        local pend = get_slider_ele_pos_for(element, range["end"])
+        local pstart = get_slider_ele_pos_for(element, range["start"]) - slider_lo.gap
+        local pend = get_slider_ele_pos_for(element, range["end"]) + slider_lo.gap
 
         local cache_starts_in_handle = pstart >= xp-rh and pstart <= xp + rh and handle
         local cache_ends_in_handle = pend >= xp-rh and pend <= xp and handle
@@ -967,14 +966,20 @@ local function draw_slider_seek_ranges(element, elem_ass, xp, rh, override_alpha
             end
         elseif cache_passes_handle then
             -- split range rendering to avoid rendering above handle
-            elem_ass:rect_cw(pstart - rh, slider_lo.gap, xp - rh, elem_geo.h - slider_lo.gap)
+            elem_ass:rect_cw(pstart, slider_lo.gap, xp - rh, elem_geo.h - slider_lo.gap)
             pstart = xp + rh
-        else
-            pstart = pstart - rh
         end
 
-        elem_ass:rect_cw(pstart, slider_lo.gap, pend + (cache_ends_in_handle and 0 or rh), elem_geo.h - slider_lo.gap)
+        elem_ass:rect_cw(pstart, slider_lo.gap, pend, elem_geo.h - slider_lo.gap)
     end
+end
+
+-- Draw seekbar progress more accurately
+local function draw_seekbar_progress(element, elem_ass, xp)
+    local slider_lo = element.layout.slider
+    local elem_geo = element.layout.geometry
+    local progress_offset = slider_lo.gap * (element.slider.posF() / 100) - slider_lo.gap * math.abs(element.slider.posF() / 100 - 1)
+    elem_ass:rect_cw(0, slider_lo.gap, xp + progress_offset, elem_geo.h - slider_lo.gap)
 end
 
 local function render_elements(master_ass)
@@ -1039,9 +1044,9 @@ local function render_elements(master_ass)
                 local s_min = element.slider.min.value
                 local s_max = element.slider.max.value
 
-                local xp, rh = draw_slider_handle(element, elem_ass) -- handle posistion, handle radius
-                elem_ass:rect_cw(0, slider_lo.gap, xp-rh, elem_geo.h - slider_lo.gap)
-                draw_slider_seek_ranges(element, elem_ass, xp, rh)
+                local xp, rh = draw_seekbar_handle(element, elem_ass) -- handle posistion, handle radius
+                draw_seekbar_progress(element, elem_ass, xp)
+                draw_seekbar_ranges(element, elem_ass, xp, rh)
 
                 elem_ass:draw_stop()
                 
@@ -1270,11 +1275,11 @@ local function render_persistentprogressbar(master_ass)
                 local pos = element.slider.posF()
                 if pos then
                     local xp = get_slider_ele_pos_for(element, pos)
-                    elem_ass:rect_cw(0, slider_lo.gap, xp, elem_geo.h - slider_lo.gap)
+                    draw_seekbar_progress(element, elem_ass, xp)
                 end
 
                 if user_opts.persistentbuffer then
-                    draw_slider_seek_ranges(element, elem_ass, nil, slider_lo.gap) -- pass gap as radius to avoid missing cache fill in
+                    draw_seekbar_ranges(element, elem_ass, nil, nil)
                 end
 
                 elem_ass:draw_stop()
