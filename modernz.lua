@@ -931,11 +931,10 @@ local function draw_slider_handle(element, elem_ass, override_alpha)
 end
 
 -- Draws slider seekranges according to user_opts 
-local function draw_slider_seekranges(element, elem_ass, xp, rh, override_alpha)
+local function draw_slider_seek_ranges(element, elem_ass, xp, rh, override_alpha)
     rh = rh or 0
-    local handle = true
+    local handle = xp and user_opts.handle_always_visible
     if not xp then
-        handle = false
         xp = 0
     end
     local slider_lo = element.layout.slider
@@ -1042,7 +1041,7 @@ local function render_elements(master_ass)
 
                 local xp, rh = draw_slider_handle(element, elem_ass) -- handle posistion, handle radius
                 elem_ass:rect_cw(0, slider_lo.gap, xp-rh, elem_geo.h - slider_lo.gap)
-                draw_slider_seekranges(element, elem_ass, xp, rh)
+                draw_slider_seek_ranges(element, elem_ass, xp, rh)
 
                 elem_ass:draw_stop()
                 
@@ -1275,7 +1274,7 @@ local function render_persistentprogressbar(master_ass)
                 end
 
                 if user_opts.persistentbuffer then
-                    draw_slider_seekranges(element, elem_ass, nil, slider_lo.gap) -- pass gap as radius to avoid missing cache fill in
+                    draw_slider_seek_ranges(element, elem_ass, nil, slider_lo.gap) -- pass gap as radius to avoid missing cache fill in
                 end
 
                 elem_ass:draw_stop()
