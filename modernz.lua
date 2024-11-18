@@ -146,7 +146,7 @@ local user_opts = {
 
     -- Progress bar settings 
     seekbarhandlesize = 0.8,               -- size ratio of the seekbar handle (range: 0 ~ 1)
-    handle_always_visible = true,          -- control handle visibility: "true" always visible, "false" show on slider hover
+    handle_always_visible = false,         -- control handle visibility: "true" always visible, "false" show on slider hover
     seekrange = true,                      -- show seek range overlay
     seekrangealpha = 150,                  -- transparency of the seek range
     livemarkers = true,                    -- update chapter markers on the seekbar when duration changes
