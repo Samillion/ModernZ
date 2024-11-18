@@ -933,7 +933,7 @@ end
 
 -- Draws seekbar ranges according to user_opts 
 local function draw_seekbar_ranges(element, elem_ass, xp, rh, override_alpha)
-    local handle = ( xp and (mouse_hit_coords(element.hitbox.x1, element.hitbox.y1, element.hitbox.x2, element.hitbox.y2) or state.mouse_down_counter > 0) ) or ( xp and user_opts.handle_always_visible )
+    local handle = xp and rh
     xp = xp or 0
     rh = rh or 0
     local slider_lo = element.layout.slider
