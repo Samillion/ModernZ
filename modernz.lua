@@ -2011,7 +2011,7 @@ local function osc_visible(visible)
 end
 
 local function command_callback(command)
-    if command ~= "" then
+    if command ~= "" and command ~= "ignore" then
         return function ()
             mp.command(command)
         end
