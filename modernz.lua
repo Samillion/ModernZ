@@ -1582,7 +1582,7 @@ local layouts = {}
 layouts["modern"] = function ()
     local osc_geo = {
         w = osc_param.playresx,
-        h = 180
+        h = not user_opts.show_title and 110 or 160
     }
 
     -- origin of the controllers, left/bottom corner
@@ -1833,7 +1833,7 @@ end
 layouts["modern-image"] = function ()
     local osc_geo = {
         w = osc_param.playresx,
-        h = 180
+        h = 110
     }
 
     -- origin of the controllers, left/bottom corner
@@ -1884,7 +1884,7 @@ layouts["modern-image"] = function ()
     local zoom_control = user_opts.zoom_control
 
     local offset = 0
-    local outeroffset = 90
+    local outeroffset = (chapter_skip_buttons and 0 or 100) + (jump_buttons and 0 or 100)
 
     -- Playlist
     if playlist_button then
@@ -1911,7 +1911,7 @@ layouts["modern-image"] = function ()
         lo.style = osc_styles.control_2
 
         lo = new_element("zoom_control_bg", "box")
-        lo.visible = osc_param.playresx >= 790 - outeroffset and user_opts.zoom_control
+        lo.visible = osc_param.playresx >= 650 - outeroffset and user_opts.zoom_control
         lo = add_layout("zoom_control_bg")
         lo.geometry = {x = 145 - (playlist_button and 0 or 25) - (track_nextprev_buttons and 0 or 70), y = refY - 40, an = 4, w = 80, h = 4}
         lo.layer = 13
