@@ -1149,7 +1149,7 @@ local function render_elements(master_ass)
                                 if dur > 0 then
                                     local ch = get_chapter(state.sliderpos * dur / 100)
                                     if ch and ch.title and ch.title ~= "" then
-                                        tooltip_content = tooltip_content .. " • " .. string.format(user_opts.chapter_fmt, ch.title)
+                                        tooltip_content = tooltip_content .. "   •  " .. string.format(user_opts.chapter_fmt, ch.title)
                                     end
                                 end
                             end
@@ -1718,22 +1718,22 @@ layouts["modern"] = function ()
 
     local show_hours = possec >= 3600 or user_opts.time_format ~= "dynamic"
     lo = add_layout("tc_left")
-    lo.geometry = {x = 25, y = refY - 84, an = 7, w = 45 + (state.tc_ms and 30 or 0) + (show_hours and 20 or 0), h = 20}
+    lo.geometry = {x = 25, y = refY - 84, an = 7, w = 32 + (state.tc_ms and 25 or 0) + (show_hours and 18 or 0), h = 20}
     lo.style = osc_styles.time
 
     local show_remhours = (state.tc_right_rem and remsec >= 3600) or (not state.tc_right_rem and dur >= 3600) or user_opts.time_format ~= "dynamic"
     lo = add_layout("tc_right")
-    lo.geometry = {x = osc_geo.w - 25 , y = refY -84, an = 9, w = 50 + (state.tc_ms and 30 or 0) + (show_remhours and 25 or 0), h = 20}
+    lo.geometry = {x = osc_geo.w - 25 , y = refY -84, an = 9, w = 36 + (state.tc_ms and 25 or 0) + (show_remhours and 25 or 0), h = 20}
     lo.style = osc_styles.time
 
     -- Chapter Title (next to timestamp)
     if user_opts.show_chapter_title then
         lo = add_layout("separator")
-        lo.geometry = {x = 73 + (state.tc_ms and 32 or 0) + (show_hours and 20 or 0), y = refY - 84, an = 7, w = 30, h = 20}
+        lo.geometry = {x = 66 + (state.tc_ms and 25 or 0) + (show_hours and 18 or 0), y = refY - 84, an = 7, w = 30, h = 20}
         lo.style = osc_styles.time
 
         lo = add_layout("chapter_title")
-        lo.geometry = {x = 86 + (state.tc_ms and 32 or 0) + (show_hours and 20 or 0), y = refY - 84, an = 7, w = osc_geo.w - 200 - ((show_hours or state.tc_ms) and 60 or 0), h = 20}
+        lo.geometry = {x = 79 + (state.tc_ms and 25 or 0) + (show_hours and 18 or 0), y = refY - 84, an = 7, w = osc_geo.w - 200 - ((show_hours or state.tc_ms) and 60 or 0), h = 20}
         lo.style = osc_styles.chapter_title
     end
 
