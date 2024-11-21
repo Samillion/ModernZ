@@ -69,7 +69,7 @@ Create `modernz.conf` in your mpv script-opts directory:
 | Option                | Value | Description                                                            |
 | --------------------- | ----- | ---------------------------------------------------------------------- |
 | raise_subtitles       | yes   | raise subtitles above the OSC when shown                               |
-| raise_subtitle_amount | 175   | amount by which subtitles are raised when the OSC is shown (in pixels) |
+| raise_subtitle_amount | 165   | amount by which subtitles are raised when the OSC is shown (in pixels) |
 
 ### Buttons display and functionality
 
@@ -117,9 +117,9 @@ Create `modernz.conf` in your mpv script-opts directory:
 | windowcontrols_close_hover  | `#E81123` | color of close window control on hover                                                          |
 | windowcontrols_minmax_hover | `#FFD700` | color of min/max window controls on hover                                                       |
 | title_color                 | `#FFFFFF` | color of the title (above seekbar)                                                              |
-| seekbarfg_color             | `#BE4D25` | color of the seekbar progress and handle                                                        |
-| seekbarbg_color             | `#FFFFFF` | color of the remaining seekbar                                                                  |
-| seekbar_cache_color         | `#BE254A` | color of the cache ranges on the seekbar                                                        |
+| seekbarfg_color             | `#FB8C00` | color of the seekbar progress and handle                                                        |
+| seekbarbg_color             | `#94754F` | color of the remaining seekbar                                                                  |
+| seekbar_cache_color         | `#918F8E` | color of the cache ranges on the seekbar                                                        |
 | volumebar_match_seek_color  | no        | match volume bar color with seekbar color (ignores `side_buttons_color`)                        |
 | time_color                  | `#FFFFFF` | color of the timestamps (below seekbar)                                                         |
 | chapter_title_color         | `#FFFFFF` | color of the chapter title next to timestamp (below seekbar)                                    |
