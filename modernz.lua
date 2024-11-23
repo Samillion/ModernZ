@@ -431,6 +431,7 @@ local state = {
     border = true,
     maximized = false,
     osd = mp.create_osd_overlay("ass-events"),
+    temp_visibility_mode = nil,             -- store temporary visibility mode state
     chapter_list = {},                      -- sorted by time
     mute = false,
     looping = false,
@@ -2940,7 +2941,6 @@ local function render()
         end
 
         if now < state.anistart + (user_opts.fadeduration / 1000) then
-
             if state.anitype == "in" then --fade in
                 osc_visible(true)
                 state.animation = scale_value(state.anistart,
@@ -2951,7 +2951,6 @@ local function render()
                     (state.anistart + (user_opts.fadeduration / 1000)),
                     0, 255, now)
             end
-
         else
             if state.anitype == "out" then
                 osc_visible(false)
@@ -3381,14 +3380,21 @@ mp.observe_property("pause", "bool", function(name, enabled)
     pause_state(name, enabled)
     if user_opts.showonpause then
         if enabled then
-            if user_opts.keeponpause then
-                visibility_mode("always", true)
-            else
+            -- save mode if a temporary change is needed
+            if not state.temp_visibility_mode and user_opts.visibility ~= "always" then
+                state.temp_visibility_mode = user_opts.visibility
                 visibility_mode("auto", true)
             end
             show_osc()
         else
-            visibility_mode("auto", true)
+            -- restore mode if it was changed temporarily
+            if state.temp_visibility_mode then
+                visibility_mode(state.temp_visibility_mode, true)
+                state.temp_visibility_mode = nil
+            else
+                -- respect "always" mode on unpause
+                visibility_mode(user_opts.visibility, true)
+            end
         end
     end
 end)
@@ -3411,7 +3417,7 @@ mp.register_script_message("thumbfast-info", function(json)
     end
 end)
 
--- Validate string type user options
+-- validate string type user options
 local function validate_user_opts()
     if user_opts.window_top_bar ~= "auto" and 
        user_opts.window_top_bar ~= "yes" and
