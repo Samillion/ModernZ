@@ -3378,7 +3378,7 @@ end
 
 mp.observe_property("pause", "bool", function(name, enabled)
     pause_state(name, enabled)
-    if user_opts.showonpause then
+    if user_opts.showonpause and user_opts.visibility ~= "never" then
         if enabled then
             -- save mode if a temporary change is needed
             if not state.temp_visibility_mode and user_opts.visibility ~= "always" then
