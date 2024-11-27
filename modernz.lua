@@ -431,6 +431,7 @@ local state = {
     border = true,
     maximized = false,
     osd = mp.create_osd_overlay("ass-events"),
+    new_file_flag = false,                  -- flag to detect new file starts
     temp_visibility_mode = nil,             -- store temporary visibility mode state
     chapter_list = {},                      -- sorted by time
     mute = false,
@@ -3181,12 +3182,19 @@ local function set_tick_delay(_, display_fps)
     end
     tick_delay = 1 / display_fps
 end
-local new_file_flag = false -- flag to detect new file starts
+
 mp.register_event("file-loaded", function()
     is_image() -- check if file is an image
-    new_file_flag = true
+    state.new_file_flag = true
     state.fileSizeNormalised = "Approximating size..."
     check_path_url()
+    if user_opts.automatickeyframemode then
+       if mp.get_property_number("duration", 0) > user_opts.automatickeyframelimit then
+            user_opts.seekbarkeyframes = true
+       else
+            user_opts.seekbarkeyframes = false
+       end
+    end
 end)
 mp.register_event("shutdown", shutdown)
 mp.register_event("start-file", request_init)
@@ -3207,10 +3215,10 @@ mp.observe_property("seeking", "native", function(_, seeking)
     if user_opts.seek_resets_hidetimeout then
         reset_timeout()
     end
-    if seeking and user_opts.osc_on_seek and not new_file_flag then
+    if seeking and user_opts.osc_on_seek and not state.new_file_flag then
         show_osc()
-    elseif new_file_flag then
-        new_file_flag = false
+    elseif state.new_file_flag then
+        state.new_file_flag = false
     end
 end)
 
@@ -3435,14 +3443,6 @@ local function validate_user_opts()
        user_opts.volume_control_type ~= "logarithmic" then
           msg.warn("volumecontrol cannot be '" .. user_opts.volume_control_type .. "'. Ignoring.")
           user_opts.volume_control_type = "linear"
-    end
-
-    if user_opts.automatickeyframemode then
-       if mp.get_property_number("duration", 0) > user_opts.automatickeyframelimit then
-            user_opts.seekbarkeyframes = true
-       else
-            user_opts.seekbarkeyframes = false
-       end
     end
 
     if user_opts.screenshot_flag ~= "subtitles" and
