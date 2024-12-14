@@ -2190,8 +2190,7 @@ local function osc_init()
     ne.tooltip_style = osc_styles.tooltip
     ne.tooltipF = function ()
         local prop = mp.get_property("current-tracks/audio/title") or mp.get_property("current-tracks/audio/lang") or locale.na
-        return (locale.audio .. " " ..
-               (mp.get_property_native("aid") or "-") .. "/" .. audio_track_count .. " [" .. prop .. "]")
+        return (locale.audio .. " " .. mp.get_property_number("aid", "-") .. "/" .. audio_track_count .. " [" .. prop .. "]")
     end
     ne.nothingavailable = locale.no_audio
     ne.eventresponder["mbtn_left_up"] = command_callback(user_opts.audio_track_mbtn_left_command)
@@ -2209,8 +2208,7 @@ local function osc_init()
     ne.tooltip_style = osc_styles.tooltip
     ne.tooltipF = function ()
         local prop = mp.get_property("current-tracks/sub/title") or mp.get_property("current-tracks/sub/lang") or locale.na
-        return (locale.subtitle .. " " ..
-               (mp.get_property_native("sid") or "-") .. "/" .. sub_track_count .. " [" .. prop .. "]")
+        return (locale.subtitle .. " " .. mp.get_property_number("sid", "-") .. "/" .. sub_track_count .. " [" .. prop .. "]")
     end
     ne.nothingavailable = locale.no_subs
     ne.eventresponder["mbtn_left_up"] = command_callback(user_opts.sub_track_mbtn_left_command)
