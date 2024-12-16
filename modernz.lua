@@ -59,6 +59,10 @@ local user_opts = {
     time_format = "dynamic",               -- "dynamic" or "fixed". dynamic shows MM:SS when possible, fixed always shows HH:MM:SS
     time_font_size = 18,                   -- font size of the time display
 
+    cache_info = true,                     -- show cache information
+    cache_info_speed = true,               -- show cache speed per second
+    cache_info_font_size = 16,             -- font size of the cache information
+
     -- Title bar settings
     window_title = false,                  -- show window title in borderless/fullscreen mode
     window_controls = true,                -- show window controls (close, minimize, maximize) in borderless/fullscreen
@@ -121,6 +125,7 @@ local user_opts = {
     seekbar_cache_color = "#918F8E",       -- color of the cache ranges on the seekbar
     volumebar_match_seek_color = false,    -- match volume bar color with seekbar color (ignores side_buttons_color)
     time_color = "#FFFFFF",                -- color of the timestamps (below seekbar)
+    cache_info_color = "#FFFFFF",          -- color of the cache information
     chapter_title_color = "#FFFFFF",       -- color of the chapter title next to timestamp (below seekbar)
     side_buttons_color = "#FFFFFF",        -- color of the side buttons (audio, subtitles, playlist, etc.)
     middle_buttons_color = "#FFFFFF",      -- color of the middle buttons (skip, jump, chapter, etc.)
@@ -262,7 +267,7 @@ local language = {
         no_subs = "No subtitles available",
         no_audio = "No audio tracks available",
         playlist = "Playlist",
-        no_list = "Playlist is empty",
+        no_playlist = "Playlist is empty",
         chapter = "Chapter",
         ontop = "Pin Window",
         ontop_disable = "Unpin Window",
@@ -271,6 +276,7 @@ local language = {
         speed_control = "Speed Control",
         screenshot = "Screenshot",
         stats_info = "Information",
+        cache = "Cache",
         zoom_in = "Zoom In",
         zoom_out = "Zoom Out",
     },
@@ -390,6 +396,7 @@ local function set_osc_styles()
         seekbar_fg = "{\\blur1\\bord1\\1c&H" .. osc_color_convert(user_opts.seekbarfg_color) .. "&}",
         thumbnail = "{\\blur1\\bord0.5\\1c&H" .. osc_color_convert(user_opts.thumbnail_border_color) .. "&\\3c&H000000&}",
         time = "{\\blur0\\bord0\\1c&H" .. osc_color_convert(user_opts.time_color) .. "&\\3c&H000000&\\fs" .. user_opts.time_font_size .. "\\fn" .. user_opts.font .. "}",
+        cache = "{\\blur0\\bord0\\1c&H" .. osc_color_convert(user_opts.cache_info_color) .. "&\\3c&H000000&\\fs" .. user_opts.cache_info_font_size .. "\\fn" .. user_opts.font .. "}",
         title = "{\\blur1\\bord0.5\\1c&H" .. osc_color_convert(user_opts.title_color) .. "&\\3c&H0&\\fs".. user_opts.title_font_size .."\\q2\\fn" .. user_opts.font .. "}",
         tooltip = "{\\blur1\\bord0.5\\1c&HFFFFFF&\\3c&H000000&\\fs" .. user_opts.time_font_size .. "\\fn" .. user_opts.font .. "}",
         volumebar_bg = "{\\blur0\\bord0\\1c&H999999&}",
@@ -428,6 +435,7 @@ local state = {
     showhide_enabled = false,
     windowcontrols_buttons = false,
     windowcontrols_title = false,
+    dmx_cache = 0,
     border = true,
     maximized = false,
     osd = mp.create_osd_overlay("ass-events"),
@@ -1727,7 +1735,7 @@ layouts["modern"] = function ()
 
     local show_remhours = (state.tc_right_rem and remsec >= 3600) or (not state.tc_right_rem and dur >= 3600) or user_opts.time_format ~= "dynamic"
     lo = add_layout("tc_right")
-    lo.geometry = {x = osc_geo.w - 25 , y = refY -84, an = 9, w = 50 + (state.tc_ms and 30 or 0) + (show_remhours and 25 or 0), h = 20}
+    lo.geometry = {x = osc_geo.w - 25, y = refY -84, an = 9, w = 50 + (state.tc_ms and 30 or 0) + (show_remhours and 25 or 0), h = 20}
     lo.style = osc_styles.time
 
     -- Chapter Title (next to timestamp)
@@ -1739,6 +1747,13 @@ layouts["modern"] = function ()
         lo = add_layout("chapter_title")
         lo.geometry = {x = 86 + (state.tc_ms and 32 or 0) + (show_hours and 20 or 0), y = refY - 84, an = 7, w = osc_geo.w - 200 - ((show_hours or state.tc_ms) and 60 or 0), h = 20}
         lo.style = osc_styles.chapter_title
+    end
+
+    -- cache
+    if user_opts.cache_info then
+        lo = add_layout("cache_info")
+        lo.geometry = {x = osc_geo.w - 25, y = refY -140, an = 9, w = 110, h = 20}
+        lo.style = osc_styles.cache
     end
 
     -- Audio
@@ -2225,7 +2240,7 @@ local function osc_init()
     ne.content = icons.playlist
     ne.tooltip_style = osc_styles.tooltip
     ne.tooltipF = have_pl and locale.playlist .. " [" .. pl_pos .. "/" .. pl_count .. "]" or locale.playlist
-    ne.nothingavailable = locale.no_list
+    ne.nothingavailable = locale.no_playlist
     ne.eventresponder["mbtn_left_up"] = command_callback(user_opts.playlist_mbtn_left_command)
     ne.eventresponder["mbtn_right_up"] = command_callback(user_opts.playlist_mbtn_right_command)
 
@@ -2689,6 +2704,31 @@ local function osc_init()
     end
     ne.eventresponder["mbtn_left_up"] = function()
         state.tc_right_rem = not state.tc_right_rem
+    end
+
+    -- cache
+    ne = new_element("cache_info", "button")
+    ne.content = function ()
+        local cache_state = state.cache_state
+        if not (cache_state and cache_state["seekable-ranges"] and
+            #cache_state["seekable-ranges"] > 0) then
+            -- probably not a network stream
+            return ""
+        end
+        local dmx_cache = cache_state and cache_state["cache-duration"]
+        local thresh = math.min(state.dmx_cache * 0.05, 5)  -- 5% or 5s
+        if dmx_cache and math.abs(dmx_cache - state.dmx_cache) >= thresh then
+            state.dmx_cache = dmx_cache
+        else
+            dmx_cache = state.dmx_cache
+        end
+        local min = math.floor(dmx_cache / 60)
+        local sec = math.floor(dmx_cache % 60) -- don't round e.g. 59.9 to 60
+        local cache_time = (min > 0 and string.format("%sm%02.0fs", min, sec) or string.format("%3.0fs", sec))
+
+        local dmx_speed = cache_state and cache_state["raw-input-rate"] or ""
+        local cache_speed = (user_opts.cache_info_speed and dmx_speed and dmx_speed ~= "") and " @ " .. format_file_size(dmx_speed) .. "/s" or ""
+        return locale.cache .. ": " .. cache_time .. cache_speed
     end
 
     -- load layout
@@ -3468,7 +3508,7 @@ local function validate_user_opts()
         user_opts.middle_buttons_color, user_opts.playpause_color, user_opts.window_title_color, 
         user_opts.window_controls_color, user_opts.held_element_color, user_opts.thumbnail_border_color, 
         user_opts.chapter_title_color, user_opts.seekbar_cache_color, user_opts.hover_effect_color,
-        user_opts.windowcontrols_close_hover, user_opts.windowcontrols_minmax_hover
+        user_opts.windowcontrols_close_hover, user_opts.windowcontrols_minmax_hover, user_opts.cache_info_color
     }
 
     for _, color in pairs(colors) do
