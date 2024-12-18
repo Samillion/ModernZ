@@ -61,7 +61,7 @@ local user_opts = {
 
     cache_info = true,                     -- show cache information
     cache_info_speed = true,               -- show cache speed per second
-    cache_info_font_size = 16,             -- font size of the cache information
+    cache_info_font_size = 12,             -- font size of the cache information
 
     -- Title bar settings
     window_title = false,                  -- show window title in borderless/fullscreen mode
@@ -1752,7 +1752,7 @@ layouts["modern"] = function ()
     -- cache
     if user_opts.cache_info then
         lo = add_layout("cache_info")
-        lo.geometry = {x = osc_geo.w - 25, y = refY -140, an = 9, w = 110, h = 20}
+        lo.geometry = {x = 25, y = refY -110, an = 1, w = 160, h = 20}
         lo.style = osc_styles.cache
     end
 
@@ -2727,7 +2727,7 @@ local function osc_init()
         local cache_time = (min > 0 and string.format("%sm%02.0fs", min, sec) or string.format("%3.0fs", sec))
 
         local dmx_speed = cache_state and cache_state["raw-input-rate"] or ""
-        local cache_speed = (user_opts.cache_info_speed and dmx_speed and dmx_speed ~= "") and " @ " .. format_file_size(dmx_speed) .. "/s" or ""
+        local cache_speed = (user_opts.cache_info_speed and dmx_speed and dmx_speed ~= "") and " • " .. format_file_size(dmx_speed) .. "/s" or ""
         return locale.cache .. ": " .. cache_time .. cache_speed
     end
 
