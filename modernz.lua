@@ -1682,6 +1682,13 @@ layouts["modern"] = function ()
     lo.style = string.format("%s{\\clip(0,%f,%f,%f)}", osc_styles.title, geo.y - geo.h, geo.x + geo.w, geo.y + geo.h)
     lo.alpha[3] = 0
 
+    -- cache info
+    if user_opts.cache_info then
+        lo = add_layout("cache_info")
+        lo.geometry = {x = 25, y = refY -109, an = 1, w = 160, h = 20}
+        lo.style = osc_styles.cache
+    end
+
     -- buttons
     if track_nextprev_buttons then
         lo = add_layout("playlist_prev")
@@ -1747,13 +1754,6 @@ layouts["modern"] = function ()
         lo = add_layout("chapter_title")
         lo.geometry = {x = 86 + (state.tc_ms and 32 or 0) + (show_hours and 20 or 0), y = refY - 84, an = 7, w = osc_geo.w - 200 - ((show_hours or state.tc_ms) and 60 or 0), h = 20}
         lo.style = osc_styles.chapter_title
-    end
-
-    -- cache
-    if user_opts.cache_info then
-        lo = add_layout("cache_info")
-        lo.geometry = {x = 25, y = refY -110, an = 1, w = 160, h = 20}
-        lo.style = osc_styles.cache
     end
 
     -- Audio
@@ -2103,6 +2103,31 @@ local function osc_init()
     end
     ne.eventresponder["mbtn_left_up"] = command_callback(user_opts.title_mbtn_left_command)
     ne.eventresponder["mbtn_right_up"] = command_callback(user_opts.title_mbtn_right_command)
+
+    -- cache info
+    ne = new_element("cache_info", "button")
+    ne.content = function ()
+        local cache_state = state.cache_state
+        if not (cache_state and cache_state["seekable-ranges"] and
+            #cache_state["seekable-ranges"] > 0) then
+            -- probably not a network stream
+            return ""
+        end
+        local dmx_cache = cache_state and cache_state["cache-duration"]
+        local thresh = math.min(state.dmx_cache * 0.05, 5)  -- 5% or 5s
+        if dmx_cache and math.abs(dmx_cache - state.dmx_cache) >= thresh then
+            state.dmx_cache = dmx_cache
+        else
+            dmx_cache = state.dmx_cache
+        end
+        local min = math.floor(dmx_cache / 60)
+        local sec = math.floor(dmx_cache % 60) -- don't round e.g. 59.9 to 60
+        local cache_time = (min > 0 and string.format("%sm%02.0fs", min, sec) or string.format("%3.0fs", sec))
+
+        local dmx_speed = cache_state and cache_state["raw-input-rate"] or ""
+        local cache_speed = (user_opts.cache_info_speed and dmx_speed and dmx_speed ~= "") and " • " .. utils.format_bytes_humanized(dmx_speed) .. "/s" or ""
+        return locale.cache .. ": " .. cache_time .. cache_speed
+    end
 
     -- playlist buttons
     -- prev
@@ -2704,31 +2729,6 @@ local function osc_init()
     end
     ne.eventresponder["mbtn_left_up"] = function()
         state.tc_right_rem = not state.tc_right_rem
-    end
-
-    -- cache
-    ne = new_element("cache_info", "button")
-    ne.content = function ()
-        local cache_state = state.cache_state
-        if not (cache_state and cache_state["seekable-ranges"] and
-            #cache_state["seekable-ranges"] > 0) then
-            -- probably not a network stream
-            return ""
-        end
-        local dmx_cache = cache_state and cache_state["cache-duration"]
-        local thresh = math.min(state.dmx_cache * 0.05, 5)  -- 5% or 5s
-        if dmx_cache and math.abs(dmx_cache - state.dmx_cache) >= thresh then
-            state.dmx_cache = dmx_cache
-        else
-            dmx_cache = state.dmx_cache
-        end
-        local min = math.floor(dmx_cache / 60)
-        local sec = math.floor(dmx_cache % 60) -- don't round e.g. 59.9 to 60
-        local cache_time = (min > 0 and string.format("%sm%02.0fs", min, sec) or string.format("%3.0fs", sec))
-
-        local dmx_speed = cache_state and cache_state["raw-input-rate"] or ""
-        local cache_speed = (user_opts.cache_info_speed and dmx_speed and dmx_speed ~= "") and " • " .. format_file_size(dmx_speed) .. "/s" or ""
-        return locale.cache .. ": " .. cache_time .. cache_speed
     end
 
     -- load layout
