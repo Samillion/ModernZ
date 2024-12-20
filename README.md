@@ -38,6 +38,12 @@ Don't like the default white buttons and text? ModernZ is fully customizable! Ch
 
 See the [Color Customization](docs/USER_OPTS.md#colors-and-style) section in the configuration guide for details on how to customize colors and buttons.
 
+## Interactive Menus
+
+ModernZ supports mpv's built-in console/select ([v0.39+](https://github.com/mpv-player/mpv/discussions/14903)) for playlist, subtitles, chapter navigation and more.
+
+[![preview_menus](https://github.com/user-attachments/assets/4b7a3139-81f1-409b-98f5-f090a81d5ee6)](/docs/INTERACTIVE_MENUS.md)
+
 ## Installation
 
 1. **Disable Stock OSC**
@@ -114,12 +120,6 @@ x   script-message-to modernz osc-show         # Show OSC
 y   script-message-to modernz osc-visibility   # Toggle visibility
 z   script-message-to modernz osc-idlescreen   # Toggle idle screen
 ```
-
-## Interactive Menus
-
-ModernZ supports mpv's built-in select.lua ([v0.39+](https://github.com/mpv-player/mpv/discussions/14903)) for playlist, subtitles, chapter navigation and more.
-
-[![preview_menus](https://github.com/user-attachments/assets/4b7a3139-81f1-409b-98f5-f090a81d5ee6)](/docs/INTERACTIVE_MENUS.md)
 
 ## Translations
 
