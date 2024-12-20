@@ -50,6 +50,10 @@ local user_opts = {
     title = "${media-title}",              -- title above seekbar format: "${media-title}" or "${filename}"
     title_font_size = 24,                  -- font size of the title text (above seekbar)
 
+    cache_info = false,                    -- show cache information
+    cache_info_speed = true,               -- show cache speed per second
+    cache_info_font_size = 12,             -- font size of the cache information
+
     show_chapter_title = true,             -- show chapter title alongside timestamp (below seekbar)
     chapter_fmt = "%s",                    -- format for chapter display on seekbar hover (set to "no" to disable)
 
@@ -58,10 +62,6 @@ local user_opts = {
     unicodeminus = false,                  -- use the Unicode minus sign in remaining time
     time_format = "dynamic",               -- "dynamic" or "fixed". dynamic shows MM:SS when possible, fixed always shows HH:MM:SS
     time_font_size = 18,                   -- font size of the time display
-
-    cache_info = true,                     -- show cache information
-    cache_info_speed = true,               -- show cache speed per second
-    cache_info_font_size = 12,             -- font size of the cache information
 
     -- Title bar settings
     window_title = false,                  -- show window title in borderless/fullscreen mode
@@ -120,12 +120,12 @@ local user_opts = {
     windowcontrols_close_hover = "#E81123", -- color of close window control on hover
     windowcontrols_minmax_hover = "#FFD700", -- color of min/max window controls on hover
     title_color = "#FFFFFF",               -- color of the title (above seekbar)
+    cache_info_color = "#FFFFFF",          -- color of the cache information
     seekbarfg_color = "#FB8C00",           -- color of the seekbar progress and handle
     seekbarbg_color = "#94754F",           -- color of the remaining seekbar
     seekbar_cache_color = "#918F8E",       -- color of the cache ranges on the seekbar
     volumebar_match_seek_color = false,    -- match volume bar color with seekbar color (ignores side_buttons_color)
     time_color = "#FFFFFF",                -- color of the timestamps (below seekbar)
-    cache_info_color = "#FFFFFF",          -- color of the cache information
     chapter_title_color = "#FFFFFF",       -- color of the chapter title next to timestamp (below seekbar)
     side_buttons_color = "#FFFFFF",        -- color of the side buttons (audio, subtitles, playlist, etc.)
     middle_buttons_color = "#FFFFFF",      -- color of the middle buttons (skip, jump, chapter, etc.)
