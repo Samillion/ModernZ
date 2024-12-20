@@ -50,6 +50,10 @@ local user_opts = {
     title = "${media-title}",              -- title above seekbar format: "${media-title}" or "${filename}"
     title_font_size = 24,                  -- font size of the title text (above seekbar)
 
+    cache_info = false,                    -- show cache information
+    cache_info_speed = true,               -- show cache speed per second
+    cache_info_font_size = 12,             -- font size of the cache information
+
     show_chapter_title = true,             -- show chapter title alongside timestamp (below seekbar)
     chapter_fmt = "%s",                    -- format for chapter display on seekbar hover (set to "no" to disable)
 
@@ -116,6 +120,7 @@ local user_opts = {
     windowcontrols_close_hover = "#E81123", -- color of close window control on hover
     windowcontrols_minmax_hover = "#FFD700", -- color of min/max window controls on hover
     title_color = "#FFFFFF",               -- color of the title (above seekbar)
+    cache_info_color = "#FFFFFF",          -- color of the cache information
     seekbarfg_color = "#FB8C00",           -- color of the seekbar progress and handle
     seekbarbg_color = "#94754F",           -- color of the remaining seekbar
     seekbar_cache_color = "#918F8E",       -- color of the cache ranges on the seekbar
@@ -262,7 +267,7 @@ local language = {
         no_subs = "No subtitles available",
         no_audio = "No audio tracks available",
         playlist = "Playlist",
-        no_list = "Playlist is empty",
+        no_playlist = "Playlist is empty",
         chapter = "Chapter",
         ontop = "Pin Window",
         ontop_disable = "Unpin Window",
@@ -271,6 +276,7 @@ local language = {
         speed_control = "Speed Control",
         screenshot = "Screenshot",
         stats_info = "Information",
+        cache = "Cache",
         zoom_in = "Zoom In",
         zoom_out = "Zoom Out",
     },
@@ -390,6 +396,7 @@ local function set_osc_styles()
         seekbar_fg = "{\\blur1\\bord1\\1c&H" .. osc_color_convert(user_opts.seekbarfg_color) .. "&}",
         thumbnail = "{\\blur1\\bord0.5\\1c&H" .. osc_color_convert(user_opts.thumbnail_border_color) .. "&\\3c&H000000&}",
         time = "{\\blur0\\bord0\\1c&H" .. osc_color_convert(user_opts.time_color) .. "&\\3c&H000000&\\fs" .. user_opts.time_font_size .. "\\fn" .. user_opts.font .. "}",
+        cache = "{\\blur0\\bord0\\1c&H" .. osc_color_convert(user_opts.cache_info_color) .. "&\\3c&H000000&\\fs" .. user_opts.cache_info_font_size .. "\\fn" .. user_opts.font .. "}",
         title = "{\\blur1\\bord0.5\\1c&H" .. osc_color_convert(user_opts.title_color) .. "&\\3c&H0&\\fs".. user_opts.title_font_size .."\\q2\\fn" .. user_opts.font .. "}",
         tooltip = "{\\blur1\\bord0.5\\1c&HFFFFFF&\\3c&H000000&\\fs" .. user_opts.time_font_size .. "\\fn" .. user_opts.font .. "}",
         volumebar_bg = "{\\blur0\\bord0\\1c&H999999&}",
@@ -428,6 +435,7 @@ local state = {
     showhide_enabled = false,
     windowcontrols_buttons = false,
     windowcontrols_title = false,
+    dmx_cache = 0,
     border = true,
     maximized = false,
     osd = mp.create_osd_overlay("ass-events"),
@@ -1674,6 +1682,13 @@ layouts["modern"] = function ()
     lo.style = string.format("%s{\\clip(0,%f,%f,%f)}", osc_styles.title, geo.y - geo.h, geo.x + geo.w, geo.y + geo.h)
     lo.alpha[3] = 0
 
+    -- cache info
+    if user_opts.cache_info then
+        lo = add_layout("cache_info")
+        lo.geometry = {x = 25, y = refY -109, an = 1, w = 160, h = 20}
+        lo.style = osc_styles.cache
+    end
+
     -- buttons
     if track_nextprev_buttons then
         lo = add_layout("playlist_prev")
@@ -1727,7 +1742,7 @@ layouts["modern"] = function ()
 
     local show_remhours = (state.tc_right_rem and remsec >= 3600) or (not state.tc_right_rem and dur >= 3600) or user_opts.time_format ~= "dynamic"
     lo = add_layout("tc_right")
-    lo.geometry = {x = osc_geo.w - 25 , y = refY -84, an = 9, w = 50 + (state.tc_ms and 30 or 0) + (show_remhours and 25 or 0), h = 20}
+    lo.geometry = {x = osc_geo.w - 25, y = refY -84, an = 9, w = 50 + (state.tc_ms and 30 or 0) + (show_remhours and 25 or 0), h = 20}
     lo.style = osc_styles.time
 
     -- Chapter Title (next to timestamp)
@@ -2089,6 +2104,31 @@ local function osc_init()
     ne.eventresponder["mbtn_left_up"] = command_callback(user_opts.title_mbtn_left_command)
     ne.eventresponder["mbtn_right_up"] = command_callback(user_opts.title_mbtn_right_command)
 
+    -- cache info
+    ne = new_element("cache_info", "button")
+    ne.content = function ()
+        local cache_state = state.cache_state
+        if not (cache_state and cache_state["seekable-ranges"] and
+            #cache_state["seekable-ranges"] > 0) then
+            -- probably not a network stream
+            return ""
+        end
+        local dmx_cache = cache_state and cache_state["cache-duration"]
+        local thresh = math.min(state.dmx_cache * 0.05, 5)  -- 5% or 5s
+        if dmx_cache and math.abs(dmx_cache - state.dmx_cache) >= thresh then
+            state.dmx_cache = dmx_cache
+        else
+            dmx_cache = state.dmx_cache
+        end
+        local min = math.floor(dmx_cache / 60)
+        local sec = math.floor(dmx_cache % 60) -- don't round e.g. 59.9 to 60
+        local cache_time = (min > 0 and string.format("%sm%02.0fs", min, sec) or string.format("%3.0fs", sec))
+
+        local dmx_speed = cache_state and cache_state["raw-input-rate"] or ""
+        local cache_speed = (user_opts.cache_info_speed and dmx_speed and dmx_speed ~= "") and " • " .. utils.format_bytes_humanized(dmx_speed) .. "/s" or ""
+        return locale.cache .. ": " .. cache_time .. cache_speed
+    end
+
     -- playlist buttons
     -- prev
     ne = new_element("playlist_prev", "button")
@@ -2225,7 +2265,7 @@ local function osc_init()
     ne.content = icons.playlist
     ne.tooltip_style = osc_styles.tooltip
     ne.tooltipF = have_pl and locale.playlist .. " [" .. pl_pos .. "/" .. pl_count .. "]" or locale.playlist
-    ne.nothingavailable = locale.no_list
+    ne.nothingavailable = locale.no_playlist
     ne.eventresponder["mbtn_left_up"] = command_callback(user_opts.playlist_mbtn_left_command)
     ne.eventresponder["mbtn_right_up"] = command_callback(user_opts.playlist_mbtn_right_command)
 
@@ -3468,7 +3508,7 @@ local function validate_user_opts()
         user_opts.middle_buttons_color, user_opts.playpause_color, user_opts.window_title_color, 
         user_opts.window_controls_color, user_opts.held_element_color, user_opts.thumbnail_border_color, 
         user_opts.chapter_title_color, user_opts.seekbar_cache_color, user_opts.hover_effect_color,
-        user_opts.windowcontrols_close_hover, user_opts.windowcontrols_minmax_hover
+        user_opts.windowcontrols_close_hover, user_opts.windowcontrols_minmax_hover, user_opts.cache_info_color
     }
 
     for _, color in pairs(colors) do

@@ -59,7 +59,7 @@ ModernZ currently has translations for the following languages:
         "no_subs": "No subtitles available",
         "no_audio": "No audio tracks available",
         "playlist": "Playlist",
-        "no_list": "Playlist is empty",
+        "no_playlist": "Playlist is empty",
         "chapter": "Chapter",
         "ontop": "Pin Window",
         "ontop_disable": "Unpin Window",
@@ -68,6 +68,7 @@ ModernZ currently has translations for the following languages:
         "speed_control": "Speed Control",
         "screenshot": "Screenshot",
         "stats_info": "Information",
+        "cache": "Cache",
         "zoom_in": "Zoom In",
         "zoom_out": "Zoom Out",
     },
@@ -106,12 +107,13 @@ ModernZ currently has translations for the following languages:
 | no_subs                  | No subtitles label      | Menu label                  |
 | no_audio                 | No audio label          | Menu label                  |
 | playlist                 | Playlist label          | Menu label                  |
-| no_list                  | No playlist label       | Menu label                  |
+| no_playlist              | No playlist label       | Menu label                  |
 | chapter                  | Chapter label           | Menu label                  |
 | ontop/ontop_disable      | Window pin states       | Action labels               |
 | loop_enable/loop_disable | Loop states             | Action labels               |
 | screenshot               | Screenshot label        | Action label                |
 | stats_info               | Information label       | Menu label                  |
+| cache                    | Information label       | Text label                  |
 | zoom_in                  | Zoom label              | Menu label                  |
 | zoom_out                 | Zoom label              | Menu label                  |
 
