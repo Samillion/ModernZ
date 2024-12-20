@@ -1590,9 +1590,13 @@ local layouts = {}
 
 -- Default layout
 layouts["modern"] = function ()
+    local no_title_function = 
+        not (user_opts.title_mbtn_left_command and user_opts.title_mbtn_left_command ~= "ignore") or
+        not (user_opts.title_mbtn_right_command and user_opts.title_mbtn_right_command ~= "ignore")
+
     local osc_geo = {
         w = osc_param.playresx,
-        h = not user_opts.show_title and 110 or 160
+        h = (not user_opts.show_title or no_title_function) and 110 or 160
     }
 
     -- origin of the controllers, left/bottom corner
