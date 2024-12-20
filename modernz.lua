@@ -1591,7 +1591,7 @@ local layouts = {}
 -- Default layout
 layouts["modern"] = function ()
     local no_title_function = 
-        not (user_opts.title_mbtn_left_command and user_opts.title_mbtn_left_command ~= "ignore") or
+        not (user_opts.title_mbtn_left_command and user_opts.title_mbtn_left_command ~= "ignore") and
         not (user_opts.title_mbtn_right_command and user_opts.title_mbtn_right_command ~= "ignore")
 
     local osc_geo = {
