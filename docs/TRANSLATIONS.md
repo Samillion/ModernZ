@@ -71,6 +71,10 @@ ModernZ currently has translations for the following languages:
         "cache": "Cache",
         "zoom_in": "Zoom In",
         "zoom_out": "Zoom Out",
+        "download": "Download",
+        "download_in_progress": "Download in progress",
+        "downloading": "Downloading",
+        "downloaded": "Already downloaded",
     },
 }
 ```
@@ -116,6 +120,10 @@ ModernZ currently has translations for the following languages:
 | cache                    | Information label       | Text label                  |
 | zoom_in                  | Zoom label              | Menu label                  |
 | zoom_out                 | Zoom label              | Menu label                  |
+| download                 | Download label          | Menu label                  |
+| download_in_progress     | Download label          | Menu label                  |
+| downloading              | Download label          | Menu label                  |
+| downloaded               | Download label          | Menu label                  |
 
 ## Contributing
 

@@ -279,6 +279,10 @@ local language = {
         cache = "Cache",
         zoom_in = "Zoom In",
         zoom_out = "Zoom Out",
+        download = "Download",
+        download_in_progress = "Download in progress",
+        downloading = "Downloading",
+        downloaded = "Already downloaded",
     },
 }
 
@@ -451,14 +455,13 @@ local state = {
     playingWhilstSeekingWaitingForEnd = false,
     persistentprogresstoggle = user_opts.persistentprogress,
     original_subpos = mp.get_property_number("sub-pos") or 100,
-    downloadedOnce = false,
+    downloaded_once = false,
     downloading = false,
-    fileSizeBytes = 0,
-    fileSizeNormalised = "Approximating size...",
+    file_size_bytes = 0,
+    file_size_normalized = "Approximating size...",
     is_URL = false,
     is_image = false,
     url_path = "",                           -- used for yt-dlp downloading
-    videoCantBeDownloaded = false,
 }
 
 local logo_lines = {
@@ -1311,18 +1314,6 @@ local function is_url(s)
     return string.match(s, url_pattern) ~= nil
 end
 
-local function format_file_size(file_size)
-    local units = {"bytes", "KB", "MB", "GB", "TB"}
-    local unit_index = 1
-
-    while file_size >= 1024 and unit_index < #units do
-        file_size = file_size / 1024
-        unit_index = unit_index + 1
-    end
-
-    return string.format("%.1f %s", file_size, units[unit_index])
-end
-
 local function exec_filesize(args)
     for i = #args, 1, -1 do
         if args[i] == nil or args[i] == "" then
@@ -1337,14 +1328,21 @@ local function exec_filesize(args)
         capture_stderr = true
     }, function(res, val)
         local fileSizeString = val.stdout
-        state.fileSizeBytes = tonumber(fileSizeString)
+        state.file_size_bytes = tonumber(fileSizeString)
 
-        if state.fileSizeBytes then
-            state.fileSizeNormalised = "Download size: " .. format_file_size(state.fileSizeBytes)
-            msg.info("File size: " .. state.fileSizeBytes .. " B (" .. state.fileSizeNormalised .. ")")
+        if state.file_size_bytes then
+            state.file_size_normalized = utils.format_bytes_humanized(state.file_size_bytes)
+            msg.info("Download size: " .. state.file_size_normalized)
         else
-            state.fileSizeNormalised = "Unknown"
-            msg.info("Unable to retrieve file size.")
+            local fs_prop = mp.get_property_osd("file-size")
+
+            if fs_prop and fs_prop ~= "" then
+                state.file_size_normalized = fs_prop
+                msg.info("Download size: " .. fs_prop)
+            else
+                state.file_size_normalized = "Unknown"
+                msg.info("Unable to retrieve file size.")
+            end
         end
 
         request_tick()
@@ -1355,7 +1353,7 @@ local function download_done(success, result, error)
     if success then
         local download_path = mp.command_native({"expand-path", user_opts.download_path})
         mp.command("show-text 'Download saved to " .. download_path .. "'")
-        state.downloadedOnce = true
+        state.downloaded_once = true
         msg.info("Download completed")
     else
         mp.command("show-text 'Download failed - " .. (error or "Unknown error") .. "'")
@@ -2461,36 +2459,32 @@ local function osc_init()
     ne.content = function () return state.downloading and icons.downloading or icons.download end
     ne.visible = (osc_param.playresx >= 1250 - outeroffset - (user_opts.speed_button and 0 or 100) - (user_opts.loop_button and 0 or 100) - (user_opts.screenshot_button and 0 or 100) - (user_opts.ontop_button and 0 or 100) - (user_opts.info_button and 0 or 100) - (user_opts.fullscreen_button and 0 or 100)) and state.is_URL
     ne.tooltip_style = osc_styles.tooltip
-    ne.tooltipF = function () return state.downloading and "Downloading..." or state.fileSizeNormalised end
+    ne.tooltipF = function () return state.downloading and locale.downloading .. "..." or locale.download .. " (" .. state.file_size_normalized .. ")" end
     ne.eventresponder["mbtn_left_up"] = function ()
-        if not state.videoCantBeDownloaded then
-            local localpath = mp.command_native({"expand-path", user_opts.download_path})
+        local localpath = mp.command_native({"expand-path", user_opts.download_path})
 
-            if state.downloadedOnce then
-                mp.command("show-text 'Already downloaded'")
-            elseif state.downloading then
-                mp.command("show-text 'Already downloading'")
-            else
-                mp.command("show-text Downloading...")
-                state.downloading = true
-                -- use current or default ytdl-format
-                local mpv_ytdl = mp.get_property("file-local-options/ytdl-format") or mp.get_property("ytdl-format") or ""
-                local ytdl_format = (mpv_ytdl and mpv_ytdl ~= "") and "-f " .. mpv_ytdl or "-f " .. "bestvideo+bestaudio/best"
-                local command = {
-                    "yt-dlp",
-                    state.is_image and "" or ytdl_format,
-                    state.is_image and "" or "--remux", state.is_image and "" or "mp4",
-                    "--add-metadata",
-                    "--embed-subs",
-                    "-o", "%(title)s.%(ext)s",
-                    "-P", localpath,
-                    state.url_path
-                }
-
-                local status = exec(command, download_done)
-            end
+        if state.downloaded_once then
+            mp.commandv("show-text", locale.downloaded)
+        elseif state.downloading then
+            mp.commandv("show-text", locale.download_in_progress)
         else
-            mp.command("show-text 'Unable to download'")
+            mp.commandv("show-text", locale.downloading .. "...")
+            state.downloading = true
+            -- use current or default ytdl-format
+            local mpv_ytdl = mp.get_property("file-local-options/ytdl-format") or mp.get_property("ytdl-format") or ""
+            local ytdl_format = (mpv_ytdl and mpv_ytdl ~= "") and "-f " .. mpv_ytdl or "-f " .. "bestvideo+bestaudio/best"
+            local command = {
+                "yt-dlp",
+                state.is_image and "" or ytdl_format,
+                state.is_image and "" or "--remux", state.is_image and "" or "mp4",
+                "--add-metadata",
+                "--embed-subs",
+                "-o", "%(title)s.%(ext)s",
+                "-P", localpath,
+                state.url_path
+            }
+
+            local status = exec(command, download_done)
         end
     end
 
@@ -3228,7 +3222,7 @@ end
 mp.register_event("file-loaded", function()
     is_image() -- check if file is an image
     state.new_file_flag = true
-    state.fileSizeNormalised = "Approximating size..."
+    state.file_size_normalized = "Approximating size..."
     check_path_url()
     if user_opts.automatickeyframemode then
        if mp.get_property_number("duration", 0) > user_opts.automatickeyframelimit then
