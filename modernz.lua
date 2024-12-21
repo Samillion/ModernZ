@@ -1591,8 +1591,8 @@ local layouts = {}
 -- Default layout
 layouts["modern"] = function ()
     local no_title_function = 
-        not (user_opts.title_mbtn_left_command and user_opts.title_mbtn_left_command ~= "ignore") and
-        not (user_opts.title_mbtn_right_command and user_opts.title_mbtn_right_command ~= "ignore")
+        (user_opts.title_mbtn_left_command == "" or user_opts.title_mbtn_left_command == "ignore") and
+        (user_opts.title_mbtn_right_command == "" or user_opts.title_mbtn_right_command == "ignore")
 
     local osc_geo = {
         w = osc_param.playresx,
