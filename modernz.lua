@@ -2138,7 +2138,7 @@ local function osc_init()
     ne.content = icons.previous
     ne.enabled = (pl_pos > 1) or (loop ~= "no")
     ne.eventresponder["mbtn_left_up"] = function () mp.commandv("playlist-prev", "weak") end
-    ne.eventresponder["mbtn_right_up"] = function () mp.command("show-text ${playlist} 3000") end
+    ne.eventresponder["mbtn_right_up"] = function () mp.command("script-binding select/select-playlist; script-message-to modernz osc-hide") end
     ne.eventresponder["shift+mbtn_left_down"] = function () mp.command("show-text ${playlist} 3000") end
 
     --next
@@ -2147,7 +2147,7 @@ local function osc_init()
     ne.content = icons.next
     ne.enabled = (have_pl and (pl_pos < pl_count)) or (loop ~= "no")
     ne.eventresponder["mbtn_left_up"] = function () mp.commandv("playlist-next", "weak") end
-    ne.eventresponder["mbtn_right_up"] = function () mp.command("show-text ${playlist} 3000") end
+    ne.eventresponder["mbtn_right_up"] = function () mp.command("script-binding select/select-playlist; script-message-to modernz osc-hide") end
     ne.eventresponder["shift+mbtn_left_down"] = function () mp.command("show-text ${playlist} 3000") end
 
     --play control buttons
@@ -2384,7 +2384,8 @@ local function osc_init()
     ne.content = function () return state.fullscreen and icons.fullscreen_exit or icons.fullscreen end
     ne.visible = (osc_param.playresx >= 250)
     ne.eventresponder["mbtn_left_up"] = function () mp.commandv("cycle", "fullscreen") end
-
+    ne.eventresponder["mbtn_right_up"] = function () mp.commandv("cycle", "window-maximized") end
+    
     --tog_info
     ne = new_element("tog_info", "button")
     ne.content = icons.info
