@@ -173,8 +173,8 @@ local user_opts = {
     -- customize the button function based on mouse action
 
     -- title above seekbar mouse actions
-    title_mbtn_left_command = "script-binding select/select-playlist; script-message-to modernz osc-hide",
-    title_mbtn_right_command = "script-binding stats/display-page-5",
+    title_mbtn_left_command = "script-binding stats/display-page-5",
+    title_mbtn_right_command = "show-text ${path}",
 
     -- playlist button mouse actions
     playlist_mbtn_left_command = "script-binding select/select-playlist; script-message-to modernz osc-hide",
@@ -185,15 +185,15 @@ local user_opts = {
 
     -- audio button mouse actions
     audio_track_mbtn_left_command = "script-binding select/select-aid; script-message-to modernz osc-hide",
-    audio_track_mbtn_right_command = "osd-msg cycle audio",
-    audio_track_wheel_down_command = "osd-msg cycle audio",
-    audio_track_wheel_up_command = "osd-msg cycle audio down",
+    audio_track_mbtn_right_command = "cycle audio",
+    audio_track_wheel_down_command = "cycle audio",
+    audio_track_wheel_up_command = "cycle audio down",
 
     -- subtitle button mouse actions
     sub_track_mbtn_left_command = "script-binding select/select-sid; script-message-to modernz osc-hide",
-    sub_track_mbtn_right_command = "osd-msg cycle sub",
-    sub_track_wheel_down_command = "osd-msg cycle sub",
-    sub_track_wheel_up_command = "osd-msg cycle sub down",
+    sub_track_mbtn_right_command = "cycle sub",
+    sub_track_wheel_down_command = "cycle sub",
+    sub_track_wheel_up_command = "cycle sub down",
 
     -- chapter skip buttons mouse actions
     chapter_prev_mbtn_left_command = "osd-msg add chapter -1",

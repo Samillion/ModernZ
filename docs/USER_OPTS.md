@@ -180,8 +180,8 @@ Customize the button function based on mouse actions.
 
 | Type                          | Option                           | Function                                                                        |
 | ----------------------------- | -------------------------------- | ------------------------------------------------------------------------------- |
-| Title (above seekbar)         | title_mbtn_left_command          | `script-binding select/select-playlist; script-message-to modernz osc-hide`     |
-|                               | title_mbtn_right_command         | `script-binding stats/display-page-5`                                           |
+| Title (above seekbar)         | title_mbtn_left_command          | `script-binding stats/display-page-5`                                           |
+|                               | title_mbtn_right_command         | `show-text ${path}`                                                             |
 | Playlist Button               | playlist_mbtn_left_command       | `script-binding select/select-playlist; script-message-to modernz osc-hide`     |
 |                               | playlist_mbtn_right_command      | `show-text ${playlist} 3000`                                                    |
 | Volume Control                | vol_ctrl_mbtn_right_command      | `script-binding select/select-audio-device; script-message-to modernz osc-hide` |
@@ -193,9 +193,9 @@ Customize the button function based on mouse actions.
 |                               | sub_track_mbtn_right_command     | `cycle sub`                                                                     |
 |                               | sub_track_wheel_down_command     | `cycle sub`                                                                     |
 |                               | sub_track_wheel_up_command       | `cycle sub down`                                                                |
-| Chapter Skip Buttons          | chapter_prev_mbtn_left_command   | `no-osd add chapter -1`                                                         |
+| Chapter Skip Buttons          | chapter_prev_mbtn_left_command   | `osd-msg add chapter -1`                                                        |
 |                               | chapter_prev_mbtn_right_command  | `script-binding select/select-chapter; script-message-to modernz osc-hide`      |
-|                               | chapter_next_mbtn_left_command   | `no-osd add chapter 1`                                                          |
+|                               | chapter_next_mbtn_left_command   | `osd-msg add chapter 1`                                                         |
 |                               | chapter_next_mbtn_right_command  | `script-binding select/select-chapter; script-message-to modernz osc-hide`      |
 | Chapter Title (below seekbar) | chapter_title_mbtn_left_command  | `script-binding select/select-chapter; script-message-to modernz osc-hide`      |
 |                               | chapter_title_mbtn_right_command | `show-text ${chapter-list} 3000`                                                |
