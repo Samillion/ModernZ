@@ -3103,7 +3103,7 @@ local function render()
 
     -- submit
     set_osd(osc_param.playresy * osc_param.display_aspect,
-            osc_param.playresy, ass.text, 1000)
+            osc_param.playresy, ass.text, -1)
 end
 
 -- called by mpv on every frame
