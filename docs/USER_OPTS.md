@@ -181,24 +181,40 @@ Customize the button function based on mouse actions.
 | Type                          | Option                           | Function                                                                        |
 | ----------------------------- | -------------------------------- | ------------------------------------------------------------------------------- |
 | Title (above seekbar)         | title_mbtn_left_command          | `script-binding stats/display-page-5`                                           |
+|                               | title_mbtn_mid_command           | `show-text ${filename}`                                                         |
 |                               | title_mbtn_right_command         | `show-text ${path}`                                                             |
 | Playlist Button               | playlist_mbtn_left_command       | `script-binding select/select-playlist; script-message-to modernz osc-hide`     |
 |                               | playlist_mbtn_right_command      | `show-text ${playlist} 3000`                                                    |
-| Volume Control                | vol_ctrl_mbtn_right_command      | `script-binding select/select-audio-device; script-message-to modernz osc-hide` |
+| Volume Control                | vol_ctrl_mbtn_left_command       | `no-osd cycle mute`                                                             |
+|                               | vol_ctrl_mbtn_right_command      | `script-binding select/select-audio-device; script-message-to modernz osc-hide` |
+|                               | vol_ctrl_wheel_down_command      | `add volume -5`                                                                 |
+|                               | vol_ctrl_wheel_up_command        | `add volume 5`                                                                  |
 | Audio Button                  | audio_track_mbtn_left_command    | `script-binding select/select-aid; script-message-to modernz osc-hide`          |
+|                               | audio_track_mbtn_mid_command     | `cycle audio down`                                                              |
 |                               | audio_track_mbtn_right_command   | `cycle audio`                                                                   |
 |                               | audio_track_wheel_down_command   | `cycle audio`                                                                   |
 |                               | audio_track_wheel_up_command     | `cycle audio down`                                                              |
 | Subtitle Button               | sub_track_mbtn_left_command      | `script-binding select/select-sid; script-message-to modernz osc-hide`          |
+|                               | sub_track_mbtn_mid_command       | `cycle sub down`                                                                |
 |                               | sub_track_mbtn_right_command     | `cycle sub`                                                                     |
 |                               | sub_track_wheel_down_command     | `cycle sub`                                                                     |
 |                               | sub_track_wheel_up_command       | `cycle sub down`                                                                |
-| Chapter Skip Buttons          | chapter_prev_mbtn_left_command   | `osd-msg add chapter -1`                                                        |
+| Chapter Skip Buttons          | chapter_prev_mbtn_left_command   | `add chapter -1`                                                                |
+|                               | chapter_prev_mbtn_mid_command    | `show-text ${chapter-list} 3000`                                                |
 |                               | chapter_prev_mbtn_right_command  | `script-binding select/select-chapter; script-message-to modernz osc-hide`      |
-|                               | chapter_next_mbtn_left_command   | `osd-msg add chapter 1`                                                         |
+|                               | chapter_next_mbtn_left_command   | `add chapter 1`                                                                 |
+|                               | chapter_next_mbtn_mid_command    | `show-text ${chapter-list} 3000`                                                |
 |                               | chapter_next_mbtn_right_command  | `script-binding select/select-chapter; script-message-to modernz osc-hide`      |
 | Chapter Title (below seekbar) | chapter_title_mbtn_left_command  | `script-binding select/select-chapter; script-message-to modernz osc-hide`      |
 |                               | chapter_title_mbtn_right_command | `show-text ${chapter-list} 3000`                                                |
+| Playlist Skip Buttons         | playlist_prev_mbtn_left_command  | `playlist-prev`                                                                 |
+|                               | playlist_prev_mbtn_mid_command   | `show-text ${playlist} 3000`                                                    |
+|                               | playlist_prev_mbtn_right_command | `script-binding select/select-playlist; script-message-to modernz osc-hide`     |
+|                               | playlist_next_mbtn_left_command  | `playlist-next`                                                                 |
+|                               | playlist_next_mbtn_mid_command   | `show-text ${playlist} 3000`                                                    |
+|                               | playlist_next_mbtn_right_command | `script-binding select/select-playlist; script-message-to modernz osc-hide`     |
+| Fullscreen Button             | fullscreen_mbtn_left_command     | `cycle fullscreen`                                                              |
+|                               | fullscreen_mbtn_right_command    | `cycle window-maximized`                                                        |
 
 ### Auto Profile
 
