@@ -37,7 +37,7 @@ local user_opts = {
     fadeduration = 250,                    -- fade-out duration (in ms), set to 0 for no fade
     minmousemove = 0,                      -- minimum mouse movement (in pixels) required to show OSC
     bottomhover = true,                    -- show OSC only when hovering at the bottom
-    bottomhover_zone = 145,                -- height of hover zone for bottomhover (in pixels)
+    bottomhover_zone = 130,                -- height of hover zone for bottomhover (in pixels)
     osc_on_seek = false,                   -- show OSC when seeking
     mouse_seek_pause = true,               -- pause video while seeking with mouse move (on button hold)
 
@@ -61,7 +61,7 @@ local user_opts = {
     timems = false,                        -- show timecodes with milliseconds
     unicodeminus = false,                  -- use the Unicode minus sign in remaining time
     time_format = "dynamic",               -- "dynamic" or "fixed". dynamic shows MM:SS when possible, fixed always shows HH:MM:SS
-    time_font_size = 18,                   -- font size of the time display
+    time_font_size = 16,                   -- font size of the time display
 
     -- Title bar settings
     window_title = false,                  -- show window title in borderless/fullscreen mode
@@ -71,7 +71,7 @@ local user_opts = {
 
     -- Subtitle display settings
     raise_subtitles = true,                -- raise subtitles above the OSC when shown
-    raise_subtitle_amount = 165,           -- amount by which subtitles are raised when the OSC is shown (in pixels)
+    raise_subtitle_amount = 125,           -- amount by which subtitles are raised when the OSC is shown (in pixels)
 
     -- Buttons display and functionality
     jump_buttons = true,                   -- show the jump backward and forward buttons
@@ -86,12 +86,12 @@ local user_opts = {
 
     volume_control = true,                 -- show mute button and volume slider
     volume_control_type = "linear",        -- volume scale type: "linear" or "logarithmic"
-    playlist_button = false,               -- show playlist button: Left-click for simple playlist, Right-click for interactive playlist
+    playlist_button = true,                -- show playlist button: Left-click for simple playlist, Right-click for interactive playlist
     hide_empty_playlist_button = true,     -- hide playlist button when no playlist exists
     gray_empty_playlist_button = true,     -- gray out the playlist button when no playlist exists
 
     fullscreen_button = true,              -- show fullscreen toggle button
-    info_button = false,                   -- show info button
+    info_button = true,                    -- show info button
     ontop_button = true,                   -- show window on top button
     screenshot_button = false,             -- show screenshot button
     screenshot_flag = "subtitles",         -- flag for screenshot button: "subtitles", "video", "window", "each-frame" 
@@ -105,7 +105,7 @@ local user_opts = {
 
     loop_in_pause = true,                  -- enable looping by right-clicking pause
 
-    playpause_size = 30,                   -- icon size for the play/pause button
+    playpause_size = 28,                   -- icon size for the play/pause button
     midbuttons_size = 24,                  -- icon size for the middle buttons
     sidebuttons_size = 24,                 -- icon size for the side buttons
 
@@ -134,7 +134,7 @@ local user_opts = {
     hover_effect_color = "#FFFFFF",        -- color of a hovered button when hover_effect includes "color"
     thumbnail_border_color = "#111111",    -- color of the border for thumbnails (with thumbfast)
 
-    fade_alpha = 150,                      -- alpha of the OSC background box
+    fade_alpha = 130,                      -- alpha of the OSC background box
     fade_blur_strength = 100,              -- blur strength for the OSC alpha fade. caution: high values can take a lot of CPU time to render
     window_fade_alpha = 75,                -- alpha of the window title bar
     thumbnail_border = 2,                  -- width of the thumbnail border (for thumbfast)
@@ -184,8 +184,8 @@ local user_opts = {
     -- volume mouse actions
     vol_ctrl_mbtn_left_command = "no-osd cycle mute",
     vol_ctrl_mbtn_right_command = "script-binding select/select-audio-device; script-message-to modernz osc-hide",
-    vol_ctrl_wheel_down_command = "add volume -5",
-    vol_ctrl_wheel_up_command = "add volume 5",
+    vol_ctrl_wheel_down_command = "no-osd add volume -5",
+    vol_ctrl_wheel_up_command = "no-osd add volume 5",
 
     -- audio button mouse actions
     audio_track_mbtn_left_command = "script-binding select/select-aid; script-message-to modernz osc-hide",
@@ -410,7 +410,7 @@ local function set_osc_styles()
     osc_styles = {
         background_bar = "{\\1c&H" .. osc_color_convert(user_opts.osc_color) .. "&}",
         box_bg = "{\\blur" .. user_opts.fade_blur_strength .. "\\bord" .. user_opts.fade_alpha .. "\\1c&H000000&\\3c&H" .. osc_color_convert(user_opts.osc_color) .. "&}",
-        chapter_title = "{\\blur0\\bord0\\1c&H" .. osc_color_convert(user_opts.chapter_title_color) .. "&\\3c&H000000&\\fs" .. user_opts.time_font_size .. "\\fn" .. user_opts.font .. "}",
+        chapter_title = "{\\blur0\\bord0\\1c&H" .. osc_color_convert(user_opts.chapter_title_color) .. "&\\3c&H000000&\\fs12\\fn" .. user_opts.font .. "}",
         control_1 = "{\\blur0\\bord0\\1c&H" .. osc_color_convert(user_opts.playpause_color) .. "&\\3c&HFFFFFF&\\fs" .. playpause_size .. "\\fn" .. iconfont .. "}",
         control_2 = "{\\blur0\\bord0\\1c&H" .. osc_color_convert(user_opts.middle_buttons_color) .. "&\\3c&HFFFFFF&\\fs" .. midbuttons_size .. "\\fn" .. iconfont .. "}",
         control_2_flip = "{\\blur0\\bord0\\1c&H" .. osc_color_convert(user_opts.middle_buttons_color) .. "&\\3c&HFFFFFF&\\fs" .. midbuttons_size .. "\\fn" .. iconfont .. "\\fry180}",
@@ -1615,7 +1615,7 @@ layouts["modern"] = function ()
 
     local osc_geo = {
         w = osc_param.playresx,
-        h = (not user_opts.show_title or no_title_function) and 110 or 160
+        h = (not user_opts.show_title or no_title_function) and 100 or 140
     }
 
     -- origin of the controllers, left/bottom corner
@@ -1661,14 +1661,14 @@ layouts["modern"] = function ()
     -- Seekbar
     new_element("seekbarbg", "box")
     lo = add_layout("seekbarbg")
-    lo.geometry = {x = refX, y = refY - 100, an = 5, w = osc_geo.w - 50, h = 4}
+    lo.geometry = {x = refX, y = refY - 75, an = 5, w = osc_geo.w - 50, h = 4}
     lo.layer = 13
     lo.style = osc_styles.seekbar_bg
     lo.alpha[1] = 128
     lo.alpha[3] = 128
 
     lo = add_layout("seekbar")
-    lo.geometry = {x = refX, y = refY - 100, an = 5, w = osc_geo.w - 50, h = 18}
+    lo.geometry = {x = refX, y = refY - 75, an = 5, w = osc_geo.w - 50, h = 18}
     lo.style = osc_styles.seekbar_fg
     lo.slider.gap = 7
     lo.slider.tooltip_style = osc_styles.tooltip
@@ -1693,23 +1693,25 @@ layouts["modern"] = function ()
     local screenshot_button = user_opts.screenshot_button
     local loop_button = user_opts.loop_button
     local speed_button = user_opts.speed_button
+    local download_button = user_opts.download_button and state.is_URL
+    local dmx_speed = user_opts.cache_info_speed and state.cache_state and state.cache_state["raw-input-rate"] and state.cache_state["raw-input-rate"] ~= ""
     local playlist_button = user_opts.playlist_button and (not user_opts.hide_empty_playlist_button or mp.get_property_number("playlist-count", 0) > 1)
 
     local offset = jump_buttons and 60 or 0
     local outeroffset = (chapter_skip_buttons and 0 or 100) + (jump_buttons and 0 or 100)
 
     -- Title
-    geo = {x = 25, y = refY - 122, an = 1, w = osc_geo.w - 50 - (loop_button and 45 or 0) - (speed_button and 45 or 0), h = 35}
+    geo = {x = 25, y = refY - 97, an = 1, w = osc_geo.w - 50 - (loop_button and 45 or 0) - (speed_button and 45 or 0), h = 35}
     lo = add_layout("title")
     lo.geometry = geo
     lo.style = string.format("%s{\\clip(0,%f,%f,%f)}", osc_styles.title, geo.y - geo.h, geo.x + geo.w, geo.y + geo.h)
     lo.alpha[3] = 0
 
-    -- cache info
-    if user_opts.cache_info then
-        lo = add_layout("cache_info")
-        lo.geometry = {x = 25, y = refY -109, an = 1, w = 160, h = 20}
-        lo.style = osc_styles.cache
+    -- Chapter Title (next to timestamp)
+    if user_opts.show_chapter_title then
+        lo = add_layout("chapter_title")
+        lo.geometry = {x = 25, y = refY -85, an = 1, w = osc_geo.w / 2, h = 20}
+        lo.style = string.format("%s{\\clip(0,%f,%f,%f)}", osc_styles.chapter_title, geo.y - geo.h, geo.x + geo.w, geo.y + geo.h)
     end
 
     -- buttons
@@ -1753,32 +1755,6 @@ layouts["modern"] = function ()
         lo.style = osc_styles.control_2
     end
 
-    -- Time
-    local remsec = mp.get_property_number("playtime-remaining", 0)
-    local possec = mp.get_property_number("playback-time", 0)
-    local dur = mp.get_property_number("duration", 0)
-
-    local show_hours = possec >= 3600 or user_opts.time_format ~= "dynamic"
-    lo = add_layout("tc_left")
-    lo.geometry = {x = 25, y = refY - 84, an = 7, w = 45 + (state.tc_ms and 30 or 0) + (show_hours and 20 or 0), h = 20}
-    lo.style = osc_styles.time
-
-    local show_remhours = (state.tc_right_rem and remsec >= 3600) or (not state.tc_right_rem and dur >= 3600) or user_opts.time_format ~= "dynamic"
-    lo = add_layout("tc_right")
-    lo.geometry = {x = osc_geo.w - 25, y = refY -84, an = 9, w = 50 + (state.tc_ms and 30 or 0) + (show_remhours and 25 or 0), h = 20}
-    lo.style = osc_styles.time
-
-    -- Chapter Title (next to timestamp)
-    if user_opts.show_chapter_title then
-        lo = add_layout("separator")
-        lo.geometry = {x = 73 + (state.tc_ms and 32 or 0) + (show_hours and 20 or 0), y = refY - 84, an = 7, w = 30, h = 20}
-        lo.style = osc_styles.time
-
-        lo = add_layout("chapter_title")
-        lo.geometry = {x = 86 + (state.tc_ms and 32 or 0) + (show_hours and 20 or 0), y = refY - 84, an = 7, w = osc_geo.w - 200 - ((show_hours or state.tc_ms) and 60 or 0), h = 20}
-        lo.style = osc_styles.chapter_title
-    end
-
     -- Audio
     if audio_track then
         lo = add_layout("audio_track")
@@ -1812,7 +1788,7 @@ layouts["modern"] = function ()
 
         -- Volumebar
         lo = new_element("volumebarbg", "box")
-        lo.visible = (osc_param.playresx >= 920 - outeroffset) and user_opts.volume_control
+        lo.visible = (osc_param.playresx >= 960 - outeroffset) and user_opts.volume_control
         lo = add_layout("volumebarbg")
         lo.geometry = {x = 200 - (audio_track and 0 or 45) - (subtitle_track and 0 or 45) - (playlist_button and 0 or 45), y = refY - 40, an = 4, w = 80, h = 4}
         lo.layer = 13
@@ -1826,6 +1802,25 @@ layouts["modern"] = function ()
         lo.slider.tooltip_style = osc_styles.tooltip
         lo.slider.tooltip_an = 2
     end
+
+    -- Time
+    local remsec = mp.get_property_number("playtime-remaining", 0)
+    local possec = mp.get_property_number("playback-time", 0)
+    local dur = mp.get_property_number("duration", 0)
+
+    local show_hours = possec >= 3600 or user_opts.time_format ~= "dynamic"
+    lo = add_layout("tc_left")
+    lo.geometry = {x = 300 - (audio_track and 0 or 190) - (subtitle_track and 0 or 45) - (playlist_button and 0 or 45), y = refY - 40, an = 4, w = 45 + (state.tc_ms and 30 or 0) + (show_hours and 20 or 0), h = 10}
+    lo.style = osc_styles.time
+
+    lo = add_layout("time_separator")
+    lo.geometry = {x = (339 + (state.tc_ms and 30 or 0) + (show_hours and 20 or 0)) - (audio_track and 0 or 190) - (subtitle_track and 0 or 45) - (playlist_button and 0 or 45), y = refY - 40, an = 4, w = 30, h = 20}
+    lo.style = osc_styles.time
+
+    local show_remhours = (state.tc_right_rem and remsec >= 3600) or (not state.tc_right_rem and dur >= 3600) or user_opts.time_format ~= "dynamic"
+    lo = add_layout("tc_right")
+    lo.geometry = {x = (347 + (state.tc_ms and 30 or 0) + (show_hours and 20 or 0)) - (audio_track and 0 or 190) - (subtitle_track and 0 or 45) - (playlist_button and 0 or 45), y = refY - 40, an = 4, w = 50 + (state.tc_ms and 30 or 0) + (show_remhours and 25 or 0), h = 10}
+    lo.style = osc_styles.time
 
     -- Fullscreen/Info/Pin/Screenshot/Loop/Speed
     if fullscreen_button then
@@ -1870,11 +1865,18 @@ layouts["modern"] = function ()
         lo.visible = (osc_param.playresx >= 600 - outeroffset)
     end
     
-    if user_opts.download_button then
+    if download_button then
         lo = add_layout("download")
         lo.geometry = {x = osc_geo.w - 307 + (speed_button and 0 or 45) + (loop_button and 0 or 45) + (screenshot_button and 0 or 45) + (ontop_button and 0 or 45) + (info_button and 0 or 45) + (fullscreen_button and 0 or 45), y = refY - 40, an = 5, w = 24, h = 24}
         lo.style = osc_styles.control_3
         lo.visible = (osc_param.playresx >= 400 - outeroffset)
+    end
+
+    -- cache info
+    if user_opts.cache_info then
+        lo = add_layout("cache_info")
+        lo.geometry = {x = (osc_geo.w - (dmx_speed and 400 or 365)) + (download_button and 0 or 45) + (speed_button and 0 or 45) + (loop_button and 0 or 45) + (screenshot_button and 0 or 45) + (ontop_button and 0 or 45) + (info_button and 0 or 45) + (fullscreen_button and 0 or 45), y = refY - 40, an = 5, w = 24, h = 24}
+        lo.style = osc_styles.cache
     end
 end
 
@@ -2128,30 +2130,22 @@ local function osc_init()
     ne.eventresponder["mbtn_right_up"] = command_callback(user_opts.title_mbtn_right_command)
     ne.eventresponder["shift+mbtn_left_down"] = command_callback(user_opts.title_mbtn_mid_command)
 
-    -- cache info
-    ne = new_element("cache_info", "button")
-    ne.content = function ()
-        local cache_state = state.cache_state
-        if not (cache_state and cache_state["seekable-ranges"] and
-            #cache_state["seekable-ranges"] > 0) then
-            -- probably not a network stream
-            return ""
+    -- Chapter title (below seekbar)
+    local chapter_index = mp.get_property_number("chapter", -1)
+    ne = new_element("chapter_title", "button")
+    ne.visible = chapter_index >= 0
+    ne.content = function()
+        if user_opts.chapter_fmt ~= "no" and chapter_index >= 0 then
+            request_init()
+            local chapters = mp.get_property_native("chapter-list", {})
+            local chapter_title = (chapters[chapter_index + 1] and chapters[chapter_index + 1].title ~= "") and chapters[chapter_index + 1].title or locale.na
+            chapter_title = mp.command_native({"escape-ass", chapter_title})
+            return string.format(user_opts.chapter_fmt, chapter_title)
         end
-        local dmx_cache = cache_state and cache_state["cache-duration"]
-        local thresh = math.min(state.dmx_cache * 0.05, 5)  -- 5% or 5s
-        if dmx_cache and math.abs(dmx_cache - state.dmx_cache) >= thresh then
-            state.dmx_cache = dmx_cache
-        else
-            dmx_cache = state.dmx_cache
-        end
-        local min = math.floor(dmx_cache / 60)
-        local sec = math.floor(dmx_cache % 60) -- don't round e.g. 59.9 to 60
-        local cache_time = (min > 0 and string.format("%sm%02.0fs", min, sec) or string.format("%3.0fs", sec))
-
-        local dmx_speed = cache_state and cache_state["raw-input-rate"] or ""
-        local cache_speed = (user_opts.cache_info_speed and dmx_speed and dmx_speed ~= "") and " • " .. utils.format_bytes_humanized(dmx_speed) .. "/s" or ""
-        return locale.cache .. ": " .. cache_time .. cache_speed
+        return "" -- fallback
     end
+    ne.eventresponder["mbtn_left_up"] = command_callback(user_opts.chapter_title_mbtn_left_command)
+    ne.eventresponder["mbtn_right_up"] = command_callback(user_opts.chapter_title_mbtn_right_command)
 
     -- playlist buttons
     -- prev
@@ -2511,6 +2505,33 @@ local function osc_init()
         end
     end
 
+    -- cache info
+    ne = new_element("cache_info", "button")
+    ne.visible = (osc_param.playresx >= 1400 - outeroffset - (user_opts.speed_button and 0 or 100) - (user_opts.loop_button and 0 or 100) - (user_opts.screenshot_button and 0 or 100) - (user_opts.ontop_button and 0 or 100) - (user_opts.info_button and 0 or 100) - (user_opts.fullscreen_button and 0 or 100))
+    ne.content = function ()
+        request_init()
+        local cache_state = state.cache_state
+        if not (cache_state and cache_state["seekable-ranges"] and
+            #cache_state["seekable-ranges"] > 0) then
+            -- probably not a network stream
+            return ""
+        end
+        local dmx_cache = cache_state and cache_state["cache-duration"]
+        local thresh = math.min(state.dmx_cache * 0.05, 5)  -- 5% or 5s
+        if dmx_cache and math.abs(dmx_cache - state.dmx_cache) >= thresh then
+            state.dmx_cache = dmx_cache
+        else
+            dmx_cache = state.dmx_cache
+        end
+        local min = math.floor(dmx_cache / 60)
+        local sec = math.floor(dmx_cache % 60) -- don't round e.g. 59.9 to 60
+        local cache_time = (min > 0 and string.format("%sm%02.0fs", min, sec) or string.format("%3.0fs", sec))
+
+        local dmx_speed = cache_state and cache_state["raw-input-rate"] or ""
+        local cache_speed = (user_opts.cache_info_speed and dmx_speed and dmx_speed ~= "") and " • " .. utils.format_bytes_humanized(dmx_speed) .. "/s" or ""
+        return locale.cache .. ": " .. cache_time .. cache_speed
+    end
+
     --seekbar
     ne = new_element("seekbar", "slider")
     ne.enabled = mp.get_property("percent-pos") ~= nil
@@ -2703,6 +2724,7 @@ local function osc_init()
 
     -- Current position time display
     ne = new_element("tc_left", "button")
+    ne.visible = (osc_param.playresx >= 1250 - outeroffset) and user_opts.volume_control
     ne.content = function()
         local playback_time = mp.get_property_number("playback-time", 0)
         return format_time(playback_time)
@@ -2712,30 +2734,13 @@ local function osc_init()
         request_init()
     end
 
-    -- Chapter title (below seekbar)
-    local chapter_index = mp.get_property_number("chapter", -1)
-    ne = new_element("separator", "button")
-    ne.visible = chapter_index >= 0
-    ne.content = " • "
-
-    ne = new_element("chapter_title", "button")
-    ne.visible = chapter_index >= 0
-    ne.content = function()
-        if user_opts.chapter_fmt ~= "no" and chapter_index >= 0 then
-            request_init()
-            local chapters = mp.get_property_native("chapter-list", {})
-            local chapter_title = (chapters[chapter_index + 1] and chapters[chapter_index + 1].title ~= "") and chapters[chapter_index + 1].title or locale.na
-            chapter_title = mp.command_native({"escape-ass", chapter_title})
-            return string.format(user_opts.chapter_fmt, chapter_title)
-        end
-        return "" -- fallback
-    end
-    ne.eventresponder["mbtn_left_up"] = command_callback(user_opts.chapter_title_mbtn_left_command)
-    ne.eventresponder["mbtn_right_up"] = command_callback(user_opts.chapter_title_mbtn_right_command)
+    ne = new_element("time_separator", "button")
+    ne.visible = (osc_param.playresx >= 1250 - outeroffset) and user_opts.volume_control and (mp.get_property_number("duration", 0) > 0)
+    ne.content = " / "
 
     -- Total/remaining time display
     ne = new_element("tc_right", "button")
-    ne.visible = (mp.get_property_number("duration", 0) > 0)
+    ne.visible = (osc_param.playresx >= 1250 - outeroffset) and user_opts.volume_control and (mp.get_property_number("duration", 0) > 0)
     ne.content = function()
         local duration = mp.get_property_number("duration", 0)
         if duration <= 0 then return "--:--" end
