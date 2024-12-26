@@ -1702,7 +1702,7 @@ layouts["modern"] = function ()
     local outeroffset = (chapter_skip_buttons and 0 or 100) + (jump_buttons and 0 or 100)
 
     -- Title
-    geo = {x = 25, y = refY - (chapter_index and 100 or 90), an = 1, w = osc_geo.w - 50 - (loop_button and 45 or 0) - (speed_button and 45 or 0), h = 35}
+    geo = {x = 25, y = refY - (chapter_index and 102 or 90), an = 1, w = osc_geo.w - 50 - (loop_button and 45 or 0) - (speed_button and 45 or 0), h = 35}
     lo = add_layout("title")
     lo.geometry = geo
     lo.style = string.format("%s{\\clip(0,%f,%f,%f)}", osc_styles.title, geo.y - geo.h, geo.x + geo.w, geo.y + geo.h)
@@ -1711,7 +1711,7 @@ layouts["modern"] = function ()
     -- Chapter Title (next to timestamp)
     if user_opts.show_chapter_title then
         lo = add_layout("chapter_title")
-        lo.geometry = {x = 25, y = refY -86, an = 1, w = osc_geo.w / 2, h = 20}
+        lo.geometry = {x = 25, y = refY -87, an = 1, w = osc_geo.w / 2, h = 20}
         lo.style = string.format("%s{\\clip(0,%f,%f,%f)}", osc_styles.chapter_title, geo.y - geo.h, geo.x + geo.w, geo.y + geo.h)
     end
 
@@ -2141,7 +2141,7 @@ local function osc_init()
             local chapters = mp.get_property_native("chapter-list", {})
             local chapter_title = (chapters[chapter_index + 1] and chapters[chapter_index + 1].title ~= "") and chapters[chapter_index + 1].title or locale.na
             chapter_title = mp.command_native({"escape-ass", chapter_title})
-            return string.format(user_opts.chapter_fmt, chapter_title)
+            return "↳ " .. string.format(user_opts.chapter_fmt, chapter_title)
         end
         return "" -- fallback
     end
