@@ -1661,14 +1661,14 @@ layouts["modern"] = function ()
     -- Seekbar
     new_element("seekbarbg", "box")
     lo = add_layout("seekbarbg")
-    lo.geometry = {x = refX, y = refY - 75, an = 5, w = osc_geo.w - 50, h = 4}
+    lo.geometry = {x = refX, y = refY - 72, an = 5, w = osc_geo.w - 50, h = 4}
     lo.layer = 13
     lo.style = osc_styles.seekbar_bg
     lo.alpha[1] = 128
     lo.alpha[3] = 128
 
     lo = add_layout("seekbar")
-    lo.geometry = {x = refX, y = refY - 75, an = 5, w = osc_geo.w - 50, h = 18}
+    lo.geometry = {x = refX, y = refY - 72, an = 5, w = osc_geo.w - 50, h = 18}
     lo.style = osc_styles.seekbar_fg
     lo.slider.gap = 7
     lo.slider.tooltip_style = osc_styles.tooltip
