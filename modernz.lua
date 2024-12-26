@@ -410,7 +410,7 @@ local function set_osc_styles()
     osc_styles = {
         background_bar = "{\\1c&H" .. osc_color_convert(user_opts.osc_color) .. "&}",
         box_bg = "{\\blur" .. user_opts.fade_blur_strength .. "\\bord" .. user_opts.fade_alpha .. "\\1c&H000000&\\3c&H" .. osc_color_convert(user_opts.osc_color) .. "&}",
-        chapter_title = "{\\blur0\\bord0\\1c&H" .. osc_color_convert(user_opts.chapter_title_color) .. "&\\3c&H000000&\\fs12\\fn" .. user_opts.font .. "}",
+        chapter_title = "{\\blur0\\bord0\\1c&H" .. osc_color_convert(user_opts.chapter_title_color) .. "&\\3c&H000000&\\fs14\\fn" .. user_opts.font .. "}",
         control_1 = "{\\blur0\\bord0\\1c&H" .. osc_color_convert(user_opts.playpause_color) .. "&\\3c&HFFFFFF&\\fs" .. playpause_size .. "\\fn" .. iconfont .. "}",
         control_2 = "{\\blur0\\bord0\\1c&H" .. osc_color_convert(user_opts.middle_buttons_color) .. "&\\3c&HFFFFFF&\\fs" .. midbuttons_size .. "\\fn" .. iconfont .. "}",
         control_2_flip = "{\\blur0\\bord0\\1c&H" .. osc_color_convert(user_opts.middle_buttons_color) .. "&\\3c&HFFFFFF&\\fs" .. midbuttons_size .. "\\fn" .. iconfont .. "\\fry180}",
@@ -1686,6 +1686,7 @@ layouts["modern"] = function ()
     local subtitle_track = sub_track_count > 0
     local jump_buttons = user_opts.jump_buttons
     local chapter_skip_buttons = user_opts.chapter_skip_buttons
+    local chapter_index = mp.get_property_number("chapter", -1) >= 0
     local track_nextprev_buttons = user_opts.track_nextprev_buttons
     local fullscreen_button = user_opts.fullscreen_button
     local info_button = user_opts.info_button
@@ -1701,7 +1702,7 @@ layouts["modern"] = function ()
     local outeroffset = (chapter_skip_buttons and 0 or 100) + (jump_buttons and 0 or 100)
 
     -- Title
-    geo = {x = 25, y = refY - 97, an = 1, w = osc_geo.w - 50 - (loop_button and 45 or 0) - (speed_button and 45 or 0), h = 35}
+    geo = {x = 25, y = refY - (chapter_index and 100 or 90), an = 1, w = osc_geo.w - 50 - (loop_button and 45 or 0) - (speed_button and 45 or 0), h = 35}
     lo = add_layout("title")
     lo.geometry = geo
     lo.style = string.format("%s{\\clip(0,%f,%f,%f)}", osc_styles.title, geo.y - geo.h, geo.x + geo.w, geo.y + geo.h)
@@ -1710,55 +1711,55 @@ layouts["modern"] = function ()
     -- Chapter Title (next to timestamp)
     if user_opts.show_chapter_title then
         lo = add_layout("chapter_title")
-        lo.geometry = {x = 25, y = refY -85, an = 1, w = osc_geo.w / 2, h = 20}
+        lo.geometry = {x = 25, y = refY -86, an = 1, w = osc_geo.w / 2, h = 20}
         lo.style = string.format("%s{\\clip(0,%f,%f,%f)}", osc_styles.chapter_title, geo.y - geo.h, geo.x + geo.w, geo.y + geo.h)
     end
 
     -- buttons
     if track_nextprev_buttons then
         lo = add_layout("playlist_prev")
-        lo.geometry = {x = refX - (60 + (chapter_skip_buttons and 60 or 0)) - offset, y = refY - 40 , an = 5, w = 30, h = 24}
+        lo.geometry = {x = refX - (60 + (chapter_skip_buttons and 60 or 0)) - offset, y = refY - 35, an = 5, w = 30, h = 24}
         lo.style = osc_styles.control_2
     end
 
     if chapter_skip_buttons then 
         lo = add_layout("chapter_backward")
-        lo.geometry = {x = refX - 60 - offset, y = refY - 40 , an = 5, w = 30, h = 24}
+        lo.geometry = {x = refX - 60 - offset, y = refY - 35, an = 5, w = 30, h = 24}
         lo.style = osc_styles.control_2
     end
 
     if jump_buttons then
         lo = add_layout("jump_backward")
-        lo.geometry = {x = refX - 60, y = refY - 40 , an = 5, w = 30, h = 24}
+        lo.geometry = {x = refX - 60, y = refY - 35, an = 5, w = 30, h = 24}
         lo.style = (user_opts.jump_icon_number and icons.jump[user_opts.jump_amount] ~= nil) and osc_styles.control_2 or osc_styles.control_2_flip
     end
 
     lo = add_layout("play_pause")
-    lo.geometry = {x = refX, y = refY - 40 , an = 5, w = 45, h = 45}
+    lo.geometry = {x = refX, y = refY - 35, an = 5, w = 45, h = 45}
     lo.style = osc_styles.control_1
 
     if jump_buttons then
         lo = add_layout("jump_forward")
-        lo.geometry = {x = refX + 60, y = refY - 40 , an = 5, w = 30, h = 24}
+        lo.geometry = {x = refX + 60, y = refY - 35, an = 5, w = 30, h = 24}
         lo.style = osc_styles.control_2
     end
 
     if chapter_skip_buttons then
         lo = add_layout("chapter_forward")
-        lo.geometry = {x = refX + 60 + offset, y = refY - 40 , an = 5, w = 30, h = 24}
+        lo.geometry = {x = refX + 60 + offset, y = refY - 35, an = 5, w = 30, h = 24}
         lo.style = osc_styles.control_2
     end
 
     if track_nextprev_buttons then
         lo = add_layout("playlist_next")
-        lo.geometry = {x = refX + (60 + (chapter_skip_buttons and 60 or 0)) + offset, y = refY - 40 , an = 5, w = 30, h = 24}
+        lo.geometry = {x = refX + (60 + (chapter_skip_buttons and 60 or 0)) + offset, y = refY - 35, an = 5, w = 30, h = 24}
         lo.style = osc_styles.control_2
     end
 
     -- Audio
     if audio_track then
         lo = add_layout("audio_track")
-        lo.geometry = {x = 37, y = refY - 40, an = 5, w = 24, h = 24}
+        lo.geometry = {x = 37, y = refY - 35, an = 5, w = 24, h = 24}
         lo.style = osc_styles.control_3
         lo.visible = (osc_param.playresx >= 500 - outeroffset)
     end
@@ -1766,7 +1767,7 @@ layouts["modern"] = function ()
     -- Subtitle
     if subtitle_track then
         lo = add_layout("sub_track")
-        lo.geometry = {x = 82 - (audio_track and 0 or 45), y = refY - 40, an = 5, w = 24, h = 24}
+        lo.geometry = {x = 82 - (audio_track and 0 or 45), y = refY - 35, an = 5, w = 24, h = 24}
         lo.style = osc_styles.control_3
         lo.visible = (osc_param.playresx >= 600 - outeroffset)
     end
@@ -1774,7 +1775,7 @@ layouts["modern"] = function ()
     -- Playlist
     if playlist_button then
         lo = add_layout("tog_playlist")
-        lo.geometry = {x = 127 - (audio_track and 0 or 45) - (subtitle_track and 0 or 45), y = refY - 40, an = 5, w = 24, h = 24}
+        lo.geometry = {x = 127 - (audio_track and 0 or 45) - (subtitle_track and 0 or 45), y = refY - 35, an = 5, w = 24, h = 24}
         lo.style = osc_styles.control_3
         lo.visible = (osc_param.playresx >= 600 - outeroffset)
     end
@@ -1782,21 +1783,21 @@ layouts["modern"] = function ()
     if audio_track then
         -- Volume
         lo = add_layout("vol_ctrl")
-        lo.geometry = {x = 172 - (audio_track and 0 or 45) - (subtitle_track and 0 or 45) - (playlist_button and 0 or 45), y = refY - 40, an = 5, w = 24, h = 24}
+        lo.geometry = {x = 172 - (audio_track and 0 or 45) - (subtitle_track and 0 or 45) - (playlist_button and 0 or 45), y = refY - 35, an = 5, w = 24, h = 24}
         lo.style = osc_styles.control_3
         lo.visible = (osc_param.playresx >= 600 - outeroffset)
 
         -- Volumebar
         lo = new_element("volumebarbg", "box")
-        lo.visible = (osc_param.playresx >= 960 - outeroffset) and user_opts.volume_control
+        lo.visible = (osc_param.playresx >= 910 - outeroffset) and user_opts.volume_control
         lo = add_layout("volumebarbg")
-        lo.geometry = {x = 200 - (audio_track and 0 or 45) - (subtitle_track and 0 or 45) - (playlist_button and 0 or 45), y = refY - 40, an = 4, w = 80, h = 4}
+        lo.geometry = {x = 200 - (audio_track and 0 or 45) - (subtitle_track and 0 or 45) - (playlist_button and 0 or 45), y = refY - 35, an = 4, w = 55, h = 4}
         lo.layer = 13
         lo.alpha[1] = 128
         lo.style = user_opts.volumebar_match_seek_color and osc_styles.seekbar_bg or osc_styles.volumebar_bg
 
         lo = add_layout("volumebar")
-        lo.geometry = {x = 200 - (audio_track and 0 or 45) - (subtitle_track and 0 or 45) - (playlist_button and 0 or 45), y = refY - 40, an = 4, w = 80, h = 10}
+        lo.geometry = {x = 200 - (audio_track and 0 or 45) - (subtitle_track and 0 or 45) - (playlist_button and 0 or 45), y = refY - 35, an = 4, w = 55, h = 10}
         lo.style = user_opts.volumebar_match_seek_color and osc_styles.seekbar_fg or osc_styles.volumebar_fg
         lo.slider.gap = 3
         lo.slider.tooltip_style = osc_styles.tooltip
@@ -1810,64 +1811,64 @@ layouts["modern"] = function ()
 
     local show_hours = possec >= 3600 or user_opts.time_format ~= "dynamic"
     lo = add_layout("tc_left")
-    lo.geometry = {x = 300 - (audio_track and 0 or 190) - (subtitle_track and 0 or 45) - (playlist_button and 0 or 45), y = refY - 40, an = 4, w = 45 + (state.tc_ms and 30 or 0) + (show_hours and 20 or 0), h = 10}
+    lo.geometry = {x = 275 - (audio_track and 0 or 165) - (subtitle_track and 0 or 45) - (playlist_button and 0 or 45), y = refY - 35, an = 4, w = 45 + (state.tc_ms and 30 or 0) + (show_hours and 20 or 0), h = 10}
     lo.style = osc_styles.time
 
     lo = add_layout("time_separator")
-    lo.geometry = {x = (339 + (state.tc_ms and 30 or 0) + (show_hours and 20 or 0)) - (audio_track and 0 or 190) - (subtitle_track and 0 or 45) - (playlist_button and 0 or 45), y = refY - 40, an = 4, w = 30, h = 20}
+    lo.geometry = {x = (314 + (state.tc_ms and 30 or 0) + (show_hours and 20 or 0)) - (audio_track and 0 or 165) - (subtitle_track and 0 or 45) - (playlist_button and 0 or 45), y = refY - 35, an = 4, w = 30, h = 20}
     lo.style = osc_styles.time
 
     local show_remhours = (state.tc_right_rem and remsec >= 3600) or (not state.tc_right_rem and dur >= 3600) or user_opts.time_format ~= "dynamic"
     lo = add_layout("tc_right")
-    lo.geometry = {x = (347 + (state.tc_ms and 30 or 0) + (show_hours and 20 or 0)) - (audio_track and 0 or 190) - (subtitle_track and 0 or 45) - (playlist_button and 0 or 45), y = refY - 40, an = 4, w = 50 + (state.tc_ms and 30 or 0) + (show_remhours and 25 or 0), h = 10}
+    lo.geometry = {x = (322 + (state.tc_ms and 30 or 0) + (show_hours and 20 or 0)) - (audio_track and 0 or 190) - (subtitle_track and 0 or 45) - (playlist_button and 0 or 45), y = refY - 35, an = 4, w = 50 + (state.tc_ms and 30 or 0) + (show_remhours and 25 or 0), h = 10}
     lo.style = osc_styles.time
 
     -- Fullscreen/Info/Pin/Screenshot/Loop/Speed
     if fullscreen_button then
         lo = add_layout("tog_fullscreen")
-        lo.geometry = {x = osc_geo.w - 37, y = refY - 40, an = 5, w = 24, h = 24}
+        lo.geometry = {x = osc_geo.w - 37, y = refY - 35, an = 5, w = 24, h = 24}
         lo.style = osc_styles.control_3
         lo.visible = (osc_param.playresx >= 250 - outeroffset)
     end
 
     if info_button then
         lo = add_layout("tog_info")
-        lo.geometry = {x = osc_geo.w - 82 + (fullscreen_button and 0 or 45), y = refY - 40, an = 5, w = 24, h = 24}
+        lo.geometry = {x = osc_geo.w - 82 + (fullscreen_button and 0 or 45), y = refY - 35, an = 5, w = 24, h = 24}
         lo.style = osc_styles.control_3
         lo.visible = (osc_param.playresx >= 300 - outeroffset)
     end
 
     if ontop_button then
         lo = add_layout("tog_ontop")
-        lo.geometry = {x = osc_geo.w - 127 + (info_button and 0 or 45) + (fullscreen_button and 0 or 45), y = refY - 40, an = 5, w = 24, h = 24}
+        lo.geometry = {x = osc_geo.w - 127 + (info_button and 0 or 45) + (fullscreen_button and 0 or 45), y = refY - 35, an = 5, w = 24, h = 24}
         lo.style = osc_styles.control_3
         lo.visible = (osc_param.playresx >= 500 - outeroffset)
     end
 
     if screenshot_button then
         lo = add_layout("screenshot")
-        lo.geometry = {x = osc_geo.w - 172 + (ontop_button and 0 or 45) + (info_button and 0 or 45) + (fullscreen_button and 0 or 45), y = refY - 40, an = 5, w = 24, h = 24}
+        lo.geometry = {x = osc_geo.w - 172 + (ontop_button and 0 or 45) + (info_button and 0 or 45) + (fullscreen_button and 0 or 45), y = refY - 35, an = 5, w = 24, h = 24}
         lo.style = osc_styles.control_3
         lo.visible = (osc_param.playresx >= 600 - outeroffset)
     end
 
     if loop_button then
         lo = add_layout("tog_loop")
-        lo.geometry = {x = osc_geo.w - 217 + (screenshot_button and 0 or 45) + (ontop_button and 0 or 45) + (info_button and 0 or 45) + (fullscreen_button and 0 or 45), y = refY - 40, an = 5, w = 24, h = 24}
+        lo.geometry = {x = osc_geo.w - 217 + (screenshot_button and 0 or 45) + (ontop_button and 0 or 45) + (info_button and 0 or 45) + (fullscreen_button and 0 or 45), y = refY - 35, an = 5, w = 24, h = 24}
         lo.style = osc_styles.control_3
         lo.visible = (osc_param.playresx >= 600 - outeroffset) and loop_button
     end
 
     if speed_button then
         lo = add_layout("tog_speed")
-        lo.geometry = {x = osc_geo.w - 262 + (loop_button and 0 or 45) + (screenshot_button and 0 or 45) + (ontop_button and 0 or 45) + (info_button and 0 or 45) + (fullscreen_button and 0 or 45), y = refY - 40, an = 5, w = 24, h = 24}
+        lo.geometry = {x = osc_geo.w - 262 + (loop_button and 0 or 45) + (screenshot_button and 0 or 45) + (ontop_button and 0 or 45) + (info_button and 0 or 45) + (fullscreen_button and 0 or 45), y = refY - 35, an = 5, w = 24, h = 24}
         lo.style = osc_styles.control_3
         lo.visible = (osc_param.playresx >= 600 - outeroffset)
     end
     
     if download_button then
         lo = add_layout("download")
-        lo.geometry = {x = osc_geo.w - 307 + (speed_button and 0 or 45) + (loop_button and 0 or 45) + (screenshot_button and 0 or 45) + (ontop_button and 0 or 45) + (info_button and 0 or 45) + (fullscreen_button and 0 or 45), y = refY - 40, an = 5, w = 24, h = 24}
+        lo.geometry = {x = osc_geo.w - 307 + (speed_button and 0 or 45) + (loop_button and 0 or 45) + (screenshot_button and 0 or 45) + (ontop_button and 0 or 45) + (info_button and 0 or 45) + (fullscreen_button and 0 or 45), y = refY - 35, an = 5, w = 24, h = 24}
         lo.style = osc_styles.control_3
         lo.visible = (osc_param.playresx >= 400 - outeroffset)
     end
@@ -1875,7 +1876,7 @@ layouts["modern"] = function ()
     -- cache info
     if user_opts.cache_info then
         lo = add_layout("cache_info")
-        lo.geometry = {x = (osc_geo.w - (dmx_speed and 400 or 365)) + (download_button and 0 or 45) + (speed_button and 0 or 45) + (loop_button and 0 or 45) + (screenshot_button and 0 or 45) + (ontop_button and 0 or 45) + (info_button and 0 or 45) + (fullscreen_button and 0 or 45), y = refY - 40, an = 5, w = 24, h = 24}
+        lo.geometry = {x = (osc_geo.w - (dmx_speed and 400 or 365)) + (download_button and 0 or 45) + (speed_button and 0 or 45) + (loop_button and 0 or 45) + (screenshot_button and 0 or 45) + (ontop_button and 0 or 45) + (info_button and 0 or 45) + (fullscreen_button and 0 or 45), y = refY - 35, an = 5, w = 24, h = 24}
         lo.style = osc_styles.cache
     end
 end
@@ -2320,7 +2321,7 @@ local function osc_init()
     --volumebar
     local volume_max = mp.get_property_number("volume-max") > 0 and mp.get_property_number("volume-max") or 100
     ne = new_element("volumebar", "slider")
-    ne.visible = (osc_param.playresx >= 1000 - outeroffset) and user_opts.volume_control
+    ne.visible = (osc_param.playresx >= 950 - outeroffset) and user_opts.volume_control
     ne.enabled = audio_track_count > 0
     ne.slider = {min = {value = 0}, max = {value = volume_max}}
     ne.slider.markerF = function () return {} end
@@ -2724,7 +2725,7 @@ local function osc_init()
 
     -- Current position time display
     ne = new_element("tc_left", "button")
-    ne.visible = (osc_param.playresx >= 1250 - outeroffset) and user_opts.volume_control
+    ne.visible = (osc_param.playresx >= 1150 - outeroffset) and user_opts.volume_control
     ne.content = function()
         local playback_time = mp.get_property_number("playback-time", 0)
         return format_time(playback_time)
@@ -2735,12 +2736,12 @@ local function osc_init()
     end
 
     ne = new_element("time_separator", "button")
-    ne.visible = (osc_param.playresx >= 1250 - outeroffset) and user_opts.volume_control and (mp.get_property_number("duration", 0) > 0)
+    ne.visible = (osc_param.playresx >= 1150 - outeroffset) and user_opts.volume_control and (mp.get_property_number("duration", 0) > 0)
     ne.content = " / "
 
     -- Total/remaining time display
     ne = new_element("tc_right", "button")
-    ne.visible = (osc_param.playresx >= 1250 - outeroffset) and user_opts.volume_control and (mp.get_property_number("duration", 0) > 0)
+    ne.visible = (osc_param.playresx >= 1150 - outeroffset) and user_opts.volume_control and (mp.get_property_number("duration", 0) > 0)
     ne.content = function()
         local duration = mp.get_property_number("duration", 0)
         if duration <= 0 then return "--:--" end
