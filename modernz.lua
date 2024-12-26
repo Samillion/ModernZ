@@ -1686,7 +1686,7 @@ layouts["modern"] = function ()
     local subtitle_track = sub_track_count > 0
     local jump_buttons = user_opts.jump_buttons
     local chapter_skip_buttons = user_opts.chapter_skip_buttons
-    local chapter_index = mp.get_property_number("chapter", -1) >= 0
+    local chapter_index = user_opts.show_chapter_title and mp.get_property_number("chapter", -1) >= 0
     local track_nextprev_buttons = user_opts.track_nextprev_buttons
     local fullscreen_button = user_opts.fullscreen_button
     local info_button = user_opts.info_button
@@ -1711,7 +1711,7 @@ layouts["modern"] = function ()
     -- Chapter Title (next to timestamp)
     if user_opts.show_chapter_title then
         lo = add_layout("chapter_title")
-        lo.geometry = {x = 25, y = refY -87, an = 1, w = osc_geo.w / 2, h = 20}
+        lo.geometry = {x = 26, y = refY -87, an = 1, w = osc_geo.w / 2, h = 20}
         lo.style = string.format("%s{\\clip(0,%f,%f,%f)}", osc_styles.chapter_title, geo.y - geo.h, geo.x + geo.w, geo.y + geo.h)
     end
 
@@ -2141,7 +2141,7 @@ local function osc_init()
             local chapters = mp.get_property_native("chapter-list", {})
             local chapter_title = (chapters[chapter_index + 1] and chapters[chapter_index + 1].title ~= "") and chapters[chapter_index + 1].title or locale.na
             chapter_title = mp.command_native({"escape-ass", chapter_title})
-            return "↳ " .. string.format(user_opts.chapter_fmt, chapter_title)
+            return string.format(user_opts.chapter_fmt, chapter_title)
         end
         return "" -- fallback
     end
