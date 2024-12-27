@@ -2528,7 +2528,7 @@ local function osc_init()
         return cache_time
     end
     ne.tooltip_style = osc_styles.tooltip
-    ne.tooltipF = user_opts.tooltip_hints and "Cached Time" or ""
+    ne.tooltipF = user_opts.tooltip_hints and locale.cache or ""
 
     -- cache info speed
     ne = new_element("cache_info_speed", "button")
@@ -2543,8 +2543,6 @@ local function osc_init()
 
         return string.format("%8s %4s/s", number, unit)
     end
-    ne.tooltip_style = osc_styles.tooltip
-    ne.tooltipF = user_opts.tooltip_hints and "Cache Speed" or ""
 
     --seekbar
     ne = new_element("seekbar", "slider")
