@@ -1808,19 +1808,34 @@ layouts["modern"] = function ()
     local remsec = mp.get_property_number("playtime-remaining", 0)
     local possec = mp.get_property_number("playback-time", 0)
     local dur = mp.get_property_number("duration", 0)
-
     local show_hours = possec >= 3600 or user_opts.time_format ~= "dynamic"
+
+    local function time_pos_x(current_font_size)
+        local offset, x
+        local base_font_size = 16
+
+        if current_font_size >= base_font_size then
+            local difference = current_font_size - base_font_size
+            x = (state.tc_ms and 1 or 0) + (show_hours and 1 or 0)
+            offset = difference * (x + 2.5 + difference / 10) -- incremental increase
+        else
+            local difference = base_font_size - current_font_size
+            x = (state.tc_ms and 2.5 or 0) + (show_hours and 1 or 0)
+            offset = -difference * (x + 2.5 + difference / 10) -- incremental decrease
+        end
+
+        return offset
+    end
+
+    local x_offset = time_pos_x(user_opts.time_font_size) or 0
+
     lo = add_layout("tc_left")
     lo.geometry = {x = 275 - (audio_track and 0 or 165) - (subtitle_track and 0 or 45) - (playlist_button and 0 or 45), y = refY - 35, an = 4, w = 45 + (state.tc_ms and 30 or 0) + (show_hours and 20 or 0), h = 10}
     lo.style = osc_styles.time
 
-    lo = add_layout("time_separator")
-    lo.geometry = {x = (314 + (state.tc_ms and 30 or 0) + (show_hours and 20 or 0)) - (audio_track and 0 or 165) - (subtitle_track and 0 or 45) - (playlist_button and 0 or 45), y = refY - 35, an = 4, w = 30, h = 20}
-    lo.style = osc_styles.time
-
     local show_remhours = (state.tc_right_rem and remsec >= 3600) or (not state.tc_right_rem and dur >= 3600) or user_opts.time_format ~= "dynamic"
     lo = add_layout("tc_right")
-    lo.geometry = {x = (322 + (state.tc_ms and 30 or 0) + (show_hours and 20 or 0)) - (audio_track and 0 or 190) - (subtitle_track and 0 or 45) - (playlist_button and 0 or 45), y = refY - 35, an = 4, w = 50 + (state.tc_ms and 30 or 0) + (show_remhours and 25 or 0), h = 10}
+    lo.geometry = {x = (322 + x_offset + (state.tc_ms and 30 or 0) + (show_hours and 20 or 0)) - (audio_track and 0 or 190) - (subtitle_track and 0 or 45) - (playlist_button and 0 or 45), y = refY - 35, an = 4, w = 50 + (state.tc_ms and 30 or 0) + (show_remhours and 25 or 0), h = 10}
     lo.style = osc_styles.time
 
     -- Fullscreen/Info/Pin/Screenshot/Loop/Speed
@@ -2728,16 +2743,12 @@ local function osc_init()
     ne.visible = (osc_param.playresx >= 1150 - outeroffset) and user_opts.volume_control
     ne.content = function()
         local playback_time = mp.get_property_number("playback-time", 0)
-        return format_time(playback_time)
+        return format_time(playback_time) .. " /"
     end
     ne.eventresponder["mbtn_left_up"] = function()
         state.tc_ms = not state.tc_ms
         request_init()
     end
-
-    ne = new_element("time_separator", "button")
-    ne.visible = (osc_param.playresx >= 1150 - outeroffset) and user_opts.volume_control and (mp.get_property_number("duration", 0) > 0)
-    ne.content = " / "
 
     -- Total/remaining time display
     ne = new_element("tc_right", "button")
@@ -2752,7 +2763,7 @@ local function osc_init()
         local prefix = state.tc_right_rem and 
             (user_opts.unicodeminus and UNICODE_MINUS or "-") or ""
 
-        return prefix .. format_time(time_to_display)
+        return " " .. prefix .. format_time(time_to_display)
     end
     ne.eventresponder["mbtn_left_up"] = function()
         state.tc_right_rem = not state.tc_right_rem
