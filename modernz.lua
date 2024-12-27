@@ -1236,7 +1236,7 @@ local function render_elements(master_ass)
             local hoverstyle = button_lo.hoverstyle
             if hovered and (contains(user_opts.hover_effect, "size") or contains(user_opts.hover_effect, "color")) then
                 -- remove font scale tags for these elements, it looks out of place
-                if element.name == "title" or element.name == "tc_left" or element.name == "tc_right" or element.name == "chapter_title" then
+                if element.name == "title" or element.name == "time_codes" or element.name == "chapter_title" then
                     hoverstyle = hoverstyle:gsub("\\fscx%d+\\fscy%d+", "")
                 end
                 elem_ass:append(hoverstyle .. buttontext)
@@ -1695,7 +1695,7 @@ layouts["modern"] = function ()
     local loop_button = user_opts.loop_button
     local speed_button = user_opts.speed_button
     local download_button = user_opts.download_button and state.is_URL
-    local dmx_speed = user_opts.cache_info_speed and state.cache_state and state.cache_state["raw-input-rate"] and state.cache_state["raw-input-rate"] ~= ""
+    local cache_speed = user_opts.cache_info_speed
     local playlist_button = user_opts.playlist_button and (not user_opts.hide_empty_playlist_button or mp.get_property_number("playlist-count", 0) > 1)
 
     local offset = jump_buttons and 60 or 0
@@ -1804,38 +1804,16 @@ layouts["modern"] = function ()
         lo.slider.tooltip_an = 2
     end
 
-    -- Time
+    -- Time codes
     local remsec = mp.get_property_number("playtime-remaining", 0)
     local possec = mp.get_property_number("playback-time", 0)
     local dur = mp.get_property_number("duration", 0)
     local show_hours = possec >= 3600 or user_opts.time_format ~= "dynamic"
-
-    local function time_pos_x(current_font_size)
-        local offset, x
-        local base_font_size = 16
-
-        if current_font_size >= base_font_size then
-            local difference = current_font_size - base_font_size
-            x = (state.tc_ms and 1 or 0) + (show_hours and 1 or 0)
-            offset = difference * (x + 2.5 + difference / 10) -- incremental increase
-        else
-            local difference = base_font_size - current_font_size
-            x = (state.tc_ms and 2.5 or 0) + (show_hours and 1 or 0)
-            offset = -difference * (x + 2.5 + difference / 10) -- incremental decrease
-        end
-
-        return offset
-    end
-
-    local x_offset = time_pos_x(user_opts.time_font_size) or 0
-
-    lo = add_layout("tc_left")
-    lo.geometry = {x = 275 - (audio_track and 0 or 165) - (subtitle_track and 0 or 45) - (playlist_button and 0 or 45), y = refY - 35, an = 4, w = 45 + (state.tc_ms and 30 or 0) + (show_hours and 20 or 0), h = 10}
-    lo.style = osc_styles.time
-
     local show_remhours = (state.tc_right_rem and remsec >= 3600) or (not state.tc_right_rem and dur >= 3600) or user_opts.time_format ~= "dynamic"
-    lo = add_layout("tc_right")
-    lo.geometry = {x = (322 + x_offset + (state.tc_ms and 30 or 0) + (show_hours and 20 or 0)) - (audio_track and 0 or 190) - (subtitle_track and 0 or 45) - (playlist_button and 0 or 45), y = refY - 35, an = 4, w = 50 + (state.tc_ms and 30 or 0) + (show_remhours and 25 or 0), h = 10}
+    local tc_w_offset = (state.tc_ms and 60 or 0) + (show_hours and 20 or 0) + (show_remhours and 25 or 0)
+
+    lo = add_layout("time_codes")
+    lo.geometry = {x = 275 - (audio_track and 0 or 165) - (subtitle_track and 0 or 45) - (playlist_button and 0 or 45), y = refY - 35, an = 4, w = 90 + tc_w_offset, h = 10}
     lo.style = osc_styles.time
 
     -- Fullscreen/Info/Pin/Screenshot/Loop/Speed
@@ -1890,9 +1868,17 @@ layouts["modern"] = function ()
 
     -- cache info
     if user_opts.cache_info then
+        local cache_x_offset = (download_button and 0 or 45) + (speed_button and 0 or 45) + (loop_button and 0 or 45) + (screenshot_button and 0 or 45) + (ontop_button and 0 or 45) + (info_button and 0 or 45) + (fullscreen_button and 0 or 45)
+
         lo = add_layout("cache_info")
-        lo.geometry = {x = (osc_geo.w - (dmx_speed and 400 or 365)) + (download_button and 0 or 45) + (speed_button and 0 or 45) + (loop_button and 0 or 45) + (screenshot_button and 0 or 45) + (ontop_button and 0 or 45) + (info_button and 0 or 45) + (fullscreen_button and 0 or 45), y = refY - 35, an = 5, w = 24, h = 24}
+        lo.geometry = {x = osc_geo.w - (cache_speed and 400 or 375) + cache_x_offset, y = refY - (cache_speed and 41 or 35), an = 4, w = 35, h = 20}
         lo.style = osc_styles.cache
+
+        if user_opts.cache_info_speed then
+            lo = add_layout("cache_info_speed")
+            lo.geometry = {x = osc_geo.w - 400 + cache_x_offset, y = refY - 26, an = 4, w = 35, h = 20}
+            lo.style = osc_styles.cache
+        end
     end
 end
 
@@ -2322,16 +2308,12 @@ local function osc_init()
             end
         end
     end
+    ne.tooltip_style = osc_styles.tooltip
+    ne.tooltipF = function () return mp.get_property_number("volume", 0) or 0 end
     ne.eventresponder["mbtn_left_up"] = command_callback(user_opts.vol_ctrl_mbtn_left_command)
     ne.eventresponder["mbtn_right_up"] = command_callback(user_opts.vol_ctrl_mbtn_right_command)
-    ne.eventresponder["wheel_up_press"] = function () 
-        if state.mute then mp.commandv("cycle", "mute") end
-        command_callback(user_opts.vol_ctrl_wheel_up_command)
-    end
-    ne.eventresponder["wheel_down_press"] = function ()
-        if state.mute then mp.commandv("cycle", "mute") end
-        command_callback(user_opts.vol_ctrl_wheel_down_command)
-    end
+    ne.eventresponder["wheel_up_press"] = command_callback(user_opts.vol_ctrl_wheel_up_command)
+    ne.eventresponder["wheel_down_press"] = command_callback(user_opts.vol_ctrl_wheel_down_command)
 
     --volumebar
     local volume_max = mp.get_property_number("volume-max") > 0 and mp.get_property_number("volume-max") or 100
@@ -2523,7 +2505,7 @@ local function osc_init()
 
     -- cache info
     ne = new_element("cache_info", "button")
-    ne.visible = (osc_param.playresx >= 1400 - outeroffset - (user_opts.speed_button and 0 or 100) - (user_opts.loop_button and 0 or 100) - (user_opts.screenshot_button and 0 or 100) - (user_opts.ontop_button and 0 or 100) - (user_opts.info_button and 0 or 100) - (user_opts.fullscreen_button and 0 or 100))
+    ne.visible = (osc_param.playresx >= 1250 - outeroffset - (user_opts.speed_button and 0 or 100) - (user_opts.loop_button and 0 or 100) - (user_opts.screenshot_button and 0 or 100) - (user_opts.ontop_button and 0 or 100) - (user_opts.info_button and 0 or 100) - (user_opts.fullscreen_button and 0 or 100))
     ne.content = function ()
         request_init()
         local cache_state = state.cache_state
@@ -2543,10 +2525,26 @@ local function osc_init()
         local sec = math.floor(dmx_cache % 60) -- don't round e.g. 59.9 to 60
         local cache_time = (min > 0 and string.format("%sm%02.0fs", min, sec) or string.format("%3.0fs", sec))
 
-        local dmx_speed = cache_state and cache_state["raw-input-rate"] or ""
-        local cache_speed = (user_opts.cache_info_speed and dmx_speed and dmx_speed ~= "") and " • " .. utils.format_bytes_humanized(dmx_speed) .. "/s" or ""
-        return locale.cache .. ": " .. cache_time .. cache_speed
+        return cache_time
     end
+    ne.tooltip_style = osc_styles.tooltip
+    ne.tooltipF = user_opts.tooltip_hints and "Cached Time" or ""
+
+    -- cache info speed
+    ne = new_element("cache_info_speed", "button")
+    ne.visible = (osc_param.playresx >= 1250 - outeroffset - (user_opts.speed_button and 0 or 100) - (user_opts.loop_button and 0 or 100) - (user_opts.screenshot_button and 0 or 100) - (user_opts.ontop_button and 0 or 100) - (user_opts.info_button and 0 or 100) - (user_opts.fullscreen_button and 0 or 100))
+    ne.content = function ()
+        request_init()
+        local cache_state = state.cache_state
+
+        local dmx_speed = cache_state and cache_state["raw-input-rate"] or 0
+        local cache_speed = utils.format_bytes_humanized(dmx_speed)
+        local number, unit = cache_speed:match("([%d%.]+)%s*(%S+)")
+
+        return string.format("%8s %4s/s", number, unit)
+    end
+    ne.tooltip_style = osc_styles.tooltip
+    ne.tooltipF = user_opts.tooltip_hints and "Cache Speed" or ""
 
     --seekbar
     ne = new_element("seekbar", "slider")
@@ -2738,34 +2736,28 @@ local function osc_init()
         end
     end
 
-    -- Current position time display
-    ne = new_element("tc_left", "button")
-    ne.visible = (osc_param.playresx >= 1150 - outeroffset) and user_opts.volume_control
-    ne.content = function()
-        local playback_time = mp.get_property_number("playback-time", 0)
-        return format_time(playback_time) .. " /"
-    end
-    ne.eventresponder["mbtn_left_up"] = function()
-        state.tc_ms = not state.tc_ms
-        request_init()
-    end
-
-    -- Total/remaining time display
-    ne = new_element("tc_right", "button")
+    -- Time codes display
+    ne = new_element("time_codes", "button")
     ne.visible = (osc_param.playresx >= 1150 - outeroffset) and user_opts.volume_control and (mp.get_property_number("duration", 0) > 0)
     ne.content = function()
+        local playback_time = mp.get_property_number("playback-time", 0)
+
         local duration = mp.get_property_number("duration", 0)
         if duration <= 0 then return "--:--" end
 
-        local time_to_display = state.tc_right_rem and 
+        local playtime_remaining = state.tc_right_rem and 
             mp.get_property_number("playtime-remaining", 0) or duration
 
         local prefix = state.tc_right_rem and 
             (user_opts.unicodeminus and UNICODE_MINUS or "-") or ""
 
-        return " " .. prefix .. format_time(time_to_display)
+        return format_time(playback_time) .. " / " .. prefix .. format_time(playtime_remaining)
     end
     ne.eventresponder["mbtn_left_up"] = function()
+        state.tc_ms = not state.tc_ms
+        request_init()
+    end
+    ne.eventresponder["mbtn_right_up"] = function()
         state.tc_right_rem = not state.tc_right_rem
     end
 
