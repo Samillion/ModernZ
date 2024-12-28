@@ -1,6 +1,6 @@
 # ModernZ Controls Guide
 
-![modernz-osc_buttons](https://github.com/user-attachments/assets/78918891-5442-43dc-b0be-072806b5fd66)
+![modernz_osc_controls](https://github.com/user-attachments/assets/deb52cf2-8288-4f40-9993-9b7cb3e863e0)
 
 ## Button Interactions
 
@@ -25,17 +25,12 @@ Below is a list that explains the OSC buttons function depending on how you inte
 | Right mouse click      | Seek to the head of chosen chapter |
 | Scroll wheel           | Seek forward/backwards             |
 
-### Playback Time
+### Play Time Codes
 
-| Action           | Function                     |
-| ---------------- | ---------------------------- |
-| Left mouse click | Display time in milliseconds |
-
-### Duration
-
-| Action           | Function                                     |
-| ---------------- | -------------------------------------------- |
-| Left mouse click | Display remaining time instead of total time |
+| Action            | Function                                     |
+| ----------------- | -------------------------------------------- |
+| Left mouse click  | Display remaining time instead of total time |
+| Right mouse click | Display time in milliseconds                 |
 
 ### Play/Pause
 
