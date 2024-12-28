@@ -50,7 +50,7 @@ local user_opts = {
     title_font_size = 24,                  -- font size of the title text (above seekbar)
 
     cache_info = false,                    -- show cache information
-    cache_info_speed = true,               -- show cache speed per second
+    cache_info_speed = false,              -- show cache speed per second
     cache_info_font_size = 12,             -- font size of the cache information
 
     show_chapter_title = true,             -- show chapter title (above seekbar)
@@ -1881,7 +1881,7 @@ layouts["modern"] = function ()
         local cache_x_offset = (download_button and 0 or 45) + (speed_button and 0 or 45) + (loop_button and 0 or 45) + (screenshot_button and 0 or 45) + (ontop_button and 0 or 45) + (info_button and 0 or 45) + (fullscreen_button and 0 or 45)
 
         lo = add_layout("cache_info")
-        lo.geometry = {x = osc_geo.w - (cache_speed and 345 or 340) + cache_x_offset, y = refY - (cache_speed and 40 or 35), an = 6, w = 35, h = 24}
+        lo.geometry = {x = osc_geo.w - (cache_speed and 345 or 340) + cache_x_offset, y = refY - (cache_speed and 41 or 35), an = 6, w = 35, h = 24}
         lo.style = osc_styles.cache
 
         if user_opts.cache_info_speed then
