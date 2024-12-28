@@ -2,7 +2,7 @@
 
 A minimal layout is automatically applied when viewing images while using ModernZ osc, which also features zoom controls.
 
-![image-viewer](https://github.com/user-attachments/assets/d95942c8-0b62-47f9-bca6-8adfaab63538)
+![modernz_image_mode](https://github.com/user-attachments/assets/e2501652-aa84-4725-93cf-5cb86931b45e)
 
 ## Zoom Controls
 
@@ -23,14 +23,16 @@ reset-on-next-file=video-rotate,video-zoom,panscan,video-unscaled,video-align-x,
 ```
 
 Auto profiles that apply useful mpv options and ModernZ [user options](/docs/USER_OPTS.md) in `Image Viewer` mode:
-```ini
+```EditorConfig
 [Video]
     profile-cond=p["current-tracks/video"] and not p["current-tracks/video"].image
+    profile-restore=copy-equal
     taskbar-progress=yes
 
 [Image]
     profile-desc=Settings for Image Viewer mode with ModernZ osc
     profile-cond=p["current-tracks/video"] and p["current-tracks/video"].image and not p["current-tracks/video"].albumart
+    profile-restore=copy-equal
     image-display-duration=inf
     prefetch-playlist=yes
     taskbar-progress=no
@@ -38,8 +40,8 @@ Auto profiles that apply useful mpv options and ModernZ [user options](/docs/USE
     title=${media-title} [${?width:${width}x${height}}]
     script-opts-append=modernz-windowcontrols_title=${media-title} [${?width:${width}x${height}}]
     script-opts-append=modernz-window_title=yes
-    script-opts-append=modernz-fade_alpha=100
-    script-opts-append=modernz-bottomhover_zone=100
+    script-opts-append=modernz-fade_alpha=50
+    script-opts-append=modernz-bottomhover_zone=50
 ```
 
 ## Useful Scripts
