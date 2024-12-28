@@ -47,7 +47,7 @@ Create `modernz.conf` in your mpv script-opts directory:
 | show_title         | yes              | show title in the OSC (above seekbar)                                            |
 | title              | `${media-title}` | title above seekbar format: `"${media-title}"` or `"${filename}"`                |
 | title_font_size    | 30               | font size of the title text (above seekbar)                                      |
-| show_chapter_title | yes              | show chapter title alongside timestamp (below seekbar)                           |
+| show_chapter_title | yes              | show chapter title (above seekbar)                                               |
 | chapter_fmt        | %s               | format for chapter display on seekbar hover (set to `"no"` to disable)           |
 | timetotal          | yes              | show total time instead of remaining time                                        |
 | timems             | no               | show timecodes with milliseconds                                                 |
@@ -122,7 +122,7 @@ Create `modernz.conf` in your mpv script-opts directory:
 | seekbar_cache_color         | `#918F8E` | color of the cache ranges on the seekbar                                                        |
 | volumebar_match_seek_color  | no        | match volume bar color with seekbar color (ignores `side_buttons_color`)                        |
 | time_color                  | `#FFFFFF` | color of the timestamps (below seekbar)                                                         |
-| chapter_title_color         | `#FFFFFF` | color of the chapter title next to timestamp (below seekbar)                                    |
+| chapter_title_color         | `#FFFFFF` | color of the chapter title (above seekbar)                                                      |
 | side_buttons_color          | `#FFFFFF` | color of the side buttons (audio, subtitles, playlist, etc.)                                    |
 | middle_buttons_color        | `#FFFFFF` | color of the middle buttons (skip, jump, chapter, etc.)                                         |
 | playpause_color             | `#FFFFFF` | color of the play/pause button                                                                  |
