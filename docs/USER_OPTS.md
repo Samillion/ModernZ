@@ -42,18 +42,21 @@ Create `modernz.conf` in your mpv script-opts directory:
 
 ### Time and title display
 
-| Option             | Value            | Description                                                                      |
-| ------------------ | ---------------- | -------------------------------------------------------------------------------- |
-| show_title         | yes              | show title in the OSC (above seekbar)                                            |
-| title              | `${media-title}` | title above seekbar format: `"${media-title}"` or `"${filename}"`                |
-| title_font_size    | 30               | font size of the title text (above seekbar)                                      |
-| show_chapter_title | yes              | show chapter title (above seekbar)                                               |
-| chapter_fmt        | %s               | format for chapter display on seekbar hover (set to `"no"` to disable)           |
-| timetotal          | yes              | show total time instead of remaining time                                        |
-| timems             | no               | show timecodes with milliseconds                                                 |
-| unicodeminus       | no               | use the Unicode minus sign in remaining time                                     |
-| time_format        | dynamic          | `"dynamic"` or `"fixed"`. shows MM:SS when possible, fixed always shows HH:MM:SS |
-| time_font_size     | 16               | font size of the time display                                                    |
+| Option               | Value            | Description                                                                      |
+| -------------------- | ---------------- | -------------------------------------------------------------------------------- |
+| show_title           | yes              | show title in the OSC (above seekbar)                                            |
+| title                | `${media-title}` | title above seekbar format: `"${media-title}"` or `"${filename}"`                |
+| title_font_size      | 30               | font size of the title text (above seekbar)                                      |
+| show_chapter_title   | yes              | show chapter title (above seekbar)                                               |
+| chapter_fmt          | %s               | format for chapter display on seekbar hover (set to `"no"` to disable)           |
+| timetotal            | yes              | show total time instead of remaining time                                        |
+| timems               | no               | show timecodes with milliseconds                                                 |
+| unicodeminus         | no               | use the Unicode minus sign in remaining time                                     |
+| time_format          | dynamic          | `"dynamic"` or `"fixed"`. shows MM:SS when possible, fixed always shows HH:MM:SS |
+| time_font_size       | 16               | font size of the time display                                                    |
+| cache_info           | no               | show cached time information                                                     |
+| cache_info_speed     | no               | show current cache speed per second                                              |
+| cache_info_font_size | 12               | font size of the time display                                                    |
 
 ### Title bar settings
 
@@ -123,6 +126,7 @@ Create `modernz.conf` in your mpv script-opts directory:
 | volumebar_match_seek_color  | no        | match volume bar color with seekbar color (ignores `side_buttons_color`)                        |
 | time_color                  | `#FFFFFF` | color of the timestamps (below seekbar)                                                         |
 | chapter_title_color         | `#FFFFFF` | color of the chapter title (above seekbar)                                                      |
+| cache_info_color            | `#FFFFFF` | color of the cache information                                                                  |
 | side_buttons_color          | `#FFFFFF` | color of the side buttons (audio, subtitles, playlist, etc.)                                    |
 | middle_buttons_color        | `#FFFFFF` | color of the middle buttons (skip, jump, chapter, etc.)                                         |
 | playpause_color             | `#FFFFFF` | color of the play/pause button                                                                  |
