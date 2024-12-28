@@ -4,7 +4,6 @@
 -- and subsequent forks:
 --   * cyl0/ModernX
 --   * dexeonify/ModernX
---   * zydezu/ModernX
 --
 -- It is based on the official osc.lua from mpv, licensed under the 
 -- GNU Lesser General Public License v2.1 (LGPLv2.1). 
