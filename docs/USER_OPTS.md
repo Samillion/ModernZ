@@ -33,7 +33,7 @@ Create `modernz.conf` in your mpv script-opts directory:
 | fadeduration            | 250   | fade-out duration (in ms), set to `"0"` for no fade        |
 | minmousemove            | 0     | minimum mouse movement (in pixels) required to show OSC    |
 | bottomhover             | yes   | show OSC only when hovering at the bottom                  |
-| bottomhover_zone        | 160   | height of hover zone for bottomhover (in pixels)           |
+| bottomhover_zone        | 130   | height of hover zone for bottomhover (in pixels)           |
 | osc_on_seek             | no    | show OSC when seeking                                      |
 | mouse_seek_pause        | yes   | pause video while seeking with mouse move (on button hold) |
 | vidscale                | auto  | scale osc with the video. (set to `"no"` to disable)       |
@@ -53,7 +53,7 @@ Create `modernz.conf` in your mpv script-opts directory:
 | timems             | no               | show timecodes with milliseconds                                                 |
 | unicodeminus       | no               | use the Unicode minus sign in remaining time                                     |
 | time_format        | dynamic          | `"dynamic"` or `"fixed"`. shows MM:SS when possible, fixed always shows HH:MM:SS |
-| time_font_size     | 18               | font size of the time display                                                    |
+| time_font_size     | 16               | font size of the time display                                                    |
 
 ### Title bar settings
 
@@ -69,7 +69,7 @@ Create `modernz.conf` in your mpv script-opts directory:
 | Option                | Value | Description                                                            |
 | --------------------- | ----- | ---------------------------------------------------------------------- |
 | raise_subtitles       | yes   | raise subtitles above the OSC when shown                               |
-| raise_subtitle_amount | 165   | amount by which subtitles are raised when the OSC is shown (in pixels) |
+| raise_subtitle_amount | 125   | amount by which subtitles are raised when the OSC is shown (in pixels) |
 
 ### Buttons display and functionality
 
@@ -86,7 +86,7 @@ Create `modernz.conf` in your mpv script-opts directory:
 | track_nextprev_buttons     | yes           | show next/previous playlist track buttons                                                                                                                                                              |
 | volume_control             | yes           | show mute button and volume slider                                                                                                                                                                     |
 | volume_control_type        | linear        | volume scale type: `"linear"` or `"logarithmic"`                                                                                                                                                       |
-| playlist_button            | no            | show playlist button: Left-click for simple playlist, Right-click for interactive playlist                                                                                                             |
+| playlist_button            | yes           | show playlist button: Left-click for simple playlist, Right-click for interactive playlist                                                                                                             |
 | hide_empty_playlist_button | yes           | hide playlist button when no playlist exists                                                                                                                                                           |
 | gray_empty_playlist_button | yes           | gray out the playlist button when no playlist exists                                                                                                                                                   |
 | download_button            | yes           | show download button on web videos (requires yt-dlp and ffmpeg)                                                                                                                                        |
@@ -97,9 +97,9 @@ Create `modernz.conf` in your mpv script-opts directory:
 | loop_button                | no            | show `loop` button                                                                                                                                                                                     |
 | speed_button               | no            | show speed control button                                                                                                                                                                              |
 | loop_in_pause              | yes           | enable looping by right-clicking pause                                                                                                                                                                 |
-| info_button                | no            | show `info (stats)` button                                                                                                                                                                             |
+| info_button                | yes           | show `info (stats)` button                                                                                                                                                                             |
 | fullscreen_button          | yes           | show `fullscreen toggle` button                                                                                                                                                                        |
-| playpause_size             | 30            | icon size for the play/pause button                                                                                                                                                                    |
+| playpause_size             | 28            | icon size for the play/pause button                                                                                                                                                                    |
 | midbuttons_size            | 24            | icon size for the middle buttons                                                                                                                                                                       |
 | sidebuttons_size           | 24            | icon size for the side buttons                                                                                                                                                                         |
 | zoom_control               | yes           | show zoom controls in image viewer mode                                                                                                                                                                |
@@ -129,7 +129,7 @@ Create `modernz.conf` in your mpv script-opts directory:
 | held_element_color          | `#999999` | color of the element when held down (pressed)                                                   |
 | hover_effect_color          | `#FFFFFF` | color of a hovered button when `hover_effect` includes `"color"`                                |
 | thumbnail_border_color      | `#111111` | color of the border for thumbnails (with thumbfast)                                             |
-| fade_alpha                  | 150       | alpha of the OSC background box                                                                 |
+| fade_alpha                  | 130       | alpha of the OSC background box                                                                 |
 | fade_blur_strength          | 100       | blur strength for the OSC alpha fade. caution: high values can take a lot of CPU time to render |
 | window_fade_alpha           | 75        | alpha of the window title bar                                                                   |
 | thumbnail_border            | 2         | width of the thumbnail border (for thumbfast)                                                   |
@@ -187,8 +187,8 @@ Customize the button function based on mouse actions.
 |                               | playlist_mbtn_right_command      | `show-text ${playlist} 3000`                                                    |
 | Volume Control                | vol_ctrl_mbtn_left_command       | `no-osd cycle mute`                                                             |
 |                               | vol_ctrl_mbtn_right_command      | `script-binding select/select-audio-device; script-message-to modernz osc-hide` |
-|                               | vol_ctrl_wheel_down_command      | `add volume -5`                                                                 |
-|                               | vol_ctrl_wheel_up_command        | `add volume 5`                                                                  |
+|                               | vol_ctrl_wheel_down_command      | `no-osd add volume -5`                                                          |
+|                               | vol_ctrl_wheel_up_command        | `no-osd add volume 5`                                                           |
 | Audio Button                  | audio_track_mbtn_left_command    | `script-binding select/select-aid; script-message-to modernz osc-hide`          |
 |                               | audio_track_mbtn_mid_command     | `cycle audio down`                                                              |
 |                               | audio_track_mbtn_right_command   | `cycle audio`                                                                   |
