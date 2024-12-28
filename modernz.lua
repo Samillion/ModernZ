@@ -2512,16 +2512,14 @@ local function osc_init()
     end
 
     -- cache info
+    local cache_state_ranges = state.cache_state and state.cache_state["seekable-ranges"] and #state.cache_state["seekable-ranges"] > 0
     ne = new_element("cache_info", "button")
     ne.visible = (osc_param.playresx >= 1250 - outeroffset - (user_opts.speed_button and 0 or 100) - (user_opts.loop_button and 0 or 100) - (user_opts.screenshot_button and 0 or 100) - (user_opts.ontop_button and 0 or 100) - (user_opts.info_button and 0 or 100) - (user_opts.fullscreen_button and 0 or 100))
     ne.content = function ()
         request_init()
         local cache_state = state.cache_state
-        if not (cache_state and cache_state["seekable-ranges"] and
-            #cache_state["seekable-ranges"] > 0) then
-            -- probably not a network stream
-            return ""
-        end
+        -- probably not a network stream
+        if not cache_state_ranges then return "" end
         local dmx_cache = cache_state and cache_state["cache-duration"]
         local thresh = math.min(state.dmx_cache * 0.05, 5)  -- 5% or 5s
         if dmx_cache and math.abs(dmx_cache - state.dmx_cache) >= thresh then
@@ -2536,7 +2534,7 @@ local function osc_init()
         return cache_time
     end
     ne.tooltip_style = osc_styles.tooltip
-    ne.tooltipF = user_opts.tooltip_hints and locale.cache or ""
+    ne.tooltipF = (user_opts.tooltip_hints and cache_state_ranges) and locale.cache or ""
 
     -- cache info speed
     ne = new_element("cache_info_speed", "button")
@@ -2544,11 +2542,8 @@ local function osc_init()
     ne.content = function ()
         request_init()
         local cache_state = state.cache_state
-        if not (cache_state and cache_state["seekable-ranges"] and
-            #cache_state["seekable-ranges"] > 0) then
-            -- probably not a network stream
-            return ""
-        end
+        -- probably not a network stream
+        if not cache_state_ranges then return "" end
         local dmx_speed = cache_state and cache_state["raw-input-rate"] or 0
         local cache_speed = utils.format_bytes_humanized(dmx_speed)
         local number, unit = cache_speed:match("([%d%.]+)%s*(%S+)")
