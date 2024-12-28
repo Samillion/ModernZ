@@ -18,7 +18,7 @@ Below is a list that explains the zoom control functions depending on how you in
 It is recommended to add the following in `mpv.conf`:
 
 Reset values on next file:
-```ini
+```EditorConfig
 reset-on-next-file=video-rotate,video-zoom,panscan,video-unscaled,video-align-x,video-align-y
 ```
 
