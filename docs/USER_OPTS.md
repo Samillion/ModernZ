@@ -160,6 +160,8 @@ Create `modernz.conf` in your mpv script-opts directory:
 | seekrangealpha           | 150   | transparency of the seek range                                             |
 | livemarkers              | yes   | update chapter markers on the seekbar when duration changes                |
 | seekbarkeyframes         | no    | use keyframes when dragging the seekbar                                    |
+| nibbles_top              | yes   | top chapter nibbles above seekbar                                          |
+| nibbles_bottom           | yes   | bottom chapter nibbles below seekbar                                       |
 | automatickeyframemode    | yes   | automatically set keyframes for the seekbar based on video length          |
 | automatickeyframelimit   | 600   | videos longer than this (in seconds) will have keyframes on the seekbar    |
 | persistentprogress       | no    | always show a small progress line at the bottom of the screen              |
