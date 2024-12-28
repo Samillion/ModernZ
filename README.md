@@ -2,7 +2,7 @@
 
 A sleek and modern OSC for [mpv](https://mpv.io/), this project is a fork of ModernX designed to enhance functionality by adding more features, all while preserving the core standards of mpv's OSC.
 
-![modernz-osc](https://github.com/user-attachments/assets/03ea7f7d-7963-4ced-867e-4562460bbf0e)
+![modernz_osc](https://github.com/user-attachments/assets/ef4ad6aa-2545-4aa4-b5e9-5e2c555ccc4d)
 
 <p align="center">
     <a href="#installation"><strong>Installation »</strong></a>
@@ -188,6 +188,7 @@ For even more useful scripts, check out the [mpv User Scripts Wiki](https://gith
 - To add a dedicated layout for images. [[details](/docs/IMAGE_VIEWER.md)]
 - To re-do the project entirely to match mpv's stock osc standards, to ensure compatibility
 - To eliminate old bugs and redundancy within the code
+    - Which allows other `Modern` forks to use ModernZ as a base, such as [zydezu/ModernX](https://github.com/zydezu/ModernX). [[Reference](https://github.com/zydezu/ModernX/releases/tag/0.3.9)]
 
 In essence, to modernize and revive the `Modern` origin.
 
