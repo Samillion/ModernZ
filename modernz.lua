@@ -156,6 +156,9 @@ local user_opts = {
     livemarkers = true,                    -- update chapter markers on the seekbar when duration changes
     seekbarkeyframes = false,              -- use keyframes when dragging the seekbar
 
+    nibbles_top = true,                    -- top chapter nibbles above seekbar
+    nibbles_bottom = true,                 -- bottom chapter nibbles below seekbar
+
     automatickeyframemode = true,          -- automatically set keyframes for the seekbar based on video length
     automatickeyframelimit = 600,          -- videos longer than this (in seconds) will have keyframes on the seekbar 
 
@@ -1478,8 +1481,8 @@ local function add_layout(name)
             elements[name].layout.slider = {
                 border = 1,
                 gap = 1,
-                nibbles_top = true,
-                nibbles_bottom = true,
+                nibbles_top = user_opts.nibbles_top,
+                nibbles_bottom = user_opts.nibbles_bottom,
                 adjust_tooltip = true,
                 tooltip_style = "",
                 tooltip_an = 2,
