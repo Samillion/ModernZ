@@ -158,6 +158,7 @@ local user_opts = {
 
     nibbles_top = true,                    -- top chapter nibbles above seekbar
     nibbles_bottom = true,                 -- bottom chapter nibbles below seekbar
+    nibbles_style = "triangle",            -- chapter nibble style. "triangle" or "bar"
 
     automatickeyframemode = true,          -- automatically set keyframes for the seekbar based on video length
     automatickeyframelimit = 600,          -- videos longer than this (in seconds) will have keyframes on the seekbar 
@@ -862,15 +863,23 @@ local function prepare_elements()
                         if slider_lo.gap > 5 then -- draw triangles
                             --top
                             if slider_lo.nibbles_top then
-                                static_ass:move_to(s - 3, slider_lo.gap - 5)
-                                static_ass:line_to(s + 3, slider_lo.gap - 5)
-                                static_ass:line_to(s, slider_lo.gap - 1)
+                                if slider_lo.nibbles_style == "triangle" then
+                                    static_ass:move_to(s - 3, slider_lo.gap - 5)
+                                    static_ass:line_to(s + 3, slider_lo.gap - 5)
+                                    static_ass:line_to(s, slider_lo.gap - 1)
+                                else
+                                    static_ass:rect_cw(s - 1, 4, s + 1, slider_lo.gap + 4);
+                                end
                             end
                             --bottom
                             if slider_lo.nibbles_bottom then
-                                static_ass:move_to(s - 3, elem_geo.h - slider_lo.gap + 5)
-                                static_ass:line_to(s, elem_geo.h - slider_lo.gap + 1)
-                                static_ass:line_to(s + 3, elem_geo.h - slider_lo.gap + 5)
+                                if slider_lo.nibbles_style == "triangle" then
+                                    static_ass:move_to(s - 3, elem_geo.h - slider_lo.gap + 5)
+                                    static_ass:line_to(s, elem_geo.h - slider_lo.gap + 1)
+                                    static_ass:line_to(s + 3, elem_geo.h - slider_lo.gap + 5)
+                                else
+                                    static_ass:rect_cw(s - 1, elem_geo.h - slider_lo.gap - 4, s + 1, elem_geo.h - 4);
+                                end
                             end
                         else -- draw 2x1px nibbles
                             --top
@@ -1483,6 +1492,7 @@ local function add_layout(name)
                 gap = 1,
                 nibbles_top = user_opts.nibbles_top,
                 nibbles_bottom = user_opts.nibbles_bottom,
+                nibbles_style = user_opts.nibbles_style,
                 adjust_tooltip = true,
                 tooltip_style = "",
                 tooltip_an = 2,
@@ -1672,16 +1682,18 @@ layouts["modern"] = function ()
     -- Seekbar
     new_element("seekbarbg", "box")
     lo = add_layout("seekbarbg")
-    lo.geometry = {x = refX, y = refY - 72, an = 5, w = osc_geo.w - 50, h = 4}
+    local seekbar_bg_h = 4
+    lo.geometry = {x = refX, y = refY - 72, an = 5, w = osc_geo.w - 50, h = seekbar_bg_h}
     lo.layer = 13
     lo.style = osc_styles.seekbar_bg
     lo.alpha[1] = 128
     lo.alpha[3] = 128
 
     lo = add_layout("seekbar")
-    lo.geometry = {x = refX, y = refY - 72, an = 5, w = osc_geo.w - 50, h = 18}
+    local seekbar_h = 18
+    lo.geometry = {x = refX, y = refY - 72, an = 5, w = osc_geo.w - 50, h = seekbar_h}
     lo.style = osc_styles.seekbar_fg
-    lo.slider.gap = 7
+    lo.slider.gap = (seekbar_h - seekbar_bg_h) / 2.0
     lo.slider.tooltip_style = osc_styles.tooltip
     lo.slider.tooltip_an = 2
 
@@ -1689,7 +1701,7 @@ layouts["modern"] = function ()
         lo = add_layout("persistentseekbar")
         lo.geometry = {x = refX, y = refY, an = 5, w = osc_geo.w, h = user_opts.persistentprogressheight}
         lo.style = osc_styles.seekbar_fg
-        lo.slider.gap = 7
+        lo.slider.gap = (seekbar_h - seekbar_bg_h) / 2.0
         lo.slider.tooltip_an = 0   
     end
 
