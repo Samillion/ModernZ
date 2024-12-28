@@ -2544,7 +2544,11 @@ local function osc_init()
     ne.content = function ()
         request_init()
         local cache_state = state.cache_state
-
+        if not (cache_state and cache_state["seekable-ranges"] and
+            #cache_state["seekable-ranges"] > 0) then
+            -- probably not a network stream
+            return ""
+        end
         local dmx_speed = cache_state and cache_state["raw-input-rate"] or 0
         local cache_speed = utils.format_bytes_humanized(dmx_speed)
         local number, unit = cache_speed:match("([%d%.]+)%s*(%S+)")
