@@ -53,7 +53,7 @@ local user_opts = {
     cache_info_speed = true,               -- show cache speed per second
     cache_info_font_size = 12,             -- font size of the cache information
 
-    show_chapter_title = true,             -- show chapter title alongside timestamp (below seekbar)
+    show_chapter_title = true,             -- show chapter title (above seekbar)
     chapter_fmt = "%s",                    -- format for chapter display on seekbar hover (set to "no" to disable)
 
     timetotal = true,                      -- show total time instead of remaining time
@@ -125,7 +125,7 @@ local user_opts = {
     seekbar_cache_color = "#918F8E",       -- color of the cache ranges on the seekbar
     volumebar_match_seek_color = false,    -- match volume bar color with seekbar color (ignores side_buttons_color)
     time_color = "#FFFFFF",                -- color of the timestamps (below seekbar)
-    chapter_title_color = "#FFFFFF",       -- color of the chapter title next to timestamp (below seekbar)
+    chapter_title_color = "#FFFFFF",       -- color of the chapter title (above seekbar)
     side_buttons_color = "#FFFFFF",        -- color of the side buttons (audio, subtitles, playlist, etc.)
     middle_buttons_color = "#FFFFFF",      -- color of the middle buttons (skip, jump, chapter, etc.)
     playpause_color = "#FFFFFF",           -- color of the play/pause button
@@ -1715,7 +1715,7 @@ layouts["modern"] = function ()
     lo.style = string.format("%s{\\clip(0,%f,%f,%f)}", osc_styles.title, geo.y - geo.h, geo.x + geo.w, geo.y + geo.h)
     lo.alpha[3] = 0
 
-    -- Chapter Title (next to timestamp)
+    -- Chapter Title (above seekbar)
     if user_opts.show_chapter_title then
         lo = add_layout("chapter_title")
         lo.geometry = {x = 26, y = refY -87, an = 1, w = osc_geo.w / 2, h = 20}
@@ -2139,7 +2139,7 @@ local function osc_init()
     ne.eventresponder["mbtn_right_up"] = command_callback(user_opts.title_mbtn_right_command)
     ne.eventresponder["shift+mbtn_left_down"] = command_callback(user_opts.title_mbtn_mid_command)
 
-    -- Chapter title (below seekbar)
+    -- Chapter title (above seekbar)
     local chapter_index = mp.get_property_number("chapter", -1)
     ne = new_element("chapter_title", "button")
     ne.visible = chapter_index >= 0
@@ -2147,7 +2147,7 @@ local function osc_init()
         if user_opts.chapter_fmt ~= "no" and chapter_index >= 0 then
             request_init()
             local chapters = mp.get_property_native("chapter-list", {})
-            local chapter_title = (chapters[chapter_index + 1] and chapters[chapter_index + 1].title ~= "") and chapters[chapter_index + 1].title or locale.na
+            local chapter_title = (chapters[chapter_index + 1] and chapters[chapter_index + 1].title ~= "") and chapters[chapter_index + 1].title or chapter_index + 1 .. "/" .. #chapters
             chapter_title = mp.command_native({"escape-ass", chapter_title})
             return string.format(user_opts.chapter_fmt, chapter_title)
         end
