@@ -84,7 +84,7 @@ ModernZ supports mpv's built-in console/select ([v0.39+](https://github.com/mpv-
 
 2. Example short configuration:
 
-   ```
+   ```EditorConfig
    # Seekbar colors (Hex format)
    seekbarfg_color=#B7410E
 
