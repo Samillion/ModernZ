@@ -1895,7 +1895,7 @@ end
 layouts["modern-image"] = function ()
     local osc_geo = {
         w = osc_param.playresx,
-        h = 110
+        h = 50
     }
 
     -- origin of the controllers, left/bottom corner
@@ -1951,72 +1951,72 @@ layouts["modern-image"] = function ()
     -- Playlist
     if playlist_button then
         lo = add_layout("tog_playlist")
-        lo.geometry = {x = 25, y = refY - 40, an = 5, w = 24, h = 24}
+        lo.geometry = {x = 25, y = refY - 30, an = 5, w = 24, h = 24}
         lo.style = osc_styles.control_3
         lo.visible = osc_param.playresx >= 250 - outeroffset
     end
 
     if track_nextprev_buttons then
         lo = add_layout("playlist_prev")
-        lo.geometry = {x = 55 - (playlist_button and 0 or 25), y = refY - 40 , an = 5, w = 30, h = 24}
+        lo.geometry = {x = 55 - (playlist_button and 0 or 25), y = refY - 30 , an = 5, w = 30, h = 24}
         lo.style = osc_styles.control_2
 
         lo = add_layout("playlist_next")
-        lo.geometry = {x = 80 - (playlist_button and 0 or 25), y = refY - 40 , an = 5, w = 30, h = 24}
+        lo.geometry = {x = 80 - (playlist_button and 0 or 25), y = refY - 30 , an = 5, w = 30, h = 24}
         lo.style = osc_styles.control_2
     end
 
     if zoom_control then
         -- zoom control
         lo = add_layout("zoom_out_icon")
-        lo.geometry = {x = 130 - (playlist_button and 0 or 25) - (track_nextprev_buttons and 0 or 70), y = refY - 40 , an = 5, w = 30, h = 24}
+        lo.geometry = {x = 130 - (playlist_button and 0 or 25) - (track_nextprev_buttons and 0 or 70), y = refY - 30 , an = 5, w = 30, h = 24}
         lo.style = osc_styles.control_2
 
         lo = new_element("zoom_control_bg", "box")
         lo.visible = osc_param.playresx >= 650 - outeroffset and user_opts.zoom_control
         lo = add_layout("zoom_control_bg")
-        lo.geometry = {x = 145 - (playlist_button and 0 or 25) - (track_nextprev_buttons and 0 or 70), y = refY - 40, an = 4, w = 80, h = 4}
+        lo.geometry = {x = 145 - (playlist_button and 0 or 25) - (track_nextprev_buttons and 0 or 70), y = refY - 30, an = 4, w = 80, h = 4}
         lo.layer = 13
         lo.alpha[1] = 128
         lo.style = osc_styles.volumebar_bg
 
         lo = add_layout("zoom_control")
-        lo.geometry = {x = 145 - (playlist_button and 0 or 25) - (track_nextprev_buttons and 0 or 70), y = refY - 40, an = 4, w = 80, h = 10}
+        lo.geometry = {x = 145 - (playlist_button and 0 or 25) - (track_nextprev_buttons and 0 or 70), y = refY - 30, an = 4, w = 80, h = 10}
         lo.style = osc_styles.volumebar_fg
         lo.slider.gap = 3
         lo.slider.tooltip_style = osc_styles.tooltip
         lo.slider.tooltip_an = 2
 
         lo = add_layout("zoom_in_icon")
-        lo.geometry = {x = 240 - (playlist_button and 0 or 25) - (track_nextprev_buttons and 0 or 70), y = refY - 40 , an = 5, w = 30, h = 24}
+        lo.geometry = {x = 240 - (playlist_button and 0 or 25) - (track_nextprev_buttons and 0 or 70), y = refY - 30 , an = 5, w = 30, h = 24}
         lo.style = osc_styles.control_2
     end
 
     -- Fullscreen/Info/Pin
     if fullscreen_button then
         lo = add_layout("tog_fullscreen")
-        lo.geometry = {x = osc_geo.w - 37, y = refY - 40, an = 5, w = 24, h = 24}
+        lo.geometry = {x = osc_geo.w - 37, y = refY - 30, an = 5, w = 24, h = 24}
         lo.style = osc_styles.control_3
         lo.visible = (osc_param.playresx >= 250 - outeroffset)
     end
 
     if info_button then
         lo = add_layout("tog_info")
-        lo.geometry = {x = osc_geo.w - 82 + (fullscreen_button and 0 or 45), y = refY - 40, an = 5, w = 24, h = 24}
+        lo.geometry = {x = osc_geo.w - 82 + (fullscreen_button and 0 or 45), y = refY - 30, an = 5, w = 24, h = 24}
         lo.style = osc_styles.control_3
         lo.visible = (osc_param.playresx >= 300 - outeroffset)
     end
 
     if ontop_button then
         lo = add_layout("tog_ontop")
-        lo.geometry = {x = osc_geo.w - 127 + (info_button and 0 or 45) + (fullscreen_button and 0 or 45), y = refY - 40, an = 5, w = 24, h = 24}
+        lo.geometry = {x = osc_geo.w - 127 + (info_button and 0 or 45) + (fullscreen_button and 0 or 45), y = refY - 30, an = 5, w = 24, h = 24}
         lo.style = osc_styles.control_3
         lo.visible = (osc_param.playresx >= 500 - outeroffset)
     end
     
     if user_opts.download_button then
         lo = add_layout("download")
-        lo.geometry = {x = osc_geo.w - 172 + (ontop_button and 0 or 45) + (info_button and 0 or 45) + (fullscreen_button and 0 or 45), y = refY - 40, an = 5, w = 24, h = 24}
+        lo.geometry = {x = osc_geo.w - 172 + (ontop_button and 0 or 45) + (info_button and 0 or 45) + (fullscreen_button and 0 or 45), y = refY - 30, an = 5, w = 24, h = 24}
         lo.style = osc_styles.control_3
         lo.visible = (osc_param.playresx >= 400 - outeroffset)
     end
