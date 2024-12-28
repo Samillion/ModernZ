@@ -49,7 +49,7 @@ local user_opts = {
     title = "${media-title}",              -- title above seekbar format: "${media-title}" or "${filename}"
     title_font_size = 24,                  -- font size of the title text (above seekbar)
 
-    cache_info = false,                    -- show cache information
+    cache_info = false,                    -- show cached time information
     cache_info_speed = false,              -- show cache speed per second
     cache_info_font_size = 12,             -- font size of the cache information
 
