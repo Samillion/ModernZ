@@ -2147,7 +2147,8 @@ local function osc_init()
         if user_opts.chapter_fmt ~= "no" and chapter_index >= 0 then
             request_init()
             local chapters = mp.get_property_native("chapter-list", {})
-            local chapter_title = (chapters[chapter_index + 1] and chapters[chapter_index + 1].title ~= "") and chapters[chapter_index + 1].title or chapter_index + 1 .. "/" .. #chapters
+            local chapter_title = (chapters[chapter_index + 1] and chapters[chapter_index + 1].title ~= "") and 
+                chapters[chapter_index + 1].title or locale.chapter .. ": " .. chapter_index + 1 .. "/" .. #chapters
             chapter_title = mp.command_native({"escape-ass", chapter_title})
             return string.format(user_opts.chapter_fmt, chapter_title)
         end
