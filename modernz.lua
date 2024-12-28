@@ -3485,7 +3485,8 @@ mp.register_script_message("osc-show", show_osc)
 mp.register_script_message("osc-hide", function() osc_visible(false) end)
 mp.add_key_binding(nil, "visibility", function() visibility_mode("cycle") end)
 mp.add_key_binding(nil, "progress-toggle", function()
-    state.persistentprogresstoggle = not state.persistentprogresstoggle
+    user_opts.persistentprogress = not user_opts.persistentprogress
+    state.persistentprogresstoggle = user_opts.persistentprogress
     request_init()
 end)
 mp.register_script_message("osc-idlescreen", idlescreen_visibility)
