@@ -176,7 +176,6 @@ For even more useful scripts, check out the [mpv User Scripts Wiki](https://gith
 ## History
 
 - [Samillion/ModernZ](https://github.com/Samillion/ModernZ)
-  - forked from [zydezu/ModernX](https://github.com/zydezu/ModernX)
   - forked from [dexeonify/ModernX](https://github.com/dexeonify/mpv-config/blob/main/scripts/modernx.lua)
     - forked from [cyl0/ModernX](https://github.com/cyl0/ModernX)
     - forked from [maoiscat/mpv-osc-modern](https://github.com/maoiscat/mpv-osc-modern)
