@@ -1609,13 +1609,22 @@ local layouts = {}
 
 -- Default layout
 layouts["modern"] = function ()
-    local no_title_function = 
-        (user_opts.title_mbtn_left_command == "" or user_opts.title_mbtn_left_command == "ignore") and
-        (user_opts.title_mbtn_right_command == "" or user_opts.title_mbtn_right_command == "ignore")
+    local no_title = 
+        ((user_opts.title_mbtn_left_command == "" or user_opts.title_mbtn_left_command == "ignore") and
+        (user_opts.title_mbtn_right_command == "" or user_opts.title_mbtn_right_command == "ignore")) or 
+        not user_opts.show_title
+
+    local no_chapter = 
+        ((user_opts.chapter_title_mbtn_left_command == "" or user_opts.chapter_title_mbtn_left_command == "ignore") and
+        (user_opts.chapter_title_mbtn_right_command == "" or user_opts.chapter_title_mbtn_right_command == "ignore")) or 
+        not user_opts.show_chapter_title
+
+    local chapter_index = user_opts.show_chapter_title and mp.get_property_number("chapter", -1) >= 0
+    local osc_height_offset = (no_title and 30 or 0) + ((no_chapter or not chapter_index) and 15 or 0)
 
     local osc_geo = {
         w = osc_param.playresx,
-        h = (not user_opts.show_title or no_title_function) and 100 or 140
+        h = 130 - osc_height_offset
     }
 
     -- origin of the controllers, left/bottom corner
@@ -1686,7 +1695,6 @@ layouts["modern"] = function ()
     local subtitle_track = sub_track_count > 0
     local jump_buttons = user_opts.jump_buttons
     local chapter_skip_buttons = user_opts.chapter_skip_buttons
-    local chapter_index = user_opts.show_chapter_title and mp.get_property_number("chapter", -1) >= 0
     local track_nextprev_buttons = user_opts.track_nextprev_buttons
     local fullscreen_button = user_opts.fullscreen_button
     local info_button = user_opts.info_button
@@ -1810,10 +1818,10 @@ layouts["modern"] = function ()
     local dur = mp.get_property_number("duration", 0)
     local show_hours = possec >= 3600 or user_opts.time_format ~= "dynamic"
     local show_remhours = (state.tc_right_rem and remsec >= 3600) or (not state.tc_right_rem and dur >= 3600) or user_opts.time_format ~= "dynamic"
-    local tc_w_offset = (state.tc_ms and 60 or 0) + (show_hours and 20 or 0) + (show_remhours and 25 or 0)
+    local tc_w_offset = (state.tc_ms and 60 or 0) + (show_hours and 20 or 0) + (show_remhours and 20 or 0)
 
     lo = add_layout("time_codes")
-    lo.geometry = {x = 275 - (audio_track and 0 or 165) - (subtitle_track and 0 or 45) - (playlist_button and 0 or 45), y = refY - 35, an = 4, w = 90 + tc_w_offset, h = 10}
+    lo.geometry = {x = 275 - (audio_track and 0 or 165) - (subtitle_track and 0 or 45) - (playlist_button and 0 or 45), y = refY - 35, an = 4, w = 90 + tc_w_offset, h = 15}
     lo.style = osc_styles.time
 
     -- Fullscreen/Info/Pin/Screenshot/Loop/Speed
@@ -1871,12 +1879,12 @@ layouts["modern"] = function ()
         local cache_x_offset = (download_button and 0 or 45) + (speed_button and 0 or 45) + (loop_button and 0 or 45) + (screenshot_button and 0 or 45) + (ontop_button and 0 or 45) + (info_button and 0 or 45) + (fullscreen_button and 0 or 45)
 
         lo = add_layout("cache_info")
-        lo.geometry = {x = osc_geo.w - (cache_speed and 400 or 375) + cache_x_offset, y = refY - (cache_speed and 41 or 35), an = 4, w = 35, h = 20}
+        lo.geometry = {x = osc_geo.w - (cache_speed and 345 or 340) + cache_x_offset, y = refY - (cache_speed and 40 or 35), an = 6, w = 35, h = 24}
         lo.style = osc_styles.cache
 
         if user_opts.cache_info_speed then
             lo = add_layout("cache_info_speed")
-            lo.geometry = {x = osc_geo.w - 400 + cache_x_offset, y = refY - 26, an = 4, w = 35, h = 20}
+            lo.geometry = {x = osc_geo.w - 345 + cache_x_offset, y = refY - 27, an = 6, w = 35, h = 24}
             lo.style = osc_styles.cache
         end
     end
@@ -2752,11 +2760,11 @@ local function osc_init()
         return format_time(playback_time) .. " / " .. prefix .. format_time(playtime_remaining)
     end
     ne.eventresponder["mbtn_left_up"] = function()
-        state.tc_ms = not state.tc_ms
-        request_init()
+        state.tc_right_rem = not state.tc_right_rem
     end
     ne.eventresponder["mbtn_right_up"] = function()
-        state.tc_right_rem = not state.tc_right_rem
+        state.tc_ms = not state.tc_ms
+        request_init()
     end
 
     -- load layout
