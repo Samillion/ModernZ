@@ -32,9 +32,9 @@ A sleek and modern OSC for [mpv](https://mpv.io/), this project is a fork of Mod
 
 Don't like the default white buttons and text? ModernZ is fully customizable! Change colors and button layouts to match your style:
 
-![modernz-osc_colors_top](https://github.com/user-attachments/assets/b5f04e5d-91d0-41ae-ba14-ebac4b45aaa5)
+![modernz_osc_colors_top](https://github.com/user-attachments/assets/4fe06ecc-9416-4686-aece-bf1e52189207)
 
-![modernz-osc_colors_bottom](https://github.com/user-attachments/assets/a29bb34e-14e9-4702-9ef3-9f308e71237d)
+![modernz_osc_colors_bottom](https://github.com/user-attachments/assets/6fcc41c2-3684-4ddd-9be0-d4930a4ee2bd)
 
 See the [Color Customization](docs/USER_OPTS.md#colors-and-style) section in the configuration guide for details on how to customize colors and buttons.
 
