@@ -166,7 +166,7 @@ Create `modernz.conf` in your mpv script-opts directory:
 | seekbarkeyframes         | no       | use keyframes when dragging the seekbar                                    |
 | nibbles_top              | yes      | top chapter nibbles above seekbar                                          |
 | nibbles_bottom           | yes      | bottom chapter nibbles below seekbar                                       |
-| nibbles_style            | triangle | chapter nibble style. `triangle` or `bar`                                  |
+| nibbles_style            | triangle | chapter nibble style. `triangle`, `bar` or `single-bar`                    |
 | automatickeyframemode    | yes      | automatically set keyframes for the seekbar based on video length          |
 | automatickeyframelimit   | 600      | videos longer than this (in seconds) will have keyframes on the seekbar    |
 | persistentprogress       | no       | always show a small progress line at the bottom of the screen              |

@@ -158,7 +158,7 @@ local user_opts = {
 
     nibbles_top = true,                    -- top chapter nibbles above seekbar
     nibbles_bottom = true,                 -- bottom chapter nibbles below seekbar
-    nibbles_style = "triangle",            -- chapter nibble style. "triangle" or "bar"
+    nibbles_style = "triangle",            -- chapter nibble style. "triangle", "bar", or "single-bar"
 
     automatickeyframemode = true,          -- automatically set keyframes for the seekbar based on video length
     automatickeyframelimit = 600,          -- videos longer than this (in seconds) will have keyframes on the seekbar 
@@ -860,15 +860,18 @@ local function prepare_elements()
                     if marker >= element.slider.min.value and 
                     marker <= element.slider.max.value then
                         local s = get_slider_ele_pos_for(element, marker)
-                        if slider_lo.gap > 5 then -- draw triangles
+                        if slider_lo.gap > 5 then -- draw triangles / bars
+                            local bar_h = 3 -- for "bar" and "single-bar" only
                             --top
                             if slider_lo.nibbles_top then
                                 if slider_lo.nibbles_style == "triangle" then
                                     static_ass:move_to(s - 3, slider_lo.gap - 5)
                                     static_ass:line_to(s + 3, slider_lo.gap - 5)
                                     static_ass:line_to(s, slider_lo.gap - 1)
+                                elseif slider_lo.nibbles_style == "bar" then
+                                    static_ass:rect_cw(s - 1, slider_lo.gap - bar_h, s + 1, slider_lo.gap);
                                 else
-                                    static_ass:rect_cw(s - 1, 4, s + 1, slider_lo.gap + 4);
+                                    static_ass:rect_cw(s - 1, slider_lo.gap - bar_h, s + 1, elem_geo.h - slider_lo.gap);
                                 end
                             end
                             --bottom
@@ -877,8 +880,10 @@ local function prepare_elements()
                                     static_ass:move_to(s - 3, elem_geo.h - slider_lo.gap + 5)
                                     static_ass:line_to(s, elem_geo.h - slider_lo.gap + 1)
                                     static_ass:line_to(s + 3, elem_geo.h - slider_lo.gap + 5)
+                                elseif slider_lo.nibbles_style == "bar" then
+                                    static_ass:rect_cw(s - 1, elem_geo.h - slider_lo.gap, s + 1, elem_geo.h - slider_lo.gap + bar_h);
                                 else
-                                    static_ass:rect_cw(s - 1, elem_geo.h - slider_lo.gap - 4, s + 1, elem_geo.h - 4);
+                                    static_ass:rect_cw(s - 1, slider_lo.gap, s + 1, elem_geo.h - slider_lo.gap + bar_h);
                                 end
                             end
                         else -- draw 2x1px nibbles
