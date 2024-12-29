@@ -156,21 +156,22 @@ Create `modernz.conf` in your mpv script-opts directory:
 
 ### Progress bar settings
 
-| Option                   | Value | Description                                                                |
-| ------------------------ | ----- | -------------------------------------------------------------------------- |
-| seekbarhandlesize        | 0.8   | size ratio of the seekbar handle (range: 0 ~ 1)                            |
-| handle_always_visible    | no    | control handle visibility: `yes` always visible, `no` show on slider hover |
-| seekrange                | yes   | show seek range overlay                                                    |
-| seekrangealpha           | 150   | transparency of the seek range                                             |
-| livemarkers              | yes   | update chapter markers on the seekbar when duration changes                |
-| seekbarkeyframes         | no    | use keyframes when dragging the seekbar                                    |
-| nibbles_top              | yes   | top chapter nibbles above seekbar                                          |
-| nibbles_bottom           | yes   | bottom chapter nibbles below seekbar                                       |
-| automatickeyframemode    | yes   | automatically set keyframes for the seekbar based on video length          |
-| automatickeyframelimit   | 600   | videos longer than this (in seconds) will have keyframes on the seekbar    |
-| persistentprogress       | no    | always show a small progress line at the bottom of the screen              |
-| persistentprogressheight | 17    | height of the persistent progress bar                                      |
-| persistentbuffer         | no    | show buffer status on web videos in the persistent progress line           |
+| Option                   | Value    | Description                                                                |
+| ------------------------ | -------- | -------------------------------------------------------------------------- |
+| seekbarhandlesize        | 0.8      | size ratio of the seekbar handle (range: 0 ~ 1)                            |
+| handle_always_visible    | no       | control handle visibility: `yes` always visible, `no` show on slider hover |
+| seekrange                | yes      | show seek range overlay                                                    |
+| seekrangealpha           | 150      | transparency of the seek range                                             |
+| livemarkers              | yes      | update chapter markers on the seekbar when duration changes                |
+| seekbarkeyframes         | no       | use keyframes when dragging the seekbar                                    |
+| nibbles_top              | yes      | top chapter nibbles above seekbar                                          |
+| nibbles_bottom           | yes      | bottom chapter nibbles below seekbar                                       |
+| nibbles_style            | triangle | chapter nibble style. `triangle` or `bar`                                  |
+| automatickeyframemode    | yes      | automatically set keyframes for the seekbar based on video length          |
+| automatickeyframelimit   | 600      | videos longer than this (in seconds) will have keyframes on the seekbar    |
+| persistentprogress       | no       | always show a small progress line at the bottom of the screen              |
+| persistentprogressheight | 17       | height of the persistent progress bar                                      |
+| persistentbuffer         | no       | show buffer status on web videos in the persistent progress line           |
 
 ### Miscellaneous settings
 
