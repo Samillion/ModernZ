@@ -2320,7 +2320,12 @@ local function osc_init()
         end
     end
     ne.tooltip_style = osc_styles.tooltip
-    ne.tooltipF = function () return mp.get_property_number("volume", 0) or 0 end
+    ne.tooltipF = function ()
+        local volume = mp.get_property_number("volume", 0) or 0
+        -- show only one decimal, if decimals exist
+        volume = volume % 1 == 0 and string.format("%.0f", volume) or string.format("%.1f", volume)
+        return volume
+    end
     ne.eventresponder["mbtn_left_up"] = command_callback(user_opts.vol_ctrl_mbtn_left_command)
     ne.eventresponder["mbtn_right_up"] = command_callback(user_opts.vol_ctrl_mbtn_right_command)
     ne.eventresponder["wheel_up_press"] = command_callback(user_opts.vol_ctrl_wheel_up_command)
