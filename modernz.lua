@@ -1193,7 +1193,7 @@ local function render_elements(master_ass)
 
                         -- chapter title tooltip on show_title=false and no thumbfast
                         -- add hovered chapter title above time code tooltip on seekbar hover
-                        if thumbfast.disabled and not user_opts.show_title then
+                        if thumbfast.disabled and not user_opts.show_title and not user_opts.show_chapter_title then
                             local osd_w = mp.get_property_number("osd-width")
                             local r_w, r_h = get_virt_scale_factor()
                             if osd_w then
@@ -2193,6 +2193,7 @@ local function osc_init()
             local chapter_title = (chapters[chapter_index + 1] and chapters[chapter_index + 1].title ~= "") and 
                 chapters[chapter_index + 1].title or locale.chapter .. ": " .. chapter_index + 1 .. "/" .. #chapters
             chapter_title = mp.command_native({"escape-ass", chapter_title})
+            chapter_title = (thumbfast.disabled and not user_opts.show_title) and (state.forced_title ~= nil and state.forced_title) or chapter_title
             return string.format(user_opts.chapter_fmt, chapter_title)
         end
         return "" -- fallback
