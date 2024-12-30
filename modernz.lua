@@ -944,7 +944,6 @@ local function draw_seekbar_handle(element, elem_ass, override_alpha)
     local elem_geo = element.layout.geometry
     local rh = user_opts.seekbarhandlesize * elem_geo.h / 2 -- handle radius
     local xp = get_slider_ele_pos_for(element, pos) -- handle position
-
     local handle_hovered = mouse_hit_coords(element.hitbox.x1 + xp - rh, element.hitbox.y1 + elem_geo.h / 2 - rh, element.hitbox.x1 + xp + rh, element.hitbox.y1 + elem_geo.h / 2 + rh) and element.enabled
 
     local is_button_held = state.mouse_down_counter > 0
@@ -998,29 +997,20 @@ local function draw_seekbar_ranges(element, elem_ass, xp, rh, override_alpha)
     elem_ass:append("{\\1cH&" .. osc_color_convert(user_opts.seekbar_cache_color) .. "&}")
     elem_ass:merge(element.static_ass)
 
-    for _,range in pairs(seekRanges) do
-        local pstart = get_slider_ele_pos_for(element, range["start"]) - slider_lo.gap
-        local pend = get_slider_ele_pos_for(element, range["end"]) + slider_lo.gap
+    for _, range in pairs(seekRanges) do
+        local pstart = math.max(0, get_slider_ele_pos_for(element, range["start"]) - slider_lo.gap)
+        local pend = math.min(elem_geo.w, get_slider_ele_pos_for(element, range["end"]) + slider_lo.gap)
 
-        local cache_starts_in_handle = pstart >= xp-rh and pstart <= xp + rh and handle
-        local cache_ends_in_handle = pend >= xp-rh and pend <= xp and handle
-        local cache_passes_handle = pstart < xp-rh and pend > xp and handle
-        if cache_starts_in_handle or cache_ends_in_handle then
-            if cache_starts_in_handle and cache_ends_in_handle then
-                pstart = 0
-                pend = 0
-            elseif cache_starts_in_handle then
-                pstart = xp+rh
-            elseif cache_ends_in_handle then
-                pend = xp-rh
+        if handle and (pstart < xp + rh and pend > xp - rh) then
+            if pstart < xp - rh then
+                elem_ass:rect_cw(pstart, slider_lo.gap, xp - rh, elem_geo.h - slider_lo.gap)
             end
-        elseif cache_passes_handle then
-            -- split range rendering to avoid rendering above handle
-            elem_ass:rect_cw(pstart, slider_lo.gap, xp - rh, elem_geo.h - slider_lo.gap)
             pstart = xp + rh
         end
 
-        elem_ass:rect_cw(pstart, slider_lo.gap, pend, elem_geo.h - slider_lo.gap)
+        if pend > pstart then
+            elem_ass:rect_cw(pstart, slider_lo.gap, pend, elem_geo.h - slider_lo.gap)
+        end
     end
 end
 
@@ -1033,8 +1023,7 @@ local function draw_seekbar_progress(element, elem_ass)
     local xp = get_slider_ele_pos_for(element, pos)
     local slider_lo = element.layout.slider
     local elem_geo = element.layout.geometry
-    local progress_offset = slider_lo.gap * (pos / 100) - slider_lo.gap * math.abs(pos / 100 - 1)
-    elem_ass:rect_cw(0, slider_lo.gap, xp + progress_offset, elem_geo.h - slider_lo.gap)
+    elem_ass:rect_cw(0, slider_lo.gap, xp, elem_geo.h - slider_lo.gap)
 end
 
 local function render_elements(master_ass)
