@@ -1192,14 +1192,26 @@ local function render_elements(master_ass)
                         end
 
                         -- chapter title tooltip on show_title=false and no thumbfast
-                        local tooltip_content = tooltiplabel
+                        -- add hovered chapter title above time code tooltip on seekbar hover
                         if thumbfast.disabled and not user_opts.show_title then
-                            if user_opts.chapter_fmt ~= "no" and state.touchingprogressbar then
-                                local dur = mp.get_property_number("duration", 0)
-                                if dur > 0 then
-                                    local ch = get_chapter(state.sliderpos * dur / 100)
-                                    if ch and ch.title and ch.title ~= "" then
-                                        tooltip_content = tooltip_content .. " • " .. string.format(user_opts.chapter_fmt, ch.title)
+                            local osd_w = mp.get_property_number("osd-width")
+                            local r_w, r_h = get_virt_scale_factor()
+                            if osd_w then
+                                if user_opts.chapter_fmt ~= "no" and state.touchingprogressbar then
+                                    local dur = mp.get_property_number("duration", 0)
+                                    if dur > 0 then
+                                        local ch = get_chapter(state.sliderpos * dur / 100)
+                                        if ch and ch.title and ch.title ~= "" then
+                                            local titleX = math.min(osd_w - (50 / r_w), math.max((60 / r_w), tx / r_w))
+                                            local titleY = ty - (user_opts.time_font_size * 1.3)
+
+                                            elem_ass:new_event()
+                                            elem_ass:pos(titleX * r_w, titleY)
+                                            elem_ass:an(2)
+                                            elem_ass:append(slider_lo.tooltip_style)
+                                            ass_append_alpha(elem_ass, slider_lo.alpha, 0)
+                                            elem_ass:append(string.format(user_opts.chapter_fmt, ch.title))
+                                        end
                                     end
                                 end
                             end
@@ -1211,7 +1223,7 @@ local function render_elements(master_ass)
                         elem_ass:an(an)
                         elem_ass:append(slider_lo.tooltip_style)
                         ass_append_alpha(elem_ass, slider_lo.alpha, 0)
-                        elem_ass:append(tooltip_content)
+                        elem_ass:append(tooltiplabel)
                     elseif element.thumbnailable and thumbfast.available then
                         mp.commandv("script-message-to", "thumbfast", "clear")
                     end
