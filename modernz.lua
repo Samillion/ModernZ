@@ -104,6 +104,8 @@ local user_opts = {
 
     loop_in_pause = true,                  -- enable looping by right-clicking pause
 
+    buttons_always_active = "none",        -- force buttons to always be active. can add: playlist_prev, playlist_next
+
     playpause_size = 28,                   -- icon size for the play/pause button
     midbuttons_size = 24,                  -- icon size for the middle buttons
     sidebuttons_size = 24,                 -- icon size for the side buttons
@@ -149,7 +151,7 @@ local user_opts = {
     tooltip_hints = true,                  -- enable text hints for info, loop, ontop, and screenshot buttons
 
     -- Progress bar settings 
-    seekbarhandlesize = 0.8,               -- size ratio of the seekbar handle (range: 0 ~ 1)
+    seekbarhandlesize = 0.7,               -- size ratio of the seekbar handle (range: 0 ~ 1)
     handle_always_visible = true,          -- control handle visibility: "true" always visible, "false" show on slider hover
     seekrange = true,                      -- show seek range overlay
     seekrangealpha = 150,                  -- transparency of the seek range
@@ -369,14 +371,11 @@ local function set_osc_locale()
 end
 
 local function contains(list, item)
-    local t = {}
+    local t = type(list) == "table" and list or {}
     if type(list) ~= "table" then
         for str in string.gmatch(list, '([^,]+)') do
-            str = str:gsub("%s+", "")
-            table.insert(t, str)
+            t[#t + 1] = str:match("^%s*(.-)%s*$") -- trim spaces
         end
-    else
-        t = list
     end
     for _, v in ipairs(t) do
         if v == item then
@@ -2197,7 +2196,7 @@ local function osc_init()
     ne = new_element("playlist_prev", "button")
     ne.visible = (osc_param.playresx >= (state.is_image and 300 or 500) - nojumpoffset - noskipoffset*(nojumpoffset == 0 and 1 or 10))
     ne.content = icons.previous
-    ne.enabled = (pl_pos > 1) or (loop ~= "no")
+    ne.enabled = (pl_pos > 1) or (loop ~= "no") or contains(user_opts.buttons_always_active, "playlist_prev")
     ne.eventresponder["mbtn_left_up"] = command_callback(user_opts.playlist_prev_mbtn_left_command)
     ne.eventresponder["mbtn_right_up"] = command_callback(user_opts.playlist_prev_mbtn_right_command)
     ne.eventresponder["shift+mbtn_left_down"] = command_callback(user_opts.playlist_prev_mbtn_mid_command)
@@ -2206,7 +2205,7 @@ local function osc_init()
     ne = new_element("playlist_next", "button")
     ne.visible = (osc_param.playresx >= (state.is_image and 300 or 500) - nojumpoffset - noskipoffset*(nojumpoffset == 0 and 1 or 10))
     ne.content = icons.next
-    ne.enabled = (have_pl and (pl_pos < pl_count)) or (loop ~= "no")
+    ne.enabled = (have_pl and (pl_pos < pl_count)) or (loop ~= "no") or contains(user_opts.buttons_always_active, "playlist_next")
     ne.eventresponder["mbtn_left_up"] = command_callback(user_opts.playlist_next_mbtn_left_command)
     ne.eventresponder["mbtn_right_up"] = command_callback(user_opts.playlist_next_mbtn_right_command)
     ne.eventresponder["shift+mbtn_left_down"] = command_callback(user_opts.playlist_next_mbtn_mid_command)
