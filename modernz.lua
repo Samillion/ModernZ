@@ -1275,11 +1275,11 @@ local function render_elements(master_ass)
                 if mouse_hit(element) then
                     local tooltiplabel = element.tooltipF
                     local an = 1
-                    local ty = element.hitbox.y1
+                    local ty = element.hitbox.y1 - 2
                     local tx = get_virt_mouse_pos()
 
                     if ty < osc_param.playresy / 2 then
-                        ty = element.hitbox.y2
+                        ty = element.hitbox.y2 - 2
                         an = 7
                     end
 
@@ -1295,7 +1295,7 @@ local function render_elements(master_ass)
                     end
 
                     if tx > osc_param.playresx / 2 then --move tooltip to left side of mouse cursor
-                        tx = tx - string.len(tooltiplabel) * 8
+                        tx = tx - string.len(tooltiplabel) * 3
                     end
 
                     elem_ass:new_event()
