@@ -18,6 +18,7 @@
         "screenshot": "Capture d'écran",
         "stats_info": "Informations",
         "cache": "Cache",
+        "buffering": "Chargement"
         "zoom_in": "Agrandir",
         "zoom_out": "Rétrécir",
         "download": "Télécharger",
@@ -43,7 +44,8 @@
         "speed_control": "Geschwindigkeitseinstellungen",
         "screenshot": "Bildschirmaufnahme",
         "stats_info": "Informationen",
-        "cache": "Cache",
+        "cache": "Zwischenspeicher",
+        "buffering": "Pufferung"
         "zoom_in": "Vergrößern",
         "zoom_out": "Verkleinern",
         "download": "Herunterladen",
@@ -69,7 +71,8 @@
         "speed_control": "Control de velocidad",
         "screenshot": "Captura de pantalla",
         "stats_info": "Información",
-        "cache": "Cache",
+        "cache": "Caché",
+        "buffering": "Cargando"
         "zoom_in": "Ampliar",
         "zoom_out": "Reducir",
         "download": "Descargar",
@@ -95,7 +98,8 @@
         "speed_control": "Kontrola prędkości",
         "screenshot": "Zrzut ekranu",
         "stats_info": "Informacja",
-        "cache": "Cache",
+        "cache": "Pamięć podręczna",
+        "buffering": "Buforowanie"
         "zoom_in": "Powiększ",
         "zoom_out": "Pomniejsz",
         "download": "Pobierz",
@@ -121,7 +125,8 @@
         "speed_control": "速度制御",
         "screenshot": "スクリーンショット",
         "stats_info": "情報",
-        "cache": "Cache",
+        "cache": "キャッシュ",
+        "buffering": "読み込み中"
         "zoom_in": "拡大",
         "zoom_out": "縮小",
         "download": "ダウンロード",
@@ -147,7 +152,8 @@
         "speed_control": "速度控制",
         "screenshot": "截屏",
         "stats_info": "信息",
-        "cache": "Cache",
+        "cache": "缓存",
+        "buffering": "缓冲中"
         "zoom_in": "放大",
         "zoom_out": "缩小",
         "download": "下载",
@@ -173,7 +179,8 @@
         "speed_control": "التحكم في السرعة",
         "screenshot": "لقطة شاشة",
         "stats_info": "معلومات",
-        "cache": "Cache",
+        "cache": "ذاكرة التخزين المؤقت",
+        "buffering": "جار التحميل"
         "zoom_in": "تكبير",
         "zoom_out": "تصغير",
         "download": "تنزيل",

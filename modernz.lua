@@ -301,6 +301,7 @@ local language = {
         screenshot = "Screenshot",
         stats_info = "Information",
         cache = "Cache",
+        buffering = "Buffering",
         zoom_in = "Zoom In",
         zoom_out = "Zoom Out",
         download = "Download",
@@ -467,6 +468,7 @@ local state = {
     border = true,
     maximized = false,
     osd = mp.create_osd_overlay("ass-events"),
+    buffering = false,
     new_file_flag = false,                  -- flag to detect new file starts
     temp_visibility_mode = nil,             -- store temporary visibility mode state
     chapter_list = {},                      -- sorted by time
@@ -944,7 +946,6 @@ local function draw_seekbar_handle(element, elem_ass, override_alpha)
     local elem_geo = element.layout.geometry
     local rh = user_opts.seekbarhandlesize * elem_geo.h / 2 -- handle radius
     local xp = get_slider_ele_pos_for(element, pos) -- handle position
-
     local handle_hovered = mouse_hit_coords(element.hitbox.x1 + xp - rh, element.hitbox.y1 + elem_geo.h / 2 - rh, element.hitbox.x1 + xp + rh, element.hitbox.y1 + elem_geo.h / 2 + rh) and element.enabled
 
     local is_button_held = state.mouse_down_counter > 0
@@ -998,29 +999,20 @@ local function draw_seekbar_ranges(element, elem_ass, xp, rh, override_alpha)
     elem_ass:append("{\\1cH&" .. osc_color_convert(user_opts.seekbar_cache_color) .. "&}")
     elem_ass:merge(element.static_ass)
 
-    for _,range in pairs(seekRanges) do
-        local pstart = get_slider_ele_pos_for(element, range["start"]) - slider_lo.gap
-        local pend = get_slider_ele_pos_for(element, range["end"]) + slider_lo.gap
+    for _, range in pairs(seekRanges) do
+        local pstart = math.max(0, get_slider_ele_pos_for(element, range["start"]) - slider_lo.gap)
+        local pend = math.min(elem_geo.w, get_slider_ele_pos_for(element, range["end"]) + slider_lo.gap)
 
-        local cache_starts_in_handle = pstart >= xp-rh and pstart <= xp + rh and handle
-        local cache_ends_in_handle = pend >= xp-rh and pend <= xp and handle
-        local cache_passes_handle = pstart < xp-rh and pend > xp and handle
-        if cache_starts_in_handle or cache_ends_in_handle then
-            if cache_starts_in_handle and cache_ends_in_handle then
-                pstart = 0
-                pend = 0
-            elseif cache_starts_in_handle then
-                pstart = xp+rh
-            elseif cache_ends_in_handle then
-                pend = xp-rh
+        if handle and (pstart < xp + rh and pend > xp - rh) then
+            if pstart < xp - rh then
+                elem_ass:rect_cw(pstart, slider_lo.gap, xp - rh, elem_geo.h - slider_lo.gap)
             end
-        elseif cache_passes_handle then
-            -- split range rendering to avoid rendering above handle
-            elem_ass:rect_cw(pstart, slider_lo.gap, xp - rh, elem_geo.h - slider_lo.gap)
             pstart = xp + rh
         end
 
-        elem_ass:rect_cw(pstart, slider_lo.gap, pend, elem_geo.h - slider_lo.gap)
+        if pend > pstart then
+            elem_ass:rect_cw(pstart, slider_lo.gap, pend, elem_geo.h - slider_lo.gap)
+        end
     end
 end
 
@@ -1033,8 +1025,7 @@ local function draw_seekbar_progress(element, elem_ass)
     local xp = get_slider_ele_pos_for(element, pos)
     local slider_lo = element.layout.slider
     local elem_geo = element.layout.geometry
-    local progress_offset = slider_lo.gap * (pos / 100) - slider_lo.gap * math.abs(pos / 100 - 1)
-    elem_ass:rect_cw(0, slider_lo.gap, xp + progress_offset, elem_geo.h - slider_lo.gap)
+    elem_ass:rect_cw(0, slider_lo.gap, xp, elem_geo.h - slider_lo.gap)
 end
 
 local function render_elements(master_ass)
@@ -2581,7 +2572,7 @@ local function osc_init()
         local sec = math.floor(dmx_cache % 60) -- don't round e.g. 59.9 to 60
         local cache_time = (min > 0 and string.format("%sm%02.0fs", min, sec) or string.format("%3.0fs", sec))
 
-        return cache_time
+        return state.buffering and locale.buffering .. ": " .. mp.get_property("cache-buffering-state") .. "%" or cache_time
     end
     ne.tooltip_style = osc_styles.tooltip
     ne.tooltipF = (user_opts.tooltip_hints and cache_state_ranges) and locale.cache or ""
@@ -3384,7 +3375,7 @@ mp.observe_property("mute", "bool", function(_, val)
     state.mute = val
     request_tick()
 end)
-
+mp.observe_property("paused-for-cache", "bool", function(_, val) state.buffering = val end)
 -- ensure compatibility with auto looping scripts (eg: a script that sets videos under 2 seconds to loop by default)
 mp.observe_property("loop-file", "bool", function(_, val)
     if (val == nil) then
@@ -3559,9 +3550,13 @@ local function validate_user_opts()
           user_opts.window_top_bar = "auto"
     end
 
-    if user_opts.seekbarhandlesize < 0.3 then
-        msg.warn("seekbarhandlesize must be 0.3 or higher. Setting it to 0.3 (minimum).")
-        user_opts.seekbarhandlesize = 0.3
+    if user_opts.seekbarhandlesize < 0.1 then
+        msg.warn("seekbarhandlesize must be 0.1 or higher. Setting it to 0.1 (minimum).")
+        user_opts.seekbarhandlesize = 0.1
+    end
+    
+    if not user_opts.handle_always_visible then
+        msg.warn("handle_always_visible=no is bugged (progress gap at stard/end). Shouldn't be used.")
     end
 
     if user_opts.volume_control_type ~= "linear" and
