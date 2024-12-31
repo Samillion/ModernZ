@@ -69,6 +69,7 @@ ModernZ currently has translations for the following languages:
         "screenshot": "Screenshot",
         "stats_info": "Information",
         "cache": "Cache",
+        "buffering": "Buffering"
         "zoom_in": "Zoom In",
         "zoom_out": "Zoom Out",
         "download": "Download",
@@ -118,12 +119,13 @@ ModernZ currently has translations for the following languages:
 | screenshot               | Screenshot label        | Action label                |
 | stats_info               | Information label       | Menu label                  |
 | cache                    | Information label       | Text label                  |
-| zoom_in                  | Zoom label              | Menu label                  |
-| zoom_out                 | Zoom label              | Menu label                  |
-| download                 | Download label          | Menu label                  |
-| download_in_progress     | Download label          | Menu label                  |
-| downloading              | Download label          | Menu label                  |
-| downloaded               | Download label          | Menu label                  |
+| buffering                | Information label       | Text label                  |
+| zoom_in                  | Information label       | Menu label                  |
+| zoom_out                 | Information label       | Menu label                  |
+| download                 | Information label       | Menu label                  |
+| download_in_progress     | Information label       | Menu label                  |
+| downloading              | Information label       | Menu label                  |
+| downloaded               | Information label       | Menu label                  |
 
 ## Contributing
 
