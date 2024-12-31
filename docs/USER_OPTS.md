@@ -159,7 +159,7 @@ Create `modernz.conf` in your mpv script-opts directory:
 
 | Option                   | Value    | Description                                                                |
 | ------------------------ | -------- | -------------------------------------------------------------------------- |
-| seekbarhandlesize        | 0.8      | size ratio of the seekbar handle (range: 0 ~ 1)                            |
+| seekbarhandlesize        | 0.7      | size ratio of the seekbar handle (range: 0 ~ 1)                            |
 | handle_always_visible    | no       | control handle visibility: `yes` always visible, `no` show on slider hover |
 | seekrange                | yes      | show seek range overlay                                                    |
 | seekrangealpha           | 150      | transparency of the seek range                                             |
