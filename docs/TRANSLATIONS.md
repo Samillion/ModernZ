@@ -69,7 +69,7 @@ ModernZ currently has translations for the following languages:
         "screenshot": "Screenshot",
         "stats_info": "Information",
         "cache": "Cache",
-        "buffering": "Buffering"
+        "buffering": "Buffering",
         "zoom_in": "Zoom In",
         "zoom_out": "Zoom Out",
         "download": "Download",
