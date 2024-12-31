@@ -18,7 +18,7 @@
         "screenshot": "Capture d'écran",
         "stats_info": "Informations",
         "cache": "Cache",
-        "buffering": "Chargement"
+        "buffering": "Chargement",
         "zoom_in": "Agrandir",
         "zoom_out": "Rétrécir",
         "download": "Télécharger",
@@ -45,7 +45,7 @@
         "screenshot": "Bildschirmaufnahme",
         "stats_info": "Informationen",
         "cache": "Zwischenspeicher",
-        "buffering": "Pufferung"
+        "buffering": "Pufferung",
         "zoom_in": "Vergrößern",
         "zoom_out": "Verkleinern",
         "download": "Herunterladen",
@@ -72,7 +72,7 @@
         "screenshot": "Captura de pantalla",
         "stats_info": "Información",
         "cache": "Caché",
-        "buffering": "Cargando"
+        "buffering": "Cargando",
         "zoom_in": "Ampliar",
         "zoom_out": "Reducir",
         "download": "Descargar",
@@ -99,7 +99,7 @@
         "screenshot": "Zrzut ekranu",
         "stats_info": "Informacja",
         "cache": "Pamięć podręczna",
-        "buffering": "Buforowanie"
+        "buffering": "Buforowanie",
         "zoom_in": "Powiększ",
         "zoom_out": "Pomniejsz",
         "download": "Pobierz",
@@ -126,7 +126,7 @@
         "screenshot": "スクリーンショット",
         "stats_info": "情報",
         "cache": "キャッシュ",
-        "buffering": "読み込み中"
+        "buffering": "読み込み中",
         "zoom_in": "拡大",
         "zoom_out": "縮小",
         "download": "ダウンロード",
@@ -153,7 +153,7 @@
         "screenshot": "截屏",
         "stats_info": "信息",
         "cache": "缓存",
-        "buffering": "缓冲中"
+        "buffering": "缓冲中",
         "zoom_in": "放大",
         "zoom_out": "缩小",
         "download": "下载",
@@ -180,7 +180,7 @@
         "screenshot": "لقطة شاشة",
         "stats_info": "معلومات",
         "cache": "ذاكرة التخزين المؤقت",
-        "buffering": "جار التحميل"
+        "buffering": "جار التحميل",
         "zoom_in": "تكبير",
         "zoom_out": "تصغير",
         "download": "تنزيل",
