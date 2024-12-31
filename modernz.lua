@@ -301,6 +301,7 @@ local language = {
         screenshot = "Screenshot",
         stats_info = "Information",
         cache = "Cache",
+        buffering = "Buffering",
         zoom_in = "Zoom In",
         zoom_out = "Zoom Out",
         download = "Download",
@@ -467,6 +468,7 @@ local state = {
     border = true,
     maximized = false,
     osd = mp.create_osd_overlay("ass-events"),
+    buffering = false,
     new_file_flag = false,                  -- flag to detect new file starts
     temp_visibility_mode = nil,             -- store temporary visibility mode state
     chapter_list = {},                      -- sorted by time
@@ -2570,7 +2572,7 @@ local function osc_init()
         local sec = math.floor(dmx_cache % 60) -- don't round e.g. 59.9 to 60
         local cache_time = (min > 0 and string.format("%sm%02.0fs", min, sec) or string.format("%3.0fs", sec))
 
-        return cache_time
+        return state.buffering and locale.buffering .. ": " .. mp.get_property("cache-buffering-state") .. "%" or cache_time
     end
     ne.tooltip_style = osc_styles.tooltip
     ne.tooltipF = (user_opts.tooltip_hints and cache_state_ranges) and locale.cache or ""
@@ -3373,7 +3375,7 @@ mp.observe_property("mute", "bool", function(_, val)
     state.mute = val
     request_tick()
 end)
-
+mp.observe_property("paused-for-cache", "bool", function(_, val) state.buffering = val end)
 -- ensure compatibility with auto looping scripts (eg: a script that sets videos under 2 seconds to loop by default)
 mp.observe_property("loop-file", "bool", function(_, val)
     if (val == nil) then
@@ -3548,9 +3550,13 @@ local function validate_user_opts()
           user_opts.window_top_bar = "auto"
     end
 
-    if user_opts.seekbarhandlesize < 0.3 then
-        msg.warn("seekbarhandlesize must be 0.3 or higher. Setting it to 0.3 (minimum).")
-        user_opts.seekbarhandlesize = 0.3
+    if user_opts.seekbarhandlesize < 0.1 then
+        msg.warn("seekbarhandlesize must be 0.1 or higher. Setting it to 0.1 (minimum).")
+        user_opts.seekbarhandlesize = 0.1
+    end
+    
+    if not user_opts.handle_always_visible then
+        msg.warn("handle_always_visible=no is bugged (progress gap at stard/end). Shouldn't be used.")
     end
 
     if user_opts.volume_control_type ~= "linear" and
