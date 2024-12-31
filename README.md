@@ -82,20 +82,20 @@ ModernZ supports mpv's built-in console/select ([v0.39+](https://github.com/mpv-
 
    - [Download default modernz.conf](./modernz.conf)
 
-2. Example short configuration:
+2. Example of a short configuration:
 
    ```EditorConfig
-   # Seekbar colors (Hex format)
+   # Seekbar color (hex format)
    seekbarfg_color=#B7410E
 
    # Interface options
-   showplaylist=no
+   playlist_button=no
    title=${media-title}
    scalewindowed=1.0
-   windowcontrols=auto
+   window_top_bar=auto
    ```
 
-For a full list of options, [check out the detailed user options here](docs/USER_OPTS.md).
+For a full list of options, [check out the detailed list here](docs/USER_OPTS.md).
 
 ## Controls
 
