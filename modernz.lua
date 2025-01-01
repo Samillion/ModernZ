@@ -1270,16 +1270,17 @@ local function render_elements(master_ass)
                 elem_ass:merge(shadow_ass)
             end
 
-            -- add tooltip for audio and subtitle tracks
+            -- add tooltip for button elements
             if element.tooltipF ~= nil and (user_opts.tooltips_for_disabled_elements or element.enabled) then
+                local cache_info_offset = (element.name == "cache_info" and user_opts.cache_info_speed) and 5 or 0
                 if mouse_hit(element) then
                     local tooltiplabel = element.tooltipF
                     local an = 1
-                    local ty = element.hitbox.y1 - 2
+                    local ty = element.hitbox.y1 - 2 + cache_info_offset
                     local tx = get_virt_mouse_pos()
 
                     if ty < osc_param.playresy / 2 then
-                        ty = element.hitbox.y2 - 2
+                        ty = element.hitbox.y2 - 2 + cache_info_offset
                         an = 7
                     end
 
