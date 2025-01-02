@@ -151,7 +151,7 @@ local user_opts = {
     tooltip_hints = true,                  -- enable text hints for info, loop, ontop, and screenshot buttons
 
     -- Progress bar settings 
-    seekbarhandlesize = 0.8,               -- size ratio of the seekbar handle (range: 0 ~ 1)
+    seek_handle_size = 0.8,                -- size ratio of the seek handle (range: 0 ~ 1)
     seekrange = true,                      -- show seek range overlay
     seekrangealpha = 150,                  -- transparency of the seek range
     livemarkers = true,                    -- update chapter markers on the seekbar when duration changes
@@ -844,7 +844,7 @@ local function prepare_elements()
             --draw static slider parts
             local slider_lo = element.layout.slider
             -- calculate positions of min and max points
-            element.slider.min.ele_pos = user_opts.seekbarhandlesize > 0 and (user_opts.seekbarhandlesize * elem_geo.h / 2) or slider_lo.border
+            element.slider.min.ele_pos = user_opts.seek_handle_size > 0 and (user_opts.seek_handle_size * elem_geo.h / 2) or slider_lo.border
             element.slider.max.ele_pos = elem_geo.w - element.slider.min.ele_pos
             element.slider.min.glob_pos = element.hitbox.x1 + element.slider.min.ele_pos
             element.slider.max.glob_pos = element.hitbox.x1 + element.slider.max.ele_pos
@@ -941,9 +941,9 @@ local function draw_seekbar_handle(element, elem_ass, override_alpha)
     if not pos then
         return 0, 0
     end
-    local display_handle = user_opts.seekbarhandlesize > 0
+    local display_handle = user_opts.seek_handle_size > 0
     local elem_geo = element.layout.geometry
-    local rh = display_handle and (user_opts.seekbarhandlesize * elem_geo.h / 2) or 0 -- handle radius
+    local rh = display_handle and (user_opts.seek_handle_size * elem_geo.h / 2) or 0 -- handle radius
     local xp = get_slider_ele_pos_for(element, pos) -- handle position
     local handle_hovered = mouse_hit_coords(element.hitbox.x1 + xp - rh, element.hitbox.y1 + elem_geo.h / 2 - rh, element.hitbox.x1 + xp + rh, element.hitbox.y1 + elem_geo.h / 2 + rh) and element.enabled
 
@@ -3538,9 +3538,9 @@ local function validate_user_opts()
           user_opts.window_top_bar = "auto"
     end
 
-    if user_opts.seekbarhandlesize < 0 then
-        msg.warn("seekbarhandlesize must be 0 or higher. Setting it to 0 (minimum).")
-        user_opts.seekbarhandlesize = 0
+    if user_opts.seek_handle_size < 0 then
+        msg.warn("seek_handle_size must be 0 or higher. Setting it to 0 (minimum).")
+        user_opts.seek_handle_size = 0
     end
 
     if user_opts.volume_control_type ~= "linear" and
