@@ -146,7 +146,7 @@ Create `modernz.conf` in your mpv script-opts directory:
 | hover_effect             | size,glow,color | active button hover effects: `"glow"`, `"size"`, `"color"`; can use multiple separated by commas |
 | hover_button_size        | 115             | relative size of a hovered button if "size" effect is active                                     |
 | button_glow_amount       | 5               | glow intensity when `"glow"` hover effect is active                                              |
-| hover_effect_for_sliders | no              | apply hover effects to slider handles                                                            |
+| hover_effect_for_sliders | yes             | apply hover size effect to slider handles                                                        |
 
 ### Tooltips and hints
 
@@ -159,8 +159,7 @@ Create `modernz.conf` in your mpv script-opts directory:
 
 | Option                   | Value    | Description                                                                |
 | ------------------------ | -------- | -------------------------------------------------------------------------- |
-| seekbarhandlesize        | 0.7      | size ratio of the seekbar handle (range: 0 ~ 1)                            |
-| handle_always_visible    | no       | control handle visibility: `yes` always visible, `no` show on slider hover |
+| seekbarhandlesize        | 0.8      | size ratio of the seekbar handle (range: 0 ~ 1)                            |
 | seekrange                | yes      | show seek range overlay                                                    |
 | seekrangealpha           | 150      | transparency of the seek range                                             |
 | livemarkers              | yes      | update chapter markers on the seekbar when duration changes                |
