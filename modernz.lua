@@ -144,15 +144,14 @@ local user_opts = {
     hover_effect = "size,glow,color",      -- active button hover effects: "glow", "size", "color"; can use multiple separated by commas
     hover_button_size = 115,               -- relative size of a hovered button if "size" effect is active
     button_glow_amount = 5,                -- glow intensity when "glow" hover effect is active
-    hover_effect_for_sliders = false,      -- apply hover effects to slider handles
+    hover_effect_for_sliders = true,       -- apply size hover effect to slider handles
 
     -- Tooltips and hints
     tooltips_for_disabled_elements = true, -- enable tooltips for disabled buttons and elements
     tooltip_hints = true,                  -- enable text hints for info, loop, ontop, and screenshot buttons
 
     -- Progress bar settings 
-    seekbarhandlesize = 0.7,               -- size ratio of the seekbar handle (range: 0 ~ 1)
-    handle_always_visible = true,          -- control handle visibility: "true" always visible, "false" show on slider hover
+    seekbarhandlesize = 0.8,               -- size ratio of the seekbar handle (range: 0 ~ 1)
     seekrange = true,                      -- show seek range overlay
     seekrangealpha = 150,                  -- transparency of the seek range
     livemarkers = true,                    -- update chapter markers on the seekbar when duration changes
@@ -845,7 +844,7 @@ local function prepare_elements()
             --draw static slider parts
             local slider_lo = element.layout.slider
             -- calculate positions of min and max points
-            element.slider.min.ele_pos = user_opts.seekbarhandlesize * elem_geo.h / 2
+            element.slider.min.ele_pos = user_opts.seekbarhandlesize > 0 and (user_opts.seekbarhandlesize * elem_geo.h / 2) or slider_lo.border
             element.slider.max.ele_pos = elem_geo.w - element.slider.min.ele_pos
             element.slider.min.glob_pos = element.hitbox.x1 + element.slider.min.ele_pos
             element.slider.max.glob_pos = element.hitbox.x1 + element.slider.max.ele_pos
@@ -942,28 +941,17 @@ local function draw_seekbar_handle(element, elem_ass, override_alpha)
     if not pos then
         return 0, 0
     end
+    local display_handle = user_opts.seekbarhandlesize > 0
     local elem_geo = element.layout.geometry
-    local rh = user_opts.seekbarhandlesize * elem_geo.h / 2 -- handle radius
+    local rh = display_handle and (user_opts.seekbarhandlesize * elem_geo.h / 2) or 0 -- handle radius
     local xp = get_slider_ele_pos_for(element, pos) -- handle position
     local handle_hovered = mouse_hit_coords(element.hitbox.x1 + xp - rh, element.hitbox.y1 + elem_geo.h / 2 - rh, element.hitbox.x1 + xp + rh, element.hitbox.y1 + elem_geo.h / 2 + rh) and element.enabled
 
-    local is_button_held = state.mouse_down_counter > 0
-
-    local should_display_handle
-    if user_opts.handle_always_visible then
-        should_display_handle = true
-    else
-        should_display_handle = mouse_hit_coords(element.hitbox.x1, element.hitbox.y1, element.hitbox.x2, element.hitbox.y2) or is_button_held
-    end
-
-    if should_display_handle then
-        -- Apply size & color hover_effects only if hovering over the handle
+    if display_handle then
+        -- Apply size hover_effect only if hovering over the handle
         if handle_hovered and user_opts.hover_effect_for_sliders then
             if contains(user_opts.hover_effect, "size") then
                 rh = rh * (user_opts.hover_button_size / 100)
-            end
-            if contains(user_opts.hover_effect, "color") then
-                elem_ass.text = elem_ass.text:gsub(element.layout.style, element.layout.slider.hoverstyle)
             end
         end
 
@@ -3550,13 +3538,9 @@ local function validate_user_opts()
           user_opts.window_top_bar = "auto"
     end
 
-    if user_opts.seekbarhandlesize < 0.1 then
-        msg.warn("seekbarhandlesize must be 0.1 or higher. Setting it to 0.1 (minimum).")
-        user_opts.seekbarhandlesize = 0.1
-    end
-    
-    if not user_opts.handle_always_visible then
-        msg.warn("handle_always_visible=no is bugged (progress gap at stard/end). Shouldn't be used.")
+    if user_opts.seekbarhandlesize < 0 then
+        msg.warn("seekbarhandlesize must be 0 or higher. Setting it to 0 (minimum).")
+        user_opts.seekbarhandlesize = 0
     end
 
     if user_opts.volume_control_type ~= "linear" and
