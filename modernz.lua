@@ -987,8 +987,8 @@ local function draw_seekbar_ranges(element, elem_ass, xp, rh, override_alpha)
     elem_ass:merge(element.static_ass)
 
     for _, range in pairs(seekRanges) do
-        local pstart = get_slider_ele_pos_for(element, range["start"])
-        local pend = get_slider_ele_pos_for(element, range["end"])
+        local pstart = math.max(0, get_slider_ele_pos_for(element, range["start"]) - slider_lo.gap)
+        local pend = math.min(elem_geo.w, get_slider_ele_pos_for(element, range["end"]) + slider_lo.gap)
 
         if handle and (pstart < xp + rh and pend > xp - rh) then
             if pstart < xp - rh then
