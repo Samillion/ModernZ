@@ -406,7 +406,7 @@ end
 local osc_styles
 
 local function set_osc_styles()
-    local playpause_size = user_opts.playpause_size or 30
+    local playpause_size = user_opts.playpause_size or 28
     local midbuttons_size = user_opts.midbuttons_size or 24
     local sidebuttons_size = user_opts.sidebuttons_size or 24
     osc_styles = {
@@ -425,7 +425,7 @@ local function set_osc_styles()
         time = "{\\blur0\\bord0\\1c&H" .. osc_color_convert(user_opts.time_color) .. "&\\3c&H000000&\\fs" .. user_opts.time_font_size .. "\\fn" .. user_opts.font .. "}",
         cache = "{\\blur0\\bord0\\1c&H" .. osc_color_convert(user_opts.cache_info_color) .. "&\\3c&H000000&\\fs" .. user_opts.cache_info_font_size .. "\\fn" .. user_opts.font .. "}",
         title = "{\\blur1\\bord0.5\\1c&H" .. osc_color_convert(user_opts.title_color) .. "&\\3c&H0&\\fs".. user_opts.title_font_size .."\\q2\\fn" .. user_opts.font .. "}",
-        tooltip = "{\\blur1\\bord0.5\\1c&HFFFFFF&\\3c&H000000&\\fs" .. user_opts.time_font_size .. "\\fn" .. user_opts.font .. "}",
+        tooltip = "{\\blur1\\bord0.5\\1c&HFFFFFF&\\3c&H000000&\\fs14\\fn" .. user_opts.font .. "}",
         volumebar_bg = "{\\blur0\\bord0\\1c&H999999&}",
         volumebar_fg = "{\\blur1\\bord1\\1c&H" .. osc_color_convert(user_opts.side_buttons_color) .. "&}",
         window_control = "{\\blur1\\bord0.5\\1c&H" .. osc_color_convert(user_opts.window_controls_color) .. "&\\3c&H0&\\fs25\\fnmpv-osd-symbols}",
@@ -1829,17 +1829,16 @@ layouts["modern"] = function ()
     local show_hours = possec >= 3600 or user_opts.time_format ~= "dynamic"
     local show_remhours = (state.tc_right_rem and remsec >= 3600) or (not state.tc_right_rem and dur >= 3600) or user_opts.time_format ~= "dynamic"
     local tc_w_offset = (state.tc_ms and 60 or 0) + (show_hours and 20 or 0) + (show_remhours and 20 or 0)
-    local audio_cond = audio_track and user_opts.volume_control
+    local auto_hide_volbar = (audio_track and user_opts.volume_control) and osc_param.playresx < (1150 - outeroffset)
+    local time_codes_x = 275
+        - (auto_hide_volbar and 75 or 0) -- window width with audio track and elements
+        - (audio_track and not user_opts.volume_control and 115 or 0) -- audio track with no elements
+        - (not audio_track and 160 or 0) -- no audio track or elements
+        - (subtitle_track and 0 or 45)
+        - (playlist_button and 0 or 45)
 
     lo = add_layout("time_codes")
-    lo.geometry = {
-        x = 275 - 
-            (audio_cond and (osc_param.playresx >= 1150 - outeroffset) and 0 or (user_opts.volume_control and 75 or 45)) -
-            (audio_cond and 0 or 65) - 
-            (subtitle_track and 0 or 45) - 
-            (playlist_button and 0 or 45), 
-        y = refY - 35, an = 4, w = 90 + tc_w_offset, h = 15
-    }
+    lo.geometry = {x = time_codes_x, y = refY - 35, an = 4, w = 90 + tc_w_offset, h = 15}
     lo.style = osc_styles.time
 
     -- Fullscreen/Info/Pin/Screenshot/Loop/Speed
@@ -2948,7 +2947,7 @@ local function process_event(source, what)
             ) then
                 if user_opts.bottomhover then -- if enabled, only show osc if mouse is hovering at the bottom of the screen (where the UI elements are)
                     local top_hover = window_controls_enabled() and (user_opts.window_title or user_opts.window_controls)
-                    if mouseY > osc_param.playresy - (user_opts.bottomhover_zone or 145) 
+                    if mouseY > osc_param.playresy - (user_opts.bottomhover_zone or 130) 
                     or ((user_opts.window_top_bar == "yes" or not (state.border and state.title_bar)) or state.fullscreen) and (mouseY < 40 and top_hover) then
                         show_osc()
                     else
