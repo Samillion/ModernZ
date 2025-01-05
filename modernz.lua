@@ -1830,6 +1830,7 @@ layouts["modern"] = function ()
     local show_remhours = (state.tc_right_rem and remsec >= 3600) or (not state.tc_right_rem and dur >= 3600) or user_opts.time_format ~= "dynamic"
     local tc_w_offset = (state.tc_ms and 60 or 0) + (show_hours and 20 or 0) + (show_remhours and 20 or 0)
     local auto_hide_volbar = (audio_track and user_opts.volume_control) and osc_param.playresx < (1150 - outeroffset)
+    local narrow_vid_tc_y = osc_param.playresx < (930 - outeroffset - (playlist_button and 0 or 100) - (subtitle_track and 0 or 100) - (audio_track and 0 or 100))
     local time_codes_x = 275
         - (auto_hide_volbar and 75 or 0) -- window width with audio track and elements
         - (audio_track and not user_opts.volume_control and 115 or 0) -- audio track with no elements
@@ -1838,7 +1839,7 @@ layouts["modern"] = function ()
         - (playlist_button and 0 or 45)
 
     lo = add_layout("time_codes")
-    lo.geometry = {x = time_codes_x, y = refY - 35, an = 4, w = 90 + tc_w_offset, h = 15}
+    lo.geometry = {x = (narrow_vid_tc_y and refX or time_codes_x), y = refY - (narrow_vid_tc_y and 57 or 35), an = (narrow_vid_tc_y and 5 or 4), w = 90 + tc_w_offset, h = 15}
     lo.style = osc_styles.time
 
     -- Fullscreen/Info/Pin/Screenshot/Loop/Speed
@@ -2772,7 +2773,7 @@ local function osc_init()
     -- Time codes display
     local tc_visible_offset = audio_offset + sub_offset + playlist_offset
     ne = new_element("time_codes", "button")
-    ne.visible = (osc_param.playresx >= 900 - tc_visible_offset - outeroffset) and (mp.get_property_number("duration", 0) > 0)
+    ne.visible = mp.get_property_number("duration", 0) > 0
     ne.content = function()
         local playback_time = mp.get_property_number("playback-time", 0)
 
