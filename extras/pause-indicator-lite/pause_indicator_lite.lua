@@ -15,6 +15,7 @@ local options = {
     keybind_allow = true,            -- allow keybind to toggle pause
     keybind_set = "mbtn_left",       -- the used keybind to toggle pause
     keybind_mode = "onpause",        -- mode to activate keybind. "onpause", "always"
+    keybind_eof_disable = true,      -- disable keybind on eof (end of file)
 
     -- icon colors & opacity
     icon_color = "#FFFFFF",          -- icon fill color
@@ -75,8 +76,9 @@ end
 local indicator = mp.create_osd_overlay("ass-events")
 local flash = mp.create_osd_overlay("ass-events")
 
--- keep track of pause toggle
+-- keep track of pause toggle and end of file
 local toggled = false
+local eof = false
 
 -- draw and update indicator
 local function update_indicator()
@@ -111,6 +113,12 @@ local function is_video()
     end
 end
 
+if options.keybind_eof_disable then
+    mp.observe_property("eof-reached", "bool", function(_, val)
+        eof = val
+    end)
+end
+
 -- observe when pause state changes
 mp.observe_property("pause", "bool", function(_, paused)
     if not is_video() then return mp.unobserve_property("pause") end
@@ -133,6 +141,7 @@ mp.observe_property("pause", "bool", function(_, paused)
         }, "pause-indicator", "force")
 
         if options.keybind_mode == "always" or (options.keybind_mode == "onpause" and paused) then
+            if options.keybind_eof_disable and eof then return end
             mp.enable_key_bindings("pause-indicator")
         else
             mp.disable_key_bindings("pause-indicator")
