@@ -18,7 +18,8 @@ Below is the full list for indicator options and their default values. To adjust
 | `indicator_timeout`      | 0.6         | timeout (seconds) if indicator doesn't stay                                                                                          |
 | `keybind_allow`          | true        | allow keybind to toggle pause                                                                                                        |
 | `keybind_set`            | "mbtn_left" | the used keybind to toggle pause [[reference](https://github.com/mpv-player/mpv/blob/master/etc/input.conf)]                         |
-| `keybind_mode`           | "onpause"   | mode to activate keybind. <br>`onpause`: only active when paused, to unpause <br>`always`: always active to toggle pause/unpause |
+| `keybind_mode`           | "onpause"   | mode to activate keybind. <br>`onpause`: only active when paused, to unpause <br>`always`: always active to toggle pause/unpause     |
+| `keybind_eof_disable`    | true        | disable keybind on eof (end of file) [[reference](https://github.com/Samillion/ModernZ/issues/291)]                                  |
 | `icon_color`             | "#FFFFFF"   | icon fill color                                                                                                                      |
 | `icon_border_color`      | "#111111"   | icon border color                                                                                                                    |
 | `icon_opacity`           | 40          | icon opacity (0-100)                                                                                                                 |
