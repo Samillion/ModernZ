@@ -1644,7 +1644,7 @@ layouts["modern"] = function ()
         not user_opts.show_chapter_title
 
     local chapter_index = user_opts.show_chapter_title and mp.get_property_number("chapter", -1) >= 0
-    local osc_height_offset = (no_title and 30 or 0) + ((no_chapter or not chapter_index) and 15 or 0)
+    local osc_height_offset = (no_title and 25 or 0) + ((no_chapter or not chapter_index) and 10 or 0)
 
     local osc_geo = {
         w = osc_param.playresx,
