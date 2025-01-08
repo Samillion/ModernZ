@@ -188,6 +188,9 @@ local user_opts = {
     tooltip_cache_speed_offset = 5,        -- if cache speed is enabled, adjust the main tooltip for cache
     portrait_window_trigger = 930,         -- portrait window width trigger to move some elements
     hide_volume_bar_trigger = 1150,        -- hide volume bar trigger window width
+    notitle_osc_h_offset = 25,             -- osc height offset if title above seekbar is disabled
+    nochapter_osc_h_offset = 10,           -- osc height offset if chapter title is disabled or doesn't exist
+    seek_hover_tooltip_h_offset = 0,       -- seek hover timecodes tooltip height position offset
 
     -- Mouse commands
     -- customize the button function based on mouse action
@@ -1107,9 +1110,9 @@ local function render_elements(master_ass)
                         local an = slider_lo.tooltip_an
                         local ty
                         if an == 2 then
-                            ty = element.hitbox.y1
+                            ty = element.hitbox.y1 - user_opts.seek_hover_tooltip_h_offset
                         else
-                            ty = element.hitbox.y1 + elem_geo.h/2
+                            ty = element.hitbox.y1 + elem_geo.h / 2 - user_opts.seek_hover_tooltip_h_offset
                         end
 
                         local tx = get_virt_mouse_pos()
@@ -1644,7 +1647,7 @@ layouts["modern"] = function ()
         not user_opts.show_chapter_title
 
     local chapter_index = user_opts.show_chapter_title and mp.get_property_number("chapter", -1) >= 0
-    local osc_height_offset = (no_title and 25 or 0) + ((no_chapter or not chapter_index) and 10 or 0)
+    local osc_height_offset = (no_title and user_opts.notitle_osc_h_offset or 0) + ((no_chapter or not chapter_index) and user_opts.nochapter_osc_h_offset or 0)
 
     local osc_geo = {
         w = osc_param.playresx,
