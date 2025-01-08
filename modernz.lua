@@ -44,10 +44,11 @@ local user_opts = {
     scalewindowed = 1.0,                   -- osc scale factor when windowed
     scalefullscreen = 1.0,                 -- osc scale factor when fullscreen
 
-    -- Time and title display
+    -- Elements display
     show_title = true,                     -- show title in the OSC (above seekbar)
     title = "${media-title}",              -- title above seekbar format: "${media-title}" or "${filename}"
-    title_font_size = 24,                  -- font size of the title text (above seekbar)
+    title_font_size = 24,                  -- title font size (above seekbar)
+    chapter_title_font_size = 14,          -- chapter title font size
 
     cache_info = false,                    -- show cached time information
     cache_info_speed = false,              -- show cache speed per second
@@ -61,6 +62,8 @@ local user_opts = {
     unicodeminus = false,                  -- use the Unicode minus sign in remaining time
     time_format = "dynamic",               -- "dynamic" or "fixed". dynamic shows MM:SS when possible, fixed always shows HH:MM:SS
     time_font_size = 16,                   -- font size of the time display
+
+    tooltip_font_size = 14,                -- tooltips font size
 
     -- Title bar settings
     window_title = false,                  -- show window title in borderless/fullscreen mode
@@ -172,6 +175,19 @@ local user_opts = {
     visibility = "auto",                   -- only used at init to set visibility_mode(...)
     tick_delay = 0.03,                     -- minimum interval between OSC redraws (in seconds)
     tick_delay_follow_display_fps = false, -- use display FPS as the minimum redraw interval
+
+    -- Elements Position
+    -- Useful when adjusting font size or type
+    title_height = 96,                     -- title height position above seekbar
+    title_with_chapter_height = 108,       -- title height position if a chapter title is below it
+    chapter_title_height = 91,             -- chapter title height position above seekbar
+    time_codes_height = 35,                -- time codes height position
+    time_codes_centered_height = 57,       -- when portrait window elements is triggered
+    tooltip_height_offset = 2,             -- tooltip height position offset
+    tooltip_left_offset = 3,               -- if tooltip contains many characters, it is moved to the left by offset
+    tooltip_cache_speed_offset = 5,        -- if cache speed is enabled, adjust the main tooltip for cache
+    portrait_window_trigger = 930,         -- portrait window width trigger to move some elements
+    hide_volume_bar_trigger = 1150,        -- hide volume bar trigger window width
 
     -- Mouse commands
     -- customize the button function based on mouse action
@@ -412,7 +428,7 @@ local function set_osc_styles()
     osc_styles = {
         background_bar = "{\\1c&H" .. osc_color_convert(user_opts.osc_color) .. "&}",
         box_bg = "{\\blur" .. user_opts.fade_blur_strength .. "\\bord" .. user_opts.fade_alpha .. "\\1c&H000000&\\3c&H" .. osc_color_convert(user_opts.osc_color) .. "&}",
-        chapter_title = "{\\blur0\\bord0\\1c&H" .. osc_color_convert(user_opts.chapter_title_color) .. "&\\3c&H000000&\\fs14\\fn" .. user_opts.font .. "}",
+        chapter_title = "{\\blur0\\bord0\\1c&H" .. osc_color_convert(user_opts.chapter_title_color) .. "&\\3c&H000000&\\fs" .. user_opts.chapter_title_font_size .. "\\fn" .. user_opts.font .. "}",
         control_1 = "{\\blur0\\bord0\\1c&H" .. osc_color_convert(user_opts.playpause_color) .. "&\\3c&HFFFFFF&\\fs" .. playpause_size .. "\\fn" .. iconfont .. "}",
         control_2 = "{\\blur0\\bord0\\1c&H" .. osc_color_convert(user_opts.middle_buttons_color) .. "&\\3c&HFFFFFF&\\fs" .. midbuttons_size .. "\\fn" .. iconfont .. "}",
         control_2_flip = "{\\blur0\\bord0\\1c&H" .. osc_color_convert(user_opts.middle_buttons_color) .. "&\\3c&HFFFFFF&\\fs" .. midbuttons_size .. "\\fn" .. iconfont .. "\\fry180}",
@@ -425,7 +441,7 @@ local function set_osc_styles()
         time = "{\\blur0\\bord0\\1c&H" .. osc_color_convert(user_opts.time_color) .. "&\\3c&H000000&\\fs" .. user_opts.time_font_size .. "\\fn" .. user_opts.font .. "}",
         cache = "{\\blur0\\bord0\\1c&H" .. osc_color_convert(user_opts.cache_info_color) .. "&\\3c&H000000&\\fs" .. user_opts.cache_info_font_size .. "\\fn" .. user_opts.font .. "}",
         title = "{\\blur1\\bord0.5\\1c&H" .. osc_color_convert(user_opts.title_color) .. "&\\3c&H0&\\fs".. user_opts.title_font_size .."\\q2\\fn" .. user_opts.font .. "}",
-        tooltip = "{\\blur1\\bord0.5\\1c&HFFFFFF&\\3c&H000000&\\fs14\\fn" .. user_opts.font .. "}",
+        tooltip = "{\\blur1\\bord0.5\\1c&HFFFFFF&\\3c&H000000&\\fs" .. user_opts.tooltip_font_size .. "\\fn" .. user_opts.font .. "}",
         volumebar_bg = "{\\blur0\\bord0\\1c&H999999&}",
         volumebar_fg = "{\\blur1\\bord1\\1c&H" .. osc_color_convert(user_opts.side_buttons_color) .. "&}",
         window_control = "{\\blur1\\bord0.5\\1c&H" .. osc_color_convert(user_opts.window_controls_color) .. "&\\3c&H0&\\fs25\\fnmpv-osd-symbols}",
@@ -1260,15 +1276,15 @@ local function render_elements(master_ass)
 
             -- add tooltip for button elements
             if element.tooltipF ~= nil and (user_opts.tooltips_for_disabled_elements or element.enabled) then
-                local cache_info_offset = (element.name == "cache_info" and user_opts.cache_info_speed) and 5 or 0
+                local cache_info_offset = (element.name == "cache_info" and user_opts.cache_info_speed) and user_opts.tooltip_cache_speed_offset or 0
                 if mouse_hit(element) then
                     local tooltiplabel = element.tooltipF
                     local an = 1
-                    local ty = element.hitbox.y1 - 2 + cache_info_offset
+                    local ty = element.hitbox.y1 - user_opts.tooltip_height_offset + cache_info_offset
                     local tx = get_virt_mouse_pos()
 
                     if ty < osc_param.playresy / 2 then
-                        ty = element.hitbox.y2 - 2 + cache_info_offset
+                        ty = element.hitbox.y2 - user_opts.tooltip_height_offset + cache_info_offset
                         an = 7
                     end
 
@@ -1283,8 +1299,8 @@ local function render_elements(master_ass)
                         tooltiplabel = element.nothingavailable
                     end
 
-                    if tx > osc_param.playresx / 2 then --move tooltip to left side of mouse cursor
-                        tx = tx - string.len(tooltiplabel) * 3
+                    if tx > osc_param.playresx / 2 then -- move tooltip to left side of mouse cursor
+                        tx = tx - string.len(tooltiplabel) * user_opts.tooltip_left_offset
                     end
 
                     elem_ass:new_event()
@@ -1720,7 +1736,7 @@ layouts["modern"] = function ()
     local outeroffset = (chapter_skip_buttons and 0 or 100) + (jump_buttons and 0 or 100)
 
     -- Title
-    geo = {x = 25, y = refY - (chapter_index and 102 or 90), an = 1, w = osc_geo.w - 50 - (loop_button and 45 or 0) - (speed_button and 45 or 0), h = 35}
+    geo = {x = 25, y = refY - (chapter_index and user_opts.title_with_chapter_height or user_opts.title_height), an = 1, w = osc_geo.w - 50 - (loop_button and 45 or 0) - (speed_button and 45 or 0), h = 27}
     lo = add_layout("title")
     lo.geometry = geo
     lo.style = string.format("%s{\\clip(0,%f,%f,%f)}", osc_styles.title, geo.y - geo.h, geo.x + geo.w, geo.y + geo.h)
@@ -1729,7 +1745,7 @@ layouts["modern"] = function ()
     -- Chapter Title (above seekbar)
     if user_opts.show_chapter_title then
         lo = add_layout("chapter_title")
-        lo.geometry = {x = 26, y = refY -87, an = 1, w = osc_geo.w / 2, h = 20}
+        lo.geometry = {x = 26, y = refY - user_opts.chapter_title_height, an = 1, w = osc_geo.w / 2, h = 16}
         lo.style = string.format("%s{\\clip(0,%f,%f,%f)}", osc_styles.chapter_title, geo.y - geo.h, geo.x + geo.w, geo.y + geo.h)
     end
 
@@ -1753,7 +1769,7 @@ layouts["modern"] = function ()
     end
 
     lo = add_layout("play_pause")
-    lo.geometry = {x = refX, y = refY - 35, an = 5, w = 45, h = 45}
+    lo.geometry = {x = refX, y = refY - 35, an = 5, w = 45, h = 28}
     lo.style = osc_styles.control_1
 
     if jump_buttons then
@@ -1829,8 +1845,8 @@ layouts["modern"] = function ()
     local show_hours = possec >= 3600 or user_opts.time_format ~= "dynamic"
     local show_remhours = (state.tc_right_rem and remsec >= 3600) or (not state.tc_right_rem and dur >= 3600) or user_opts.time_format ~= "dynamic"
     local tc_w_offset = (state.tc_ms and 60 or 0) + (show_hours and 20 or 0) + (show_remhours and 20 or 0)
-    local auto_hide_volbar = (audio_track and user_opts.volume_control) and osc_param.playresx < (1150 - outeroffset)
-    local narrow_vid_tc_y = osc_param.playresx < (930 - outeroffset - (playlist_button and 0 or 100) - (subtitle_track and 0 or 100) - (audio_track and 0 or 100))
+    local auto_hide_volbar = (audio_track and user_opts.volume_control) and osc_param.playresx < (user_opts.hide_volume_bar_trigger - outeroffset)
+    local narrow_vid_tc_y = osc_param.playresx < (user_opts.portrait_window_trigger - outeroffset - (playlist_button and 0 or 100) - (subtitle_track and 0 or 100) - (audio_track and 0 or 100))
     local time_codes_x = 275
         - (auto_hide_volbar and 75 or 0) -- window width with audio track and elements
         - (audio_track and not user_opts.volume_control and 115 or 0) -- audio track with no elements
@@ -1839,7 +1855,7 @@ layouts["modern"] = function ()
         - (playlist_button and 0 or 45)
 
     lo = add_layout("time_codes")
-    lo.geometry = {x = (narrow_vid_tc_y and refX or time_codes_x), y = refY - (narrow_vid_tc_y and 57 or 35), an = (narrow_vid_tc_y and 5 or 4), w = 90 + tc_w_offset, h = 15}
+    lo.geometry = {x = (narrow_vid_tc_y and refX or time_codes_x), y = refY - (narrow_vid_tc_y and user_opts.time_codes_centered_height or user_opts.time_codes_height), an = (narrow_vid_tc_y and 5 or 4), w = 90 + tc_w_offset, h = 15}
     lo.style = osc_styles.time
 
     -- Fullscreen/Info/Pin/Screenshot/Loop/Speed
