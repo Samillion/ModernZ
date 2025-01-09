@@ -191,6 +191,7 @@ local user_opts = {
     notitle_osc_h_offset = 25,             -- osc height offset if title above seekbar is disabled
     nochapter_osc_h_offset = 10,           -- osc height offset if chapter title is disabled or doesn't exist
     seek_hover_tooltip_h_offset = 0,       -- seek hover timecodes tooltip height position offset
+    osc_height = 130,                      -- osc height without offsets
 
     -- Mouse commands
     -- customize the button function based on mouse action
@@ -1651,7 +1652,7 @@ layouts["modern"] = function ()
 
     local osc_geo = {
         w = osc_param.playresx,
-        h = 130 - osc_height_offset
+        h = user_opts.osc_height - osc_height_offset
     }
 
     -- origin of the controllers, left/bottom corner
