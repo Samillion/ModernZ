@@ -202,6 +202,7 @@ Useful when adjusting font size or type, this will help you change the affected 
 | notitle_osc_h_offset          | 25     | osc height offset if title above seekbar is disabled                   |
 | nochapter_osc_h_offset        | 10     | osc height offset if chapter title is disabled or doesn't exist        |
 | seek_hover_tooltip_h_offset   | 0      | seek hover timecodes tooltip height position offset                    |
+| osc_height                    | 130    | osc height without offsets                                             |
 
 ### Mouse Commands (User Options)
 
