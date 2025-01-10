@@ -40,23 +40,25 @@ Create `modernz.conf` in your mpv script-opts directory:
 | scalewindowed           | 1.0   | osc scale factor when windowed                             |
 | scalefullscreen         | 1.0   | osc scale factor when fullscreen                           |
 
-### Time and title display
+### Elements display
 
-| Option               | Value            | Description                                                                      |
-| -------------------- | ---------------- | -------------------------------------------------------------------------------- |
-| show_title           | yes              | show title in the OSC (above seekbar)                                            |
-| title                | `${media-title}` | title above seekbar format: `"${media-title}"` or `"${filename}"`                |
-| title_font_size      | 30               | font size of the title text (above seekbar)                                      |
-| show_chapter_title   | yes              | show chapter title (above seekbar)                                               |
-| chapter_fmt          | %s               | format for chapter display on seekbar hover (set to `"no"` to disable)           |
-| timetotal            | yes              | show total time instead of remaining time                                        |
-| timems               | no               | show timecodes with milliseconds                                                 |
-| unicodeminus         | no               | use the Unicode minus sign in remaining time                                     |
-| time_format          | dynamic          | `"dynamic"` or `"fixed"`. shows MM:SS when possible, fixed always shows HH:MM:SS |
-| time_font_size       | 16               | font size of the time display                                                    |
-| cache_info           | no               | show cached time information                                                     |
-| cache_info_speed     | no               | show current cache speed per second                                              |
-| cache_info_font_size | 12               | font size of the time display                                                    |
+| Option                  | Value            | Description                                                                      |
+| ----------------------- | ---------------- | -------------------------------------------------------------------------------- |
+| show_title              | yes              | show title in the OSC (above seekbar)                                            |
+| title                   | `${media-title}` | title above seekbar format: `"${media-title}"` or `"${filename}"`                |
+| title_font_size         | 24               | font size of the title text (above seekbar)                                      |
+| chapter_title_font_size | 14               | chapter title font size                                                          |
+| show_chapter_title      | yes              | show chapter title (above seekbar)                                               |
+| chapter_fmt             | %s               | format for chapter display on seekbar hover (set to `"no"` to disable)           |
+| timetotal               | yes              | show total time instead of remaining time                                        |
+| timems                  | no               | show timecodes with milliseconds                                                 |
+| unicodeminus            | no               | use the Unicode minus sign in remaining time                                     |
+| time_format             | dynamic          | `"dynamic"` or `"fixed"`. shows MM:SS when possible, fixed always shows HH:MM:SS |
+| time_font_size          | 16               | font size of the time display                                                    |
+| cache_info              | no               | show cached time information                                                     |
+| cache_info_speed        | no               | show current cache speed per second                                              |
+| cache_info_font_size    | 12               | font size of the time display                                                    |
+| tooltip_font_size       | 14               | tooltips font size                                                               |
 
 ### Title bar settings
 
@@ -180,6 +182,27 @@ Create `modernz.conf` in your mpv script-opts directory:
 | visibility                    | auto   | only used at init to set visibility_mode(...)     |
 | tick_delay                    | 0.03   | minimum interval between OSC redraws (in seconds) |
 | tick_delay_follow_display_fps | no     | use display FPS as the minimum redraw interval    |
+
+### Elements Position
+
+Useful when adjusting font size or type, this will help you change the affected elements position
+
+| Option                        | Value  | Description                                                            |
+| ----------------------------- | ------ | ---------------------------------------------------------------------- |
+| title_height                  | 96     | title height position above seekbar                                    |
+| title_with_chapter_height     | 108    | title height position if a chapter title is below it                   |
+| chapter_title_height          | 91     | chapter title height position above seekbar                            |
+| time_codes_height             | 35     | time codes height position                                             |
+| time_codes_centered_height    | 57     | time codes height position with portrait window                        |
+| tooltip_height_offset         | 2      | tooltip height position offset                                         |
+| tooltip_left_offset           | 3      | if tooltip contains many characters, it is moved to the left by offset |
+| tooltip_cache_speed_offset    | 5      | if cache speed is enabled, adjust the main tooltip for cache           |
+| portrait_window_trigger       | 930    | portrait window width trigger to move some elements                    |
+| hide_volume_bar_trigger       | 1150   | hide volume bar trigger window width                                   |
+| notitle_osc_h_offset          | 25     | osc height offset if title above seekbar is disabled                   |
+| nochapter_osc_h_offset        | 10     | osc height offset if chapter title is disabled or doesn't exist        |
+| seek_hover_tooltip_h_offset   | 0      | seek hover timecodes tooltip height position offset                    |
+| osc_height                    | 132    | osc height without offsets                                             |
 
 ### Mouse Commands (User Options)
 
