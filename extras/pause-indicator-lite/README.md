@@ -9,26 +9,30 @@ I only decided to write this because the ones I found were either too complicate
 **Script:** [Pause Indicator Lite](./pause_indicator_lite.lua)
 
 ### Indicator Options
-Below is the full list for indicator options and their default values. To adjust them, simply change their values in `local options` within the script.
+Below is the full list for indicator options and their default values. 
+
+To adjust them you can either: 
+- Place [pause_indicator_lite.conf](./pause_indicator_lite.conf) in `script-opts` and change the values in it [recommended]
+- Simply change their values in `local options` within the script itself
 
 | Option                   | Value       | Description                                                                                                                          |
 |--------------------------|-------------|--------------------------------------------------------------------------------------------------------------------------------------|
-| `indicator_icon`         | "pause"     | indicator icon type.  `pause`, `play`                                                                                                |
-| `indicator_stay`         | true        | keep indicator visibile during pause                                                                                                 |
+| `indicator_icon`         | pause       | indicator icon type.  `pause`, `play`                                                                                                |
+| `indicator_stay`         | yes         | keep indicator visibile during pause                                                                                                 |
 | `indicator_timeout`      | 0.6         | timeout (seconds) if indicator doesn't stay                                                                                          |
-| `keybind_allow`          | true        | allow keybind to toggle pause                                                                                                        |
-| `keybind_set`            | "mbtn_left" | the used keybind to toggle pause [[reference](https://github.com/mpv-player/mpv/blob/master/etc/input.conf)]                         |
-| `keybind_mode`           | "onpause"   | mode to activate keybind. <br>`onpause`: only active when paused, to unpause <br>`always`: always active to toggle pause/unpause     |
-| `keybind_eof_disable`    | true        | disable keybind on eof (end of file) [[reference](https://github.com/Samillion/ModernZ/issues/291)]                                  |
-| `icon_color`             | "#FFFFFF"   | icon fill color                                                                                                                      |
-| `icon_border_color`      | "#111111"   | icon border color                                                                                                                    |
+| `keybind_allow`          | yes         | allow keybind to toggle pause                                                                                                        |
+| `keybind_set`            | mbtn_left   | the used keybind to toggle pause [[reference](https://github.com/mpv-player/mpv/blob/master/etc/input.conf)]                         |
+| `keybind_mode`           | onpause     | mode to activate keybind. <br>`onpause`: only active when paused, to unpause <br>`always`: always active to toggle pause/unpause     |
+| `keybind_eof_disable`    | yes         | disable keybind on eof (end of file) [[reference](https://github.com/Samillion/ModernZ/issues/291)]                                  |
+| `icon_color`             | `#FFFFFF`   | icon fill color                                                                                                                      |
+| `icon_border_color`      | `#111111`   | icon border color                                                                                                                    |
 | `icon_opacity`           | 40          | icon opacity (0-100)                                                                                                                 |
 | `rectangles_width`       | 30          | width of rectangles (pause icon)                                                                                                     |
 | `rectangles_height`      | 80          | height of rectangles (pause icon)                                                                                                    |
 | `rectangles_spacing`     | 20          | spacing between the two rectangles (pause icon)                                                                                      |
 | `triangle_width`         | 80          | width of triangle (play icon)                                                                                                        |
 | `triangle_height`        | 80          | height of triangle (play icon)                                                                                                       |
-| `flash_play_icon`        | true        | flash play icon on unpause (best with pause indicator icon)                                                                          |
+| `flash_play_icon`        | yes         | flash play icon on unpause (best with pause indicator icon)                                                                          |
 | `flash_icon_timeout`     | 0.3         | timeout (seconds) for flash icon                                                                                                     |
 
 ### How to install
@@ -43,12 +47,11 @@ Simply place `pause_indicator_lite.lua` in the corresponding mpv scripts folder 
 > More information about mpv files locations can be found  [here](https://mpv.io/manual/master/#files)
 
 ```
-config/mpv
-│   input.conf
-│   mpv.conf
-│
-└───scripts
-        pause_indicator_lite.lua
+mpv
+├── script-opts
+│   └── pause_indicator_lite.conf
+└── scripts
+    └── pause_indicator_lite.lua
 ```
 
 ### Notes
