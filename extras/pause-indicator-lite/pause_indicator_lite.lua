@@ -37,8 +37,9 @@ local options = {
 }
 
 local msg = require "mp.msg"
+require 'mp.options'.read_options(options, "pause_indicator_lite")
 
--- convert color from hex (credit to mpv/osc.lua)
+-- convert color from hex (adjusted from mpv/osc.lua)
 local function convert_color(color)
     if color:find("^#%x%x%x%x%x%x$") == nil then
         msg.warn("'" .. color .. "' is not a valid color, using default '#FFFFFF'")
@@ -72,13 +73,12 @@ local function draw_triangle()
         icon_opacity, icon_color, icon_border_color, options.triangle_width, options.triangle_height / 2, options.triangle_height)
 end
 
--- init
+-- initiate overlay
 local indicator = mp.create_osd_overlay("ass-events")
 local flash = mp.create_osd_overlay("ass-events")
 
 -- keep track of pause toggle and end of file
-local toggled = false
-local eof = false
+local toggled, eof
 
 -- draw and update indicator
 local function update_indicator()
@@ -104,15 +104,17 @@ end
 -- check if file is video
 local function is_video()
     local t = mp.get_property_native("current-tracks/video")
-    if t and not (t.image or t.albumart) then
-        return true
-    else
-        indicator:remove()
-        flash:remove()
-        return false
-    end
+    return t and not (t.image or t.albumart) and true or false
 end
 
+-- remove overlays
+local function shutdown()
+    if flash then flash:remove() end
+    if indicator then indicator:remove() end
+    mp.unobserve_property("pause")
+end
+
+-- end of file keybind check
 if options.keybind_eof_disable then
     mp.observe_property("eof-reached", "bool", function(_, val)
         eof = val
@@ -121,7 +123,7 @@ end
 
 -- observe when pause state changes
 mp.observe_property("pause", "bool", function(_, paused)
-    if not is_video() then return mp.unobserve_property("pause") end
+    if not is_video() then return shutdown() end
     if paused then
         update_indicator()
         toggled = true
@@ -141,8 +143,7 @@ mp.observe_property("pause", "bool", function(_, paused)
         }, "pause-indicator", "force")
 
         if options.keybind_mode == "always" or (options.keybind_mode == "onpause" and paused) then
-            if options.keybind_eof_disable and eof then return end
-            mp.enable_key_bindings("pause-indicator")
+            if not eof then mp.enable_key_bindings("pause-indicator") end
         else
             mp.disable_key_bindings("pause-indicator")
         end
