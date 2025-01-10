@@ -188,8 +188,8 @@ local user_opts = {
     tooltip_cache_speed_offset = 5,        -- if cache speed is enabled, adjust the main tooltip for cache
     portrait_window_trigger = 930,         -- portrait window width trigger to move some elements
     hide_volume_bar_trigger = 1150,        -- hide volume bar trigger window width
-    notitle_osc_h_offset = 25,             -- osc height offset if title above seekbar is disabled
-    nochapter_osc_h_offset = 10,           -- osc height offset if chapter title is disabled or doesn't exist
+    notitle_osc_h_offset = 23,             -- osc height offset if title above seekbar is disabled
+    nochapter_osc_h_offset = 8,            -- osc height offset if chapter title is disabled or doesn't exist
     seek_hover_tooltip_h_offset = 0,       -- seek hover timecodes tooltip height position offset
     osc_height = 130,                      -- osc height without offsets
 
@@ -1740,7 +1740,7 @@ layouts["modern"] = function ()
     local outeroffset = (chapter_skip_buttons and 0 or 100) + (jump_buttons and 0 or 100)
 
     -- Title
-    geo = {x = 25, y = refY - (chapter_index and user_opts.title_with_chapter_height or user_opts.title_height), an = 1, w = osc_geo.w - 50 - (loop_button and 45 or 0) - (speed_button and 45 or 0), h = 27}
+    geo = {x = 25, y = refY - (chapter_index and user_opts.title_with_chapter_height or user_opts.title_height), an = 1, w = osc_geo.w - 50 - (loop_button and 45 or 0) - (speed_button and 45 or 0), h = user_opts.title_font_size}
     lo = add_layout("title")
     lo.geometry = geo
     lo.style = string.format("%s{\\clip(0,%f,%f,%f)}", osc_styles.title, geo.y - geo.h, geo.x + geo.w, geo.y + geo.h)
@@ -1749,7 +1749,7 @@ layouts["modern"] = function ()
     -- Chapter Title (above seekbar)
     if user_opts.show_chapter_title then
         lo = add_layout("chapter_title")
-        lo.geometry = {x = 26, y = refY - user_opts.chapter_title_height, an = 1, w = osc_geo.w / 2, h = 16}
+        lo.geometry = {x = 26, y = refY - user_opts.chapter_title_height, an = 1, w = osc_geo.w / 2, h = user_opts.chapter_title_font_size}
         lo.style = string.format("%s{\\clip(0,%f,%f,%f)}", osc_styles.chapter_title, geo.y - geo.h, geo.x + geo.w, geo.y + geo.h)
     end
 
