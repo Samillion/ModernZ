@@ -135,7 +135,7 @@ local user_opts = {
     middle_buttons_color = "#FFFFFF",      -- color of the middle buttons (skip, jump, chapter, etc.)
     playpause_color = "#FFFFFF",           -- color of the play/pause button
     held_element_color = "#999999",        -- color of the element when held down (pressed)
-    hover_effect_color = "#FFFFFF",        -- color of a hovered button when hover_effect includes "color"
+    hover_effect_color = "#FB8C00",        -- color of a hovered button when hover_effect includes "color"
     thumbnail_border_color = "#111111",    -- color of the border for thumbnails (with thumbfast)
 
     fade_alpha = 130,                      -- alpha of the OSC background box
@@ -202,24 +202,24 @@ local user_opts = {
     title_mbtn_right_command = "show-text ${path}",
 
     -- playlist button mouse actions
-    playlist_mbtn_left_command = "script-binding select/select-playlist; script-message-to modernz osc-hide",
+    playlist_mbtn_left_command = "script-binding select/select-playlist",
     playlist_mbtn_right_command = "show-text ${playlist} 3000",
 
     -- volume mouse actions
     vol_ctrl_mbtn_left_command = "no-osd cycle mute",
-    vol_ctrl_mbtn_right_command = "script-binding select/select-audio-device; script-message-to modernz osc-hide",
+    vol_ctrl_mbtn_right_command = "script-binding select/select-audio-device",
     vol_ctrl_wheel_down_command = "no-osd add volume -5",
     vol_ctrl_wheel_up_command = "no-osd add volume 5",
 
     -- audio button mouse actions
-    audio_track_mbtn_left_command = "script-binding select/select-aid; script-message-to modernz osc-hide",
+    audio_track_mbtn_left_command = "script-binding select/select-aid",
     audio_track_mbtn_mid_command = "cycle audio down",
     audio_track_mbtn_right_command = "cycle audio",
     audio_track_wheel_down_command = "cycle audio",
     audio_track_wheel_up_command = "cycle audio down",
 
     -- subtitle button mouse actions
-    sub_track_mbtn_left_command = "script-binding select/select-sid; script-message-to modernz osc-hide",
+    sub_track_mbtn_left_command = "script-binding select/select-sid",
     sub_track_mbtn_mid_command = "cycle sub down",
     sub_track_mbtn_right_command = "cycle sub",
     sub_track_wheel_down_command = "cycle sub",
@@ -228,24 +228,24 @@ local user_opts = {
     -- chapter skip buttons mouse actions
     chapter_prev_mbtn_left_command = "add chapter -1",
     chapter_prev_mbtn_mid_command = "show-text ${chapter-list} 3000",
-    chapter_prev_mbtn_right_command = "script-binding select/select-chapter; script-message-to modernz osc-hide",
+    chapter_prev_mbtn_right_command = "script-binding select/select-chapter",
 
     chapter_next_mbtn_left_command = "add chapter 1",
     chapter_next_mbtn_mid_command = "show-text ${chapter-list} 3000",
-    chapter_next_mbtn_right_command = "script-binding select/select-chapter; script-message-to modernz osc-hide",
+    chapter_next_mbtn_right_command = "script-binding select/select-chapter",
 
     -- chapter title (below seekbar) mouse actions
-    chapter_title_mbtn_left_command = "script-binding select/select-chapter; script-message-to modernz osc-hide",
+    chapter_title_mbtn_left_command = "script-binding select/select-chapter",
     chapter_title_mbtn_right_command = "show-text ${chapter-list} 3000",
 
     -- playlist skip buttons mouse actions
     playlist_prev_mbtn_left_command = "playlist-prev",
     playlist_prev_mbtn_mid_command = "show-text ${playlist} 3000",
-    playlist_prev_mbtn_right_command = "script-binding select/select-playlist; script-message-to modernz osc-hide",
+    playlist_prev_mbtn_right_command = "script-binding select/select-playlist",
 
     playlist_next_mbtn_left_command = "playlist-next",
     playlist_next_mbtn_mid_command = "show-text ${playlist} 3000",
-    playlist_next_mbtn_right_command = "script-binding select/select-playlist; script-message-to modernz osc-hide",
+    playlist_next_mbtn_right_command = "script-binding select/select-playlist",
 
     -- fullscreen button mouse actions
     fullscreen_mbtn_left_command = "cycle fullscreen",
@@ -254,12 +254,15 @@ local user_opts = {
 
 mp.observe_property("osc", "bool", function(name, value) if value == true then mp.set_property("osc", "no") end end)
 
-local osc_param = { -- calculated by osc_init()
-    playresy = 0,                           -- canvas size Y
-    playresx = 0,                           -- canvas size X
+local osc_param = {                  -- calculated by osc_init()
+    playresy = 0,                    -- canvas size Y
+    playresx = 0,                    -- canvas size X
     display_aspect = 1,
     unscaled_y = 0,
     areas = {},
+    video_margins = {
+        l = 0, r = 0, t = 0, b = 0,  -- left/right/top/bottom
+    },
 }
 
 local icons = {
@@ -733,6 +736,20 @@ local function get_touchtimeout()
         return 0
     end
     return state.touchtime + (get_hidetimeout() / 1000) - mp.get_time()
+end
+
+local function update_margins()
+    local margins = osc_param.video_margins
+
+    -- Don't use margins if it's visible only temporarily.
+    if not state.osc_visible or
+       (state.fullscreen and not user_opts.showfullscreen) or
+       (not state.fullscreen and not user_opts.showwindowed)
+    then
+        margins = {l = 0, r = 0, t = 0, b = 0}
+    end
+
+    mp.set_property_native("user-data/osc/margins", margins)
 end
 
 local tick
@@ -1655,6 +1672,9 @@ layouts["modern"] = function ()
         h = user_opts.osc_height - osc_height_offset
     }
 
+    -- update bottom margin
+    osc_param.video_margins.b = math.max(user_opts.osc_height, user_opts.fade_alpha) / osc_param.playresy
+
     -- origin of the controllers, left/bottom corner
     local posX = 0
     local posY = osc_param.playresy
@@ -1934,6 +1954,9 @@ layouts["modern-image"] = function ()
         h = 50
     }
 
+    -- update bottom margin
+    osc_param.video_margins.b = math.max(50, user_opts.fade_alpha) / osc_param.playresy
+
     -- origin of the controllers, left/bottom corner
     local posX = 0
     local posY = osc_param.playresy
@@ -2100,6 +2123,7 @@ end
 local function osc_visible(visible)
     if state.osc_visible ~= visible then
         state.osc_visible = visible
+        update_margins()
         adjust_subtitles(true)
     end
     request_tick()
@@ -2827,6 +2851,7 @@ local function osc_init()
 
     --do something with the elements
     prepare_elements()
+    update_margins()
 end
 
 local function show_osc()
@@ -3187,12 +3212,13 @@ local function render()
 
     -- submit
     set_osd(osc_param.playresy * osc_param.display_aspect,
-            osc_param.playresy, ass.text, -1)
+            osc_param.playresy, ass.text, 1000)
 end
 
 -- called by mpv on every frame
 tick = function()
     if state.marginsREQ == true then
+        update_margins()
         state.marginsREQ = false
     end
 
@@ -3477,6 +3503,7 @@ local function visibility_mode(mode, no_osd)
     mp.disable_key_bindings("input")
     mp.disable_key_bindings("window-controls")
     state.input_enabled = false
+    update_margins()
     request_tick()
 end
 
