@@ -1981,15 +1981,12 @@ layouts["modern-image"] = function ()
     local playlist_button = user_opts.playlist_button and (not user_opts.hide_empty_playlist_button or mp.get_property_number("playlist-count", 0) > 1)
     local zoom_control = user_opts.zoom_control
 
-    local offset = 0
-    local outeroffset = (chapter_skip_buttons and 0 or 100) + (jump_buttons and 0 or 100)
-
     -- Playlist
     if playlist_button then
         lo = add_layout("tog_playlist")
         lo.geometry = {x = 25, y = refY - 30, an = 5, w = 24, h = 24}
         lo.style = osc_styles.control_3
-        lo.visible = osc_param.playresx >= 250 - outeroffset
+        lo.visible = osc_param.playresx >= 250
     end
 
     if track_nextprev_buttons then
@@ -2009,7 +2006,7 @@ layouts["modern-image"] = function ()
         lo.style = osc_styles.control_2
 
         lo = new_element("zoom_control_bg", "box")
-        lo.visible = osc_param.playresx >= 650 - outeroffset and user_opts.zoom_control
+        lo.visible = osc_param.playresx >= 400 and user_opts.zoom_control
         lo = add_layout("zoom_control_bg")
         lo.geometry = {x = 145 - (playlist_button and 0 or 25) - (track_nextprev_buttons and 0 or 70), y = refY - 30, an = 4, w = 80, h = 4}
         lo.layer = 13
@@ -2028,33 +2025,33 @@ layouts["modern-image"] = function ()
         lo.style = osc_styles.control_2
     end
 
-    -- Fullscreen/Info/Pin
+    -- Fullscreen/Info/Pin/Download
     if fullscreen_button then
         lo = add_layout("tog_fullscreen")
         lo.geometry = {x = osc_geo.w - 37, y = refY - 30, an = 5, w = 24, h = 24}
         lo.style = osc_styles.control_3
-        lo.visible = (osc_param.playresx >= 250 - outeroffset)
+        lo.visible = (osc_param.playresx >= 250)
     end
 
     if info_button then
         lo = add_layout("tog_info")
         lo.geometry = {x = osc_geo.w - 82 + (fullscreen_button and 0 or 45), y = refY - 30, an = 5, w = 24, h = 24}
         lo.style = osc_styles.control_3
-        lo.visible = (osc_param.playresx >= 300 - outeroffset)
+        lo.visible = (osc_param.playresx >= 300)
     end
 
     if ontop_button then
         lo = add_layout("tog_ontop")
         lo.geometry = {x = osc_geo.w - 127 + (info_button and 0 or 45) + (fullscreen_button and 0 or 45), y = refY - 30, an = 5, w = 24, h = 24}
         lo.style = osc_styles.control_3
-        lo.visible = (osc_param.playresx >= 500 - outeroffset)
+        lo.visible = (osc_param.playresx >= 500)
     end
     
     if user_opts.download_button then
         lo = add_layout("download")
         lo.geometry = {x = osc_geo.w - 172 + (ontop_button and 0 or 45) + (info_button and 0 or 45) + (fullscreen_button and 0 or 45), y = refY - 30, an = 5, w = 24, h = 24}
         lo.style = osc_styles.control_3
-        lo.visible = (osc_param.playresx >= 400 - outeroffset)
+        lo.visible = (osc_param.playresx >= 400)
     end
 end
 
@@ -2409,7 +2406,7 @@ local function osc_init()
     -- zoom out icon
     local current_zoom = mp.get_property_number("video-zoom")
     ne = new_element("zoom_out_icon", "button")
-    ne.visible = (osc_param.playresx >= 700 - outeroffset)
+    ne.visible = (osc_param.playresx >= 400)
     ne.content = icons.zoom_out
     ne.tooltip_style = osc_styles.tooltip
     ne.tooltipF = user_opts.tooltip_hints and locale.zoom_out or ""
@@ -2421,7 +2418,7 @@ local function osc_init()
     -- zoom slider
     ne = new_element("zoom_control", "slider")
     ne.slider = {min = {value = user_opts.zoom_out_min}, max = {value = user_opts.zoom_in_max}}
-    ne.visible = (osc_param.playresx >= 700 - outeroffset) and user_opts.zoom_control and state.is_image
+    ne.visible = (osc_param.playresx >= 400) and user_opts.zoom_control and state.is_image
     ne.slider.markerF = function () return {} end
     ne.slider.seekRangesF = function() return nil end
     ne.slider.posF = function () return mp.get_property_number("video-zoom") end
@@ -2441,7 +2438,7 @@ local function osc_init()
 
     -- zoom in icon
     ne = new_element("zoom_in_icon", "button")
-    ne.visible = (osc_param.playresx >= 700 - outeroffset)
+    ne.visible = (osc_param.playresx >= 400)
     ne.content = icons.zoom_in
     ne.tooltip_style = osc_styles.tooltip
     ne.tooltipF = user_opts.tooltip_hints and locale.zoom_in or ""
