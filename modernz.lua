@@ -188,10 +188,10 @@ local user_opts = {
     tooltip_cache_speed_offset = 5,        -- if cache speed is enabled, adjust the main tooltip for cache
     portrait_window_trigger = 930,         -- portrait window width trigger to move some elements
     hide_volume_bar_trigger = 1150,        -- hide volume bar trigger window width
-    notitle_osc_h_offset = 23,             -- osc height offset if title above seekbar is disabled
-    nochapter_osc_h_offset = 8,            -- osc height offset if chapter title is disabled or doesn't exist
+    notitle_osc_h_offset = 25,             -- osc height offset if title above seekbar is disabled
+    nochapter_osc_h_offset = 10,           -- osc height offset if chapter title is disabled or doesn't exist
     seek_hover_tooltip_h_offset = 0,       -- seek hover timecodes tooltip height position offset
-    osc_height = 130,                      -- osc height without offsets
+    osc_height = 132,                      -- osc height without offsets
 
     -- Mouse commands
     -- customize the button function based on mouse action
