@@ -738,6 +738,10 @@ local function get_touchtimeout()
     return state.touchtime + (get_hidetimeout() / 1000) - mp.get_time()
 end
 
+local function cache_enabled()
+    return state.cache_state and #state.cache_state["seekable-ranges"] > 0
+end
+
 local function update_margins()
     local margins = osc_param.video_margins
 
@@ -2208,7 +2212,6 @@ local function osc_init()
     ne.visible = chapter_index >= 0
     ne.content = function()
         if user_opts.chapter_fmt ~= "no" and chapter_index >= 0 then
-            request_init()
             local chapters = mp.get_property_native("chapter-list", {})
             local chapter_title = (chapters[chapter_index + 1] and chapters[chapter_index + 1].title ~= "") and 
                 chapters[chapter_index + 1].title or locale.chapter .. ": " .. chapter_index + 1 .. "/" .. #chapters
@@ -2582,15 +2585,11 @@ local function osc_init()
     end
 
     -- cache info
-    local cache_state_ranges = state.cache_state and state.cache_state["seekable-ranges"] and #state.cache_state["seekable-ranges"] > 0
     ne = new_element("cache_info", "button")
     ne.visible = (osc_param.playresx >= 1250 - outeroffset - (user_opts.speed_button and 0 or 100) - (user_opts.loop_button and 0 or 100) - (user_opts.screenshot_button and 0 or 100) - (user_opts.ontop_button and 0 or 100) - (user_opts.info_button and 0 or 100) - (user_opts.fullscreen_button and 0 or 100))
     ne.content = function ()
-        request_init()
-        local cache_state = state.cache_state
-        -- probably not a network stream
-        if not cache_state_ranges then return "" end
-        local dmx_cache = cache_state and cache_state["cache-duration"]
+        if not cache_enabled() then return "" end
+        local dmx_cache = state.cache_state["cache-duration"]
         local thresh = math.min(state.dmx_cache * 0.05, 5)  -- 5% or 5s
         if dmx_cache and math.abs(dmx_cache - state.dmx_cache) >= thresh then
             state.dmx_cache = dmx_cache
@@ -2610,11 +2609,8 @@ local function osc_init()
     ne = new_element("cache_info_speed", "button")
     ne.visible = (osc_param.playresx >= 1250 - outeroffset - (user_opts.speed_button and 0 or 100) - (user_opts.loop_button and 0 or 100) - (user_opts.screenshot_button and 0 or 100) - (user_opts.ontop_button and 0 or 100) - (user_opts.info_button and 0 or 100) - (user_opts.fullscreen_button and 0 or 100))
     ne.content = function ()
-        request_init()
-        local cache_state = state.cache_state
-        -- probably not a network stream
-        if not cache_state_ranges then return "" end
-        local dmx_speed = cache_state and cache_state["raw-input-rate"] or 0
+        if not cache_enabled() then return "" end
+        local dmx_speed = state.cache_state["raw-input-rate"] or 0
         local cache_speed = utils.format_bytes_humanized(dmx_speed)
         local number, unit = cache_speed:match("([%d%.]+)%s*(%S+)")
 
@@ -2659,23 +2655,15 @@ local function osc_init()
         end
     end
     ne.slider.seekRangesF = function()
-        if not user_opts.seekrange then
-            return nil
-        end
-        local cache_state = state.cache_state
-        if not cache_state then
+        if not user_opts.seekrange or not cache_enabled() then
             return nil
         end
         local duration = mp.get_property_number("duration")
         if duration == nil or duration <= 0 then
             return nil
         end
-        local ranges = cache_state["seekable-ranges"]
-        if #ranges == 0 then
-            return nil
-        end
         local nranges = {}
-        for _, range in pairs(ranges) do
+        for _, range in pairs(state.cache_state["seekable-ranges"]) do
             nranges[#nranges + 1] = {
                 ["start"] = 100 * range["start"] / duration,
                 ["end"] = 100 * range["end"] / duration,
@@ -2851,6 +2839,7 @@ local function osc_init()
 
     --do something with the elements
     prepare_elements()
+    update_margins()
 end
 
 local function show_osc()
@@ -3643,7 +3632,6 @@ opt.read_options(user_opts, "modernz", function(changed)
     request_tick()
     visibility_mode(user_opts.visibility, true)
     update_duration_watch()
-    update_margins()
     request_init()
 end)
 
