@@ -2851,7 +2851,6 @@ local function osc_init()
 
     --do something with the elements
     prepare_elements()
-    update_margins()
 end
 
 local function show_osc()
