@@ -2609,7 +2609,7 @@ local function osc_init()
         return state.buffering and locale.buffering .. ": " .. mp.get_property("cache-buffering-state") .. "%" or cache_time
     end
     ne.tooltip_style = osc_styles.tooltip
-    ne.tooltipF = (user_opts.tooltip_hints and cache_state_ranges) and locale.cache or ""
+    ne.tooltipF = (user_opts.tooltip_hints and cache_enabled()) and locale.cache or ""
 
     -- cache info speed
     ne = new_element("cache_info_speed", "button")
