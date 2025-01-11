@@ -3643,6 +3643,7 @@ opt.read_options(user_opts, "modernz", function(changed)
     request_tick()
     visibility_mode(user_opts.visibility, true)
     update_duration_watch()
+    update_margins()
     request_init()
 end)
 
