@@ -2207,19 +2207,25 @@ local function osc_init()
     ne.eventresponder["shift+mbtn_left_down"] = command_callback(user_opts.title_mbtn_mid_command)
 
     -- Chapter title (above seekbar)
-    local chapter_index = mp.get_property_number("chapter", -1)
     ne = new_element("chapter_title", "button")
-    ne.visible = chapter_index >= 0
+    ne.visible = mp.get_property_number("chapter", -1) >= 0
     ne.content = function()
-        if user_opts.chapter_fmt ~= "no" and chapter_index >= 0 then
-            local chapters = mp.get_property_native("chapter-list", {})
-            local chapter_title = (chapters[chapter_index + 1] and chapters[chapter_index + 1].title ~= "") and 
-                chapters[chapter_index + 1].title or locale.chapter .. ": " .. chapter_index + 1 .. "/" .. #chapters
-            chapter_title = mp.command_native({"escape-ass", chapter_title})
-            chapter_title = (thumbfast.disabled and not user_opts.show_title) and (state.forced_title ~= nil and state.forced_title) or chapter_title
-            return string.format(user_opts.chapter_fmt, chapter_title)
+        local chapter_index = mp.get_property_number("chapter", -1)
+        if user_opts.chapter_fmt == "no" or chapter_index < 0 then
+            return ""
         end
-        return "" -- fallback
+
+        local chapters = mp.get_property_native("chapter-list", {})
+        local chapter_data = chapters[chapter_index + 1]
+        local chapter_title = chapter_data and chapter_data.title ~= "" and chapter_data.title
+            or string.format("%s: %d/%d", locale.chapter, chapter_index + 1, #chapters)
+
+        chapter_title = mp.command_native({"escape-ass", chapter_title})
+        if thumbfast.disabled and not user_opts.show_title and state.forced_title then
+            chapter_title = state.forced_title
+        end
+
+        return string.format(user_opts.chapter_fmt, chapter_title)
     end
     ne.eventresponder["mbtn_left_up"] = command_callback(user_opts.chapter_title_mbtn_left_command)
     ne.eventresponder["mbtn_right_up"] = command_callback(user_opts.chapter_title_mbtn_right_command)
