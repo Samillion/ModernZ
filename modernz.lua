@@ -135,7 +135,7 @@ local user_opts = {
     middle_buttons_color = "#FFFFFF",      -- color of the middle buttons (skip, jump, chapter, etc.)
     playpause_color = "#FFFFFF",           -- color of the play/pause button
     held_element_color = "#999999",        -- color of the element when held down (pressed)
-    hover_effect_color = "#FFFFFF",        -- color of a hovered button when hover_effect includes "color"
+    hover_effect_color = "#FB8C00",        -- color of a hovered button when hover_effect includes "color"
     thumbnail_border_color = "#111111",    -- color of the border for thumbnails (with thumbfast)
 
     fade_alpha = 130,                      -- alpha of the OSC background box
@@ -254,12 +254,15 @@ local user_opts = {
 
 mp.observe_property("osc", "bool", function(name, value) if value == true then mp.set_property("osc", "no") end end)
 
-local osc_param = { -- calculated by osc_init()
-    playresy = 0,                           -- canvas size Y
-    playresx = 0,                           -- canvas size X
+local osc_param = {                  -- calculated by osc_init()
+    playresy = 0,                    -- canvas size Y
+    playresx = 0,                    -- canvas size X
     display_aspect = 1,
     unscaled_y = 0,
     areas = {},
+    video_margins = {
+        l = 0, r = 0, t = 0, b = 0,  -- left/right/top/bottom
+    },
 }
 
 local icons = {
@@ -733,6 +736,24 @@ local function get_touchtimeout()
         return 0
     end
     return state.touchtime + (get_hidetimeout() / 1000) - mp.get_time()
+end
+
+local function cache_enabled()
+    return state.cache_state and #state.cache_state["seekable-ranges"] > 0
+end
+
+local function update_margins()
+    local margins = osc_param.video_margins
+
+    -- Don't use margins if it's visible only temporarily.
+    if not state.osc_visible or get_hidetimeout() >= 0 or
+       (state.fullscreen and not user_opts.showfullscreen) or
+       (not state.fullscreen and not user_opts.showwindowed)
+    then
+        margins = {l = 0, r = 0, t = 0, b = 0}
+    end
+
+    mp.set_property_native("user-data/osc/margins", margins)
 end
 
 local tick
@@ -1655,6 +1676,9 @@ layouts["modern"] = function ()
         h = user_opts.osc_height - osc_height_offset
     }
 
+    -- update bottom margin
+    osc_param.video_margins.b = math.max(user_opts.osc_height, user_opts.fade_alpha) / osc_param.playresy
+
     -- origin of the controllers, left/bottom corner
     local posX = 0
     local posY = osc_param.playresy
@@ -1934,6 +1958,9 @@ layouts["modern-image"] = function ()
         h = 50
     }
 
+    -- update bottom margin
+    osc_param.video_margins.b = math.max(50, user_opts.fade_alpha) / osc_param.playresy
+
     -- origin of the controllers, left/bottom corner
     local posX = 0
     local posY = osc_param.playresy
@@ -2100,6 +2127,7 @@ end
 local function osc_visible(visible)
     if state.osc_visible ~= visible then
         state.osc_visible = visible
+        update_margins()
         adjust_subtitles(true)
     end
     request_tick()
@@ -2179,20 +2207,25 @@ local function osc_init()
     ne.eventresponder["shift+mbtn_left_down"] = command_callback(user_opts.title_mbtn_mid_command)
 
     -- Chapter title (above seekbar)
-    local chapter_index = mp.get_property_number("chapter", -1)
     ne = new_element("chapter_title", "button")
-    ne.visible = chapter_index >= 0
+    ne.visible = mp.get_property_number("chapter", -1) >= 0
     ne.content = function()
-        if user_opts.chapter_fmt ~= "no" and chapter_index >= 0 then
-            request_init()
-            local chapters = mp.get_property_native("chapter-list", {})
-            local chapter_title = (chapters[chapter_index + 1] and chapters[chapter_index + 1].title ~= "") and 
-                chapters[chapter_index + 1].title or locale.chapter .. ": " .. chapter_index + 1 .. "/" .. #chapters
-            chapter_title = mp.command_native({"escape-ass", chapter_title})
-            chapter_title = (thumbfast.disabled and not user_opts.show_title) and (state.forced_title ~= nil and state.forced_title) or chapter_title
-            return string.format(user_opts.chapter_fmt, chapter_title)
+        local chapter_index = mp.get_property_number("chapter", -1)
+        if user_opts.chapter_fmt == "no" or chapter_index < 0 then
+            return ""
         end
-        return "" -- fallback
+
+        local chapters = mp.get_property_native("chapter-list", {})
+        local chapter_data = chapters[chapter_index + 1]
+        local chapter_title = chapter_data and chapter_data.title ~= "" and chapter_data.title
+            or string.format("%s: %d/%d", locale.chapter, chapter_index + 1, #chapters)
+
+        chapter_title = mp.command_native({"escape-ass", chapter_title})
+        if thumbfast.disabled and not user_opts.show_title and state.forced_title then
+            chapter_title = state.forced_title
+        end
+
+        return string.format(user_opts.chapter_fmt, chapter_title)
     end
     ne.eventresponder["mbtn_left_up"] = command_callback(user_opts.chapter_title_mbtn_left_command)
     ne.eventresponder["mbtn_right_up"] = command_callback(user_opts.chapter_title_mbtn_right_command)
@@ -2558,15 +2591,11 @@ local function osc_init()
     end
 
     -- cache info
-    local cache_state_ranges = state.cache_state and state.cache_state["seekable-ranges"] and #state.cache_state["seekable-ranges"] > 0
     ne = new_element("cache_info", "button")
     ne.visible = (osc_param.playresx >= 1250 - outeroffset - (user_opts.speed_button and 0 or 100) - (user_opts.loop_button and 0 or 100) - (user_opts.screenshot_button and 0 or 100) - (user_opts.ontop_button and 0 or 100) - (user_opts.info_button and 0 or 100) - (user_opts.fullscreen_button and 0 or 100))
     ne.content = function ()
-        request_init()
-        local cache_state = state.cache_state
-        -- probably not a network stream
-        if not cache_state_ranges then return "" end
-        local dmx_cache = cache_state and cache_state["cache-duration"]
+        if not cache_enabled() then return "" end
+        local dmx_cache = state.cache_state["cache-duration"]
         local thresh = math.min(state.dmx_cache * 0.05, 5)  -- 5% or 5s
         if dmx_cache and math.abs(dmx_cache - state.dmx_cache) >= thresh then
             state.dmx_cache = dmx_cache
@@ -2580,17 +2609,14 @@ local function osc_init()
         return state.buffering and locale.buffering .. ": " .. mp.get_property("cache-buffering-state") .. "%" or cache_time
     end
     ne.tooltip_style = osc_styles.tooltip
-    ne.tooltipF = (user_opts.tooltip_hints and cache_state_ranges) and locale.cache or ""
+    ne.tooltipF = (user_opts.tooltip_hints and cache_enabled()) and locale.cache or ""
 
     -- cache info speed
     ne = new_element("cache_info_speed", "button")
     ne.visible = (osc_param.playresx >= 1250 - outeroffset - (user_opts.speed_button and 0 or 100) - (user_opts.loop_button and 0 or 100) - (user_opts.screenshot_button and 0 or 100) - (user_opts.ontop_button and 0 or 100) - (user_opts.info_button and 0 or 100) - (user_opts.fullscreen_button and 0 or 100))
     ne.content = function ()
-        request_init()
-        local cache_state = state.cache_state
-        -- probably not a network stream
-        if not cache_state_ranges then return "" end
-        local dmx_speed = cache_state and cache_state["raw-input-rate"] or 0
+        if not cache_enabled() then return "" end
+        local dmx_speed = state.cache_state["raw-input-rate"] or 0
         local cache_speed = utils.format_bytes_humanized(dmx_speed)
         local number, unit = cache_speed:match("([%d%.]+)%s*(%S+)")
 
@@ -2635,23 +2661,15 @@ local function osc_init()
         end
     end
     ne.slider.seekRangesF = function()
-        if not user_opts.seekrange then
-            return nil
-        end
-        local cache_state = state.cache_state
-        if not cache_state then
+        if not user_opts.seekrange or not cache_enabled() then
             return nil
         end
         local duration = mp.get_property_number("duration")
         if duration == nil or duration <= 0 then
             return nil
         end
-        local ranges = cache_state["seekable-ranges"]
-        if #ranges == 0 then
-            return nil
-        end
         local nranges = {}
-        for _, range in pairs(ranges) do
+        for _, range in pairs(state.cache_state["seekable-ranges"]) do
             nranges[#nranges + 1] = {
                 ["start"] = 100 * range["start"] / duration,
                 ["end"] = 100 * range["end"] / duration,
@@ -2827,6 +2845,7 @@ local function osc_init()
 
     --do something with the elements
     prepare_elements()
+    update_margins()
 end
 
 local function show_osc()
@@ -3187,12 +3206,13 @@ local function render()
 
     -- submit
     set_osd(osc_param.playresy * osc_param.display_aspect,
-            osc_param.playresy, ass.text, -1)
+            osc_param.playresy, ass.text, 1000)
 end
 
 -- called by mpv on every frame
 tick = function()
     if state.marginsREQ == true then
+        update_margins()
         state.marginsREQ = false
     end
 
@@ -3477,6 +3497,7 @@ local function visibility_mode(mode, no_osd)
     mp.disable_key_bindings("input")
     mp.disable_key_bindings("window-controls")
     state.input_enabled = false
+    update_margins()
     request_tick()
 end
 
@@ -3529,7 +3550,11 @@ end)
 
 mp.register_script_message("osc-visibility", visibility_mode)
 mp.register_script_message("osc-show", show_osc)
-mp.register_script_message("osc-hide", function() osc_visible(false) end)
+mp.register_script_message("osc-hide", function() 
+    if user_opts.visibility == "auto" then
+        osc_visible(false)
+    end
+end)
 mp.add_key_binding(nil, "visibility", function() visibility_mode("cycle") end)
 mp.add_key_binding(nil, "progress-toggle", function()
     user_opts.persistentprogress = not user_opts.persistentprogress
