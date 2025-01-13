@@ -14,7 +14,7 @@ https://github.com/user-attachments/assets/7f6aeaec-4057-4099-a63c-42cf2e0ab3bb
 > [!IMPORTANT]
 > If the menus are not functioning as shown in the video, it is most likely because you're using an outdated version of mpv
 
-- Check [official mpv installation sources](https://mpv.io/installation/) for up-to-date packages
+- Check [mpv installation sources](https://mpv.io/installation/) on the official website for up-to-date packages
 - Use [mpv-build](https://github.com/mpv-player/mpv-build) to get the latest release
 - Use a simplified alternative function as shown below until you're able to update mpv
 
