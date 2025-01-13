@@ -2607,7 +2607,7 @@ local function osc_init()
     end
     ne.tooltip_style = osc_styles.tooltip
     ne.tooltipF = (user_opts.tooltip_hints and cache_enabled()) and locale.cache or ""
-    ne.eventresponder["mbtn_left_up"] = function() mp.command("script-binding stats/display-page-5") end
+    ne.eventresponder["mbtn_left_up"] = function() mp.command("script-binding stats/display-page-3") end
 
     --seekbar
     ne = new_element("seekbar", "slider")
