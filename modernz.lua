@@ -184,7 +184,7 @@ local user_opts = {
     time_codes_height = 35,                -- time codes height position
     time_codes_centered_height = 57,       -- time codes height position with portrait window
     tooltip_height_offset = 2,             -- tooltip height position offset
-    tooltip_left_offset = 3,               -- if tooltip contains many characters, it is moved to the left by offset
+    tooltip_left_offset = 5,               -- if tooltip contains many characters, it is moved to the left by offset
     portrait_window_trigger = 930,         -- portrait window width trigger to move some elements
     hide_volume_bar_trigger = 1150,        -- hide volume bar trigger window width
     notitle_osc_h_offset = 25,             -- osc height offset if title above seekbar is disabled
@@ -2602,10 +2602,8 @@ local function osc_init()
         local number, unit = cache_speed:match("([%d%.]+)%s*(%S+)")
         local cache_info = state.buffering and locale.buffering .. ": " .. mp.get_property("cache-buffering-state") .. "%" or cache_time
         local cache_info_speed = string.format("%8s %4s/s", number, unit)
-        
-        cache_output = user_opts.cache_info_speed and (cache_info .. "\\N" .. cache_info_speed) or cache_info
 
-        return cache_output
+        return user_opts.cache_info_speed and cache_info .. "\\N" .. cache_info_speed or cache_info
     end
     ne.tooltip_style = osc_styles.tooltip
     ne.tooltipF = (user_opts.tooltip_hints and cache_enabled()) and locale.cache or ""
