@@ -134,7 +134,7 @@ Create `modernz.conf` in your mpv script-opts directory:
 | middle_buttons_color        | `#FFFFFF` | color of the middle buttons (skip, jump, chapter, etc.)                                         |
 | playpause_color             | `#FFFFFF` | color of the play/pause button                                                                  |
 | held_element_color          | `#999999` | color of the element when held down (pressed)                                                   |
-| hover_effect_color          | `#FFFFFF` | color of a hovered button when `hover_effect` includes `"color"`                                |
+| hover_effect_color          | `#FB8C00` | color of a hovered button when `hover_effect` includes `"color"`                                |
 | thumbnail_border_color      | `#111111` | color of the border for thumbnails (with thumbfast)                                             |
 | fade_alpha                  | 130       | alpha of the OSC background box                                                                 |
 | fade_blur_strength          | 100       | blur strength for the OSC alpha fade. caution: high values can take a lot of CPU time to render |
