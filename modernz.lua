@@ -184,8 +184,7 @@ local user_opts = {
     time_codes_height = 35,                -- time codes height position
     time_codes_centered_height = 57,       -- time codes height position with portrait window
     tooltip_height_offset = 2,             -- tooltip height position offset
-    tooltip_left_offset = 3,               -- if tooltip contains many characters, it is moved to the left by offset
-    tooltip_cache_speed_offset = 5,        -- if cache speed is enabled, adjust the main tooltip for cache
+    tooltip_left_offset = 5,               -- if tooltip contains many characters, it is moved to the left by offset
     portrait_window_trigger = 930,         -- portrait window width trigger to move some elements
     hide_volume_bar_trigger = 1150,        -- hide volume bar trigger window width
     notitle_osc_h_offset = 25,             -- osc height offset if title above seekbar is disabled
@@ -1283,7 +1282,7 @@ local function render_elements(master_ass)
             local hoverstyle = button_lo.hoverstyle
             if hovered and (contains(user_opts.hover_effect, "size") or contains(user_opts.hover_effect, "color")) then
                 -- remove font scale tags for these elements, it looks out of place
-                if element.name == "title" or element.name == "time_codes" or element.name == "chapter_title" then
+                if element.name == "title" or element.name == "time_codes" or element.name == "chapter_title" or element.name == "cache_info" then
                     hoverstyle = hoverstyle:gsub("\\fscx%d+\\fscy%d+", "")
                 end
                 elem_ass:append(hoverstyle .. buttontext)
@@ -1301,15 +1300,14 @@ local function render_elements(master_ass)
 
             -- add tooltip for button elements
             if element.tooltipF ~= nil and (user_opts.tooltips_for_disabled_elements or element.enabled) then
-                local cache_info_offset = (element.name == "cache_info" and user_opts.cache_info_speed) and user_opts.tooltip_cache_speed_offset or 0
                 if mouse_hit(element) then
                     local tooltiplabel = element.tooltipF
                     local an = 1
-                    local ty = element.hitbox.y1 - user_opts.tooltip_height_offset + cache_info_offset
+                    local ty = element.hitbox.y1 - user_opts.tooltip_height_offset
                     local tx = get_virt_mouse_pos()
 
                     if ty < osc_param.playresy / 2 then
-                        ty = element.hitbox.y2 - user_opts.tooltip_height_offset + cache_info_offset
+                        ty = element.hitbox.y2 - user_opts.tooltip_height_offset
                         an = 7
                     end
 
@@ -1757,7 +1755,6 @@ layouts["modern"] = function ()
     local loop_button = user_opts.loop_button
     local speed_button = user_opts.speed_button
     local download_button = user_opts.download_button and state.is_URL
-    local cache_speed = user_opts.cache_info_speed
     local playlist_button = user_opts.playlist_button and (not user_opts.hide_empty_playlist_button or mp.get_property_number("playlist-count", 0) > 1)
 
     local offset = jump_buttons and 60 or 0
@@ -1941,14 +1938,8 @@ layouts["modern"] = function ()
         local cache_x_offset = (download_button and 0 or 45) + (speed_button and 0 or 45) + (loop_button and 0 or 45) + (screenshot_button and 0 or 45) + (ontop_button and 0 or 45) + (info_button and 0 or 45) + (fullscreen_button and 0 or 45)
 
         lo = add_layout("cache_info")
-        lo.geometry = {x = osc_geo.w - (cache_speed and 345 or 340) + cache_x_offset, y = refY - (cache_speed and 41 or 35), an = 6, w = 35, h = 24}
+        lo.geometry = {x = osc_geo.w - 345 + cache_x_offset, y = refY - 35, an = 6, w = (user_opts.cache_info_speed and 70 or 45), h = 24}
         lo.style = osc_styles.cache
-
-        if user_opts.cache_info_speed then
-            lo = add_layout("cache_info_speed")
-            lo.geometry = {x = osc_geo.w - 345 + cache_x_offset, y = refY - 27, an = 6, w = 35, h = 24}
-            lo.style = osc_styles.cache
-        end
     end
 end
 
@@ -2606,22 +2597,17 @@ local function osc_init()
         local sec = math.floor(dmx_cache % 60) -- don't round e.g. 59.9 to 60
         local cache_time = (min > 0 and string.format("%sm%02.0fs", min, sec) or string.format("%3.0fs", sec))
 
-        return state.buffering and locale.buffering .. ": " .. mp.get_property("cache-buffering-state") .. "%" or cache_time
-    end
-    ne.tooltip_style = osc_styles.tooltip
-    ne.tooltipF = (user_opts.tooltip_hints and cache_enabled()) and locale.cache or ""
-
-    -- cache info speed
-    ne = new_element("cache_info_speed", "button")
-    ne.visible = (osc_param.playresx >= 1250 - outeroffset - (user_opts.speed_button and 0 or 100) - (user_opts.loop_button and 0 or 100) - (user_opts.screenshot_button and 0 or 100) - (user_opts.ontop_button and 0 or 100) - (user_opts.info_button and 0 or 100) - (user_opts.fullscreen_button and 0 or 100))
-    ne.content = function ()
-        if not cache_enabled() then return "" end
         local dmx_speed = state.cache_state["raw-input-rate"] or 0
         local cache_speed = utils.format_bytes_humanized(dmx_speed)
         local number, unit = cache_speed:match("([%d%.]+)%s*(%S+)")
+        local cache_info = state.buffering and locale.buffering .. ": " .. mp.get_property("cache-buffering-state") .. "%" or cache_time
+        local cache_info_speed = string.format("%8s %4s/s", number, unit)
 
-        return string.format("%8s %4s/s", number, unit)
+        return user_opts.cache_info_speed and cache_info .. "\\N" .. cache_info_speed or cache_info
     end
+    ne.tooltip_style = osc_styles.tooltip
+    ne.tooltipF = (user_opts.tooltip_hints and cache_enabled()) and locale.cache or ""
+    ne.eventresponder["mbtn_left_up"] = function() mp.command("script-binding stats/display-page-3") end
 
     --seekbar
     ne = new_element("seekbar", "slider")
