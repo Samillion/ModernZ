@@ -2868,10 +2868,7 @@ local function hide_osc()
     if thumbfast.width ~= 0 and thumbfast.height ~= 0 then
         mp.commandv("script-message-to", "thumbfast", "clear")
     end
-
-    local mode = mp.get_property_native("user-data/osc/visibility") or ""
-
-    if not state.enabled and mode ~= "always" then
+    if not state.enabled then
         -- typically hide happens at render() from tick(), but now tick() is
         -- no-op and won't render again to remove the osc, so do that manually.
         state.osc_visible = false
