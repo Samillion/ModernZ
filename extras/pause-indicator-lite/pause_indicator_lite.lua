@@ -61,7 +61,7 @@ local icon_opacity = convert_opacity(options.icon_opacity)
 
 -- pause icon
 local function draw_rectangles()
-    return string.format([[{\an5\p1\alpha&H%s\1c&H%s&\3c&H%s&}m 0 0 l %d 0 l %d %d l 0 %d m %d 0 l %d 0 l %d %d l %d %d]],
+    return string.format([[{\rDefault\an5\p1\alpha&H%s\1c&H%s&\3c&H%s&}m 0 0 l %d 0 l %d %d l 0 %d m %d 0 l %d 0 l %d %d l %d %d]],
         icon_opacity, icon_color, icon_border_color, options.rectangles_width, options.rectangles_width, options.rectangles_height, options.rectangles_height,
         options.rectangles_width + options.rectangles_spacing, options.rectangles_width * 2 + options.rectangles_spacing, options.rectangles_width * 2 + options.rectangles_spacing, options.rectangles_height,
         options.rectangles_width + options.rectangles_spacing, options.rectangles_height)
@@ -69,7 +69,7 @@ end
 
 -- play icon
 local function draw_triangle()
-    return string.format([[{\an5\p1\alpha&H%s\1c&H%s&\3c&H%s&}m 0 0 l %d %d l 0 %d]], 
+    return string.format([[{\rDefault\an5\p1\alpha&H%s\1c&H%s&\3c&H%s&}m 0 0 l %d %d l 0 %d]], 
         icon_opacity, icon_color, icon_border_color, options.triangle_width, options.triangle_height / 2, options.triangle_height)
 end
 
