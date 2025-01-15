@@ -1330,6 +1330,7 @@ local function render_elements(master_ass)
                     elem_ass:pos(tx, ty)
                     elem_ass:an(an)
                     elem_ass:append(element.tooltip_style)
+                    ass_append_alpha(elem_ass, element.layout.alpha, 0)
                     elem_ass:append(tooltiplabel)
                 end
             end
