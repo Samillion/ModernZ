@@ -137,11 +137,13 @@ local user_opts = {
     held_element_color = "#999999",        -- color of the element when held down (pressed)
     hover_effect_color = "#FB8C00",        -- color of a hovered button when hover_effect includes "color"
     thumbnail_border_color = "#111111",    -- color of the border for thumbnails (with thumbfast)
+    thumbnail_border_outline = "#404040",  -- color of the border outline for thumbnails
 
     fade_alpha = 130,                      -- alpha of the OSC background box
     fade_blur_strength = 100,              -- blur strength for the OSC alpha fade. caution: high values can take a lot of CPU time to render
     window_fade_alpha = 75,                -- alpha of the window title bar
-    thumbnail_border = 2,                  -- width of the thumbnail border (for thumbfast)
+    thumbnail_border = 3,                  -- width of the thumbnail border (for thumbfast)
+    thumbnail_border_radius = 3,           -- rounded corner radius for thumbnail border (0 to disable)
 
     -- Button hover effects
     hover_effect = "size,glow,color",      -- active button hover effects: "glow", "size", "color"; can use multiple separated by commas
@@ -443,7 +445,7 @@ local function set_osc_styles()
         element_hover = "{" .. (contains(user_opts.hover_effect, "color") and "\\1c&H" .. osc_color_convert(user_opts.hover_effect_color) .. "&" or "") .."\\2c&HFFFFFF&" .. (contains(user_opts.hover_effect, "size") and string.format("\\fscx%s\\fscy%s", user_opts.hover_button_size, user_opts.hover_button_size) or "") .. "}",
         seekbar_bg = "{\\blur0\\bord0\\1c&H" .. osc_color_convert(user_opts.seekbarbg_color) .. "&}",
         seekbar_fg = "{\\blur1\\bord1\\1c&H" .. osc_color_convert(user_opts.seekbarfg_color) .. "&}",
-        thumbnail = "{\\blur1\\bord0.5\\1c&H" .. osc_color_convert(user_opts.thumbnail_border_color) .. "&\\3c&H000000&}",
+        thumbnail = "{\\blur0\\bord1\\1c&H" .. osc_color_convert(user_opts.thumbnail_border_color) .. "&\\3c&H" .. osc_color_convert(user_opts.thumbnail_border_outline) .. "&}",
         time = "{\\blur0\\bord0\\1c&H" .. osc_color_convert(user_opts.time_color) .. "&\\3c&H000000&\\fs" .. user_opts.time_font_size .. "\\fn" .. user_opts.font .. "}",
         cache = "{\\blur0\\bord0\\1c&H" .. osc_color_convert(user_opts.cache_info_color) .. "&\\3c&H000000&\\fs" .. user_opts.cache_info_font_size .. "\\fn" .. user_opts.font .. "}",
         title = "{\\blur1\\bord0.5\\1c&H" .. osc_color_convert(user_opts.title_color) .. "&\\3c&H0&\\fs".. user_opts.title_font_size .."\\q2\\fn" .. user_opts.font .. "}",
@@ -1180,7 +1182,11 @@ local function render_elements(master_ass)
                                     elem_ass:an(7)
                                     elem_ass:append(osc_styles.thumbnail)
                                     elem_ass:draw_start()
-                                    elem_ass:rect_cw(-thumbPad * r_w, -thumbPad * r_h, (thumbfast.width + thumbPad) * r_w, (thumbfast.height + thumbPad) * r_h)
+                                    if user_opts.thumbnail_border_radius and user_opts.thumbnail_border_radius > 0 then
+                                        elem_ass:round_rect_cw(-thumbPad * r_w, -thumbPad * r_h, (thumbfast.width + thumbPad) * r_w, (thumbfast.height + thumbPad) * r_h, user_opts.thumbnail_border_radius)
+                                    else
+                                        elem_ass:rect_cw(-thumbPad * r_w, -thumbPad * r_h, (thumbfast.width + thumbPad) * r_w, (thumbfast.height + thumbPad) * r_h)
+                                    end
                                     elem_ass:draw_stop()
 
                                     -- force tooltip to be centered on the thumb, even at far left/right of screen
@@ -3601,7 +3607,8 @@ local function validate_user_opts()
         user_opts.middle_buttons_color, user_opts.playpause_color, user_opts.window_title_color, 
         user_opts.window_controls_color, user_opts.held_element_color, user_opts.thumbnail_border_color, 
         user_opts.chapter_title_color, user_opts.seekbar_cache_color, user_opts.hover_effect_color,
-        user_opts.windowcontrols_close_hover, user_opts.windowcontrols_minmax_hover, user_opts.cache_info_color
+        user_opts.windowcontrols_close_hover, user_opts.windowcontrols_minmax_hover, user_opts.cache_info_color,
+        user_opts.thumbnail_border_outline,
     }
 
     for _, color in pairs(colors) do

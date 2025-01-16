@@ -2,7 +2,7 @@
 
 A sleek and modern OSC for [mpv](https://mpv.io/), this project is a fork of ModernX designed to enhance functionality by adding more features, all while preserving the core standards of mpv's OSC.
 
-![modernz_osc](https://github.com/user-attachments/assets/ef4ad6aa-2545-4aa4-b5e9-5e2c555ccc4d)
+![ModernZ_osc](https://github.com/user-attachments/assets/ca350c5c-14a5-4558-8a12-a9c2b05cba9a)
 
 <p align="center">
     <a href="#installation"><strong>Installation »</strong></a>
@@ -22,7 +22,7 @@ A sleek and modern OSC for [mpv](https://mpv.io/), this project is a fork of Mod
 
 - 🎨 Modern, customizable interface [[options](#configuration)]
 - 📷 Image Viewer mode with zoom controls [[details](/docs/IMAGE_VIEWER.md)]
-- 🎛️ Buttons: download, playlist, speed control, screenshot, pin, loop and more. [[details](/docs/CONTROLS.md)]
+- 🎛️ Buttons: download, playlist, speed control, screenshot, pin, loop, cache and more. [[details](/docs/CONTROLS.md)]
 - 📄 Interactive menus for playlist, subtitles, chapters, audio tracks and audio devices [[details](#interactive-menus)]
 - 🌐 Multi-language support with JSON [locale](#translations) integration
 - ⌨️ Configurable controls [[details](#controls)]
@@ -189,7 +189,7 @@ For even more useful scripts, check out the [mpv User Scripts Wiki](https://gith
 - To eliminate old bugs and redundancy within the code
     - Which allows other `Modern` forks to use ModernZ as a base, such as [zydezu/ModernX](https://github.com/zydezu/ModernX). [[Reference](https://github.com/zydezu/ModernX/releases/tag/0.3.9)]
 
-In essence, to modernize and revive the `Modern` origin.
+In essence, to maintain and revive the `modern-osc` origin.
 
 Having said that, ModernZ still uses parts of the old code, and every previous and current fork author and contributor deserve credit (including mpv's stock osc), that is why they're mentioned in detail.
 

@@ -136,10 +136,12 @@ Create `modernz.conf` in your mpv script-opts directory:
 | held_element_color          | `#999999` | color of the element when held down (pressed)                                                   |
 | hover_effect_color          | `#FB8C00` | color of a hovered button when `hover_effect` includes `"color"`                                |
 | thumbnail_border_color      | `#111111` | color of the border for thumbnails (with thumbfast)                                             |
+| thumbnail_border_outline    | `#404040` | color of the border outline for thumbnails                                                      |
 | fade_alpha                  | 130       | alpha of the OSC background box                                                                 |
 | fade_blur_strength          | 100       | blur strength for the OSC alpha fade. caution: high values can take a lot of CPU time to render |
 | window_fade_alpha           | 75        | alpha of the window title bar                                                                   |
-| thumbnail_border            | 2         | width of the thumbnail border (for thumbfast)                                                   |
+| thumbnail_border            | 3         | width of the thumbnail border (for thumbfast)                                                   |
+| thumbnail_border_radius     | 3         | rounded corner radius for thumbnail border (0 to disable)                                       |
 
 ### Button hover effects
 
