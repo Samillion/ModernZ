@@ -1180,6 +1180,7 @@ local function render_elements(master_ass)
                                     elem_ass:new_event()
                                     elem_ass:pos(thumbX * r_w, ty - thumbMarginY - thumbfast.height * r_h)
                                     elem_ass:an(7)
+                                    ass_append_alpha(elem_ass, element.layout.alpha, 0)
                                     elem_ass:append(osc_styles.thumbnail)
                                     elem_ass:draw_start()
                                     if user_opts.thumbnail_border_radius and user_opts.thumbnail_border_radius > 0 then
