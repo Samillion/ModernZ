@@ -267,9 +267,15 @@ local osc_param = {                  -- calculated by osc_init()
 }
 
 local icons = {
+    maximize = "\238\132\147",
+    unmaximize = "\238\132\148",
+    minimize = "\238\132\146",
+    close = "\238\132\149",
+
     audio = "\238\175\139",
     subtitle = "\238\175\141",
     playlist = "\238\161\159",
+    menu = "\238\160\170",
     volume_mute = "\238\173\138",
     volume_quiet = "\238\172\184",
     volume_low = "\238\172\189",
@@ -283,10 +289,10 @@ local icons = {
     rewind = "\238\168\158",
     forward = "\238\152\135",
     jump = { 
-        [5] = {"\238\171\186", "\238\171\187"}, 
-        [10] = {"\238\171\188", "\238\172\129"}, 
-        [30] = {"\238\172\133", "\238\172\134"}, 
-        default = {"\238\172\138", "\238\172\138"}, -- second icon is mirrored in layout() 
+        [5] = {"\238\171\186", "\238\171\187"},
+        [10] = {"\238\171\188", "\238\172\129"},
+        [30] = {"\238\172\133", "\238\172\134"},
+        default = {"\238\172\138", "\238\172\138"}, -- second icon is mirrored in layout()
     },
 
     fullscreen = "\239\133\160",
@@ -452,8 +458,8 @@ local function set_osc_styles()
         tooltip = "{\\blur1\\bord0.5\\1c&HFFFFFF&\\3c&H000000&\\fs" .. user_opts.tooltip_font_size .. "\\fn" .. user_opts.font .. "}",
         volumebar_bg = "{\\blur0\\bord0\\1c&H999999&}",
         volumebar_fg = "{\\blur1\\bord1\\1c&H" .. osc_color_convert(user_opts.side_buttons_color) .. "&}",
-        window_control = "{\\blur1\\bord0.5\\1c&H" .. osc_color_convert(user_opts.window_controls_color) .. "&\\3c&H0&\\fs25\\fnmpv-osd-symbols}",
-        window_title = "{\\blur1\\bord0.5\\1c&H" .. osc_color_convert(user_opts.window_title_color) .. "&\\3c&H0&\\fs26\\q2\\fn" .. user_opts.font .. "}",
+        window_control = "{\\blur1\\bord0.5\\1c&H" .. osc_color_convert(user_opts.window_controls_color) .. "&\\3c&H000000&\\fs25\\fnmpv-osd-symbols}",
+        window_title = "{\\blur1\\bord0.5\\1c&H" .. osc_color_convert(user_opts.window_title_color) .. "&\\3c&H000000&\\fs26\\q2\\fn" .. user_opts.font .. "}",
     }
 end
 
@@ -1158,9 +1164,33 @@ local function render_elements(master_ass)
                         if element.name == "seekbar" then
                             state.sliderpos = sliderpos
                         end    
-                        
+
+                        -- chapter title tooltip on show_title=false and no thumbfast
+                        -- add hovered chapter title above time code tooltip on seekbar hover
+                        if thumbfast.disabled and not user_opts.show_title and not user_opts.show_chapter_title then
+                            local osd_w = mp.get_property_number("osd-width")
+                            local r_w, r_h = get_virt_scale_factor()
+                            if osd_w then
+                                if user_opts.chapter_fmt ~= "no" and state.touchingprogressbar then
+                                    local dur = mp.get_property_number("duration", 0)
+                                    if dur > 0 then
+                                        local ch = get_chapter(state.sliderpos * dur / 100)
+                                        if ch and ch.title and ch.title ~= "" then
+                                            local titleX = math.min(osd_w - (50 / r_w), math.max((60 / r_w), tx / r_w))
+                                            local titleY = ty - (user_opts.time_font_size * 1.3)
+
+                                            elem_ass:new_event()
+                                            elem_ass:pos(titleX * r_w, titleY)
+                                            elem_ass:an(2)
+                                            elem_ass:append(slider_lo.tooltip_style)
+                                            ass_append_alpha(elem_ass, slider_lo.alpha, 0)
+                                            elem_ass:append(string.format(user_opts.chapter_fmt, ch.title))
+                                        end
+                                    end
+                                end
+                            end
                         -- thumbfast
-                        if element.thumbnailable and not thumbfast.disabled then
+                        elseif element.thumbnailable and not thumbfast.disabled then
                             local osd_w = mp.get_property_number("osd-width")
                             local r_w, r_h = get_virt_scale_factor()
 
@@ -1178,9 +1208,9 @@ local function render_elements(master_ass)
 
                                 if state.anitype == nil then
                                     elem_ass:new_event()
+                                    elem_ass:append("{\\rDefault}")
                                     elem_ass:pos(thumbX * r_w, ty - thumbMarginY - thumbfast.height * r_h)
                                     elem_ass:an(7)
-                                    ass_append_alpha(elem_ass, slider_lo.alpha, 0)
                                     elem_ass:append(osc_styles.thumbnail)
                                     elem_ass:draw_start()
                                     if user_opts.thumbnail_border_radius and user_opts.thumbnail_border_radius > 0 then
@@ -1207,32 +1237,6 @@ local function render_elements(master_ass)
                                             elem_ass:new_event()
                                             elem_ass:pos((thumbX + thumbfast.width / 2) * r_w, thumbY * r_h - user_opts.time_font_size / 2)
                                             elem_ass:an(an)
-                                            elem_ass:append(slider_lo.tooltip_style)
-                                            ass_append_alpha(elem_ass, slider_lo.alpha, 0)
-                                            elem_ass:append(string.format(user_opts.chapter_fmt, ch.title))
-                                        end
-                                    end
-                                end
-                            end
-                        end
-
-                        -- chapter title tooltip on show_title=false and no thumbfast
-                        -- add hovered chapter title above time code tooltip on seekbar hover
-                        if thumbfast.disabled and not user_opts.show_title and not user_opts.show_chapter_title then
-                            local osd_w = mp.get_property_number("osd-width")
-                            local r_w, r_h = get_virt_scale_factor()
-                            if osd_w then
-                                if user_opts.chapter_fmt ~= "no" and state.touchingprogressbar then
-                                    local dur = mp.get_property_number("duration", 0)
-                                    if dur > 0 then
-                                        local ch = get_chapter(state.sliderpos * dur / 100)
-                                        if ch and ch.title and ch.title ~= "" then
-                                            local titleX = math.min(osd_w - (50 / r_w), math.max((60 / r_w), tx / r_w))
-                                            local titleY = ty - (user_opts.time_font_size * 1.3)
-
-                                            elem_ass:new_event()
-                                            elem_ass:pos(titleX * r_w, titleY)
-                                            elem_ass:an(2)
                                             elem_ass:append(slider_lo.tooltip_style)
                                             ass_append_alpha(elem_ass, slider_lo.alpha, 0)
                                             elem_ass:append(string.format(user_opts.chapter_fmt, ch.title))
@@ -1334,10 +1338,10 @@ local function render_elements(master_ass)
                     end
 
                     elem_ass:new_event()
+                    elem_ass:append("{\\rDefault}")
                     elem_ass:pos(tx, ty)
                     elem_ass:an(an)
                     elem_ass:append(element.tooltip_style)
-                    ass_append_alpha(elem_ass, element.layout.alpha, 0)
                     elem_ass:append(tooltiplabel)
                 end
             end
@@ -1600,25 +1604,25 @@ local function window_controls()
     if user_opts.window_controls then
         -- Close: 🗙
         local ne = new_element("close", "button")
-        ne.content = "\238\132\149"
+        ne.content = icons.close
         ne.eventresponder["mbtn_left_up"] = function () mp.commandv("quit") end
         lo = add_layout("close")
         lo.geometry = third_geo
         lo.style = osc_styles.window_control
-        lo.button.hoverstyle = "{\\c&H" .. osc_color_convert(user_opts.windowcontrols_close_hover) .. "&}"
+        lo.button.hoverstyle = "{\\c&H" .. osc_color_convert(user_opts.windowcontrols_close_hover) .. "&\\3c&H000000&}"
 
         -- Minimize: 🗕
         ne = new_element("minimize", "button")
-        ne.content = "\238\132\146"
+        ne.content = icons.minimize
         ne.eventresponder["mbtn_left_up"] = function () mp.commandv("cycle", "window-minimized") end
         lo = add_layout("minimize")
         lo.geometry = first_geo
         lo.style = osc_styles.window_control
-        lo.button.hoverstyle = "{\\c&H" .. osc_color_convert(user_opts.windowcontrols_minmax_hover) .. "&}"
+        lo.button.hoverstyle = "{\\c&H" .. osc_color_convert(user_opts.windowcontrols_minmax_hover) .. "&\\3c&H000000&}"
     
         -- Maximize: 🗖 /🗗
         ne = new_element("maximize", "button")
-        ne.content = (state.maximized or state.fullscreen) and "\238\132\148" or "\238\132\147"
+        ne.content = (state.maximized or state.fullscreen) and icons.unmaximize or icons.maximize
         ne.eventresponder["mbtn_left_up"] = function ()
             if state.fullscreen then
                 mp.commandv("cycle", "fullscreen")
@@ -1629,7 +1633,7 @@ local function window_controls()
         lo = add_layout("maximize")
         lo.geometry = second_geo
         lo.style = osc_styles.window_control
-        lo.button.hoverstyle = "{\\c&H" .. osc_color_convert(user_opts.windowcontrols_minmax_hover) .. "&}"
+        lo.button.hoverstyle = "{\\c&H" .. osc_color_convert(user_opts.windowcontrols_minmax_hover) .. "&\\3c&H000000&}"
     end
 
     -- Window Title
@@ -1772,6 +1776,7 @@ layouts["modern"] = function ()
     geo = {x = 25, y = refY - (chapter_index and user_opts.title_with_chapter_height or user_opts.title_height), an = 1, w = osc_geo.w - 50 - (loop_button and 45 or 0) - (speed_button and 45 or 0), h = user_opts.title_font_size}
     lo = add_layout("title")
     lo.geometry = geo
+    lo.layer = 13
     lo.style = string.format("%s{\\clip(0,%f,%f,%f)}", osc_styles.title, geo.y - geo.h, geo.x + geo.w, geo.y + geo.h)
     lo.alpha[3] = 0
 
@@ -1779,6 +1784,7 @@ layouts["modern"] = function ()
     if user_opts.show_chapter_title then
         lo = add_layout("chapter_title")
         lo.geometry = {x = 26, y = refY - user_opts.chapter_title_height, an = 1, w = osc_geo.w / 2, h = user_opts.chapter_title_font_size}
+        lo.layer = 13
         lo.style = string.format("%s{\\clip(0,%f,%f,%f)}", osc_styles.chapter_title, geo.y - geo.h, geo.x + geo.w, geo.y + geo.h)
     end
 
