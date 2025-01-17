@@ -1566,85 +1566,45 @@ local function window_controls()
         h = 50,
     }
 
+    local lo
     local controlbox_w = window_control_box_width
     local titlebox_w = wc_geo.w - controlbox_w
-
-    -- Default alignment is "right"
     local controlbox_left = wc_geo.w - controlbox_w
     local titlebox_left = wc_geo.x
     local titlebox_right = wc_geo.w - controlbox_w
-
-    add_area("window-controls",
-             get_hitbox_coords(controlbox_left, wc_geo.y, wc_geo.an,
-                               controlbox_w, wc_geo.h))
-
-    local lo
-
     local button_y = wc_geo.y - (wc_geo.h / 2)
     local first_geo = {x = controlbox_left + 25, y = button_y, an = 5, w = 50, h = wc_geo.h}
     local second_geo = {x = controlbox_left + 75, y = button_y, an = 5, w = 49, h = wc_geo.h}
     local third_geo = {x = controlbox_left + 125, y = button_y, an = 5, w = 50, h = wc_geo.h}
 
-    -- Window control buttons use symbols in the custom mpv osd font
-    -- because the official unicode codepoints are sufficiently
-    -- exotic that a system might lack an installed font with them,
-    -- and libass will complain that they are not present in the
-    -- default font, even if another font with them is available.
-
+    -- Window controls
     if user_opts.window_controls then
         -- Close: 🗙
-        local ne = new_element("close", "button")
-        ne.content = icons.close
-        ne.eventresponder["mbtn_left_up"] = function () mp.commandv("quit") end
         lo = add_layout("close")
         lo.geometry = third_geo
         lo.style = osc_styles.window_control
         lo.button.hoverstyle = "{\\c&H" .. osc_color_convert(user_opts.windowcontrols_close_hover) .. "&\\3c&H000000&}"
 
         -- Minimize: 🗕
-        ne = new_element("minimize", "button")
-        ne.content = icons.minimize
-        ne.eventresponder["mbtn_left_up"] = function () mp.commandv("cycle", "window-minimized") end
         lo = add_layout("minimize")
         lo.geometry = first_geo
         lo.style = osc_styles.window_control
         lo.button.hoverstyle = "{\\c&H" .. osc_color_convert(user_opts.windowcontrols_minmax_hover) .. "&\\3c&H000000&}"
-    
+
         -- Maximize: 🗖 /🗗
-        ne = new_element("maximize", "button")
-        ne.content = (state.maximized or state.fullscreen) and icons.unmaximize or icons.maximize
-        ne.eventresponder["mbtn_left_up"] = function ()
-            if state.fullscreen then
-                mp.commandv("cycle", "fullscreen")
-            else
-                mp.commandv("cycle", "window-maximized")
-            end
-        end
         lo = add_layout("maximize")
         lo.geometry = second_geo
         lo.style = osc_styles.window_control
         lo.button.hoverstyle = "{\\c&H" .. osc_color_convert(user_opts.windowcontrols_minmax_hover) .. "&\\3c&H000000&}"
+        
+        add_area("window-controls", get_hitbox_coords(controlbox_left, wc_geo.y, wc_geo.an, controlbox_w, wc_geo.h))
     end
 
     -- Window Title
     if user_opts.window_title then
-        ne = new_element("windowtitle", "button")
-        ne.content = function ()
-            local title = mp.command_native({"expand-text", user_opts.windowcontrols_title}) or ""
-            title = title:gsub("\n", " ")
-            return title ~= "" and mp.command_native({"escape-ass", title}) or "mpv"
-        end
-        local left_pad = 0
-        local right_pad = 0
         lo = add_layout("windowtitle")
-        local geo = {x = 20, y = button_y + 14, an = 1, w = osc_param.playresx - 50, h = wc_geo.h}
-        lo.geometry = geo
-
-        local clip_x1 = titlebox_left + left_pad 
-        local clip_y1 = wc_geo.y - wc_geo.h 
-        local clip_x2 = titlebox_right - right_pad
-        local clip_y2 = wc_geo.y + wc_geo.h
-        lo.style = string.format("%s{\\clip(%f,%f,%f,%f)}", osc_styles.window_title, clip_x1, clip_y1, clip_x2, clip_y2)
+        lo.geometry = {x = 20, y = button_y + 14, an = 1, w = osc_param.playresx - 50, h = wc_geo.h}
+        lo.style = string.format("%s{\\clip(%f,%f,%f,%f)}", osc_styles.window_title, titlebox_left, wc_geo.y - wc_geo.h, titlebox_right, wc_geo.y + wc_geo.h)
 
         add_area("window-controls-title", titlebox_left, 0, titlebox_right, wc_geo.h)
     end
@@ -1706,10 +1666,10 @@ layouts["modern"] = function ()
 
     local top_titlebar = window_controls_enabled() and (user_opts.window_title or user_opts.window_controls)
 
-    -- Window controls
+    -- Window bar alpha
     if ((user_opts.window_top_bar == "yes" or not (state.border and state.title_bar)) or state.fullscreen) and top_titlebar then
-        new_element("title_alpha_bg", "box")
-        lo = add_layout("title_alpha_bg")
+        new_element("window_bar_alpha_bg", "box")
+        lo = add_layout("window_bar_alpha_bg")
         lo.geometry = {x = posX, y = -100, an = 7, w = osc_w, h = -1}
         lo.style = osc_styles.window_box_bg
         lo.layer = 10
@@ -1763,7 +1723,7 @@ layouts["modern"] = function ()
     local offset = jump_buttons and 60 or 0
     local outeroffset = (chapter_skip_buttons and 0 or 100) + (jump_buttons and 0 or 100)
 
-    -- Title
+    -- OSC title
     geo = {x = 25, y = refY - (chapter_index and user_opts.title_with_chapter_height or user_opts.title_height), an = 1, w = osc_geo.w - 50 - (loop_button and 45 or 0) - (speed_button and 45 or 0), h = user_opts.title_font_size}
     lo = add_layout("title")
     lo.geometry = geo
@@ -1771,7 +1731,7 @@ layouts["modern"] = function ()
     lo.style = string.format("%s{\\clip(0,%f,%f,%f)}", osc_styles.title, geo.y - geo.h, geo.x + geo.w, geo.y + geo.h)
     lo.alpha[3] = 0
 
-    -- Chapter Title (above seekbar)
+    -- Chapter title (above seekbar)
     if user_opts.show_chapter_title then
         lo = add_layout("chapter_title")
         lo.geometry = {x = 26, y = refY - user_opts.chapter_title_height, an = 1, w = osc_geo.w / 2, h = user_opts.chapter_title_font_size}
@@ -1984,10 +1944,10 @@ layouts["modern-image"] = function ()
 
     local top_titlebar = window_controls_enabled() and (user_opts.window_title or user_opts.window_controls)
 
-    -- Window controls
+    -- Window bar alpha
     if ((user_opts.window_top_bar == "yes" or not (state.border and state.title_bar)) or state.fullscreen) and top_titlebar then
-        new_element("title_alpha_bg", "box")
-        lo = add_layout("title_alpha_bg")
+        new_element("window_bar_alpha_bg", "box")
+        lo = add_layout("window_bar_alpha_bg")
         lo.geometry = {x = posX, y = -100, an = 7, w = osc_w, h = -1}
         lo.style = osc_styles.window_box_bg
         lo.layer = 10
@@ -2191,7 +2151,31 @@ local function osc_init()
 
     local ne
 
-    -- title
+    -- Window controls
+    -- Close: 🗙
+    ne = new_element("close", "button")
+    ne.content = icons.close
+    ne.eventresponder["mbtn_left_up"] = function () mp.commandv("quit") end
+
+    -- Minimize: 🗕
+    ne = new_element("minimize", "button")
+    ne.content = icons.minimize
+    ne.eventresponder["mbtn_left_up"] = function () mp.commandv("cycle", "window-minimized") end
+
+    -- Maximize: 🗖 /🗗
+    ne = new_element("maximize", "button")
+    ne.content = (state.maximized or state.fullscreen) and icons.unmaximize or icons.maximize
+    ne.eventresponder["mbtn_left_up"] = function () mp.commandv("cycle", (state.fullscreen and "fullscreen" or "window-maximized")) end
+
+    -- Window Title
+    ne = new_element("windowtitle", "button")
+    ne.content = function ()
+        local title = mp.command_native({"expand-text", user_opts.windowcontrols_title}) or ""
+        title = title:gsub("\n", " ")
+        return title ~= "" and mp.command_native({"escape-ass", title}) or "mpv"
+    end
+
+    -- OSC title
     ne = new_element("title", "button")
     ne.visible = user_opts.show_title
     ne.content = function ()
