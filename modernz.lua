@@ -68,7 +68,6 @@ local user_opts = {
     -- Title bar settings
     window_title = false,                  -- show window title in borderless/fullscreen mode
     window_controls = true,                -- show window controls (close, minimize, maximize) in borderless/fullscreen
-    title_bar_box = false,                 -- show title bar as a box instead of a black fade
     windowcontrols_title = "${media-title}", -- same as title but for windowcontrols
 
     -- Subtitle display settings
@@ -139,9 +138,10 @@ local user_opts = {
     thumbnail_border_color = "#111111",    -- color of the border for thumbnails (with thumbfast)
     thumbnail_border_outline = "#404040",  -- color of the border outline for thumbnails
 
-    fade_alpha = 130,                      -- alpha of the OSC background box
+    fade_alpha = 130,                      -- alpha of the OSC background (0 to disable)
     fade_blur_strength = 100,              -- blur strength for the OSC alpha fade. caution: high values can take a lot of CPU time to render
-    window_fade_alpha = 75,                -- alpha of the window title bar
+    window_fade_alpha = 75,                -- alpha of the window title bar (0 to disable)
+    window_fade_blur_strength = 100,       -- blur strength for the window title bar. caution: high values can take a lot of CPU time to render
     thumbnail_border = 3,                  -- width of the thumbnail border (for thumbfast)
     thumbnail_border_radius = 3,           -- rounded corner radius for thumbnail border (0 to disable)
 
@@ -440,8 +440,8 @@ local function set_osc_styles()
     local midbuttons_size = user_opts.midbuttons_size or 24
     local sidebuttons_size = user_opts.sidebuttons_size or 24
     osc_styles = {
-        background_bar = "{\\1c&H" .. osc_color_convert(user_opts.osc_color) .. "&}",
         box_bg = "{\\blur" .. user_opts.fade_blur_strength .. "\\bord" .. user_opts.fade_alpha .. "\\1c&H000000&\\3c&H" .. osc_color_convert(user_opts.osc_color) .. "&}",
+        window_box_bg = "{\\blur" .. user_opts.window_fade_blur_strength .. "\\bord" .. user_opts.window_fade_alpha .. "\\1c&H000000&\\3c&H" .. osc_color_convert(user_opts.osc_color) .. "&}",
         chapter_title = "{\\blur0\\bord0\\1c&H" .. osc_color_convert(user_opts.chapter_title_color) .. "&\\3c&H000000&\\fs" .. user_opts.chapter_title_font_size .. "\\fn" .. user_opts.font .. "}",
         control_1 = "{\\blur0\\bord0\\1c&H" .. osc_color_convert(user_opts.playpause_color) .. "&\\3c&HFFFFFF&\\fs" .. playpause_size .. "\\fn" .. iconfont .. "}",
         control_2 = "{\\blur0\\bord0\\1c&H" .. osc_color_convert(user_opts.middle_buttons_color) .. "&\\3c&HFFFFFF&\\fs" .. midbuttons_size .. "\\fn" .. iconfont .. "}",
@@ -1580,16 +1580,6 @@ local function window_controls()
 
     local lo
 
-    -- Background Bar
-    if user_opts.title_bar_box then
-        new_element("wcbar", "box")
-        lo = add_layout("wcbar")
-        lo.geometry = wc_geo
-        lo.layer = 10
-        lo.style = osc_styles.background_bar
-        lo.alpha[1] = user_opts.window_fade_alpha
-    end
-
     local button_y = wc_geo.y - (wc_geo.h / 2)
     local first_geo = {x = controlbox_left + 25, y = button_y, an = 5, w = 50, h = wc_geo.h}
     local second_geo = {x = controlbox_left + 75, y = button_y, an = 5, w = 49, h = wc_geo.h}
@@ -1716,11 +1706,12 @@ layouts["modern"] = function ()
 
     local top_titlebar = window_controls_enabled() and (user_opts.window_title or user_opts.window_controls)
 
-    if not user_opts.title_bar_box and ((user_opts.window_top_bar == "yes" or not (state.border and state.title_bar)) or state.fullscreen) and top_titlebar then
+    -- Window controls
+    if ((user_opts.window_top_bar == "yes" or not (state.border and state.title_bar)) or state.fullscreen) and top_titlebar then
         new_element("title_alpha_bg", "box")
         lo = add_layout("title_alpha_bg")
         lo.geometry = {x = posX, y = -100, an = 7, w = osc_w, h = -1}
-        lo.style = osc_styles.box_bg
+        lo.style = osc_styles.window_box_bg
         lo.layer = 10
         lo.alpha[3] = 0
     end
@@ -1993,11 +1984,12 @@ layouts["modern-image"] = function ()
 
     local top_titlebar = window_controls_enabled() and (user_opts.window_title or user_opts.window_controls)
 
-    if not user_opts.title_bar_box and ((user_opts.window_top_bar == "yes" or not (state.border and state.title_bar)) or state.fullscreen) and top_titlebar then
+    -- Window controls
+    if ((user_opts.window_top_bar == "yes" or not (state.border and state.title_bar)) or state.fullscreen) and top_titlebar then
         new_element("title_alpha_bg", "box")
         lo = add_layout("title_alpha_bg")
         lo.geometry = {x = posX, y = -100, an = 7, w = osc_w, h = -1}
-        lo.style = osc_styles.box_bg
+        lo.style = osc_styles.window_box_bg
         lo.layer = 10
         lo.alpha[3] = 0
     end
