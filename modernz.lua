@@ -3147,9 +3147,7 @@ local function render()
         local timeout = state.showtime + (get_hidetimeout() / 1000) - now
         if timeout <= 0 and get_touchtimeout() <= 0 then
             if state.active_element == nil and not mouse_over_osc then
-                if not (state.paused and user_opts.keeponpause) then
-                    hide_osc()
-                end
+                hide_osc()
             end
         else
             -- the timer is only used to recheck the state and to possibly run
@@ -3505,9 +3503,14 @@ mp.observe_property("pause", "bool", function(name, enabled)
             -- save mode if a temporary change is needed
             if not state.temp_visibility_mode and user_opts.visibility ~= "always" then
                 state.temp_visibility_mode = user_opts.visibility
-                visibility_mode("auto", true)
             end
-            show_osc()
+            
+            if user_opts.keeponpause then
+                -- set visibility to "always" temporarily
+                visibility_mode("always", true)
+            else
+                show_osc()
+            end
         else
             -- restore mode if it was changed temporarily
             if state.temp_visibility_mode then
