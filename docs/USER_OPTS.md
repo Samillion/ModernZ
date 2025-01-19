@@ -138,7 +138,7 @@ Create `modernz.conf` in your mpv script-opts directory:
 | thumbnail_border_outline    | `#404040` | color of the border outline for thumbnails                                                        |
 | fade_alpha                  | 130       | alpha of the OSC background box (0 to disable)                                                    |
 | fade_blur_strength          | 100       | blur strength for the OSC alpha fade. caution: high values can take a lot of CPU time to render   |
-| window_fade_alpha           | 75        | alpha of the window title bar (0 to disable)                                                      |
+| window_fade_alpha           | 100       | alpha of the window title bar (0 to disable)                                                      |
 | window_fade_blur_strength   | 100       | blur strength for the window title bar. caution: high values can take a lot of CPU time to render |
 | thumbnail_border            | 3         | width of the thumbnail border (for thumbfast)                                                     |
 | thumbnail_border_radius     | 3         | rounded corner radius for thumbnail border (0 to disable)                                         |
