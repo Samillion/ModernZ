@@ -120,7 +120,8 @@ Create `modernz.conf` in your mpv script-opts directory:
 | window_title_color          | `#FFFFFF` | color of the title in borderless/fullscreen mode                                                  |
 | window_controls_color       | `#FFFFFF` | color of the window controls (close, minimize, maximize) in borderless/fullscreen mode            |
 | windowcontrols_close_hover  | `#E81123` | color of close window control on hover                                                            |
-| windowcontrols_minmax_hover | `#FFD700` | color of min/max window controls on hover                                                         |
+| windowcontrols_max_hover    | `#F8BC3A` | color of maximize window controls on hover                                                        |
+| windowcontrols_min_hover    | `#43CB44` | color of minimize window controls on hover                                                        |
 | title_color                 | `#FFFFFF` | color of the title (above seekbar)                                                                |
 | seekbarfg_color             | `#FB8C00` | color of the seekbar progress and handle                                                          |
 | seekbarbg_color             | `#94754F` | color of the remaining seekbar                                                                    |

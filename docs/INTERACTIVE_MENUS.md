@@ -3,12 +3,12 @@ ModernZ integrates mpv's [console.lua](https://github.com/mpv-player/mpv/blob/ma
 - Playlist button
 - Subtitles button
 - Audio track button
-- Volume control button (audio device picker)
+- Volume control button (audio device selector) [right mouse button]
 - Chapter title
 
 For details on how to interact with these buttons, view the [controls manual](/docs/CONTROLS.md).
 
-https://github.com/user-attachments/assets/7f6aeaec-4057-4099-a63c-42cf2e0ab3bb
+https://github.com/user-attachments/assets/2aa1da68-abfa-4229-9795-b4c109e9d99d
 
 ## Notes
 > [!IMPORTANT]
