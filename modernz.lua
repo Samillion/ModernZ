@@ -506,6 +506,8 @@ local state = {
     sliderpos = 0,
     touchingprogressbar = false,            -- if the mouse is touching the progress bar
     initialborder = mp.get_property("border"),
+    playtime_hour_force_init = false,       -- used to force request_init() once
+    playtime_nohour_force_init = false,     -- used to force request_init() once
     playingWhilstSeeking = false,
     playingWhilstSeekingWaitingForEnd = false,
     persistentprogresstoggle = user_opts.persistentprogress,
@@ -2793,6 +2795,21 @@ local function osc_init()
     ne.visible = mp.get_property_number("duration", 0) > 0
     ne.content = function()
         local playback_time = mp.get_property_number("playback-time", 0)
+
+        -- force request_init() once to update time codes width hitbox
+        -- run once when less than hour, once again if hour or more
+        -- since request_init() is expensive, this is a measure to call it when needed only
+        if user_opts.time_format ~= "fixed" and playback_time then
+            if playback_time >= 3600 and not state.playtime_hour_force_init then
+                request_init()
+                state.playtime_hour_force_init = true
+                state.playtime_nohour_force_init = false
+            elseif playback_time < 3600 and not state.playtime_nohour_force_init then
+                request_init()
+                state.playtime_hour_force_init = false
+                state.playtime_nohour_force_init = true
+            end
+        end
 
         local duration = mp.get_property_number("duration", 0)
         if duration <= 0 then return "--:--" end
