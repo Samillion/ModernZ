@@ -1693,7 +1693,7 @@ layouts["modern"] = function ()
     lo = add_layout("seekbar")
     local seekbar_h = 18
     lo.geometry = {x = refX, y = refY - 72, an = 5, w = osc_geo.w - 50, h = seekbar_h}
-    lo.layer = 100
+    lo.layer = 51
     lo.style = osc_styles.seekbar_fg
     lo.slider.gap = (seekbar_h - seekbar_bg_h) / 2.0
     lo.slider.tooltip_style = osc_styles.tooltip
