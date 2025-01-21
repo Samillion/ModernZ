@@ -188,7 +188,7 @@ local user_opts = {
     time_codes_centered_height = 57,       -- time codes height position with portrait window
     tooltip_height_offset = 2,             -- tooltip height position offset
     tooltip_left_offset = 5,               -- if tooltip contains many characters, it is moved to the left by offset
-    portrait_window_trigger = 930,         -- portrait window width trigger to move some elements
+    portrait_window_trigger = 1000,        -- portrait window width trigger to move some elements
     hide_volume_bar_trigger = 1150,        -- hide volume bar trigger window width
     notitle_osc_h_offset = 25,             -- osc height offset if title above seekbar is disabled
     nochapter_osc_h_offset = 10,           -- osc height offset if chapter title is disabled or doesn't exist
@@ -1828,22 +1828,30 @@ layouts["modern"] = function ()
 
     -- Time codes
     local remsec = mp.get_property_number("playtime-remaining", 0)
-    local possec = mp.get_property_number("playback-time", 0)
     local dur = mp.get_property_number("duration", 0)
-    local show_hours = possec >= 3600 or user_opts.time_format ~= "dynamic"
+    local show_hours = mp.get_property_number("playback-time", 0) >= 3600 or user_opts.time_format ~= "dynamic"
     local show_remhours = (state.tc_right_rem and remsec >= 3600) or (not state.tc_right_rem and dur >= 3600) or user_opts.time_format ~= "dynamic"
-    local tc_w_offset = (state.tc_ms and 60 or 0) + (show_hours and 20 or 0) + (show_remhours and 20 or 0)
     local auto_hide_volbar = (audio_track and user_opts.volume_control) and osc_param.playresx < (user_opts.hide_volume_bar_trigger - outeroffset)
-    local narrow_vid_tc_y = osc_param.playresx < (user_opts.portrait_window_trigger - outeroffset - (playlist_button and 0 or 100) - (subtitle_track and 0 or 100) - (audio_track and 0 or 100))
     local time_codes_x = 275
         - (auto_hide_volbar and 75 or 0) -- window width with audio track and elements
         - (audio_track and not user_opts.volume_control and 115 or 0) -- audio track with no elements
         - (not audio_track and 160 or 0) -- no audio track or elements
         - (subtitle_track and 0 or 45)
         - (playlist_button and 0 or 45)
-
+    local time_codes_width = 80
+        + (state.tc_ms and 50 or 0)
+        + (state.tc_right_rem and 15 or 0)
+        + (show_hours and 20 or 0)
+        + (show_remhours and 20 or 0)
+    local narrow_win = osc_param.playresx < (
+        user_opts.portrait_window_trigger
+        - outeroffset
+        - (playlist_button and 0 or 100)
+        - (subtitle_track and 0 or 100)
+        - (audio_track and 0 or 100)
+    )
     lo = add_layout("time_codes")
-    lo.geometry = {x = (narrow_vid_tc_y and refX or time_codes_x), y = refY - (narrow_vid_tc_y and user_opts.time_codes_centered_height or user_opts.time_codes_height), an = (narrow_vid_tc_y and 5 or 4), w = 90 + tc_w_offset, h = 15}
+    lo.geometry = {x = (narrow_win and refX or time_codes_x), y = refY - (narrow_win and user_opts.time_codes_centered_height or user_opts.time_codes_height), an = (narrow_win and 5 or 4), w = time_codes_width, h = 15}
     lo.style = osc_styles.time
 
     -- Fullscreen/Info/Pin/Screenshot/Loop/Speed
@@ -3316,10 +3324,6 @@ mp.observe_property("chapter-list", "native", function(_, list)
     update_duration_watch()
     request_init()
 end)
-
-mp.observe_property("playback-time", "native", function(_, time)
-    request_tick()
-end)
 mp.observe_property("seeking", "native", function(_, seeking)
     if user_opts.seek_resets_hidetimeout then
         reset_timeout()
@@ -3330,7 +3334,6 @@ mp.observe_property("seeking", "native", function(_, seeking)
         state.new_file_flag = false
     end
 end)
-
 mp.observe_property("fullscreen", "bool", function(_, val)
     state.fullscreen = val
     state.marginsREQ = true
@@ -3353,10 +3356,10 @@ mp.observe_property("idle-active", "bool", function(_, val)
     state.idle = val
     request_tick()
 end)
-
 mp.observe_property("display-fps", "number", set_tick_delay)
 mp.observe_property("demuxer-cache-state", "native", cache_state)
 mp.observe_property("vo-configured", "bool", request_tick)
+mp.observe_property("playback-time", "number", request_tick)
 mp.observe_property("osd-dimensions", "native", function()
     -- (we could use the value instead of re-querying it all the time, but then
     --  we might have to worry about property update ordering)
