@@ -199,7 +199,7 @@ Useful when adjusting font size or type, this will help you change the affected 
 | time_codes_centered_height    | 57     | time codes height position with portrait window                        |
 | tooltip_height_offset         | 2      | tooltip height position offset                                         |
 | tooltip_left_offset           | 5      | if tooltip contains many characters, it is moved to the left by offset |
-| portrait_window_trigger       | 930    | portrait window width trigger to move some elements                    |
+| portrait_window_trigger       | 1000   | portrait window width trigger to move some elements                    |
 | hide_volume_bar_trigger       | 1150   | hide volume bar trigger window width                                   |
 | notitle_osc_h_offset          | 25     | osc height offset if title above seekbar is disabled                   |
 | nochapter_osc_h_offset        | 10     | osc height offset if chapter title is disabled or doesn't exist        |
