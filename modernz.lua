@@ -1853,7 +1853,7 @@ layouts["modern"] = function ()
         - (audio_track and 0 or 100)
     )
     lo = add_layout("time_codes")
-    lo.geometry = {x = (narrow_win and refX or time_codes_x), y = refY - (narrow_win and user_opts.time_codes_centered_height or user_opts.time_codes_height), an = (narrow_win and 5 or 4), w = time_codes_width, h = 15}
+    lo.geometry = {x = (narrow_win and refX or time_codes_x), y = refY - (narrow_win and user_opts.time_codes_centered_height or user_opts.time_codes_height), an = (narrow_win and 5 or 4), w = time_codes_width, h = user_opts.time_font_size}
     lo.style = osc_styles.time
 
     -- Fullscreen/Info/Pin/Screenshot/Loop/Speed
