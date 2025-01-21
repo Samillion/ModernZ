@@ -268,11 +268,12 @@ local osc_param = {                  -- calculated by osc_init()
 }
 
 local icons = {
-    maximize = "\238\159\171",
-    unmaximize = "\238\174\150",
-    minimize = "\238\175\144",
-    close = "\239\141\169",
-
+    window = {
+        maximize = "\238\159\171",
+        unmaximize = "\238\174\150",
+        minimize = "\238\175\144",
+        close = "\239\141\169",
+    },
     audio = "\238\175\139",
     subtitle = "\238\175\141",
     playlist = "\238\161\159",
@@ -2162,17 +2163,17 @@ local function osc_init()
     -- Window controls
     -- Close: 🗙
     ne = new_element("close", "button")
-    ne.content = icons.close
+    ne.content = icons.window.close
     ne.eventresponder["mbtn_left_up"] = function () mp.commandv("quit") end
 
     -- Minimize: 🗕
     ne = new_element("minimize", "button")
-    ne.content = icons.minimize
+    ne.content = icons.window.minimize
     ne.eventresponder["mbtn_left_up"] = function () mp.commandv("cycle", "window-minimized") end
 
     -- Maximize: 🗖 /🗗
     ne = new_element("maximize", "button")
-    ne.content = (state.maximized or state.fullscreen) and icons.unmaximize or icons.maximize
+    ne.content = (state.maximized or state.fullscreen) and icons.window.unmaximize or icons.window.maximize
     ne.eventresponder["mbtn_left_up"] = function () mp.commandv("cycle", (state.fullscreen and "fullscreen" or "window-maximized")) end
 
     -- Window Title
