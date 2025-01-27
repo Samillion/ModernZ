@@ -200,7 +200,3 @@ Having said that, ModernZ still uses parts of the old code, and every previous a
 - [mpv](https://github.com/mpv-player/mpv) and their [osc.lua](https://github.com/mpv-player/mpv/blob/master/player/lua/osc.lua), as ModernZ osc was re-based on the stock osc standards and applies updates from it
 - All modern osc origin and their forks as mentioned in [history](#history)
 - All [contributors](https://github.com/Samillion/ModernZ/graphs/contributors), testers and users that helped directly or indirectly with ModernZ osc ❤️
-
-#### Activity
-
-![Git Repo Activity](https://repobeats.axiom.co/api/embed/96d6e504e05dbd91039ba86a51ab295f22e0ed42.svg "Repobeats analytics image")

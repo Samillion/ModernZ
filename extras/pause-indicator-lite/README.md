@@ -26,6 +26,7 @@ To adjust them you can either:
 | `keybind_eof_disable`    | yes         | disable keybind on eof (end of file) [[reference](https://github.com/Samillion/ModernZ/issues/291)]                                  |
 | `icon_color`             | `#FFFFFF`   | icon fill color                                                                                                                      |
 | `icon_border_color`      | `#111111`   | icon border color                                                                                                                    |
+| `icon_border_width`      | 1.5         | icon border width                                                                                                                    |
 | `icon_opacity`           | 40          | icon opacity (0-100)                                                                                                                 |
 | `rectangles_width`       | 30          | width of rectangles (pause icon)                                                                                                     |
 | `rectangles_height`      | 80          | height of rectangles (pause icon)                                                                                                    |
@@ -34,6 +35,7 @@ To adjust them you can either:
 | `triangle_height`        | 80          | height of triangle (play icon)                                                                                                       |
 | `flash_play_icon`        | yes         | flash play icon on unpause (best with pause indicator icon)                                                                          |
 | `flash_icon_timeout`     | 0.3         | timeout (seconds) for flash icon                                                                                                     |
+| `fluent_icons`           | no          | requires `fonts/fluent-system-icons.ttf` [[details](https://github.com/Samillion/ModernZ/pull/335)]                                  |
 
 ### How to install
 
@@ -48,6 +50,8 @@ Simply place `pause_indicator_lite.lua` in the corresponding mpv scripts folder 
 
 ```
 mpv
+├── fonts/
+│   └── fluent-system-icons.ttf (optional) [required for fluent_icons]
 ├── script-opts
 │   └── pause_indicator_lite.conf
 └── scripts
