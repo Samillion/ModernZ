@@ -20,6 +20,7 @@ local options = {
     -- icon colors & opacity
     icon_color = "#FFFFFF",          -- icon fill color
     icon_border_color = "#111111",   -- icon border color
+    icon_border_width = 1.5,         -- icon border width
     icon_opacity = 40,               -- icon opacity (0-100)
 
     -- pause icon
@@ -34,6 +35,9 @@ local options = {
     -- best with pause icon
     flash_play_icon = true,          -- flash play icon on unpause
     flash_icon_timeout = 0.3,        -- timeout (seconds) for flash icon
+
+    -- icon style used in ModernZ osc
+    fluent_icons = false,            -- requires fonts/fluent-system-icons.ttf
 }
 
 local msg = require "mp.msg"
@@ -58,19 +62,33 @@ end
 local icon_color = convert_color(options.icon_color)
 local icon_border_color = convert_color(options.icon_border_color)
 local icon_opacity = convert_opacity(options.icon_opacity)
+local icon_font = "fluent-system-icons"
 
 -- pause icon
 local function draw_rectangles()
-    return string.format([[{\\rDefault\\p1\\an5\\alpha&H%s\\1c&H%s&\\3c&H%s&}m 0 0 l %d 0 l %d %d l 0 %d m %d 0 l %d 0 l %d %d l %d %d{\\p0}]],
-        icon_opacity, icon_color, icon_border_color, options.rectangles_width, options.rectangles_width, options.rectangles_height, options.rectangles_height,
-        options.rectangles_width + options.rectangles_spacing, options.rectangles_width * 2 + options.rectangles_spacing, options.rectangles_width * 2 + options.rectangles_spacing, options.rectangles_height,
-        options.rectangles_width + options.rectangles_spacing, options.rectangles_height)
+    if options.fluent_icons then
+        local pause_icon = "\238\163\140"
+        return string.format([[{\\rDefault\\an5\\alpha&H%s\\bord%s\\1c&H%s&\\3c&H%s&\\fs%s\\fn%s}%s]],
+            icon_opacity, options.icon_border_width, icon_color, icon_border_color, options.rectangles_height, icon_font, pause_icon)
+    else
+        return string.format([[{\\rDefault\\p1\\an5\\alpha&H%s\\bord%s\\1c&H%s&\\3c&H%s&}m 0 0 l %d 0 l %d %d l 0 %d m %d 0 l %d 0 l %d %d l %d %d{\\p0}]],
+            icon_opacity, options.icon_border_width, icon_color, icon_border_color, options.rectangles_width, options.rectangles_width, 
+            options.rectangles_height, options.rectangles_height, options.rectangles_width + options.rectangles_spacing, 
+            options.rectangles_width * 2 + options.rectangles_spacing, options.rectangles_width * 2 + options.rectangles_spacing, 
+            options.rectangles_height, options.rectangles_width + options.rectangles_spacing, options.rectangles_height)
+    end
 end
 
 -- play icon
 local function draw_triangle()
-    return string.format([[{\\rDefault\\p1\\an5\\alpha&H%s\\1c&H%s&\\3c&H%s&}m 0 0 l %d %d l 0 %d{\\p0}]],
-        icon_opacity, icon_color, icon_border_color, options.triangle_width, options.triangle_height / 2, options.triangle_height)
+    if options.fluent_icons then
+        local play_icon = "\238\166\143"
+        return string.format([[{\\rDefault\\an5\\alpha&H%s\\bord%s\\1c&H%s&\\3c&H%s&\\fs%s\\fn%s}%s]],
+            icon_opacity, options.icon_border_width, icon_color, icon_border_color, options.triangle_height, icon_font, play_icon)
+    else
+        return string.format([[{\\rDefault\\p1\\an5\\alpha&H%s\\bord%s\\1c&H%s&\\3c&H%s&}m 0 0 l %d %d l 0 %d{\\p0}]],
+            icon_opacity, options.icon_border_width, icon_color, icon_border_color, options.triangle_width, options.triangle_height / 2, options.triangle_height)
+    end
 end
 
 -- initiate overlay
