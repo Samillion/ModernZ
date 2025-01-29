@@ -35,7 +35,8 @@ To adjust them you can either:
 | `triangle_height`        | 80          | height of triangle (play icon)                                                                                                       |
 | `flash_play_icon`        | yes         | flash play icon on unpause (best with pause indicator icon)                                                                          |
 | `flash_icon_timeout`     | 0.3         | timeout (seconds) for flash icon                                                                                                     |
-| `fluent_icons`           | no          | requires `fonts/fluent-system-icons.ttf` [[details](https://github.com/Samillion/ModernZ/pull/335)]                                  |
+| `fluent_icons`           | no          | requires `fonts/fluent-system-icons.ttf` [[details](https://github.com/Samillion/ModernZ/pull/336)]                                  |
+| `fluent_icon_size`       | 90          | fluent icon size                                                                                                                     |
 
 ### How to install
 

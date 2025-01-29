@@ -38,6 +38,7 @@ local options = {
 
     -- icon style used in ModernZ osc
     fluent_icons = false,            -- requires fonts/fluent-system-icons.ttf
+    fluent_icon_size = 90,           -- fluent icon size
 }
 
 local msg = require "mp.msg"
@@ -69,7 +70,7 @@ local function draw_rectangles()
     if options.fluent_icons then
         local pause_icon = "\238\163\140"
         return string.format([[{\\rDefault\\an5\\alpha&H%s\\bord%s\\1c&H%s&\\3c&H%s&\\fs%s\\fn%s}%s]],
-            icon_opacity, options.icon_border_width, icon_color, icon_border_color, options.rectangles_height, icon_font, pause_icon)
+            icon_opacity, options.icon_border_width, icon_color, icon_border_color, options.fluent_icon_size, icon_font, pause_icon)
     else
         return string.format([[{\\rDefault\\p1\\an5\\alpha&H%s\\bord%s\\1c&H%s&\\3c&H%s&}m 0 0 l %d 0 l %d %d l 0 %d m %d 0 l %d 0 l %d %d l %d %d{\\p0}]],
             icon_opacity, options.icon_border_width, icon_color, icon_border_color, options.rectangles_width, options.rectangles_width, 
@@ -84,7 +85,7 @@ local function draw_triangle()
     if options.fluent_icons then
         local play_icon = "\238\166\143"
         return string.format([[{\\rDefault\\an5\\alpha&H%s\\bord%s\\1c&H%s&\\3c&H%s&\\fs%s\\fn%s}%s]],
-            icon_opacity, options.icon_border_width, icon_color, icon_border_color, options.triangle_height, icon_font, play_icon)
+            icon_opacity, options.icon_border_width, icon_color, icon_border_color, options.fluent_icon_size, icon_font, play_icon)
     else
         return string.format([[{\\rDefault\\p1\\an5\\alpha&H%s\\bord%s\\1c&H%s&\\3c&H%s&}m 0 0 l %d %d l 0 %d{\\p0}]],
             icon_opacity, options.icon_border_width, icon_color, icon_border_color, options.triangle_width, options.triangle_height / 2, options.triangle_height)
