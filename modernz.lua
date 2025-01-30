@@ -176,6 +176,7 @@ local user_opts = {
 
     -- Miscellaneous settings
     visibility = "auto",                   -- only used at init to set visibility_mode(...)
+    visibility_modes = "never_auto_always",-- visibility modes to cycle through
     tick_delay = 0.03,                     -- minimum interval between OSC redraws (in seconds)
     tick_delay_follow_display_fps = false, -- use display FPS as the minimum redraw interval
 
@@ -502,6 +503,7 @@ local state = {
     new_file_flag = false,                  -- flag to detect new file starts
     temp_visibility_mode = nil,             -- store temporary visibility mode state
     chapter_list = {},                      -- sorted by time
+    visibility_modes = {},                  -- visibility_modes to cycle through
     mute = false,
     looping = false,
     sliderpos = 0,
@@ -3452,12 +3454,14 @@ end
 -- the modes only affect internal variables and not stored on its own.
 local function visibility_mode(mode, no_osd)
     if mode == "cycle" then
-        if not state.enabled then
-            mode = "auto"
-        elseif user_opts.visibility ~= "always" then
-            mode = "always"
-        else
-            mode = "never"
+        for i, allowed_mode in ipairs(state.visibility_modes) do
+            if i == #state.visibility_modes then
+                mode = state.visibility_modes[1]
+                break
+            elseif user_opts.visibility == allowed_mode then
+                mode = state.visibility_modes[i + 1]
+                break
+            end
         end
     end
 
@@ -3487,6 +3491,7 @@ local function visibility_mode(mode, no_osd)
     mp.disable_key_bindings("input")
     mp.disable_key_bindings("window-controls")
     state.input_enabled = false
+
     update_margins()
     request_tick()
 end
@@ -3619,6 +3624,14 @@ local function validate_user_opts()
     for _, color in pairs(colors) do
         if color:find("^#%x%x%x%x%x%x$") == nil then
             msg.warn("'" .. color .. "' is not a valid color")
+        end
+    end
+
+    for str in string.gmatch(user_opts.visibility_modes, "([^_]+)") do
+        if str ~= "auto" and str ~= "always" and str ~= "never" then
+            msg.warn("Ignoring unknown visibility mode '" .. str .."' in list")
+        else
+            table.insert(state.visibility_modes, str)
         end
     end
 end
