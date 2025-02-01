@@ -26,19 +26,20 @@ Create `modernz.conf` in your mpv script-opts directory:
 
 ### OSC behaviour and scaling
 
-| Option                  | Value | Description                                                |
-| ----------------------- | ----- | ---------------------------------------------------------- |
-| hidetimeout             | 2000  | time (in ms) before OSC hides if no mouse movement         |
-| seek_resets_hidetimeout | yes   | if seeking should reset the hidetimeout                    |
-| fadeduration            | 250   | fade-out duration (in ms), set to `"0"` for no fade        |
-| minmousemove            | 0     | minimum mouse movement (in pixels) required to show OSC    |
-| bottomhover             | yes   | show OSC only when hovering at the bottom                  |
-| bottomhover_zone        | 130   | height of hover zone for bottomhover (in pixels)           |
-| osc_on_seek             | no    | show OSC when seeking                                      |
-| mouse_seek_pause        | yes   | pause video while seeking with mouse move (on button hold) |
-| vidscale                | auto  | scale osc with the video. (set to `"no"` to disable)       |
-| scalewindowed           | 1.0   | osc scale factor when windowed                             |
-| scalefullscreen         | 1.0   | osc scale factor when fullscreen                           |
+| Option                  | Value | Description                                                             |
+| ----------------------- | ----- | ----------------------------------------------------------------------- |
+| hidetimeout             | 2000  | time (in ms) before OSC hides if no mouse movement                      |
+| seek_resets_hidetimeout | yes   | if seeking should reset the hidetimeout                                 |
+| fadeduration            | 250   | fade-out duration (in ms), set to `"0"` for no fade                     |
+| minmousemove            | 0     | minimum mouse movement (in pixels) required to show OSC                 |
+| bottomhover             | yes   | show OSC only when hovering at the bottom                               |
+| bottomhover_zone        | 130   | height of hover zone for bottomhover (in pixels)                        |
+| osc_on_seek             | no    | show OSC when seeking                                                   |
+| mouse_seek_pause        | yes   | pause video while seeking with mouse move (on button hold)              |
+| force_seek_tooltip      | no    | force show seedkbar tooltip on mouse drag, even if not hovering seekbar |
+| vidscale                | auto  | scale osc with the video. (set to `"no"` to disable)                    |
+| scalewindowed           | 1.0   | osc scale factor when windowed                                          |
+| scalefullscreen         | 1.0   | osc scale factor when fullscreen                                        |
 
 ### Elements display
 
