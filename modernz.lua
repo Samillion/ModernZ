@@ -39,6 +39,7 @@ local user_opts = {
     bottomhover_zone = 130,                -- height of hover zone for bottomhover (in pixels)
     osc_on_seek = false,                   -- show OSC when seeking
     mouse_seek_pause = true,               -- pause video while seeking with mouse move (on button hold)
+    force_seek_tooltip = false,            -- force show seedkbar tooltip on mouse drag, even if not hovering seekbar
 
     vidscale = "auto",                     -- scale osc with the video
     scalewindowed = 1.0,                   -- osc scale factor when windowed
@@ -511,9 +512,8 @@ local state = {
     initialborder = mp.get_property("border"),
     playtime_hour_force_init = false,       -- used to force request_init() once
     playtime_nohour_force_init = false,     -- used to force request_init() once
-    playingWhilstSeeking = false,
-    playingWhilstSeekingWaitingForEnd = false,
-    persistentprogresstoggle = user_opts.persistentprogress,
+    playing_and_seeking = false,
+    persistent_progress_toggle = user_opts.persistentprogress,
     original_subpos = mp.get_property_number("sub-pos") or 100,
     downloaded_once = false,
     downloading = false,
@@ -1139,7 +1139,13 @@ local function render_elements(master_ass)
                 
                 -- add tooltip
                 if element.slider.tooltipF ~= nil and element.enabled then
-                    if mouse_hit(element) then
+                    local force_seek_tooltip = user_opts.force_seek_tooltip
+                        and element.name == "seekbar"
+                        and element.eventresponder["mbtn_left_down"]
+                        and element.state.mbtnleft
+                        and state.mouse_down_counter > 0
+                        and state.playing_and_seeking
+                    if mouse_hit(element) or force_seek_tooltip then
                         local sliderpos = get_slider_value(element)
                         local tooltiplabel = element.slider.tooltipF(sliderpos)
                         local an = slider_lo.tooltip_an
@@ -1703,7 +1709,7 @@ layouts["modern"] = function ()
     lo.slider.tooltip_style = osc_styles.tooltip
     lo.slider.tooltip_an = 2
 
-    if user_opts.persistentprogress or state.persistentprogresstoggle then
+    if user_opts.persistentprogress or state.persistent_progress_toggle then
         lo = add_layout("persistentseekbar")
         lo.geometry = {x = refX, y = refY, an = 5, w = osc_geo.w, h = user_opts.persistentprogressheight}
         lo.style = osc_styles.seekbar_fg
@@ -2247,7 +2253,7 @@ local function osc_init()
     ne.content = function ()
         if mp.get_property("eof-reached") == "yes" then
             return icons.replay
-        elseif mp.get_property("pause") == "yes" and not state.playingWhilstSeeking then
+        elseif mp.get_property("pause") == "yes" and not state.playing_and_seeking then
             return icons.play
         else
             return icons.pause
@@ -2669,8 +2675,8 @@ local function osc_init()
         -- mouse move events may pile up during seeking and may still get
         -- sent when the user is done seeking, so we need to throw away
         -- identical seeks
+        state.playing_and_seeking = true
         if mp.get_property("pause") == "no" and user_opts.mouse_seek_pause then
-            state.playingWhilstSeeking = true
             mp.commandv("cycle", "pause")
         end
         local seekto = get_slider_value(element)
@@ -2713,11 +2719,11 @@ local function osc_init()
     end
     ne.eventresponder["reset"] = function (element)
         element.state.lastseek = nil
-        if state.playingWhilstSeeking then
-            if mp.get_property("eof-reached") == "no" then
+        if state.playing_and_seeking then
+            if mp.get_property("eof-reached") == "no" and user_opts.mouse_seek_pause then
                 mp.commandv("cycle", "pause")
             end
-            state.playingWhilstSeeking = false
+            state.playing_and_seeking = false
         end
     end
     ne.eventresponder["wheel_up_press"] = function () mp.commandv("seek", 10) end
@@ -3197,7 +3203,7 @@ local function render()
         render_elements(ass)
     end
 
-    if user_opts.persistentprogress or state.persistentprogresstoggle then
+    if user_opts.persistentprogress or state.persistent_progress_toggle then
         render_persistentprogressbar(ass)
     end
 
@@ -3559,7 +3565,7 @@ end)
 mp.add_key_binding(nil, "visibility", function() visibility_mode("cycle") end)
 mp.add_key_binding(nil, "progress-toggle", function()
     user_opts.persistentprogress = not user_opts.persistentprogress
-    state.persistentprogresstoggle = user_opts.persistentprogress
+    state.persistent_progress_toggle = user_opts.persistentprogress
     request_init()
 end)
 mp.register_script_message("osc-idlescreen", idlescreen_visibility)
