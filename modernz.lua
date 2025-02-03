@@ -39,7 +39,7 @@ local user_opts = {
     bottomhover_zone = 130,                -- height of hover zone for bottomhover (in pixels)
     osc_on_seek = false,                   -- show OSC when seeking
     mouse_seek_pause = true,               -- pause video while seeking with mouse move (on button hold)
-    force_seek_tooltip = false,            -- force show seedkbar tooltip on mouse drag, even if not hovering seekbar
+    force_seek_tooltip = false,            -- force show seekbar tooltip on mouse drag, even if not hovering seekbar
 
     vidscale = "auto",                     -- scale osc with the video
     scalewindowed = 1.0,                   -- osc scale factor when windowed
