@@ -3291,10 +3291,6 @@ tick = function()
     end
 end
 
-local function shutdown()
-    mp.del_property("user-data/osc")
-end
-
 -- duration is observed for the sole purpose of updating chapter markers
 -- positions. live streams with chapters are very rare, and the update is also
 -- expensive (with request_init), so it's only observed when we have chapters
@@ -3339,7 +3335,6 @@ mp.register_event("file-loaded", function()
        end
     end
 end)
-mp.register_event("shutdown", shutdown)
 mp.register_event("start-file", request_init)
 mp.observe_property("track-list", "native", request_init)
 mp.observe_property("playlist-count", "native", request_init)
