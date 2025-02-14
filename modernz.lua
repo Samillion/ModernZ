@@ -3349,10 +3349,16 @@ mp.observe_property("seeking", "native", function(_, seeking)
     if user_opts.seek_resets_hidetimeout then
         reset_timeout()
     end
-    if seeking and user_opts.osc_on_seek and not state.new_file_flag then
-        show_osc()
-    elseif state.new_file_flag then
+
+    if state.new_file_flag then
         state.new_file_flag = false
+        return
+    end
+
+    if seeking and user_opts.osc_on_seek then
+        mp.register_event("seek", show_osc) -- show OSC while seeking
+    else
+        mp.unregister_event(show_osc) -- remove event when seeking stops
     end
 end)
 mp.observe_property("fullscreen", "bool", function(_, val)
