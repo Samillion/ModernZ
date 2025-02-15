@@ -30,7 +30,8 @@ Create `modernz.conf` in your mpv script-opts directory:
 | ----------------------- | ----- | ---------------------------------------------------------------------- |
 | hidetimeout             | 2000  | time (in ms) before OSC hides if no mouse movement                     |
 | seek_resets_hidetimeout | yes   | if seeking should reset the hidetimeout                                |
-| fadeduration            | 250   | fade-out duration (in ms), set to `"0"` for no fade                    |
+| fadeduration            | 200   | fade-out duration (in ms), set to `"0"` for no fade                    |
+| fadein                  | no    | whether to enable fade-in effect                                       |
 | minmousemove            | 0     | minimum mouse movement (in pixels) required to show OSC                |
 | bottomhover             | yes   | show OSC only when hovering at the bottom                              |
 | bottomhover_zone        | 130   | height of hover zone for bottomhover (in pixels)                       |
