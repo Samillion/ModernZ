@@ -39,6 +39,7 @@ local user_opts = {
     bottomhover = true,                    -- show OSC only when hovering at the bottom
     bottomhover_zone = 130,                -- height of hover zone for bottomhover (in pixels)
     osc_on_seek = false,                   -- show OSC when seeking
+    osc_on_start = false,                  -- show OSC on start of every file
     mouse_seek_pause = true,               -- pause video while seeking with mouse move (on button hold)
     force_seek_tooltip = false,            -- force show seekbar tooltip on mouse drag, even if not hovering seekbar
 
@@ -3340,6 +3341,9 @@ mp.register_event("file-loaded", function()
        else
             user_opts.seekbarkeyframes = false
        end
+    end
+    if user_opts.osc_on_start then
+        show_osc()
     end
 end)
 mp.register_event("start-file", request_init)
