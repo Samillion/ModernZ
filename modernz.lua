@@ -2807,20 +2807,15 @@ local function osc_init()
     ne.content = function()
         local playback_time = mp.get_property_number("playback-time", 0)
 
-        -- force request_init() once to update time codes width hitbox
-        -- run once when less than hour, once again if hour or more
-        -- since request_init() is expensive, this is a measure to call it when needed only
-        if user_opts.time_format ~= "fixed" and playback_time then
-            if playback_time >= 3600 and not state.playtime_hour_force_init then
-                request_init()
-                state.playtime_hour_force_init = true
-                state.playtime_nohour_force_init = false
-            elseif playback_time < 3600 and not state.playtime_nohour_force_init then
-                request_init()
-                state.playtime_hour_force_init = false
-                state.playtime_nohour_force_init = true
-            end
-        end
+        -- call request_init() only when needed to update time code width  
+        if user_opts.time_format ~= "fixed" and playback_time then  
+            local hour_or_more = playback_time >= 3600  
+            if hour_or_more ~= state.playtime_hour_force_init then  
+                request_init()  
+                state.playtime_hour_force_init = hour_or_more  
+                state.playtime_nohour_force_init = not hour_or_more  
+            end  
+        end  
 
         local duration = mp.get_property_number("duration", 0)
         if duration <= 0 then return "--:--" end
