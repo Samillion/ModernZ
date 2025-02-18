@@ -36,6 +36,7 @@ Create `modernz.conf` in your mpv script-opts directory:
 | bottomhover             | yes   | show OSC only when hovering at the bottom                              |
 | bottomhover_zone        | 130   | height of hover zone for bottomhover (in pixels)                       |
 | osc_on_seek             | no    | show OSC when seeking                                                  |
+| osc_on_start            | no    | show OSC on start of every file                                        |
 | mouse_seek_pause        | yes   | pause video while seeking with mouse move (on button hold)             |
 | force_seek_tooltip      | no    | force show seekbar tooltip on mouse drag, even if not hovering seekbar |
 | vidscale                | auto  | scale osc with the video. (set to `"no"` to disable)                   |
