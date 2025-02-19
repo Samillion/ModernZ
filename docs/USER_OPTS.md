@@ -251,6 +251,7 @@ Customize the button function based on mouse actions.
 |                               | playlist_next_mbtn_right_command | `script-binding select/select-playlist; script-message-to modernz osc-hide`     |
 | Fullscreen Button             | fullscreen_mbtn_left_command     | `cycle fullscreen`                                                              |
 |                               | fullscreen_mbtn_right_command    | `cycle window-maximized`                                                        |
+| Info Button                   | info_mbtn_left_command           | `script-binding stats/display-page-1-toggle`                                    |
 
 ### Auto Profile
 
