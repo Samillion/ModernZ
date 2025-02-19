@@ -256,6 +256,9 @@ local user_opts = {
     -- fullscreen button mouse actions
     fullscreen_mbtn_left_command = "cycle fullscreen",
     fullscreen_mbtn_right_command = "cycle window-maximized",
+
+    -- info button mouse actions
+    info_mbtn_left_command = "script-binding stats/display-page-1-toggle",
 }
 
 mp.observe_property("osc", "bool", function(name, value) if value == true then mp.set_property("osc", "no") end end)
@@ -2493,7 +2496,7 @@ local function osc_init()
     ne.tooltip_style = osc_styles.tooltip
     ne.tooltipF = user_opts.tooltip_hints and locale.stats_info or ""
     ne.visible = (osc_param.playresx >= 650 - outeroffset - (user_opts.fullscreen_button and 0 or 100))
-    ne.eventresponder["mbtn_left_up"] = function () mp.commandv("script-binding", "stats/display-page-1-toggle") end
+    ne.eventresponder["mbtn_left_up"] = command_callback(user_opts.info_mbtn_left_command)
 
     --tog_ontop
     ne = new_element("tog_ontop", "button")
