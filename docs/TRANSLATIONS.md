@@ -40,6 +40,7 @@ ModernZ currently has translations for the following languages:
 - Japanese (jp)
 - Simplified Chinese (zh)
 - Arabic (ar)
+- Russian (ru)
 
 ## Adding a New Language
 
