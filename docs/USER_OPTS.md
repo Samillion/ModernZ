@@ -219,8 +219,8 @@ Customize the button function based on mouse actions.
 | Type                          | Option                           | Function                                                                        |
 | ----------------------------- | -------------------------------- | ------------------------------------------------------------------------------- |
 | Title (above seekbar)         | title_mbtn_left_command          | `script-binding stats/display-page-5`                                           |
-|                               | title_mbtn_mid_command           | `show-text ${filename}`                                                         |
-|                               | title_mbtn_right_command         | `show-text ${path}`                                                             |
+|                               | title_mbtn_mid_command           | `show-text ${path}`                                                             |
+|                               | title_mbtn_right_command         | `script-binding select/select-watch-history; script-message-to modernz osc-hide`|
 | Playlist Button               | playlist_mbtn_left_command       | `script-binding select/select-playlist; script-message-to modernz osc-hide`     |
 |                               | playlist_mbtn_right_command      | `show-text ${playlist} 3000`                                                    |
 | Volume Control                | vol_ctrl_mbtn_left_command       | `no-osd cycle mute`                                                             |
