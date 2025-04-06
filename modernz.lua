@@ -146,8 +146,10 @@ local user_opts = {
 
     fade_alpha = 130,                      -- alpha of the OSC background (0 to disable)
     fade_blur_strength = 100,              -- blur strength for the OSC alpha fade. caution: high values can take a lot of CPU time to render
+    fade_transparency_strength = 0,        -- use with "fade_blur_strength=0" to create a transparency box
     window_fade_alpha = 100,               -- alpha of the window title bar (0 to disable)
     window_fade_blur_strength = 100,       -- blur strength for the window title bar. caution: high values can take a lot of CPU time to render
+    window_fade_transparency_strength = 0, -- use with "window_fade_blur_strength=0" to create a transparency box
     thumbnail_border = 3,                  -- width of the thumbnail border (for thumbfast)
     thumbnail_border_radius = 3,           -- rounded corner radius for thumbnail border (0 to disable)
 
@@ -1679,7 +1681,7 @@ layouts["modern"] = function ()
     lo.geometry = {x = posX, y = posY, an = 7, w = osc_w, h = 1}
     lo.style = osc_styles.osc_fade_bg
     lo.layer = 10
-    lo.alpha[3] = 0
+    lo.alpha[3] = user_opts.fade_transparency_strength
 
     local top_titlebar = window_controls_enabled() and (user_opts.window_title or user_opts.window_controls)
 
@@ -1690,7 +1692,7 @@ layouts["modern"] = function ()
         lo.geometry = {x = posX, y = -100, an = 7, w = osc_w, h = -1}
         lo.style = osc_styles.window_fade_bg
         lo.layer = 10
-        lo.alpha[3] = 0
+        lo.alpha[3] = user_opts.window_fade_transparency_strength
     end
 
     -- Alignment
@@ -1964,7 +1966,7 @@ layouts["modern-image"] = function ()
     lo.geometry = {x = posX, y = posY, an = 7, w = osc_w, h = 1}
     lo.style = osc_styles.osc_fade_bg
     lo.layer = 10
-    lo.alpha[3] = 0
+    lo.alpha[3] = user_opts.fade_transparency_strength
 
     local top_titlebar = window_controls_enabled() and (user_opts.window_title or user_opts.window_controls)
 
@@ -1975,7 +1977,7 @@ layouts["modern-image"] = function ()
         lo.geometry = {x = posX, y = -100, an = 7, w = osc_w, h = -1}
         lo.style = osc_styles.window_fade_bg
         lo.layer = 10
-        lo.alpha[3] = 0
+        lo.alpha[3] = user_opts.window_fade_transparency_strength
     end
 
     -- Alignment
