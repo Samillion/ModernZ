@@ -119,35 +119,37 @@ Create `modernz.conf` in your mpv script-opts directory:
 
 ### Colors and style
 
-| Option                      | Value     | Description                                                                                       |
-| --------------------------- | --------- | ------------------------------------------------------------------------------------------------- |
-| osc_color                   | `#000000` | accent color of the OSC and title bar                                                             |
-| window_title_color          | `#FFFFFF` | color of the title in borderless/fullscreen mode                                                  |
-| window_controls_color       | `#FFFFFF` | color of the window controls (close, minimize, maximize) in borderless/fullscreen mode            |
-| windowcontrols_close_hover  | `#E81123` | color of close window control on hover                                                            |
-| windowcontrols_max_hover    | `#F8BC3A` | color of maximize window controls on hover                                                        |
-| windowcontrols_min_hover    | `#43CB44` | color of minimize window controls on hover                                                        |
-| title_color                 | `#FFFFFF` | color of the title (above seekbar)                                                                |
-| seekbarfg_color             | `#FB8C00` | color of the seekbar progress and handle                                                          |
-| seekbarbg_color             | `#94754F` | color of the remaining seekbar                                                                    |
-| seekbar_cache_color         | `#918F8E` | color of the cache ranges on the seekbar                                                          |
-| volumebar_match_seek_color  | no        | match volume bar color with seekbar color (ignores `side_buttons_color`)                          |
-| time_color                  | `#FFFFFF` | color of the timestamps (below seekbar)                                                           |
-| chapter_title_color         | `#FFFFFF` | color of the chapter title (above seekbar)                                                        |
-| cache_info_color            | `#FFFFFF` | color of the cache information                                                                    |
-| side_buttons_color          | `#FFFFFF` | color of the side buttons (audio, subtitles, playlist, etc.)                                      |
-| middle_buttons_color        | `#FFFFFF` | color of the middle buttons (skip, jump, chapter, etc.)                                           |
-| playpause_color             | `#FFFFFF` | color of the play/pause button                                                                    |
-| held_element_color          | `#999999` | color of the element when held down (pressed)                                                     |
-| hover_effect_color          | `#FB8C00` | color of a hovered button when `hover_effect` includes `"color"`                                  |
-| thumbnail_border_color      | `#111111` | color of the border for thumbnails (with thumbfast)                                               |
-| thumbnail_border_outline    | `#404040` | color of the border outline for thumbnails                                                        |
-| fade_alpha                  | 130       | alpha of the OSC background box (0 to disable)                                                    |
-| fade_blur_strength          | 100       | blur strength for the OSC alpha fade. caution: high values can take a lot of CPU time to render   |
-| window_fade_alpha           | 100       | alpha of the window title bar (0 to disable)                                                      |
-| window_fade_blur_strength   | 100       | blur strength for the window title bar. caution: high values can take a lot of CPU time to render |
-| thumbnail_border            | 3         | width of the thumbnail border (for thumbfast)                                                     |
-| thumbnail_border_radius     | 3         | rounded corner radius for thumbnail border (0 to disable)                                         |
+| Option                            | Value     | Description                                                                                       |
+| --------------------------------- | --------- | ------------------------------------------------------------------------------------------------- |
+| osc_color                         | `#000000` | accent color of the OSC and title bar                                                             |
+| window_title_color                | `#FFFFFF` | color of the title in borderless/fullscreen mode                                                  |
+| window_controls_color             | `#FFFFFF` | color of the window controls (close, minimize, maximize) in borderless/fullscreen mode            |
+| windowcontrols_close_hover        | `#E81123` | color of close window control on hover                                                            |
+| windowcontrols_max_hover          | `#F8BC3A` | color of maximize window controls on hover                                                        |
+| windowcontrols_min_hover          | `#43CB44` | color of minimize window controls on hover                                                        |
+| title_color                       | `#FFFFFF` | color of the title (above seekbar)                                                                |
+| seekbarfg_color                   | `#FB8C00` | color of the seekbar progress and handle                                                          |
+| seekbarbg_color                   | `#94754F` | color of the remaining seekbar                                                                    |
+| seekbar_cache_color               | `#918F8E` | color of the cache ranges on the seekbar                                                          |
+| volumebar_match_seek_color        | no        | match volume bar color with seekbar color (ignores `side_buttons_color`)                          |
+| time_color                        | `#FFFFFF` | color of the timestamps (below seekbar)                                                           |
+| chapter_title_color               | `#FFFFFF` | color of the chapter title (above seekbar)                                                        |
+| cache_info_color                  | `#FFFFFF` | color of the cache information                                                                    |
+| side_buttons_color                | `#FFFFFF` | color of the side buttons (audio, subtitles, playlist, etc.)                                      |
+| middle_buttons_color              | `#FFFFFF` | color of the middle buttons (skip, jump, chapter, etc.)                                           |
+| playpause_color                   | `#FFFFFF` | color of the play/pause button                                                                    |
+| held_element_color                | `#999999` | color of the element when held down (pressed)                                                     |
+| hover_effect_color                | `#FB8C00` | color of a hovered button when `hover_effect` includes `"color"`                                  |
+| thumbnail_border_color            | `#111111` | color of the border for thumbnails (with thumbfast)                                               |
+| thumbnail_border_outline          | `#404040` | color of the border outline for thumbnails                                                        |
+| fade_alpha                        | 130       | alpha of the OSC background box (0 to disable)                                                    |
+| fade_blur_strength                | 100       | blur strength for the OSC alpha fade. caution: high values can take a lot of CPU time to render   |
+| fade_transparency_strength        | 0         | use with "fade_blur_strength=0" to create a transparency box                                      |
+| window_fade_alpha                 | 100       | alpha of the window title bar (0 to disable)                                                      |
+| window_fade_blur_strength         | 100       | blur strength for the window title bar. caution: high values can take a lot of CPU time to render |
+| window_fade_transparency_strength | 0         | use with "window_fade_blur_strength=0" to create a transparency box                               |
+| thumbnail_border                  | 3         | width of the thumbnail border (for thumbfast)                                                     |
+| thumbnail_border_radius           | 3         | rounded corner radius for thumbnail border (0 to disable)                                         |
 
 ### Button hover effects
 
