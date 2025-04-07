@@ -206,8 +206,8 @@ local user_opts = {
 
     -- title above seekbar mouse actions
     title_mbtn_left_command = "script-binding stats/display-page-5",
-    title_mbtn_mid_command = "show-text ${filename}",
-    title_mbtn_right_command = "show-text ${path}",
+    title_mbtn_mid_command = "show-text ${path}",
+    title_mbtn_right_command = "script-binding select/select-watch-history; script-message-to modernz osc-hide",
 
     -- playlist button mouse actions
     playlist_mbtn_left_command = "script-binding select/select-playlist; script-message-to modernz osc-hide",
