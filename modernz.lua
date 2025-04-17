@@ -1800,6 +1800,15 @@ layouts["modern"] = function ()
 
     local start_x = 37
 
+    -- Playlist
+    if playlist_button then
+        lo = add_layout("tog_playlist")
+        lo.geometry = {x = start_x, y = refY - 35, an = 5, w = 24, h = 24}
+        lo.style = osc_styles.control_3
+        lo.visible = (osc_param.playresx >= 600 - outeroffset)
+        start_x = start_x + 45
+    end
+
     -- Audio
     if audio_track then
         lo = add_layout("audio_track")
@@ -1812,15 +1821,6 @@ layouts["modern"] = function ()
     -- Subtitle
     if subtitle_track then
         lo = add_layout("sub_track")
-        lo.geometry = {x = start_x, y = refY - 35, an = 5, w = 24, h = 24}
-        lo.style = osc_styles.control_3
-        lo.visible = (osc_param.playresx >= 600 - outeroffset)
-        start_x = start_x + 45
-    end
-
-    -- Playlist
-    if playlist_button then
-        lo = add_layout("tog_playlist")
         lo.geometry = {x = start_x, y = refY - 35, an = 5, w = 24, h = 24}
         lo.style = osc_styles.control_3
         lo.visible = (osc_param.playresx >= 600 - outeroffset)
@@ -2342,6 +2342,19 @@ local function osc_init()
 
     local visible_min_width = 550 - outeroffset
 
+    --tog_playlist
+    ne = new_element("tog_playlist", "button")
+    ne.enabled = have_pl or not user_opts.gray_empty_playlist_button
+    ne.off = not have_pl and user_opts.gray_empty_playlist_button
+    ne.visible = (osc_param.playresx >= (state.is_image and 250 or visible_min_width) - outeroffset)
+    ne.content = icons.playlist
+    ne.tooltip_style = osc_styles.tooltip
+    ne.tooltipF = have_pl and locale.playlist .. " [" .. pl_pos .. "/" .. pl_count .. "]" or locale.playlist
+    ne.nothingavailable = locale.no_playlist
+    ne.eventresponder["mbtn_left_up"] = command_callback(user_opts.playlist_mbtn_left_command)
+    ne.eventresponder["mbtn_right_up"] = command_callback(user_opts.playlist_mbtn_right_command)
+    visible_min_width = visible_min_width + (ne.enabled and 100 or 0)
+
     --audio_track
     ne = new_element("audio_track", "button")
     ne.enabled = audio_track_count > 0
@@ -2378,19 +2391,6 @@ local function osc_init()
     ne.eventresponder["shift+mbtn_left_down"] = command_callback(user_opts.sub_track_mbtn_mid_command)
     ne.eventresponder["wheel_down_press"] = command_callback(user_opts.sub_track_wheel_down_command)
     ne.eventresponder["wheel_up_press"] = command_callback(user_opts.sub_track_wheel_up_command)
-    visible_min_width = visible_min_width + (ne.enabled and 100 or 0)
-
-    --tog_playlist
-    ne = new_element("tog_playlist", "button")
-    ne.enabled = have_pl or not user_opts.gray_empty_playlist_button
-    ne.off = not have_pl and user_opts.gray_empty_playlist_button
-    ne.visible = (osc_param.playresx >= (state.is_image and 250 or visible_min_width) - outeroffset)
-    ne.content = icons.playlist
-    ne.tooltip_style = osc_styles.tooltip
-    ne.tooltipF = have_pl and locale.playlist .. " [" .. pl_pos .. "/" .. pl_count .. "]" or locale.playlist
-    ne.nothingavailable = locale.no_playlist
-    ne.eventresponder["mbtn_left_up"] = command_callback(user_opts.playlist_mbtn_left_command)
-    ne.eventresponder["mbtn_right_up"] = command_callback(user_opts.playlist_mbtn_right_command)
     visible_min_width = visible_min_width + (ne.enabled and 100 or 0)
 
     -- vol_ctrl
