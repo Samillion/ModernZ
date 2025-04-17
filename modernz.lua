@@ -352,6 +352,7 @@ local language = {
         download_in_progress = "Download in progress",
         downloading = "Downloading",
         downloaded = "Already downloaded",
+        menu = "Menu",
     },
 }
 
@@ -2349,7 +2350,7 @@ local function osc_init()
     ne.visible = (osc_param.playresx >= (state.is_image and 250 or visible_min_width) - outeroffset)
     ne.content = icons.playlist
     ne.tooltip_style = osc_styles.tooltip
-    ne.tooltipF = have_pl and locale.playlist .. " [" .. pl_pos .. "/" .. pl_count .. "]" or locale.playlist
+    ne.tooltipF = user_opts.tooltip_hints and locale.menu or ""
     ne.nothingavailable = locale.no_playlist
     ne.eventresponder["mbtn_left_up"] = command_callback(user_opts.playlist_mbtn_left_command)
     ne.eventresponder["mbtn_right_up"] = command_callback(user_opts.playlist_mbtn_right_command)
