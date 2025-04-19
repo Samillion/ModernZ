@@ -2511,7 +2511,6 @@ local function osc_init()
     ne.visible = (osc_param.playresx >= visible_min_width)
     ne.eventresponder["mbtn_left_up"] = command_callback(user_opts.fullscreen_mbtn_left_command)
     ne.eventresponder["mbtn_right_up"] = command_callback(user_opts.fullscreen_mbtn_right_command)
-    print("outeroffset = " .. outeroffset)
     visible_min_width = visible_min_width + (user_opts.fullscreen_button and 100 or 0)
 
     --tog_info
