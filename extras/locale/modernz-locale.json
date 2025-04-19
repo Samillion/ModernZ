@@ -25,6 +25,7 @@
         "download_in_progress": "Téléchargement en cours",
         "downloading": "Téléchargement",
         "downloaded": "Déjà téléchargé",
+        "menu": "Menu",
     },
     "de": {
         "idle": "Dateien oder URLs hier ablegen, um sie abzuspielen",
@@ -52,6 +53,7 @@
         "download_in_progress": "Herunterladen läuft",
         "downloading": "Herunterladen",
         "downloaded": "Bereits heruntergeladen",
+        "menu": "Menü",
     },
     "es": {
         "idle": "Suelta archivos o URLs aquí para reproducirlos",
@@ -79,6 +81,7 @@
         "download_in_progress": "Descarga en curso",
         "downloading": "Descargando",
         "downloaded": "Ya descargado",
+        "menu": "Menú",
     },
     "pl": {
         "idle": "Upuść plik lub łącze URL do odtworzenia",
@@ -106,6 +109,7 @@
         "download_in_progress": "Pobieranie w toku",
         "downloading": "Pobieranie",
         "downloaded": "Już pobrano",
+        "menu": "Menu",
     },
     "jp": {
         "idle": "ファイルやURLのリンクをここにドロップすると再生されます",
@@ -133,6 +137,7 @@
         "download_in_progress": "ダウンロード中",
         "downloading": "ダウンロード中",
         "downloaded": "既にダウンロード済み",
+        "menu": "メニュー",
     },
     "zh": {
         "idle": "将文件或URL放在这里播放",
@@ -160,6 +165,7 @@
         "download_in_progress": "下载中",
         "downloading": "正在下载",
         "downloaded": "已下载",
+        "menu": "菜单",
     },
     "ar": {
         "idle": "أسقط الملفات أو الروابط هنا للتشغيل",
@@ -187,6 +193,7 @@
         "download_in_progress": "التنزيل جارٍ",
         "downloading": "جاري التنزيل",
         "downloaded": "تم التنزيل بالفعل",
+        "menu": "قائمة",
     },
     "ru": {
         "idle": "Перенести файл или URL для воспроизведения",
@@ -214,5 +221,6 @@
         "download_in_progress": "Загрузка в процессе",
         "downloading": "Загрузка",
         "downloaded": "Уже загружено",
+        "menu": "Меню",
     },
 }
