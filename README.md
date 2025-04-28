@@ -74,7 +74,8 @@ ModernZ supports mpv's built-in console/select ([v0.40+](https://github.com/mpv-
    ```
    mpv/
    ├── fonts/
-   │   └── fluent-system-icons.ttf
+   │   ├── fluent-system-icons.ttf
+   │   └── material-design-icons.ttf
    ├── script-opts/
    │   └── modernz.conf
    └── scripts/
