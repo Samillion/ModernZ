@@ -327,7 +327,7 @@ local icon_theme = {
         zoom_out = "\238\186\143",
     },
     ["material"] = {
-        iconfont = "material-design-icons",
+        iconfont = "Material Design Icons",
         window = {
             maximize = '\243\176\150\175',
             unmaximize = '\243\176\150\178',
