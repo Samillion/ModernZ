@@ -59,7 +59,7 @@ ModernZ supports mpv's built-in console/select ([v0.40+](https://github.com/mpv-
 2. **Copy Files**
 
    - Place `modernz.lua` in your mpv scripts directory
-   - Place `fluent-system-icons.ttf` in your mpv fonts directory
+   - Place `fluent-system-icons.ttf` and `material-design-icons.ttf` in your mpv fonts directory
    - (OPTIONAL) Place `thumbfast.lua` in your mpv scripts directory
 
 3. **Locations**
