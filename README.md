@@ -30,6 +30,12 @@ A sleek and modern OSC for [mpv](https://mpv.io/), this project is a fork of Mod
 
 ## Customization
 
+You can change the icon theme to `fluent` or `material` to match your taste and style by using the `icon_theme` option in your `modernz.conf`
+
+![modernz_fluent](https://github.com/user-attachments/assets/3aafac8c-a13f-4840-8119-739523eb7a8e)
+
+![modernz_material](https://github.com/user-attachments/assets/e5ad6d06-f071-42ef-9210-296d95906d94)
+
 Not a fan of white buttons and text? You have complete control to customize colors and button layouts to perfectly reflect your style.
 
 ![modernz_osc_controls_top](https://github.com/user-attachments/assets/9e3df3af-d3ea-41bb-8c9a-9bf64c1d895a)
@@ -40,7 +46,7 @@ See the [Color Customization](docs/USER_OPTS.md#colors-and-style) section in the
 
 ## Interactive Menus
 
-ModernZ supports mpv's built-in console/select ([v0.39+](https://github.com/mpv-player/mpv/discussions/14903)) for playlist, subtitles, chapter navigation and more.
+ModernZ supports mpv's built-in console/select ([v0.40+](https://github.com/mpv-player/mpv/releases/tag/v0.40.0)) for playlist, subtitles, chapter navigation and more.
 
 [![preview_menus](https://github.com/user-attachments/assets/4b7a3139-81f1-409b-98f5-f090a81d5ee6)](/docs/INTERACTIVE_MENUS.md)
 
@@ -53,7 +59,7 @@ ModernZ supports mpv's built-in console/select ([v0.39+](https://github.com/mpv-
 2. **Copy Files**
 
    - Place `modernz.lua` in your mpv scripts directory
-   - Place `fluent-system-icons.ttf` in your mpv fonts directory
+   - Place `fluent-system-icons.ttf` and `material-design-icons.ttf` in your mpv fonts directory
    - (OPTIONAL) Place `thumbfast.lua` in your mpv scripts directory
 
 3. **Locations**

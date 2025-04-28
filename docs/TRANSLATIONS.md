@@ -77,6 +77,7 @@ ModernZ currently has translations for the following languages:
         "download_in_progress": "Download in progress",
         "downloading": "Downloading",
         "downloaded": "Already downloaded",
+        "menu": "Menu",
     },
 }
 ```
@@ -127,6 +128,7 @@ ModernZ currently has translations for the following languages:
 | download_in_progress     | Information label       | Menu label                  |
 | downloading              | Information label       | Menu label                  |
 | downloaded               | Information label       | Menu label                  |
+| menu                     | Information label       | Menu label                  |
 
 ## Contributing
 
