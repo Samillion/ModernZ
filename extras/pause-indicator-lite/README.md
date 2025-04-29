@@ -2,7 +2,7 @@
 | ![pause-icon](https://github.com/user-attachments/assets/cd41333c-8fdd-4de9-8977-15eea95798dc) | ![play-icon](https://github.com/user-attachments/assets/0d1671f8-9b1b-4f10-ade3-82d1748b2d93) |
 |:---:|:---:|
 
-A simple script that displays an indicator on pause, with options to adjust icon type, color, height, width, opacity and whether to toggle pause with a keybind or not.
+A simple script that displays an indicator on pause (and mute), with options to adjust icon type, color, height, width, opacity and whether to toggle pause with a keybind or not.
 
 I only decided to write this because the ones I found were either too complicated or too simple. The alternatives are great, this one just meets my simple use case scenario.
 
@@ -36,7 +36,9 @@ To adjust them you can either:
 | `flash_play_icon`        | yes         | flash play icon on unpause (best with pause indicator icon)                                                                          |
 | `flash_icon_timeout`     | 0.3         | timeout (seconds) for flash icon                                                                                                     |
 | `fluent_icons`           | no          | requires `fonts/fluent-system-icons.ttf` [[details](https://github.com/Samillion/ModernZ/pull/336)]                                  |
-| `fluent_icon_size`       | 90          | fluent icon size                                                                                                                     |
+| `fluent_icon_size`       | 80          | fluent icon size                                                                                                                     |
+| `mute_indicator`         | no          | show a mute indicator (requires fluent font)                                                                                         |
+| `mute_indicator_pos`     | middle_left | position of mute indicator. `top_left`, `top_right`, `top_center`. also: `middle_*`, `bottom_*` same as `top_*` (ie: `bottom_right`) |
 
 ### How to install
 
