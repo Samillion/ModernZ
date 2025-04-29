@@ -581,7 +581,8 @@ local state = {
     playtime_nohour_force_init = false,     -- used to force request_init() once
     playing_and_seeking = false,
     persistent_progress_toggle = user_opts.persistentprogress,
-    original_subpos = mp.get_property_number("sub-pos") or 100,
+    user_subpos = mp.get_property_number("sub-pos") or 100,
+    osc_adjusted_subpos = nil,
     downloaded_once = false,
     downloading = false,
     file_size_bytes = 0,
@@ -2137,33 +2138,40 @@ end
 local function adjust_subtitles(visible)
     if not mp.get_property_native("sid") then return end
 
-    local scale
-    if state.fullscreen then
-        scale = user_opts.scalefullscreen
-    else
-        scale = user_opts.scalewindowed
-    end
+    local scale = state.fullscreen and user_opts.scalefullscreen or user_opts.scalewindowed
 
     if visible and user_opts.raise_subtitles and state.osc_visible == true then
         local w, h = mp.get_osd_size()
         if h > 0 then
             local raise_factor = user_opts.raise_subtitle_amount
 
-            -- adjust for extreme scales
+            -- adjust for scale
             if scale > 1 then
-                raise_factor = raise_factor * (1 + (scale - 1) * 0.2)  -- slight increase when scale > 1
+                raise_factor = raise_factor * (1 + (scale - 1) * 0.2)
             elseif scale < 1 then
-                raise_factor = raise_factor * (0.8 + (scale - 0.5) * 0.5)  -- slight decrease when scale < 1
+                raise_factor = raise_factor * (0.8 + (scale - 0.5) * 0.5)
             end
 
-            local adjusted_subpos = math.floor((osc_param.playresy - raise_factor) / osc_param.playresy * 100)
-            if adjusted_subpos < 0 then
-                adjusted_subpos = state.original_subpos -- original position if out of bounds
+            -- raise percentage
+            local raise_percent = (raise_factor / osc_param.playresy) * 100
+
+            -- don't adjust if user's sub-pos is higher than the raise factor
+            if state.user_subpos >= (100 - raise_percent) then
+                local adjusted = math.floor((osc_param.playresy - raise_factor) / osc_param.playresy * 100)
+                if adjusted < 0 then adjusted = state.user_subpos end
+
+                state.osc_adjusted_subpos = adjusted
+                mp.set_property_number("sub-pos", adjusted)
+            else
+                state.osc_adjusted_subpos = nil
             end
-            mp.commandv("set", "sub-pos", adjusted_subpos)
         end
     elseif user_opts.raise_subtitles then
-        mp.commandv("set", "sub-pos", state.original_subpos)
+        -- restore user's original subtitle position
+        if state.user_subpos then
+            mp.set_property_number("sub-pos", state.user_subpos)
+        end
+        state.osc_adjusted_subpos = nil
     end
 end
 
@@ -3509,6 +3517,13 @@ mp.observe_property("loop-file", "bool", function(_, val)
         state.looping = true
     else
         state.looping = false
+    end
+end)
+mp.observe_property("sub-pos", "native", function(_, value)
+    if value == nil then return end
+
+    if state.osc_adjusted_subpos == nil or value ~= state.osc_adjusted_subpos then
+        state.user_subpos = value
     end
 end)
 
