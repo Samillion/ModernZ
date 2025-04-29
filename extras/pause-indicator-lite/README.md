@@ -38,7 +38,7 @@ To adjust them you can either:
 | `fluent_icons`           | no          | requires `fonts/fluent-system-icons.ttf` [[details](https://github.com/Samillion/ModernZ/pull/336)]                                  |
 | `fluent_icon_size`       | 80          | fluent icon size                                                                                                                     |
 | `mute_indicator`         | no          | show a mute indicator (requires fluent font)                                                                                         |
-| `mute_indicator_pos`     | middle_left | position of mute indicator. `top_left`, `top_right`, `top_center`. also: `middle_*`, `bottom_*` same as `top_*` (ie: `bottom_right`) |
+| `mute_indicator_pos`     | middle_right | position of mute indicator. `top_left`, `top_right`, `top_center`. also: `middle_*`, `bottom_*` same as `top_*` (ie: `bottom_right`) |
 
 ### How to install
 
