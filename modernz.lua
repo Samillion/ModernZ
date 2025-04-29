@@ -2138,35 +2138,36 @@ end
 local function adjust_subtitles(visible)
     if not mp.get_property_native("sid") then return end
 
-    local scale
-    if state.fullscreen then
-        scale = user_opts.scalefullscreen
-    else
-        scale = user_opts.scalewindowed
-    end
+    local scale = state.fullscreen and user_opts.scalefullscreen or user_opts.scalewindowed
 
     if visible and user_opts.raise_subtitles and state.osc_visible == true then
         local w, h = mp.get_osd_size()
         if h > 0 then
             local raise_factor = user_opts.raise_subtitle_amount
 
-            -- adjust for extreme scales
+            -- adjust for scale
             if scale > 1 then
                 raise_factor = raise_factor * (1 + (scale - 1) * 0.2)
             elseif scale < 1 then
                 raise_factor = raise_factor * (0.8 + (scale - 0.5) * 0.5)
             end
 
-            local adjusted_subpos = math.floor((osc_param.playresy - raise_factor) / osc_param.playresy * 100)
-            if adjusted_subpos < 0 then
-                adjusted_subpos = state.user_subpos
-            end
+            -- raise percentage
+            local raise_percent = (raise_factor / osc_param.playresy) * 100
 
-            state.osc_adjusted_subpos = adjusted_subpos
-            mp.set_property_number("sub-pos", adjusted_subpos)
+            -- don't adjust if user's sub-pos is higher than the raise factor
+            if state.user_subpos >= (100 - raise_percent) then
+                local adjusted = math.floor((osc_param.playresy - raise_factor) / osc_param.playresy * 100)
+                if adjusted < 0 then adjusted = state.user_subpos end
+
+                state.osc_adjusted_subpos = adjusted
+                mp.set_property_number("sub-pos", adjusted)
+            else
+                state.osc_adjusted_subpos = nil
+            end
         end
     elseif user_opts.raise_subtitles then
-        -- use last manually set subtitle position
+        -- restore user's original subtitle position
         if state.user_subpos then
             mp.set_property_number("sub-pos", state.user_subpos)
         end
