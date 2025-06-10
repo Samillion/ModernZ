@@ -170,6 +170,7 @@ local user_opts = {
     seekrangealpha = 150,                  -- transparency of the seek range
     livemarkers = true,                    -- update chapter markers on the seekbar when duration changes
     seekbarkeyframes = false,              -- use keyframes when dragging the seekbar
+    slider_radius = 2,                     -- radius of the seekbar slider (0 to disable rounded corners)
 
     nibbles_top = true,                    -- top chapter nibbles above seekbar
     nibbles_bottom = true,                 -- bottom chapter nibbles below seekbar
@@ -1108,19 +1109,30 @@ local function draw_seekbar_ranges(element, elem_ass, xp, rh, override_alpha)
     elem_ass:append("{\\1cH&" .. osc_color_convert(user_opts.seekbar_cache_color) .. "&}")
     elem_ass:merge(element.static_ass)
 
+    local slider_lo = element.layout.slider
+    local radius = slider_lo.radius or 0
+
     for _, range in pairs(seekRanges) do
         local pstart = math.max(0, get_slider_ele_pos_for(element, range["start"]) - slider_lo.gap)
         local pend = math.min(elem_geo.w, get_slider_ele_pos_for(element, range["end"]) + slider_lo.gap)
 
         if handle and (pstart < xp + rh and pend > xp - rh) then
             if pstart < xp - rh then
-                elem_ass:rect_cw(pstart, slider_lo.gap, xp - rh, elem_geo.h - slider_lo.gap)
+                if radius > 0 then
+                    elem_ass:round_rect_cw(pstart, slider_lo.gap, xp - rh, elem_geo.h - slider_lo.gap, radius)
+                else
+                    elem_ass:rect_cw(pstart, slider_lo.gap, xp - rh, elem_geo.h - slider_lo.gap)
+                end
             end
             pstart = xp + rh
         end
 
         if pend > pstart then
-            elem_ass:rect_cw(pstart, slider_lo.gap, pend, elem_geo.h - slider_lo.gap)
+            if radius > 0 then
+                elem_ass:round_rect_cw(pstart, slider_lo.gap, pend, elem_geo.h - slider_lo.gap, radius)
+            else
+                elem_ass:rect_cw(pstart, slider_lo.gap, pend, elem_geo.h - slider_lo.gap)
+            end
         end
     end
 end
@@ -1134,7 +1146,12 @@ local function draw_seekbar_progress(element, elem_ass)
     local xp = get_slider_ele_pos_for(element, pos)
     local slider_lo = element.layout.slider
     local elem_geo = element.layout.geometry
-    elem_ass:rect_cw(0, slider_lo.gap, xp, elem_geo.h - slider_lo.gap)
+    local radius = slider_lo.radius or 0
+    if radius > 0 then
+        elem_ass:round_rect_cw(0, slider_lo.gap, xp, elem_geo.h - slider_lo.gap, radius)
+    else
+        elem_ass:rect_cw(0, slider_lo.gap, xp, elem_geo.h - slider_lo.gap)
+    end
 end
 
 local function render_elements(master_ass)
@@ -1615,6 +1632,7 @@ local function add_layout(name)
             elements[name].layout.slider = {
                 border = 1,
                 gap = 1,
+                radius = 0,
                 nibbles_top = user_opts.nibbles_top,
                 nibbles_bottom = user_opts.nibbles_bottom,
                 nibbles_style = user_opts.nibbles_style,
@@ -1765,6 +1783,7 @@ layouts["modern"] = function ()
     lo.geometry = {x = refX, y = refY - 72, an = 5, w = osc_geo.w - 50, h = seekbar_bg_h}
     lo.layer = 13
     lo.style = osc_styles.seekbar_bg
+    lo.box.radius = user_opts.slider_radius
     lo.alpha[1] = 128
     lo.alpha[3] = 128
 
@@ -1774,6 +1793,7 @@ layouts["modern"] = function ()
     lo.layer = 51
     lo.style = osc_styles.seekbar_fg
     lo.slider.gap = (seekbar_h - seekbar_bg_h) / 2.0
+    lo.slider.radius = user_opts.slider_radius
     lo.slider.tooltip_style = osc_styles.tooltip
     lo.slider.tooltip_an = 2
 
@@ -1902,11 +1922,13 @@ layouts["modern"] = function ()
         lo.layer = 13
         lo.alpha[1] = 128
         lo.style = user_opts.volumebar_match_seek_color and osc_styles.seekbar_bg or osc_styles.volumebar_bg
+        lo.box.radius = user_opts.slider_radius
 
         lo = add_layout("volumebar")
         lo.geometry = {x = start_x, y = refY - 35, an = 4, w = 55, h = 10}
         lo.style = user_opts.volumebar_match_seek_color and osc_styles.seekbar_fg or osc_styles.volumebar_fg
         lo.slider.gap = 3
+        lo.slider.radius = user_opts.slider_radius
         lo.slider.tooltip_style = osc_styles.tooltip
         lo.slider.tooltip_an = 2
         start_x = start_x + 75
