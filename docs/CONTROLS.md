@@ -106,6 +106,12 @@ Below is a list that explains the OSC buttons function depending on how you inte
 | ----------------- | -------------------- |
 | Left mouse click  | Toggle loop on/off   |
 
+### Shuffle
+
+| Action            | Function             |
+| ----------------- | -------------------- |
+| Left mouse click  | Shuffle/Unshuffle playlist   |
+
 ### Speed Control
 
 | Action                 | Function                                  |
