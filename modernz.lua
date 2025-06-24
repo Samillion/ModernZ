@@ -106,7 +106,8 @@ local user_opts = {
     download_button = true,                -- show download button on web videos (requires yt-dlp and ffmpeg)
     download_path = "~~desktop/mpv",       -- default download directory for videos (https://mpv.io/manual/master/#paths)
 
-    loop_button = false,                   -- show loop button
+    loop_button = false,                   -- show loop
+    shuffle_button = false,                -- show shuffle
     speed_button = false,                  -- show speed control button
     speed_button_click = 1,                -- speed change amount per click
     speed_button_scroll = 0.25,            -- speed change amount on scroll
@@ -320,6 +321,8 @@ local icon_theme = {
         screenshot = "\238\169\150",
         loop_off = "\239\133\178",
         loop_on = "\239\133\181",
+        shuffle_off = "\238\188\188",
+        shuffle_on  = "\238\188\184",
         speed = "\239\160\177",
         download = "\239\133\144",
         downloading = "\239\140\174",
@@ -366,6 +369,8 @@ local icon_theme = {
         screenshot = '\243\176\132\128',
         loop_off = '\243\176\145\151',
         loop_on = '\243\176\145\150',
+        shuffle_off = '\243\176\146\158',
+        shuffle_on = '\243\176\146\157',
         speed = '\243\176\163\191',
         download = '\243\176\129\136',
         downloading = '\243\176\166\151',
@@ -392,6 +397,8 @@ local language = {
         ontop_disable = "Unpin Window",
         loop_enable = "Loop",
         loop_disable = "Disable Loop",
+        shuffle = "Shuffle Playlist",
+        unshuffle = "Unshuffle Playlist",
         speed_control = "Speed Control",
         screenshot = "Screenshot",
         stats_info = "Information",
@@ -575,6 +582,7 @@ local state = {
     visibility_modes = {},                  -- visibility_modes to cycle through
     mute = false,
     looping = false,
+    shuffled = false,
     sliderpos = 0,
     touchingprogressbar = false,            -- if the mouse is touching the progress bar
     initialborder = mp.get_property("border"),
@@ -1796,6 +1804,7 @@ layouts["modern"] = function ()
     local ontop_button = user_opts.ontop_button
     local screenshot_button = user_opts.screenshot_button
     local loop_button = user_opts.loop_button
+    local shuffle_button = user_opts.shuffle_button
     local speed_button = user_opts.speed_button
     local download_button = user_opts.download_button and state.is_URL
     local playlist_button = user_opts.playlist_button and (not user_opts.hide_empty_playlist_button or mp.get_property_number("playlist-count", 0) > 1)
@@ -1978,6 +1987,14 @@ layouts["modern"] = function ()
         lo.geometry = {x = end_x, y = refY - 35, an = 5, w = 24, h = 24}
         lo.style = osc_styles.control_3
         lo.visible = (osc_param.playresx >= 600 - outeroffset) and loop_button
+        end_x = end_x - 45
+    end
+
+    if shuffle_button then
+        lo = add_layout("tog_shuffle")
+        lo.geometry = { x = end_x, y = refY - 35, an = 5, w = 24, h = 24 }
+        lo.style = osc_styles.control_3
+        lo.visible = (osc_param.playresx >= 600 - outeroffset) and shuffle_button
         end_x = end_x - 45
     end
 
@@ -2638,6 +2655,23 @@ local function osc_init()
         mp.command("show-text '" .. (state.looping and locale.loop_disable or locale.loop_enable) .. "'")
         state.looping = not state.looping
         mp.set_property_native("loop-file", state.looping)
+    end
+    visible_min_width = visible_min_width + (user_opts.loop_button and 100 or 0)
+
+    --tog_shuffle
+    ne = new_element("tog_shuffle", "button")
+    ne.content = function() return state.shuffled and icons.shuffle_on or icons.shuffle_off end
+    ne.visible = (osc_param.playresx >= visible_min_width)
+    ne.tooltip_style = osc_styles.tooltip
+    ne.tooltipF = function() return user_opts.tooltip_hints and (state.shuffled and locale.unshuffle or locale.shuffle) or "" end
+    ne.eventresponder["mbtn_left_up"] = function()
+        mp.command("show-text '" .. (state.shuffled and locale.unshuffle or locale.shuffle) .. "'")
+        state.shuffled = not state.shuffled
+        if state.shuffled then
+            mp.command("playlist-shuffle")
+        else
+            mp.command("playlist-unshuffle")
+        end
     end
     visible_min_width = visible_min_width + (user_opts.loop_button and 100 or 0)
 
