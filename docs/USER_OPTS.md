@@ -67,11 +67,12 @@ Create `modernz.conf` in your mpv script-opts directory:
 
 ### Title bar settings
 
-| Option               | Value            | Description                                                               |
-| -------------------- | ---------------- | ------------------------------------------------------------------------- |
-| window_title         | no               | show window title in borderless/fullscreen mode                           |
-| window_controls      | yes              | show window controls (close, minimize, maximize) in borderless/fullscreen |
-| windowcontrols_title | `${media-title}` | same as title but for window_top_bar                                      |
+| Option                  | Value            | Description                                                               |
+| ----------------------- | ---------------- | ------------------------------------------------------------------------- |
+| show_window_title       | no               | show window title in borderless/fullscreen mode                           |
+| window_title            | `${media-title}` | same as title but for window_top_bar                                      |
+| window_title_font_size  | 26               | window title font size                                                    |
+| window_controls         | yes              | show window controls (close, minimize, maximize) in borderless/fullscreen |
 
 ### Subtitle display settings
 

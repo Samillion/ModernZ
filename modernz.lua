@@ -71,9 +71,10 @@ local user_opts = {
     tooltip_font_size = 14,                -- tooltips font size
 
     -- Title bar settings
-    window_title = false,                  -- show window title in borderless/fullscreen mode
+    show_window_title = false,             -- show window title in borderless/fullscreen mode
+    window_title = "${media-title}",       -- same as title but for window_top_bar
+    window_title_font_size = 26,           -- window title font size
     window_controls = true,                -- show window controls (close, minimize, maximize) in borderless/fullscreen
-    windowcontrols_title = "${media-title}", -- same as title but for windowcontrols
 
     -- Subtitle display settings
     raise_subtitles = true,                -- raise subtitles above the OSC when shown
@@ -93,8 +94,8 @@ local user_opts = {
     volume_control = true,                 -- show mute button and volume slider
     volume_control_type = "linear",        -- volume scale type: "linear" or "logarithmic"
     playlist_button = true,                -- show playlist button: Left-click for simple playlist, Right-click for interactive playlist
-    hide_empty_playlist_button = false,     -- hide playlist button when no playlist exists
-    gray_empty_playlist_button = false,     -- gray out the playlist button when no playlist exists
+    hide_empty_playlist_button = false,    -- hide playlist button when no playlist exists
+    gray_empty_playlist_button = false,    -- gray out the playlist button when no playlist exists
 
     fullscreen_button = true,              -- show fullscreen toggle button
     info_button = true,                    -- show info button
@@ -515,7 +516,7 @@ local function set_osc_styles()
         osc_fade_bg = "{\\blur" .. user_opts.fade_blur_strength .. "\\bord" .. user_opts.fade_alpha .. "\\1c&H0&\\3c&H" .. osc_color_convert(user_opts.osc_color) .. "&}",
         window_fade_bg = "{\\blur" .. user_opts.window_fade_blur_strength .. "\\bord" .. user_opts.window_fade_alpha .. "\\1c&H0&\\3c&H" .. osc_color_convert(user_opts.osc_color) .. "&}",
         window_control = "{\\blur0\\bord0\\1c&H" .. osc_color_convert(user_opts.window_controls_color) .. "&\\3c&H0&\\fs25\\fn" .. iconfont .. "}",
-        window_title = "{\\blur1\\bord0.5\\1c&H" .. osc_color_convert(user_opts.window_title_color) .. "&\\3c&H0&\\fs26\\q2\\fn" .. user_opts.font .. "}",
+        window_title = "{\\blur1\\bord0.5\\1c&H" .. osc_color_convert(user_opts.window_title_color) .. "&\\3c&H0&\\fs".. user_opts.window_title_font_size .."\\q2\\fn" .. user_opts.font .. "}",
         title = "{\\blur1\\bord0.5\\1c&H" .. osc_color_convert(user_opts.title_color) .. "&\\3c&H0&\\fs".. user_opts.title_font_size .."\\q2\\fn" .. user_opts.font .. "}",
         chapter_title = "{\\blur0\\bord0\\1c&H" .. osc_color_convert(user_opts.chapter_title_color) .. "&\\3c&H0&\\fs" .. user_opts.chapter_title_font_size .. "\\fn" .. user_opts.font .. "}",
         seekbar_bg = "{\\blur0\\bord0\\1c&H" .. osc_color_convert(user_opts.seekbarbg_color) .. "&}",
@@ -1680,7 +1681,7 @@ local function window_controls()
     end
 
     -- Window Title
-    if user_opts.window_title then
+    if user_opts.show_window_title then
         lo = add_layout("windowtitle")
         lo.geometry = {x = 20, y = button_y + 14, an = 1, w = osc_param.playresx - 50, h = wc_geo.h}
         lo.style = string.format("%s{\\clip(%f,%f,%f,%f)}", osc_styles.window_title, titlebox_left, wc_geo.y - wc_geo.h, titlebox_right, wc_geo.y + wc_geo.h)
@@ -1743,7 +1744,7 @@ layouts["modern"] = function ()
     lo.layer = 10
     lo.alpha[3] = user_opts.fade_transparency_strength
 
-    local top_titlebar = window_controls_enabled() and (user_opts.window_title or user_opts.window_controls)
+    local top_titlebar = window_controls_enabled() and (user_opts.show_window_title or user_opts.window_controls)
 
     -- Window bar alpha
     if ((user_opts.window_top_bar == "yes" or not (state.border and state.title_bar)) or state.fullscreen) and top_titlebar then
@@ -2039,7 +2040,7 @@ layouts["modern-image"] = function ()
     lo.layer = 10
     lo.alpha[3] = user_opts.fade_transparency_strength
 
-    local top_titlebar = window_controls_enabled() and (user_opts.window_title or user_opts.window_controls)
+    local top_titlebar = window_controls_enabled() and (user_opts.show_window_title or user_opts.window_controls)
 
     -- Window bar alpha
     if ((user_opts.window_top_bar == "yes" or not (state.border and state.title_bar)) or state.fullscreen) and top_titlebar then
@@ -2274,7 +2275,7 @@ local function osc_init()
     -- Window Title
     ne = new_element("windowtitle", "button")
     ne.content = function ()
-        local title = mp.command_native({"expand-text", user_opts.windowcontrols_title}) or ""
+        local title = mp.command_native({"expand-text", user_opts.window_title}) or ""
         title = title:gsub("\n", " ")
         return title ~= "" and mp.command_native({"escape-ass", title}) or "mpv"
     end
@@ -3096,7 +3097,7 @@ local function process_event(source, what)
                 )
             ) then
                 if user_opts.bottomhover then -- if enabled, only show osc if mouse is hovering at the bottom of the screen (where the UI elements are)
-                    local top_hover = window_controls_enabled() and (user_opts.window_title or user_opts.window_controls)
+                    local top_hover = window_controls_enabled() and (user_opts.show_window_title or user_opts.window_controls)
                     if mouseY > osc_param.playresy - (user_opts.bottomhover_zone or 130)
                     or ((user_opts.window_top_bar == "yes" or not (state.border and state.title_bar)) or state.fullscreen) and (mouseY < 40 and top_hover) then
                         show_osc()
