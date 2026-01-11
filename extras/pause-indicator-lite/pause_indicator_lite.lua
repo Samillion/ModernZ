@@ -58,7 +58,7 @@ local icon_theme = {
         mute_icon = "\238\173\138",
     },
     ["material"] = {
-        iconfont = "Material Design Icons",
+        icon_font = "Material Design Icons",
         pause_icon = '\243\176\143\164',
         play_icon = '\243\176\144\138',
         mute_icon = '\243\176\184\136',
@@ -85,7 +85,7 @@ local icon_color = convert_color(options.icon_color)
 local icon_border_color = convert_color(options.icon_border_color)
 local icon_opacity = convert_opacity(options.icon_opacity)
 local icons = icon_theme[options.icon_theme] or icon_theme["fluent"]
-local iconfont = icons.iconfont
+local icon_font = icons.icon_font
 
 -- pause icon
 local function draw_rectangles()
