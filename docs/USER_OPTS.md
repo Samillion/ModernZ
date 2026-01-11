@@ -105,6 +105,7 @@ Create `modernz.conf` in your mpv script-opts directory:
 | screenshot_flag            | subtitles     | Flag options for the screenshot button: `"subtitles"`, `"video"`, `"window"`, `"each-frame"`. [Find out more about these options](https://mpv.io/manual/master/#command-interface-screenshot-<flags>). |
 | ontop_button               | yes           | show `window on top (pin)` button                                                                                                                                                                      |
 | loop_button                | no            | show `loop` button                                                                                                                                                                                     |
+| shuffle_button             | no            | show `shuffle` button                                                                                                                                                                                     |
 | speed_button               | no            | show speed control button                                                                                                                                                                              |
 | speed_button_click         | 1             | speed change amount per click                                                                                                                                                                          |
 | speed_button_scroll        | 0.25          | speed change amount on scroll                                                                                                                                                                          |
@@ -165,10 +166,10 @@ Create `modernz.conf` in your mpv script-opts directory:
 
 ### Tooltips and hints
 
-| Option                         | Value | Description                                                     |
-| ------------------------------ | ----- | --------------------------------------------------------------- |
-| tooltips_for_disabled_elements | yes   | enable tooltips for disabled buttons and elements               |
-| tooltip_hints                  | yes   | enable text hints for info, loop, ontop, and screenshot buttons |
+| Option                         | Value | Description                                                              |
+| ------------------------------ | ----- | -------------------------------------------------------------------------|
+| tooltips_for_disabled_elements | yes   | enable tooltips for disabled buttons and elements                        |
+| tooltip_hints                  | yes   | enable text hints for info, loop, shuffle, ontop, and screenshot buttons |
 
 ### Progress bar settings
 
