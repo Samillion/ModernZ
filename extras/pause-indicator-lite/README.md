@@ -35,8 +35,9 @@ To adjust them you can either:
 | `triangle_height`        | 80          | height of triangle (play icon)                                                                                                       |
 | `flash_play_icon`        | yes         | flash play icon on unpause (best with pause indicator icon)                                                                          |
 | `flash_icon_timeout`     | 0.3         | timeout (seconds) for flash icon                                                                                                     |
-| `fluent_icons`           | no          | requires `fonts/fluent-system-icons.ttf` [[details](https://github.com/Samillion/ModernZ/pull/336)]                                  |
-| `fluent_icon_size`       | 80          | fluent icon size                                                                                                                     |
+| `icon_theme`             | fluent      | requires `fonts/fluent-system-icons.ttf` [[details](https://github.com/Samillion/ModernZ/pull/336)] for fluent and `fonts/material-design-icons.ttf` for material themes |
+| `themed_icons`           | no          | use icon theme specified in `icon_theme`                                                                                        |
+| `themed_icon_size`       | 80          | fluent icon size                                                                                                                     |
 | `mute_indicator`         | no          | show a mute indicator (requires fluent font)                                                                                         |
 | `mute_indicator_pos`     | middle_right | position of mute indicator. `top_left`, `top_right`, `top_center`. also: `middle_*`, `bottom_*` same as `top_*` (ie: `bottom_right`) |
 
