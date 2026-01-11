@@ -102,7 +102,6 @@ Create `modernz.conf` in your mpv script-opts directory:
 | download_button            | yes           | show download button on web videos (requires yt-dlp and ffmpeg)                                                                                                                                        |
 | download_path              | ~~desktop/mpv | default download directory for videos. [Learn more about setting paths here](https://mpv.io/manual/master/#paths).                                                                                     |
 | screenshot_button          | no            | show screenshot button                                                                                                                                                                                 |
-| screenshot_flag            | subtitles     | Flag options for the screenshot button: `"subtitles"`, `"video"`, `"window"`, `"each-frame"`. [Find out more about these options](https://mpv.io/manual/master/#command-interface-screenshot-<flags>). |
 | ontop_button               | yes           | show `window on top (pin)` button                                                                                                                                                                      |
 | loop_button                | no            | show `loop` button                                                                                                                                                                                     |
 | shuffle_button             | no            | show `shuffle` button                                                                                                                                                                                     |
@@ -261,6 +260,7 @@ Customize the button function based on mouse actions.
 | Fullscreen Button             | fullscreen_mbtn_left_command     | `cycle fullscreen`                                                              |
 |                               | fullscreen_mbtn_right_command    | `cycle window-maximized`                                                        |
 | Info Button                   | info_mbtn_left_command           | `script-binding stats/display-page-1-toggle`                                    |
+| Screenshot Button             | screenshot_mbtn_left_command     | `osd-msg screenshot subtitles`                                                  |
 
 ### Auto Profile
 

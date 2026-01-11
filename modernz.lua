@@ -101,8 +101,6 @@ local user_opts = {
     info_button = true,                    -- show info button
     ontop_button = true,                   -- show window on top button
     screenshot_button = false,             -- show screenshot button
-    screenshot_flag = "subtitles",         -- flag for screenshot button: "subtitles", "video", "window", "each-frame"
-                                           -- https://mpv.io/manual/master/#command-interface-screenshot-%3Cflags%3E
 
     download_button = true,                -- show download button on web videos (requires yt-dlp and ffmpeg)
     download_path = "~~desktop/mpv",       -- default download directory for videos (https://mpv.io/manual/master/#paths)
@@ -268,6 +266,9 @@ local user_opts = {
 
     -- info button mouse actions
     info_mbtn_left_command = "script-binding stats/display-page-1-toggle",
+
+    -- screenshot button mouse actions
+    screenshot_mbtn_left_command = "osd-msg screenshot subtitles",
 }
 
 mp.observe_property("osc", "bool", function(name, value) if value == true then mp.set_property("osc", "no") end end)
@@ -2658,14 +2659,7 @@ local function osc_init()
     ne.tooltip_style = osc_styles.tooltip
     ne.tooltipF = user_opts.tooltip_hints and locale.screenshot or ""
     ne.visible = (osc_param.playresx >= visible_min_width)
-    ne.eventresponder["mbtn_left_up"] = function ()
-        local temp_sub_pos = mp.get_property("sub-pos")
-        if user_opts.screenshot_flag == "subtitles" or user_opts.screenshot_flag == "subtitles+each-frame" then
-            mp.commandv("set", "sub-pos", 100)
-        end
-        mp.commandv("osd-msg", "screenshot", user_opts.screenshot_flag)
-        mp.commandv("set", "sub-pos", temp_sub_pos)
-    end
+    ne.eventresponder["mbtn_left_up"] = command_callback(user_opts.screenshot_mbtn_left_command)
     visible_min_width = visible_min_width + (user_opts.screenshot_button and 100 or 0)
 
     --tog_loop
@@ -3772,17 +3766,6 @@ local function validate_user_opts()
        user_opts.volume_control_type ~= "logarithmic" then
           msg.warn("volumecontrol cannot be '" .. user_opts.volume_control_type .. "'. Ignoring.")
           user_opts.volume_control_type = "linear"
-    end
-
-    if user_opts.screenshot_flag ~= "subtitles" and
-       user_opts.screenshot_flag ~= "video" and
-       user_opts.screenshot_flag ~= "window" and
-       user_opts.screenshot_flag ~= "each-frame" and
-       user_opts.screenshot_flag ~= "subtitles+each-frame" and
-       user_opts.screenshot_flag ~= "video+each-frame" and
-       user_opts.screenshot_flag ~= "window+each-frame" then
-          msg.warn("screenshot_flag cannot be '" .. user_opts.screenshot_flag .. "'. Ignoring.")
-          user_opts.screenshot_flag = "subtitles"
     end
 
     if not language[user_opts.language] then
