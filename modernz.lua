@@ -3557,6 +3557,7 @@ mp.observe_property("osd-dimensions", "native", function()
 end)
 mp.observe_property("osd-scale-by-window", "native", request_init_resize)
 mp.observe_property("touch-pos", "native", handle_touch)
+mp.observe_property("volume", "number", request_tick)
 mp.observe_property("mute", "bool", function(_, val)
     state.mute = val
     request_tick()
