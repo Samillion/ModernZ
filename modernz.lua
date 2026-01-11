@@ -2738,7 +2738,6 @@ local function osc_init()
             local command = {
                 "yt-dlp",
                 state.is_image and "" or ytdl_format,
-                state.is_image and "" or "--remux", state.is_image and "" or "mp4",
                 "--add-metadata",
                 "--embed-subs",
                 "-o", "%(title)s.%(ext)s",
