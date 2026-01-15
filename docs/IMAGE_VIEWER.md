@@ -41,9 +41,9 @@ reset-on-next-file=video-zoom,panscan,video-unscaled,video-rotate,video-align-x,
     image-display-duration=inf
     title=${media-title} [${?width:${width}x${height}}]
     script-opts-append=modernz-fade_alpha=50
-    script-opts-append=modernz-window_title=yes
+    script-opts-append=modernz-show_window_title=yes
     script-opts-append=modernz-bottomhover_zone=50
-    script-opts-append=modernz-windowcontrols_title=${media-title} [${?width:${width}x${height}}]
+    script-opts-append=modernz-window_title=${media-title} [${?width:${width}x${height}}]
 ```
 
 ## Useful
