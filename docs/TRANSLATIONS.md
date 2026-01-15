@@ -41,6 +41,7 @@ ModernZ currently has translations for the following languages:
 - Simplified Chinese (zh)
 - Arabic (ar)
 - Russian (ru)
+- Icelandic (is)
 
 ## Adding a New Language
 
