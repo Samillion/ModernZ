@@ -22,8 +22,8 @@ To get started with translations:
 {
     "language-code": {
         "idle": "Your translation",
-        "na": "Your translation",
-    },
+        "na": "Your translation"
+    }
 }
 ```
 
@@ -80,8 +80,8 @@ ModernZ currently has translations for the following languages:
         "download_in_progress": "Download in progress",
         "downloading": "Downloading",
         "downloaded": "Already downloaded",
-        "menu": "Menu",
-    },
+        "menu": "Menu"
+    }
 }
 ```
 
@@ -92,8 +92,8 @@ ModernZ currently has translations for the following languages:
     "es": {
         "idle": "Suelta archivos o URLs aquí para reproducirlos",
         "na": "No disponible",
-        "video": "Video",
-    },
+        "video": "Video"
+    }
 }
 ```
 
