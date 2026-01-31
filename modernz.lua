@@ -1,4 +1,4 @@
--- ModernZ v0.2.9 (https://github.com/Samillion/ModernZ)
+-- ModernZ v0.3.0rc (https://github.com/Samillion/ModernZ)
 --
 -- This script is a derivative of the original mpv-osc-modern by maoiscat
 -- and subsequent forks:
@@ -81,6 +81,8 @@ local user_opts = {
     raise_subtitle_amount = 125,           -- amount by which subtitles are raised when the OSC is shown (in pixels)
 
     -- Buttons display and functionality
+    subtitles_button = true,               -- show the subtitles menu button
+    audio_tracks_button = true,            -- show the audio tracks menu button
     jump_buttons = true,                   -- show the jump backward and forward buttons
     jump_amount = 10,                      -- change the jump amount in seconds
     jump_more_amount = 60,                 -- change the jump amount in seconds when right-clicking jump buttons and shift-clicking chapter skip buttons
@@ -1913,7 +1915,7 @@ layouts["modern"] = function ()
     end
 
     -- Audio
-    if audio_track then
+    if audio_track and user_opts.audio_tracks_button then
         lo = add_layout("audio_track")
         lo.geometry = {x = start_x, y = refY - 35, an = 5, w = 24, h = 24}
         lo.style = osc_styles.control_3
@@ -1922,7 +1924,7 @@ layouts["modern"] = function ()
     end
 
     -- Subtitle
-    if subtitle_track then
+    if subtitle_track and user_opts.subtitles_button then
         lo = add_layout("sub_track")
         lo.geometry = {x = start_x, y = refY - 35, an = 5, w = 24, h = 24}
         lo.style = osc_styles.control_3
