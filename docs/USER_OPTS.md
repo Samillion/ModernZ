@@ -83,41 +83,43 @@ Create `modernz.conf` in your mpv script-opts directory:
 
 ### Buttons display and functionality
 
-| Option                     | Value         | Description                                                                                                                                                                                            |
-| -------------------------- | ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| jump_buttons               | yes           | show "jump forward/backward 10 seconds" buttons                                                                                                                                                        |
-| jump_amount                | 10            | change the jump amount in seconds                                                                                                                                                                      |
-| jump_more_amount           | 60            | change the jump amount in seconds when right-clicking jump buttons and shift-clicking chapter skip buttons                                                                                             |
-| jump_icon_number           | yes           | show different icon for `5`, `10`, or `30` second jumps                                                                                                                                                |
-| jump_mode                  | relative      | seek mode for jump buttons                                                                                                                                                                             |
-| jump_softrepeat            | yes           | enable continuous jumping when holding down seek buttons                                                                                                                                               |
-| chapter_skip_buttons       | no            | show the skip back and forward (chapter) buttons                                                                                                                                                       |
-| chapter_softrepeat         | yes           | enable continuous skipping when holding down chapter skip buttons                                                                                                                                      |
-| track_nextprev_buttons     | yes           | show next/previous playlist track buttons                                                                                                                                                              |
-| volume_control             | yes           | show mute button and volume slider                                                                                                                                                                     |
-| volume_control_type        | linear        | volume scale type: `"linear"` or `"logarithmic"`                                                                                                                                                       |
-| playlist_button            | yes           | show playlist button: Left-click for simple playlist, Right-click for interactive playlist                                                                                                             |
-| hide_empty_playlist_button | yes           | hide playlist button when no playlist exists                                                                                                                                                           |
-| gray_empty_playlist_button | yes           | gray out the playlist button when no playlist exists                                                                                                                                                   |
-| download_button            | yes           | show download button on web videos (requires yt-dlp and ffmpeg)                                                                                                                                        |
-| download_path              | ~~desktop/mpv | default download directory for videos. [Learn more about setting paths here](https://mpv.io/manual/master/#paths).                                                                                     |
-| screenshot_button          | no            | show screenshot button                                                                                                                                                                                 |
-| ontop_button               | yes           | show `window on top (pin)` button                                                                                                                                                                      |
-| loop_button                | no            | show `loop` button                                                                                                                                                                                     |
-| shuffle_button             | no            | show `shuffle` button                                                                                                                                                                                     |
-| speed_button               | no            | show speed control button                                                                                                                                                                              |
-| speed_button_click         | 1             | speed change amount per click                                                                                                                                                                          |
-| speed_button_scroll        | 0.25          | speed change amount on scroll                                                                                                                                                                          |
-| loop_in_pause              | yes           | enable looping by right-clicking pause                                                                                                                                                                 |
-| buttons_always_active      | none          | force buttons to always be active. can add: `playlist_prev`, `playlist_next`                                                                                                                           |
-| info_button                | yes           | show `info (stats)` button                                                                                                                                                                             |
-| fullscreen_button          | yes           | show `fullscreen toggle` button                                                                                                                                                                        |
-| playpause_size             | 28            | icon size for the play/pause button                                                                                                                                                                    |
-| midbuttons_size            | 24            | icon size for the middle buttons                                                                                                                                                                       |
-| sidebuttons_size           | 24            | icon size for the side buttons                                                                                                                                                                         |
-| zoom_control               | yes           | show zoom controls in image viewer mode                                                                                                                                                                |
-| zoom_in_max                | 4             | icon size for the side buttons                                                                                                                                                                         |
-| zoom_out_min               | -1            | icon size for the side buttons                                                                                                                                                                         |
+| Option                     | Value         | Description                                                                                                                |
+| -------------------------- | ------------- | -------------------------------------------------------------------------------------------------------------------------- |
+| subtitles_button           | yes           | show the subtitles menu button                                                                                             |
+| audio_tracks_button        | yes           | show the audio tracks menu button                                                                                          |
+| jump_buttons               | yes           | show "jump forward/backward 10 seconds" buttons                                                                            |
+| jump_amount                | 10            | change the jump amount in seconds                                                                                          |
+| jump_more_amount           | 60            | change the jump amount in seconds when right-clicking jump buttons and shift-clicking chapter skip buttons                 |
+| jump_icon_number           | yes           | show different icon for `5`, `10`, or `30` second jumps                                                                    |
+| jump_mode                  | relative      | seek mode for jump buttons                                                                                                 |
+| jump_softrepeat            | yes           | enable continuous jumping when holding down seek buttons                                                                   |
+| chapter_skip_buttons       | no            | show the skip back and forward (chapter) buttons                                                                           |
+| chapter_softrepeat         | yes           | enable continuous skipping when holding down chapter skip buttons                                                          |
+| track_nextprev_buttons     | yes           | show next/previous playlist track buttons                                                                                  |
+| volume_control             | yes           | show mute button and volume slider                                                                                         |
+| volume_control_type        | linear        | volume scale type: `"linear"` or `"logarithmic"`                                                                           |
+| playlist_button            | yes           | show playlist button: Left-click for simple playlist, Right-click for interactive playlist                                 |
+| hide_empty_playlist_button | yes           | hide playlist button when no playlist exists                                                                               |
+| gray_empty_playlist_button | yes           | gray out the playlist button when no playlist exists                                                                       |
+| download_button            | yes           | show download button on web videos (requires yt-dlp and ffmpeg)                                                            |
+| download_path              | ~~desktop/mpv | default download directory for videos. [Learn more about setting paths here](https://mpv.io/manual/master/#paths).         |
+| screenshot_button          | no            | show screenshot button                                                                                                     |
+| ontop_button               | yes           | show `window on top (pin)` button                                                                                          |
+| loop_button                | no            | show `loop` button                                                                                                         |
+| shuffle_button             | no            | show `shuffle` button                                                                                                      |
+| speed_button               | no            | show speed control button                                                                                                  |
+| speed_button_click         | 1             | speed change amount per click                                                                                              |
+| speed_button_scroll        | 0.25          | speed change amount on scroll                                                                                              |
+| loop_in_pause              | yes           | enable looping by right-clicking pause                                                                                     |
+| buttons_always_active      | none          | force buttons to always be active. can add: `playlist_prev`, `playlist_next`                                               |
+| info_button                | yes           | show `info (stats)` button                                                                                                 |
+| fullscreen_button          | yes           | show `fullscreen toggle` button                                                                                            |
+| playpause_size             | 28            | icon size for the play/pause button                                                                                        |
+| midbuttons_size            | 24            | icon size for the middle buttons                                                                                           |
+| sidebuttons_size           | 24            | icon size for the side buttons                                                                                             |
+| zoom_control               | yes           | show zoom controls in image viewer mode                                                                                    |
+| zoom_in_max                | 4             | icon size for the side buttons                                                                                             |
+| zoom_out_min               | -1            | icon size for the side buttons                                                                                             |
 
 
 ### Colors and style
