@@ -173,7 +173,7 @@ local user_opts = {
     seekrangealpha = 150,                  -- transparency of the seek range
     livemarkers = true,                    -- update chapter markers on the seekbar when duration changes
     seekbarkeyframes = false,              -- use keyframes when dragging the seekbar
-    slider_radius = 2,                     -- radius of the seekbar slider (0 to disable rounded corners)
+    slider_rounded_corners = true,         -- rounded corners seekbar slider
 
     nibbles_top = true,                    -- top chapter nibbles above seekbar
     nibbles_bottom = true,                 -- bottom chapter nibbles below seekbar
@@ -1808,7 +1808,7 @@ layouts["modern"] = function ()
     lo.geometry = {x = refX, y = refY - 72, an = 5, w = osc_geo.w - 50, h = seekbar_bg_h}
     lo.layer = 13
     lo.style = osc_styles.seekbar_bg
-    lo.box.radius = user_opts.slider_radius
+    lo.box.radius = user_opts.slider_rounded_corners and 2 or 0
     lo.alpha[1] = 128
     lo.alpha[3] = 128
 
@@ -1818,7 +1818,7 @@ layouts["modern"] = function ()
     lo.layer = 51
     lo.style = osc_styles.seekbar_fg
     lo.slider.gap = (seekbar_h - seekbar_bg_h) / 2.0
-    lo.slider.radius = user_opts.slider_radius
+    lo.slider.radius = user_opts.slider_rounded_corners and 2 or 0
     lo.slider.tooltip_style = osc_styles.tooltip
     lo.slider.tooltip_an = 2
 
@@ -1948,13 +1948,13 @@ layouts["modern"] = function ()
         lo.layer = 13
         lo.alpha[1] = 128
         lo.style = user_opts.volumebar_match_seek_color and osc_styles.seekbar_bg or osc_styles.volumebar_bg
-        lo.box.radius = user_opts.slider_radius
+        lo.box.radius = user_opts.slider_rounded_corners and 2 or 0
 
         lo = add_layout("volumebar")
         lo.geometry = {x = start_x, y = refY - 35, an = 4, w = 55, h = 10}
         lo.style = user_opts.volumebar_match_seek_color and osc_styles.seekbar_fg or osc_styles.volumebar_fg
         lo.slider.gap = 3
-        lo.slider.radius = user_opts.slider_radius
+        lo.slider.radius = user_opts.slider_rounded_corners and 2 or 0
         lo.slider.tooltip_style = osc_styles.tooltip
         lo.slider.tooltip_an = 2
         start_x = start_x + 75
