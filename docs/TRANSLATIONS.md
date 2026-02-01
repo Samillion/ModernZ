@@ -65,8 +65,8 @@ ModernZ currently has translations for the following languages:
         "chapter": "Chapter",
         "ontop": "Pin Window",
         "ontop_disable": "Unpin Window",
-        "loop_enable": "Loop",
-        "loop_disable": "Disable Loop",
+        "file_loop_enable": "Loop file",
+        "file_loop_disable": "Disable file loop",
         "playlist_loop_enable": "Playlist Loop Enabled",
         "playlist_loop_disable": "Playlist Loop Disabled",
         "shuffle": "Shuffle Playlist",
@@ -122,8 +122,8 @@ ModernZ currently has translations for the following languages:
 | no_playlist                                | No playlist label       | Menu label                  |
 | chapter                                    | Chapter label           | Menu label                  |
 | ontop/ontop_disable                        | Window pin states       | Action labels               |
-| loop_enable/loop_disable                   | Loop states             | Action labels               |
-| playlist_loop_enable/playlist_loop_disable | Playlist Loop states    | Action labels               |
+| file_loop_enable/file_loop_disable         | File loop states        | Action labels               |
+| playlist_loop_enable/playlist_loop_disable | Playlist loop states    | Action labels               |
 | shuffle/unshuffle                          | Playlist shuffle states | Action labels               |
 | screenshot                                 | Screenshot label        | Action label                |
 | stats_info                                 | Information label       | Menu label                  |
