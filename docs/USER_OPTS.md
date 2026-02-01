@@ -105,12 +105,12 @@ Create `modernz.conf` in your mpv script-opts directory:
 | download_path              | ~~desktop/mpv | default download directory for videos. [Learn more about setting paths here](https://mpv.io/manual/master/#paths).         |
 | screenshot_button          | no            | show screenshot button                                                                                                     |
 | ontop_button               | yes           | show `window on top (pin)` button                                                                                          |
-| loop_button                | no            | show `loop` button                                                                                                         |
+| loop_button                | no            | show `file loop` button                                                                                                    |
 | shuffle_button             | no            | show `shuffle` button                                                                                                      |
 | speed_button               | no            | show speed control button                                                                                                  |
 | speed_button_click         | 1             | speed change amount per click                                                                                              |
 | speed_button_scroll        | 0.25          | speed change amount on scroll                                                                                              |
-| loop_in_pause              | yes           | enable looping by right-clicking pause                                                                                     |
+| loop_in_pause              | yes           | enable loop with mouse actions on pause button                                                                             |
 | buttons_always_active      | none          | force buttons to always be active. can add: `playlist_prev`, `playlist_next`                                               |
 | info_button                | yes           | show `info (stats)` button                                                                                                 |
 | fullscreen_button          | yes           | show `fullscreen toggle` button                                                                                            |
