@@ -230,7 +230,7 @@ Customize the button function based on mouse actions.
 |                               | title_mbtn_mid_command           | `show-text ${path}`                                                             |
 |                               | title_mbtn_right_command         | `script-binding select/select-watch-history; script-message-to modernz osc-hide`|
 | Playlist Button               | playlist_mbtn_left_command       | `script-binding select/select-playlist; script-message-to modernz osc-hide`     |
-|                               | playlist_mbtn_right_command      | `show-text ${playlist} 3000`                                                    |
+|                               | playlist_mbtn_right_command      | `script-binding select/menu; script-message-to modernz osc-hide`                |
 | Volume Control                | vol_ctrl_mbtn_left_command       | `no-osd cycle mute`                                                             |
 |                               | vol_ctrl_mbtn_right_command      | `script-binding select/select-audio-device; script-message-to modernz osc-hide` |
 |                               | vol_ctrl_wheel_down_command      | `no-osd add volume -5`                                                          |
