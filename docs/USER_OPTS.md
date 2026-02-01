@@ -118,8 +118,8 @@ Create `modernz.conf` in your mpv script-opts directory:
 | midbuttons_size            | 24            | icon size for the middle buttons                                                                                           |
 | sidebuttons_size           | 24            | icon size for the side buttons                                                                                             |
 | zoom_control               | yes           | show zoom controls in image viewer mode                                                                                    |
-| zoom_in_max                | 4             | icon size for the side buttons                                                                                             |
-| zoom_out_min               | -1            | icon size for the side buttons                                                                                             |
+| zoom_in_max                | 4             | maximum zoom in value                                                                                                      |
+| zoom_out_min               | -1            | minimum zoom out value                                                                                                     |
 
 
 ### Colors and style
