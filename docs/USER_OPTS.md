@@ -181,7 +181,7 @@ Create `modernz.conf` in your mpv script-opts directory:
 | seekrangealpha           | 150      | transparency of the seek range                                             |
 | livemarkers              | yes      | update chapter markers on the seekbar when duration changes                |
 | seekbarkeyframes         | no       | use keyframes when dragging the seekbar                                    |
-| slider_radius            | 2        | radius of the seekbar slider (0 to disable rounded corners)                |
+| slider_rounded_corners   | yes      | rounded corners seekbar slider                                             |
 | nibbles_top              | yes      | top chapter nibbles above seekbar                                          |
 | nibbles_bottom           | yes      | bottom chapter nibbles below seekbar                                       |
 | nibbles_style            | triangle | chapter nibble style. `triangle`, `bar` or `single-bar`                    |
