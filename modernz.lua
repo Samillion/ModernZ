@@ -217,8 +217,8 @@ local user_opts = {
     title_mbtn_right_command = "script-binding select/select-watch-history; script-message-to modernz osc-hide",
 
     -- playlist button mouse actions
-    playlist_mbtn_left_command = "script-binding select/menu; script-message-to modernz osc-hide",
-    playlist_mbtn_right_command = "script-binding select/select-playlist; script-message-to modernz osc-hide",
+    playlist_mbtn_left_command = "script-binding select/select-playlist; script-message-to modernz osc-hide",
+    playlist_mbtn_right_command = "script-binding select/menu; script-message-to modernz osc-hide",
 
     -- volume mouse actions
     vol_ctrl_mbtn_left_command = "no-osd cycle mute",
@@ -2481,7 +2481,7 @@ local function osc_init()
     ne.visible = (osc_param.playresx >= (state.is_image and 250 or visible_min_width) - outeroffset)
     ne.content = icons.playlist
     ne.tooltip_style = osc_styles.tooltip
-    ne.tooltipF = user_opts.tooltip_hints and locale.menu or ""
+    ne.tooltipF = user_opts.tooltip_hints and locale.playlist .. "/" .. locale.menu or ""
     ne.nothingavailable = locale.no_playlist
     ne.eventresponder["mbtn_left_up"] = command_callback(user_opts.playlist_mbtn_left_command)
     ne.eventresponder["mbtn_right_up"] = command_callback(user_opts.playlist_mbtn_right_command)
