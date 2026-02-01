@@ -2,7 +2,7 @@
 
 A sleek and modern OSC for [mpv](https://mpv.io/), this project is a fork of ModernX designed to enhance functionality by adding more features, all while preserving the core standards of mpv's OSC.
 
-![ModernZ-OSC](https://github.com/user-attachments/assets/f6854de6-1d57-4b2f-848e-7197933b71aa)
+![54b36db099](https://github.com/user-attachments/assets/9c11c28d-25d7-46e5-9044-67d4653b189a)
 
 <p align="center">
     <a href="#installation"><strong>Installation »</strong></a>
@@ -185,7 +185,7 @@ For even more useful scripts, check out the [mpv User Scripts Wiki](https://gith
 - [Samillion/ModernZ](https://github.com/Samillion/ModernZ)
   - forked from [dexeonify/ModernX](https://github.com/dexeonify/mpv-config/blob/main/scripts/modernx.lua)
     - forked from [cyl0/ModernX](https://github.com/cyl0/ModernX)
-    - forked from [maoiscat/mpv-osc-modern](https://github.com/maoiscat/mpv-osc-modern)
+      - forked from [maoiscat/mpv-osc-modern](https://github.com/maoiscat/mpv-osc-modern)
 
 **Why fork yet again?**
 
