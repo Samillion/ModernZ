@@ -402,6 +402,8 @@ local language = {
         ontop_disable = "Unpin Window",
         loop_enable = "Loop",
         loop_disable = "Disable Loop",
+        playlist_loop_enable = "Playlist Loop Enabled",
+        playlist_loop_disable = "Playlist Loop Disabled",
         shuffle = "Shuffle Playlist",
         unshuffle = "Unshuffle Playlist",
         speed_control = "Speed Control",
@@ -589,6 +591,7 @@ local state = {
     visibility_modes = {},                  -- visibility_modes to cycle through
     mute = false,
     looping = false,
+    playlist_looping = false,
     shuffled = false,
     sliderpos = 0,
     touchingprogressbar = false,            -- if the mouse is touching the progress bar
@@ -2414,6 +2417,13 @@ local function osc_init()
             mp.command("show-text '" .. (state.looping and locale.loop_disable or locale.loop_enable) .. "'")
             state.looping = not state.looping
             mp.set_property_native("loop-file", state.looping)
+        end
+    end
+    ne.eventresponder["shift+mbtn_left_down"] = function ()
+        if user_opts.loop_in_pause then
+            mp.command("show-text '" .. (state.playlist_looping and locale.playlist_loop_disable or locale.playlist_loop_enable) .. "'")
+            state.playlist_looping = not state.playlist_looping
+            mp.set_property_native("loop-playlist", (state.playlist_looping and "inf" or "no"))
         end
     end
 
