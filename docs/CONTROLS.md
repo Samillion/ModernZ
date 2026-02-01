@@ -21,6 +21,7 @@ Below is a list that explains the OSC buttons function depending on how you inte
 | Action                 | Function                           |
 | ---------------------- | ---------------------------------- |
 | Left mouse click       | Seek to position (using keyframes) |
+| Middle mouse click     | Seek to the exact position         |
 | Shift+left mouse click | Seek to the exact position         |
 | Right mouse click      | Seek to the head of chosen chapter |
 | Scroll wheel           | Seek forward/backwards             |
@@ -34,10 +35,12 @@ Below is a list that explains the OSC buttons function depending on how you inte
 
 ### Play/Pause
 
-| Action            | Function                   |
-| ----------------- | -------------------------- |
-| Left mouse click  | Toggle play/pause          |
-| Right mouse click | Toggle enable/disable loop |
+| Action                 | Function                            |
+| ---------------------- | ----------------------------------- |
+| Left mouse click       | Toggle play/pause                   |
+| Right mouse click      | Toggle enable/disable file loop     |
+| Middle mouse click     | Toggle enable/disable playlist loop |
+| Shift+left mouse click | Toggle enable/disable playlist loop |
 
 ### Playlist Track Back/Forward
 
@@ -46,6 +49,7 @@ Below is a list that explains the OSC buttons function depending on how you inte
 | Left mouse click       | Play previous/next file |
 | Right mouse click      | Show a simple playlist  |
 | Shift+left mouse click | Show a simple playlist  |
+| Middle mouse click     | Show a simple playlist  |
 
 ### Skip Chapter Back/Forward
 
@@ -63,6 +67,7 @@ Below is a list that explains the OSC buttons function depending on how you inte
 | Left mouse click       | Jumps forwards/backwards by 10 seconds (or by `user_opts` `jumpamount`) |
 | Right mouse click      | Jumps forwards/backwards by 1 minute                                    |
 | Shift+left mouse click | Skips to the previous/next frame (and pauses)                           |
+| Middle mouse click     | Skips to the previous/next frame (and pauses)                           |
 
 ### Audio/Subtitle
 
