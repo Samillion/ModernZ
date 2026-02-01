@@ -20,6 +20,7 @@ local utils = require "mp.utils"
 local user_opts = {
     -- Language and display
     language = "en",                       -- set language (for available options, see: https://github.com/Samillion/ModernZ/blob/main/docs/TRANSLATIONS.md)
+    layout = "modern",                     -- set layout: "modern" or "modern-compact"
     icon_theme = "fluent",                 -- set icon theme. accepts "fluent" or "material"
     font = "mpv-osd-symbols",              -- font for the OSC (default: mpv-osd-symbols or the one set in mpv.conf)
 
@@ -2060,6 +2061,229 @@ layouts["modern"] = function ()
     end
 end
 
+layouts["modern-compact"] = function ()
+    local chapter_index = mp.get_property_number("chapter", -1) >= 0
+    local osc_height_offset =
+        ((user_opts.title_mbtn_left_command == "" and user_opts.title_mbtn_right_command == "") and 25 or 0) +
+        (((user_opts.chapter_title_mbtn_left_command == "" and user_opts.chapter_title_mbtn_right_command == "") or not chapter_index) and 10 or 0)
+
+    local osc_geo = {
+        w = osc_param.playresx,
+        h = 145 - osc_height_offset
+    }
+
+    -- update bottom margin
+    osc_param.video_margins.b = math.max(145, 120) / osc_param.playresy
+
+    -- origin of the controllers, left/bottom corner
+    local posX = 0
+    local posY = osc_param.playresy
+
+    osc_param.areas = {} -- delete areas
+
+    -- area for active mouse input
+    add_area("input", get_hitbox_coords(posX, posY, 1, osc_geo.w, osc_geo.h))
+
+    -- area for show/hide
+    add_area("showhide", 0, 0, osc_param.playresx, osc_param.playresy)
+
+    -- fetch values
+    local osc_w, osc_h = osc_geo.w, osc_geo.h
+
+    -- Controller Background
+    local lo, geo
+
+    new_element("osc_fade_bg", "box")
+    lo = add_layout("osc_fade_bg")
+    lo.geometry = {x = posX, y = posY, an = 7, w = osc_w, h = 1}
+    lo.style = osc_styles.osc_fade_bg
+    lo.layer = 10
+    lo.alpha[3] = 50
+
+    local top_titlebar = window_controls_enabled() and (user_opts.show_window_title or user_opts.window_controls)
+
+    -- Window bar alpha
+    if ((user_opts.window_top_bar == "yes" or not (state.border and state.title_bar)) or state.fullscreen) and top_titlebar then
+        new_element("window_bar_alpha_bg", "box")
+        lo = add_layout("window_bar_alpha_bg")
+        lo.geometry = {x = posX, y = -100, an = 7, w = osc_w, h = -1}
+        lo.style = osc_styles.window_fade_bg
+        lo.layer = 10
+        lo.alpha[3] = 0
+    end
+
+    -- Alignment
+    local refX = osc_w / 2
+    local refY = posY
+
+    -- Seekbar
+    new_element("seekbarbg", "box")
+    lo = add_layout("seekbarbg")
+    local seekbar_bg_h = 4
+    lo.geometry = {x = refX, y = refY - 72, an = 5, w = osc_geo.w - 45, h = seekbar_bg_h}
+    lo.layer = 13
+    lo.style = osc_styles.seekbar_bg
+    lo.box.radius = 2
+    lo.alpha[1] = 152
+    lo.alpha[3] = 128
+
+    lo = add_layout("seekbar")
+    local seekbar_h = 18
+    lo.geometry = {x = refX, y = refY - 72, an = 5, w = osc_geo.w - 45, h = seekbar_h}
+    lo.layer = 51
+    lo.style = osc_styles.seekbar_fg
+    lo.slider.gap = (seekbar_h - seekbar_bg_h) / 2.0
+    lo.slider.radius = 2
+    lo.slider.tooltip_style = osc_styles.tooltip
+    lo.slider.tooltip_an = 2
+
+    if user_opts.persistentprogress or state.persistent_progress_toggle then
+        lo = add_layout("persistentseekbar")
+        lo.geometry = {x = refX, y = refY, an = 5, w = osc_geo.w, h = user_opts.persistentprogressheight}
+        lo.style = osc_styles.seekbar_fg
+        lo.slider.gap = (seekbar_h - seekbar_bg_h) / 2.0
+        lo.slider.tooltip_an = 0
+    end
+
+    -- Time codes width calculation
+    local remsec = mp.get_property_number("playtime-remaining", 0)
+    local dur = mp.get_property_number("duration", 0)
+    local show_hours = mp.get_property_number("playback-time", 0) >= 3600
+    local show_remhours = (state.tc_right_rem and remsec >= 3600) or (not state.tc_right_rem and dur >= 3600)
+    local time_codes_width =
+        80 + (state.tc_ms and 50 or 0) + (state.tc_right_rem and 15 or 0) + (show_hours and 20 or 0) +
+        (show_remhours and 20 or 0)
+
+    -- OSC title
+    local title_w = (chapter_index and (osc_geo.w - 50) or (osc_geo.w - 50 - time_codes_width))
+    if title_w < 0 then title_w = 0 end
+    geo = {x = 25, y = refY - (chapter_index and user_opts.title_with_chapter_height or user_opts.title_height), an = 1, w = title_w, h = user_opts.title_font_size}
+    lo = add_layout("title")
+    lo.geometry = geo
+    lo.style = string.format("%s{\\clip(%f,%f,%f,%f)}", osc_styles.title, geo.x, geo.y - geo.h, geo.x + geo.w, geo.y + geo.h)
+    lo.alpha[3] = 0
+
+    -- Chapter title (above seekbar)
+    if user_opts.show_chapter_title then
+        local chapter_geo = {x = 25, y = refY - user_opts.chapter_title_height, an = 1, w = osc_geo.w / 2, h = user_opts.chapter_title_font_size}
+        lo = add_layout("chapter_title")
+        lo.geometry = chapter_geo
+        lo.style = string.format("%s{\\clip(%f,%f,%f,%f)}", osc_styles.chapter_title, chapter_geo.x, chapter_geo.y - chapter_geo.h, chapter_geo.x + chapter_geo.w, chapter_geo.y + chapter_geo.h)
+    end
+    -- Time codes
+    lo = add_layout("time_codes")
+    lo.geometry = {x = osc_geo.w - 25, y = refY - 96, an = 6, w = time_codes_width, h = user_opts.time_font_size}
+    lo.style = osc_styles.time
+
+    -- Left side buttons
+    local start_x = 50
+
+    lo = add_layout("play_pause")
+    lo.geometry = {x = start_x, y = refY - 35, an = 5, w = 24, h = 24}
+    lo.style = osc_styles.control_2
+    start_x = start_x + 55
+
+    local pl_count = mp.get_property_number("playlist-count", 0)
+    local pl_pos = mp.get_property_number("playlist-pos", 0) + 1
+
+    if pl_count > 1 and pl_pos > 1 then
+        lo = add_layout("playlist_prev")
+        lo.geometry = {x = start_x, y = refY - 35, an = 5, w = 24, h = 24}
+        lo.style = osc_styles.control_2
+        start_x = start_x + 55
+    end
+
+    if pl_count > 1 and pl_pos < pl_count then
+        lo = add_layout("playlist_next")
+        lo.geometry = {x = start_x, y = refY - 35, an = 5, w = 24, h = 24}
+        lo.style = osc_styles.control_2
+        start_x = start_x + 55
+    end
+
+    if audio_track_count > 0 and user_opts.volume_control then
+        lo = add_layout("vol_ctrl")
+        lo.geometry = {x = start_x, y = refY - 35, an = 5, w = 24, h = 24}
+        lo.style = osc_styles.control_2
+        start_x = start_x + 28
+
+        new_element("volumebarbg", "box")
+        elements.volumebar.visible = osc_geo.w >= 750
+        elements.volumebarbg.visible = elements.volumebar.visible
+        if elements.volumebar.visible then
+            lo = add_layout("volumebarbg")
+            lo.geometry = {x = start_x, y = refY - 35, an = 4, w = 65, h = 3}
+            lo.layer = 13
+            lo.alpha[1] = 128
+            lo.style = user_opts.volumebar_match_seek_color and osc_styles.seekbar_bg or osc_styles.volumebar_bg
+            lo.box.radius = 2
+
+            lo = add_layout("volumebar")
+            lo.geometry = {x = start_x, y = refY - 35, an = 4, w = 65, h = 9}
+            lo.style = user_opts.volumebar_match_seek_color and osc_styles.seekbar_fg or osc_styles.volumebar_fg
+            lo.slider.gap = 3
+            lo.slider.radius = 1
+            lo.slider.tooltip_style = osc_styles.tooltip
+            lo.slider.tooltip_an = 2
+            start_x = start_x + 75
+        end
+    end
+
+    -- Right side buttons
+    local end_x = osc_geo.w - 50
+
+    if user_opts.fullscreen_button then
+        lo = add_layout("tog_fullscreen")
+        lo.geometry = {x = end_x, y = refY - 35, an = 5, w = 24, h = 24}
+        lo.style = osc_styles.control_2
+        end_x = end_x - 55
+    end
+
+    elements.tog_ontop.visible = user_opts.ontop_button and osc_geo.w >= 500
+    if elements.tog_ontop.visible then
+        lo = add_layout("tog_ontop")
+        lo.geometry = {x = end_x, y = refY - 35, an = 5, w = 24, h = 24}
+        lo.style = osc_styles.control_2
+        end_x = end_x - 55
+    end
+
+    elements.sub_track.visible = user_opts.fullscreen_button and sub_track_count > 0 and osc_geo.w >= 600
+    if elements.sub_track.visible then
+        lo = add_layout("sub_track")
+        lo.geometry = {x = end_x, y = refY - 35, an = 5, w = 24, h = 24}
+        lo.style = osc_styles.control_2
+        end_x = end_x - 55
+    end
+
+    elements.audio_track.visible = user_opts.audio_tracks_button and audio_track_count > 1 and osc_geo.w >= 750
+    if elements.audio_track.visible then
+        lo = add_layout("audio_track")
+        lo.geometry = {x = end_x, y = refY - 35, an = 5, w = 24, h = 24}
+        lo.style = osc_styles.control_2
+        end_x = end_x - 55
+    end
+
+    if user_opts.playlist_button then
+        lo = add_layout("tog_playlist")
+        lo.geometry = {x = end_x, y = refY - 35, an = 5, w = 24, h = 24}
+        lo.style = osc_styles.control_2
+        end_x = end_x - 55
+    end
+
+    if user_opts.speed_button then
+        lo = add_layout("tog_speed")
+        lo.geometry = {x = end_x, y = refY - 35, an = 5, w = 24, h = 24}
+        lo.style = osc_styles.control_2
+        end_x = end_x - 55
+    end
+
+    elements.cache_info.visible = user_opts.cache_info and osc_geo.w >= 500
+    if elements.cache_info.visible then
+        lo = add_layout("cache_info")
+        lo.geometry = {x = end_x + 7, y = refY - 35, an = 6, w = (user_opts.cache_info_speed and 70 or 45), h = 24}
+        lo.style = osc_styles.time
+    end
+end
+
 layouts["modern-image"] = function ()
     local osc_geo = {
         w = osc_param.playresx,
@@ -3008,6 +3232,8 @@ local function osc_init()
     -- load layout
     if state.is_image then
         layouts["modern-image"]()
+    elseif layouts[user_opts.layout] then
+        layouts[user_opts.layout]()
     else
         layouts["modern"]()
     end
