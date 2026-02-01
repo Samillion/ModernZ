@@ -83,7 +83,7 @@ Below is a list that explains the OSC buttons function depending on how you inte
 | Action            | Function                     |
 | ----------------- | ---------------------------- |
 | Left mouse click  | Show an interactive playlist |
-| Right mouse click | Show a simple playlist       |
+| Right mouse click | Show an interactive menu     |
 
 ### Volume
 
