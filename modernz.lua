@@ -107,13 +107,13 @@ local user_opts = {
     download_button = true,                -- show download button on web videos (requires yt-dlp and ffmpeg)
     download_path = "~~desktop/mpv",       -- default download directory for videos (https://mpv.io/manual/master/#paths)
 
-    loop_button = false,                   -- show loop
-    shuffle_button = false,                -- show shuffle
+    loop_button = false,                   -- show file loop button
+    shuffle_button = false,                -- show shuffle button
     speed_button = false,                  -- show speed control button
     speed_button_click = 1,                -- speed change amount per click
     speed_button_scroll = 0.25,            -- speed change amount on scroll
 
-    loop_in_pause = true,                  -- enable looping by right-clicking pause
+    loop_in_pause = true,                  -- enable loop with mouse actions on pause button
 
     buttons_always_active = "none",        -- force buttons to always be active. can add: playlist_prev, playlist_next
 
@@ -400,8 +400,8 @@ local language = {
         chapter = "Chapter",
         ontop = "Pin Window",
         ontop_disable = "Unpin Window",
-        loop_enable = "Loop",
-        loop_disable = "Disable Loop",
+        file_loop_enable = "Loop file",
+        file_loop_disable = "Disable file loop",
         playlist_loop_enable = "Playlist Loop Enabled",
         playlist_loop_disable = "Playlist Loop Disabled",
         shuffle = "Shuffle Playlist",
@@ -590,8 +590,8 @@ local state = {
     chapter_list = {},                      -- sorted by time
     visibility_modes = {},                  -- visibility_modes to cycle through
     mute = false,
-    looping = false,
-    playlist_looping = false,
+    file_loop = false,
+    playlist_loop = false,
     shuffled = false,
     sliderpos = 0,
     touchingprogressbar = false,            -- if the mouse is touching the progress bar
@@ -2024,7 +2024,7 @@ layouts["modern"] = function ()
     end
 
     if loop_button then
-        lo = add_layout("tog_loop")
+        lo = add_layout("tog_file_loop")
         lo.geometry = {x = end_x, y = refY - 35, an = 5, w = 24, h = 24}
         lo.style = osc_styles.control_3
         lo.visible = (osc_param.playresx >= 600 - outeroffset) and loop_button
@@ -2414,16 +2414,16 @@ local function osc_init()
     end
     ne.eventresponder["mbtn_right_down"] = function ()
         if user_opts.loop_in_pause then
-            mp.command("show-text '" .. (state.looping and locale.loop_disable or locale.loop_enable) .. "'")
-            state.looping = not state.looping
-            mp.set_property_native("loop-file", state.looping)
+            mp.command("show-text '" .. (state.file_loop and locale.file_loop_disable or locale.file_loop_enable) .. "'")
+            state.file_loop = not state.file_loop
+            mp.set_property_native("loop-file", state.file_loop)
         end
     end
     ne.eventresponder["shift+mbtn_left_down"] = function ()
         if user_opts.loop_in_pause then
-            mp.command("show-text '" .. (state.playlist_looping and locale.playlist_loop_disable or locale.playlist_loop_enable) .. "'")
-            state.playlist_looping = not state.playlist_looping
-            mp.set_property_native("loop-playlist", (state.playlist_looping and "inf" or "no"))
+            mp.command("show-text '" .. (state.playlist_loop and locale.playlist_loop_disable or locale.playlist_loop_enable) .. "'")
+            state.playlist_loop = not state.playlist_loop
+            mp.set_property_native("loop-playlist", (state.playlist_loop and "inf" or "no"))
         end
     end
 
@@ -2686,16 +2686,16 @@ local function osc_init()
     ne.eventresponder["mbtn_left_up"] = command_callback(user_opts.screenshot_mbtn_left_command)
     visible_min_width = visible_min_width + (user_opts.screenshot_button and 100 or 0)
 
-    --tog_loop
-    ne = new_element("tog_loop", "button")
-    ne.content = function() return state.looping and icons.loop_on or icons.loop_off end
+    --tog_file_loop
+    ne = new_element("tog_file_loop", "button")
+    ne.content = function() return state.file_loop and icons.loop_on or icons.loop_off end
     ne.visible = (osc_param.playresx >= visible_min_width)
     ne.tooltip_style = osc_styles.tooltip
-    ne.tooltipF = function() return user_opts.tooltip_hints and (state.looping and locale.loop_disable or locale.loop_enable) or "" end
+    ne.tooltipF = function() return user_opts.tooltip_hints and (state.file_loop and locale.file_loop_disable or locale.file_loop_enable) or "" end
     ne.eventresponder["mbtn_left_up"] = function ()
-        mp.command("show-text '" .. (state.looping and locale.loop_disable or locale.loop_enable) .. "'")
-        state.looping = not state.looping
-        mp.set_property_native("loop-file", state.looping)
+        mp.command("show-text '" .. (state.file_loop and locale.file_loop_disable or locale.file_loop_enable) .. "'")
+        state.file_loop = not state.file_loop
+        mp.set_property_native("loop-file", state.file_loop)
     end
     visible_min_width = visible_min_width + (user_opts.loop_button and 100 or 0)
 
@@ -3595,12 +3595,12 @@ mp.observe_property("mute", "bool", function(_, val)
     request_tick()
 end)
 mp.observe_property("paused-for-cache", "bool", function(_, val) state.buffering = val end)
--- ensure compatibility with auto looping scripts (eg: a script that sets videos under 2 seconds to loop by default)
+-- ensure compatibility with auto loop scripts (eg: a script that sets videos under 2 seconds to loop by default)
 mp.observe_property("loop-file", "bool", function(_, val)
     if (val == nil) then
-        state.looping = true
+        state.file_loop = true
     else
-        state.looping = false
+        state.file_loop = false
     end
 end)
 mp.observe_property("sub-pos", "native", function(_, value)
