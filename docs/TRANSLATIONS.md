@@ -42,6 +42,7 @@ ModernZ currently has translations for the following languages:
 - Arabic (ar)
 - Russian (ru)
 - Icelandic (is)
+- Danish (dk)
 
 ## Adding a New Language
 
