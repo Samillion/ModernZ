@@ -3551,7 +3551,7 @@ local function render()
             state.input_enabled = state.osc_visible
         end
 
-        if mouse_hit_coords(cords.x1, cords.y1, cords.x2, cords.y2) and user_opts.osc_keep_with_cursor then
+        if mouse_hit_coords(cords.x1, cords.y1, cords.x2, cords.y2) then
             mouse_over_osc = true
         end
     end
@@ -3565,7 +3565,7 @@ local function render()
                 mp.disable_key_bindings("window-controls")
             end
 
-            if mouse_hit_coords(cords.x1, cords.y1, cords.x2, cords.y2) and user_opts.osc_keep_with_cursor then
+            if mouse_hit_coords(cords.x1, cords.y1, cords.x2, cords.y2) then
                 mouse_over_osc = true
             end
         end
@@ -3585,7 +3585,7 @@ local function render()
                 state.windowcontrols_title = state.osc_visible
             end
 
-            if mouse_hit_coords(cords.x1, cords.y1, cords.x2, cords.y2) and user_opts.osc_keep_with_cursor then
+            if mouse_hit_coords(cords.x1, cords.y1, cords.x2, cords.y2) then
                 mouse_over_osc = true
             end
         end
@@ -3595,7 +3595,7 @@ local function render()
     if state.showtime ~= nil and get_hidetimeout() >= 0 then
         local timeout = state.showtime + (get_hidetimeout() / 1000) - now
         if timeout <= 0 and get_touchtimeout() <= 0 then
-            if state.active_element == nil and not mouse_over_osc then
+            if state.active_element == nil and not mouse_over_osc or not user_opts.osc_keep_with_cursor then
                 hide_osc()
             end
         else
