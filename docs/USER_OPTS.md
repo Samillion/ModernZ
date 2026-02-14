@@ -186,6 +186,8 @@ Create `modernz.conf` in your mpv script-opts directory:
 | nibbles_top              | yes      | top chapter nibbles above seekbar                                          |
 | nibbles_bottom           | yes      | bottom chapter nibbles below seekbar                                       |
 | nibbles_style            | triangle | chapter nibble style. `triangle`, `bar` or `single-bar`                    |
+| nibble_color             | #FB8C00  | color of chapter nibbles on the seekbar                                    |
+| nibble_current_color     | #FFFFFF  | color of the current chapter nibble on the seekbar                         |
 | automatickeyframemode    | yes      | automatically set keyframes for the seekbar based on video length          |
 | automatickeyframelimit   | 600      | videos longer than this (in seconds) will have keyframes on the seekbar    |
 | persistentprogress       | no       | always show a small progress line at the bottom of the screen              |
