@@ -2251,6 +2251,20 @@ layouts["modern-compact"] = function ()
         start_x = start_x + 55
     end
 
+   if user_opts.jump_buttons and osc_geo.w >= 450 then
+        lo = add_layout("jump_backward")
+        lo.geometry = {x = start_x, y = refY - 35, an = 5, w = 30, h = 24}
+        lo.style = (user_opts.jump_icon_number and icons.jump[user_opts.jump_amount] ~= nil) and osc_styles.control_2 or osc_styles.control_2_flip
+        start_x = start_x + 55
+    end
+
+    if user_opts.jump_buttons and osc_geo.w >= 450 then
+        lo = add_layout("jump_forward")
+        lo.geometry = {x = start_x, y = refY - 35, an = 5, w = 30, h = 24}
+        lo.style = osc_styles.control_2
+        start_x = start_x + 55
+    end
+
     if audio_track_count > 0 and user_opts.volume_control then
         lo = add_layout("vol_ctrl")
         lo.geometry = {x = start_x, y = refY - 35, an = 5, w = 24, h = 24}
@@ -2258,7 +2272,7 @@ layouts["modern-compact"] = function ()
         start_x = start_x + 28
 
         new_element("volumebarbg", "box")
-        elements.volumebar.visible = osc_geo.w >= 750
+        elements.volumebar.visible = osc_geo.w >= 850
         elements.volumebarbg.visible = elements.volumebar.visible
         if elements.volumebar.visible then
             lo = add_layout("volumebarbg")
