@@ -2258,7 +2258,7 @@ layouts["modern-compact"] = function ()
         start_x = start_x + 55
     end
 
-    if user_opts.jump_buttons and osc_geo.w >= 350 then
+    if user_opts.jump_buttons and osc_geo.w >= 450 then
         lo = add_layout("jump_forward")
         lo.geometry = {x = start_x, y = refY - 35, an = 5, w = 30, h = 24}
         lo.style = osc_styles.control_2
