@@ -2237,28 +2237,28 @@ layouts["modern-compact"] = function ()
     local pl_count = mp.get_property_number("playlist-count", 0)
     local pl_pos = mp.get_property_number("playlist-pos", 0) + 1
 
-    if pl_count > 1 and pl_pos > 1 and osc_geo.w >= 250 then
+    if pl_count > 1 and pl_pos > 1 and osc_geo.w >= 500 then
         lo = add_layout("playlist_prev")
         lo.geometry = {x = start_x, y = refY - 35, an = 5, w = 24, h = 24}
         lo.style = osc_styles.control_2
         start_x = start_x + 55
     end
 
-    if pl_count > 1 and pl_pos < pl_count and osc_geo.w >= 300 then
+    if pl_count > 1 and pl_pos < pl_count then
         lo = add_layout("playlist_next")
         lo.geometry = {x = start_x, y = refY - 35, an = 5, w = 24, h = 24}
         lo.style = osc_styles.control_2
         start_x = start_x + 55
     end
 
-   if user_opts.jump_buttons and osc_geo.w >= 450 then
+   if user_opts.jump_buttons and osc_geo.w >= 600 then
         lo = add_layout("jump_backward")
         lo.geometry = {x = start_x, y = refY - 35, an = 5, w = 30, h = 24}
         lo.style = (user_opts.jump_icon_number and icons.jump[user_opts.jump_amount] ~= nil) and osc_styles.control_2 or osc_styles.control_2_flip
         start_x = start_x + 55
     end
 
-    if user_opts.jump_buttons and osc_geo.w >= 420 then
+    if user_opts.jump_buttons and osc_geo.w >= 450 then
         lo = add_layout("jump_forward")
         lo.geometry = {x = start_x, y = refY - 35, an = 5, w = 30, h = 24}
         lo.style = osc_styles.control_2
