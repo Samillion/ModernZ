@@ -2282,14 +2282,15 @@ layouts["modern-compact"] = function ()
     -- Right side buttons
     local end_x = osc_geo.w - 50
 
-    if user_opts.fullscreen_button then
+    elements.tog_fullscreen.visible = user_opts.fullscreen_button and osc_geo.w >= 100
+    if elements.tog_fullscreen.visible then
         lo = add_layout("tog_fullscreen")
         lo.geometry = {x = end_x, y = refY - 35, an = 5, w = 24, h = 24}
         lo.style = osc_styles.control_2
         end_x = end_x - 55
     end
 
-    elements.tog_ontop.visible = user_opts.ontop_button and osc_geo.w >= 500
+    elements.tog_ontop.visible = user_opts.ontop_button and osc_geo.w >= 250
     if elements.tog_ontop.visible then
         lo = add_layout("tog_ontop")
         lo.geometry = {x = end_x, y = refY - 35, an = 5, w = 24, h = 24}
@@ -2297,7 +2298,15 @@ layouts["modern-compact"] = function ()
         end_x = end_x - 55
     end
 
-    elements.sub_track.visible = user_opts.fullscreen_button and sub_track_count > 0 and osc_geo.w >= 600
+    elements.tog_speed.visible = user_opts.speed_button and osc_geo.w >= 300
+    if elements.tog_speed.visible then
+        lo = add_layout("tog_speed")
+        lo.geometry = {x = end_x, y = refY - 35, an = 5, w = 24, h = 24}
+        lo.style = osc_styles.control_2
+        end_x = end_x - 55
+    end
+
+    elements.sub_track.visible = user_opts.subtitles_button and sub_track_count > 0 and osc_geo.w >= 600
     if elements.sub_track.visible then
         lo = add_layout("sub_track")
         lo.geometry = {x = end_x, y = refY - 35, an = 5, w = 24, h = 24}
@@ -2305,7 +2314,7 @@ layouts["modern-compact"] = function ()
         end_x = end_x - 55
     end
 
-    elements.audio_track.visible = user_opts.audio_tracks_button and audio_track_count > 1 and osc_geo.w >= 750
+    elements.audio_track.visible = user_opts.audio_tracks_button and audio_track_count > 0 and osc_geo.w >= 750
     if elements.audio_track.visible then
         lo = add_layout("audio_track")
         lo.geometry = {x = end_x, y = refY - 35, an = 5, w = 24, h = 24}
@@ -2313,15 +2322,17 @@ layouts["modern-compact"] = function ()
         end_x = end_x - 55
     end
 
-    if user_opts.playlist_button then
+    elements.tog_playlist.visible = user_opts.playlist_button and osc_geo.w >= 550
+    if elements.tog_playlist.visible then
         lo = add_layout("tog_playlist")
         lo.geometry = {x = end_x, y = refY - 35, an = 5, w = 24, h = 24}
         lo.style = osc_styles.control_2
         end_x = end_x - 55
     end
 
-    if user_opts.speed_button then
-        lo = add_layout("tog_speed")
+    elements.download.visible = state.is_URL and user_opts.download_button and osc_geo.w >= 450
+    if elements.download.visible then
+        lo = add_layout("download")
         lo.geometry = {x = end_x, y = refY - 35, an = 5, w = 24, h = 24}
         lo.style = osc_styles.control_2
         end_x = end_x - 55
