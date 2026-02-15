@@ -2298,7 +2298,7 @@ layouts["modern-compact"] = function ()
         end_x = end_x - 55
     end
 
-    elements.tog_speed.visible = user_opts.speed_button and osc_geo.w >= 550
+    elements.tog_speed.visible = user_opts.speed_button and osc_geo.w >= 300
     if elements.tog_speed.visible then
         lo = add_layout("tog_speed")
         lo.geometry = {x = end_x, y = refY - 35, an = 5, w = 24, h = 24}
@@ -2322,7 +2322,7 @@ layouts["modern-compact"] = function ()
         end_x = end_x - 55
     end
 
-    elements.tog_playlist.visible = user_opts.playlist_button and osc_geo.w >= 450
+    elements.tog_playlist.visible = user_opts.playlist_button and osc_geo.w >= 550
     if elements.tog_playlist.visible then
         lo = add_layout("tog_playlist")
         lo.geometry = {x = end_x, y = refY - 35, an = 5, w = 24, h = 24}
@@ -2330,7 +2330,7 @@ layouts["modern-compact"] = function ()
         end_x = end_x - 55
     end
 
-    elements.download.visible = state.is_URL and user_opts.download_button and osc_geo.w >= 300
+    elements.download.visible = state.is_URL and user_opts.download_button and osc_geo.w >= 450
     if elements.download.visible then
         lo = add_layout("download")
         lo.geometry = {x = end_x, y = refY - 35, an = 5, w = 24, h = 24}
