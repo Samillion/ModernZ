@@ -20,7 +20,7 @@ A sleek and modern OSC for [mpv](https://mpv.io/), this project is a fork of Mod
 
 ## Features
 
-- 🎨 Modern, customizable interface [[options](#configuration)]
+- 🎨 Modern, customizable interface with multiple layouts [[options](#configuration)]
 - 📷 Image Viewer mode with zoom controls [[details](/docs/IMAGE_VIEWER.md)]
 - 🎛️ Buttons: download, playlist, speed control, screenshot, pin, loop, cache and more. [[details](/docs/CONTROLS.md)]
 - 📄 Interactive menus for playlist, subtitles, chapters, audio tracks and audio devices [[details](#interactive-menus)]
@@ -29,8 +29,13 @@ A sleek and modern OSC for [mpv](https://mpv.io/), this project is a fork of Mod
 - 🖼️ Video thumbnail previews with [thumbfast](https://github.com/po5/thumbfast)
 
 ## Customization
+Choose the layout design that suits your preference, between `modern` and `modern-compact` by using the `layout` option in your `modernz.conf`.
 
-You can change the icon theme to `fluent` or `material` to match your taste and style by using the `icon_theme` option in your `modernz.conf`
+![modern_layout](https://github.com/user-attachments/assets/452c56ce-446f-4180-b3a2-cadcdb4f97f2)
+
+![modern_compact_layout](https://github.com/user-attachments/assets/dc53fdf3-45af-4605-a367-e172d635a4f2)
+
+You can also change the icon theme to `fluent` or `material` to match your preferred style by using the `icon_theme` option in your `modernz.conf`
 
 ![modernz_fluent](https://github.com/user-attachments/assets/3aafac8c-a13f-4840-8119-739523eb7a8e)
 
