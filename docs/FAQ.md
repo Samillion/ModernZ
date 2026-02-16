@@ -6,7 +6,7 @@ You can most likely achieve this by implementing an auto profile in your `mpv.co
 
 **Auto-profile examples:**
 - [Custom fullscreen](https://github.com/Samillion/ModernZ/issues/206#issuecomment-2470315786)
-- [PIP mode](https://github.com/Samillion/ModernZ/issues/91#issuecomment-2442569584)
+- [PIP mode](https://github.com/Samillion/ModernZ/discussions/446) (Picture-in-Picture)
 - [Image viewer mode](https://github.com/Samillion/ModernZ/blob/main/docs/IMAGE_VIEWER.md#recommended)
 - [Custom mode](https://github.com/Samillion/ModernZ/blob/main/docs/USER_OPTS.md#auto-profile)
 
