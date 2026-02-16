@@ -2174,7 +2174,7 @@ layouts["modern-compact"] = function ()
     lo.geometry = {x = refX, y = refY - 72, an = 5, w = osc_geo.w - 45, h = seekbar_bg_h}
     lo.layer = 13
     lo.style = osc_styles.seekbar_bg
-    lo.box.radius = 2
+    lo.box.radius = user_opts.slider_rounded_corners and 2 or 0
     lo.alpha[1] = 152
     lo.alpha[3] = 128
 
@@ -2184,7 +2184,7 @@ layouts["modern-compact"] = function ()
     lo.layer = 51
     lo.style = osc_styles.seekbar_fg
     lo.slider.gap = (seekbar_h - seekbar_bg_h) / 2.0
-    lo.slider.radius = 2
+    lo.slider.radius = user_opts.slider_rounded_corners and 2 or 0
     lo.slider.tooltip_style = osc_styles.tooltip
     lo.slider.tooltip_an = 2
 
@@ -2276,17 +2276,17 @@ layouts["modern-compact"] = function ()
         elements.volumebarbg.visible = elements.volumebar.visible
         if elements.volumebar.visible then
             lo = add_layout("volumebarbg")
-            lo.geometry = {x = start_x, y = refY - 35, an = 4, w = 65, h = 3}
+            lo.geometry = {x = start_x, y = refY - 35, an = 4, w = 65, h = 4}
             lo.layer = 13
             lo.alpha[1] = 128
             lo.style = user_opts.volumebar_match_seek_color and osc_styles.seekbar_bg or osc_styles.volumebar_bg
-            lo.box.radius = 2
+            lo.box.radius = user_opts.slider_rounded_corners and 2 or 0
 
             lo = add_layout("volumebar")
-            lo.geometry = {x = start_x, y = refY - 35, an = 4, w = 65, h = 9}
+            lo.geometry = {x = start_x, y = refY - 35, an = 4, w = 65, h = 10}
             lo.style = user_opts.volumebar_match_seek_color and osc_styles.seekbar_fg or osc_styles.volumebar_fg
             lo.slider.gap = 3
-            lo.slider.radius = 1
+            lo.slider.radius = user_opts.slider_rounded_corners and 2 or 0
             lo.slider.tooltip_style = osc_styles.tooltip
             lo.slider.tooltip_an = 2
             start_x = start_x + 75
