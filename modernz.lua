@@ -2237,16 +2237,30 @@ layouts["modern-compact"] = function ()
     local pl_count = mp.get_property_number("playlist-count", 0)
     local pl_pos = mp.get_property_number("playlist-pos", 0) + 1
 
-    if pl_count > 1 and pl_pos > 1 then
+    if pl_count > 1 and pl_pos > 1 and user_opts.track_nextprev_buttons and osc_geo.w >= 500 then
         lo = add_layout("playlist_prev")
         lo.geometry = {x = start_x, y = refY - 35, an = 5, w = 24, h = 24}
         lo.style = osc_styles.control_2
         start_x = start_x + 55
     end
 
-    if pl_count > 1 and pl_pos < pl_count then
+    if pl_count > 1 and pl_pos < pl_count and user_opts.track_nextprev_buttons and osc_geo.w >= 350 then
         lo = add_layout("playlist_next")
         lo.geometry = {x = start_x, y = refY - 35, an = 5, w = 24, h = 24}
+        lo.style = osc_styles.control_2
+        start_x = start_x + 55
+    end
+
+   if user_opts.jump_buttons and osc_geo.w >= 600 then
+        lo = add_layout("jump_backward")
+        lo.geometry = {x = start_x, y = refY - 35, an = 5, w = 30, h = 24}
+        lo.style = (user_opts.jump_icon_number and icons.jump[user_opts.jump_amount] ~= nil) and osc_styles.control_2 or osc_styles.control_2_flip
+        start_x = start_x + 55
+    end
+
+    if user_opts.jump_buttons and osc_geo.w >= 450 then
+        lo = add_layout("jump_forward")
+        lo.geometry = {x = start_x, y = refY - 35, an = 5, w = 30, h = 24}
         lo.style = osc_styles.control_2
         start_x = start_x + 55
     end
@@ -2258,7 +2272,7 @@ layouts["modern-compact"] = function ()
         start_x = start_x + 28
 
         new_element("volumebarbg", "box")
-        elements.volumebar.visible = osc_geo.w >= 750
+        elements.volumebar.visible = osc_geo.w >= 850
         elements.volumebarbg.visible = elements.volumebar.visible
         if elements.volumebar.visible then
             lo = add_layout("volumebarbg")
