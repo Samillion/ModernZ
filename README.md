@@ -179,6 +179,8 @@ The following scripts are ones I wrote and maintain, feel free to use them if th
 
 - [Pause-Indicator-Lite](/extras/pause-indicator-lite) - A simple script that displays an indicator on pause
 
+- [PiP-Lite](/extras/pip-lite) - Add PiP (Picture-in-Picture) mode to ModernZ pin button and when ontop is enabled
+
 - [ytdlAutoFormat](https://github.com/Samillion/mpv-ytdlautoformat) - A simple mpv script to automatically change `ytdl-format` (yt-dlp) for specified domains.
 
 - [BoxtoWide](https://github.com/Samillion/mpv-boxtowide) - A simple mpv script to change 4:3 aspect-ratio of video files/streams to 16:9 automatically.
