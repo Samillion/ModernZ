@@ -1,11 +1,11 @@
 ## PiP Lite (Picture-in-Picture)
 This script adds a PiP mode when pin (ontop) is enabled, which also enhances the pin button on ModernZ turning it into a PiP button.
 
-When pin is enabled, window is resized and moved to bottom right, all fit and positions can be adjusted in `pip_lite.conf`.
+When pin is enabled, window is resized and moved to bottom right. All fit and window positions can be adjusted in `pip_lite.conf`.
 
-https://github.com/user-attachments/assets/b3ef08e9-3812-4f1f-b14c-9a805598cceb
+https://github.com/user-attachments/assets/942790a6-49a5-4dc0-8b5c-0e8fc375f3b1
 
-### Options
+## Options
 To adjust them you can either: 
 - Place [pip_lite.conf](./pip_lite.conf) in `script-opts` and change the values in it [recommended]
 - Simply change their values in `local options` within the script itself
@@ -28,7 +28,7 @@ You can easily control other ModernZ or mpv options when PiP is enabled by using
     script-opts-append=modernz-persistentprogress=yes
 ```
 
-### How to install
+## How to install
 
 Simply place [pip_lite.lua](./pip_lite.lua) in the corresponding mpv scripts folder of your operating system:
 
