@@ -1,5 +1,5 @@
 ## PiP Lite (Picture-in-Picture)
-This script adds a PiP mode when pin (ontop) is enabled, which enhances the pin button on ModernZ turning it into a PiP button.
+This script adds a PiP mode when pin (ontop) is enabled, which also enhances the pin button on ModernZ turning it into a PiP button.
 
 When pin is enabled, window is resized and moved to bottom right, all fit and positions can be adjusted in `pip_lite.conf`.
 
@@ -14,9 +14,9 @@ To adjust them you can either:
 |---------------------|---------------|------------------------------------------------------------------------------------------------------------------------|
 | `autofit`           | `40%x30%`     | [autofit](https://mpv.io/manual/master/#options-autofit) (window size) option when pip is enabled                      |
 | `autofit_larger`    | `40%x30%`     | [autofit-larger](https://mpv.io/manual/master/#options-autofit-larger) (window size) option when pip is enabled        |
-| `geometry`          | `100%:100%`   | window position when PiP is enabled. Default: bottom-right [[details](https://mpv.io/manual/master/#options-geometry)] |
-| `geometry_restore`  | `50%:50%`     | window position when PiP is disabled. Default: center [[details](https://mpv.io/manual/master/#options-geometry)]      |
-| `geometry_delay`    | `0.02`        | window position delay to avoid any racing issues                                                                       |
+| `geometry`          | `100%:100%`   | window position when PiP is enabled. default: bottom-right [[details](https://mpv.io/manual/master/#options-geometry)] |
+| `geometry_restore`  | `50%:50%`     | window position when PiP is disabled. default: center [[details](https://mpv.io/manual/master/#options-geometry)]      |
+| `geometry_delay`    | `0.02`        | window position delay (in seconds) to avoid any racing issues                                                          |
 
 You can easily control other ModernZ or mpv options when PiP is enabled by using an auto-profile, for example:
 
