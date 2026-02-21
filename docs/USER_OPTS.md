@@ -200,7 +200,7 @@ Create `modernz.conf` in your mpv script-opts directory:
 | ----------------------------- | ----------------- | ------------------------------------------------------------- |
 | visibility                    | auto              | only used at init to set visibility_mode(...)                 |
 | visibility_modes              | never_auto_always | visibility modes to cycle through, modes are separated by `_` |
-| tick_delay                    | 0.03              | minimum interval between OSC redraws (in seconds)             |
+| tick_delay                    | 1 / 60            | minimum interval between OSC redraws (in seconds)             |
 | tick_delay_follow_display_fps | no                | use display FPS as the minimum redraw interval                |
 
 ### Elements Position

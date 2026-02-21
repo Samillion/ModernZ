@@ -192,7 +192,7 @@ local user_opts = {
     -- Miscellaneous settings
     visibility = "auto",                   -- only used at init to set visibility_mode(...)
     visibility_modes = "never_auto_always",-- visibility modes to cycle through
-    tick_delay = 0.03,                     -- minimum interval between OSC redraws (in seconds)
+    tick_delay = 1 / 60,                   -- minimum interval between OSC redraws (in seconds)
     tick_delay_follow_display_fps = false, -- use display FPS as the minimum redraw interval
 
     -- Elements Position
