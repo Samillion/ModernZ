@@ -4185,9 +4185,8 @@ mp.observe_property("pause", "bool", function(name, enabled)
                 -- respect "always" mode on unpause
                 visibility_mode(user_opts.visibility, true)
             end
-            -- reset wc timer so it gets a fresh hidetimeout on unpause,
-            -- matching the effective behaviour of the osc which is protected
-            -- by mouse hover when the cursor is over the bottom zone
+            -- reset timer so it gets a fresh hidetimeout on unpause
+            if state.osc_visible then state.showtime = mp.get_time() end
             if user_opts.independent_wc and state.wc_visible then
                 state.wc_showtime = mp.get_time()
             end
