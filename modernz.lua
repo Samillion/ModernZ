@@ -959,8 +959,6 @@ local function fade_in(is_visible, set_visible_fn, set_anitype)
         if not is_visible then
             set_anitype("in")
             request_tick()
-        else
-            set_anitype(nil) -- cancel any ongoing fade-out
         end
     else
         set_visible_fn(true)
