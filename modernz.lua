@@ -3550,6 +3550,7 @@ end
 --
 local function reset_timeout()
     state.showtime = mp.get_time()
+    state.wc_showtime = mp.get_time()
 end
 
 local function element_has_action(element, action)
