@@ -12,19 +12,20 @@ Create `modernz.conf` in your mpv script-opts directory:
 
 ### Language and display
 
-| Option         | Value           | Description                                                                                                                    |
-| -------------- | --------------- | ------------------------------------------------------------------------------------------------------------------------------ |
-| language       | en              | set language (for available options, see: [Translations](https://github.com/Samillion/ModernZ/blob/main/docs/TRANSLATIONS.md)) |
-| layout         | modern          | set layout: `"modern"` or `"modern-compact"`                                                                                   |
-| icon_theme     | fluent          | set icon theme. accepts `fluent` or `material`                                                                                 |
-| font           | mpv-osd-symbols | font for the OSC (default: mpv-osd-symbols or the one set in mpv.conf)                                                         |
-| idlescreen     | yes             | show mpv logo when idle                                                                                                        |
-| window_top_bar | auto            | show OSC window top bar: `"auto"`, `"yes"`, or `"no"` (borderless/fullscreen)                                                  |
-| showwindowed   | yes             | show OSC when windowed                                                                                                         |
-| showfullscreen | yes             | show OSC when fullscreen                                                                                                       |
-| showonpause    | yes             | show OSC when paused                                                                                                           |
-| keeponpause    | yes             | disable OSC hide timeout when paused                                                                                           |
-| greenandgrumpy | no              | disable Santa hat in December                                                                                                  |
+| Option          | Value           | Description                                                                                                                    |
+| --------------  | --------------- | ------------------------------------------------------------------------------------------------------------------------------ |
+| language        | en              | set language (for available options, see: [Translations](https://github.com/Samillion/ModernZ/blob/main/docs/TRANSLATIONS.md)) |
+| layout          | modern          | set layout: `"modern"` or `"modern-compact"`                                                                                   |
+| icon_theme      | fluent          | set icon theme. accepts `fluent` or `material`                                                                                 |
+| font            | mpv-osd-symbols | font for the OSC (default: mpv-osd-symbols or the one set in mpv.conf)                                                         |
+| idlescreen      | yes             | show mpv logo when idle                                                                                                        |
+| window_top_bar  | auto            | show OSC window top bar: `"auto"`, `"yes"`, or `"no"` (borderless/fullscreen)                                                  |
+| showwindowed    | yes             | show OSC when windowed                                                                                                         |
+| showfullscreen  | yes             | show OSC when fullscreen                                                                                                       |
+| showonselect    | no              | show OSC when console is open                                                                                                  |
+| showonpause     | yes             | show OSC when paused                                                                                                           |
+| keeponpause     | yes             | disable OSC hide timeout when paused                                                                                           |
+| greenandgrumpy  | no              | disable Santa hat in December                                                                                                  |
 
 ### OSC behaviour and scaling
 
@@ -84,43 +85,43 @@ Create `modernz.conf` in your mpv script-opts directory:
 
 ### Buttons display and functionality
 
-| Option                     | Value         | Description                                                                                                                |
-| -------------------------- | ------------- | -------------------------------------------------------------------------------------------------------------------------- |
-| subtitles_button           | yes           | show the subtitles menu button                                                                                             |
-| audio_tracks_button        | yes           | show the audio tracks menu button                                                                                          |
-| jump_buttons               | yes           | show "jump forward/backward 10 seconds" buttons                                                                            |
-| jump_amount                | 10            | change the jump amount in seconds                                                                                          |
-| jump_more_amount           | 60            | change the jump amount in seconds when right-clicking jump buttons and shift-clicking chapter skip buttons                 |
-| jump_icon_number           | yes           | show different icon for `5`, `10`, or `30` second jumps                                                                    |
-| jump_mode                  | relative      | seek mode for jump buttons                                                                                                 |
-| jump_softrepeat            | yes           | enable continuous jumping when holding down seek buttons                                                                   |
-| chapter_skip_buttons       | no            | show the skip back and forward (chapter) buttons                                                                           |
-| chapter_softrepeat         | yes           | enable continuous skipping when holding down chapter skip buttons                                                          |
-| track_nextprev_buttons     | yes           | show next/previous playlist track buttons                                                                                  |
-| volume_control             | yes           | show mute button and volume slider                                                                                         |
-| volume_control_type        | linear        | volume scale type: `"linear"` or `"logarithmic"`                                                                           |
-| playlist_button            | yes           | show playlist button: Left-click for simple playlist, Right-click for interactive playlist                                 |
-| hide_empty_playlist_button | yes           | hide playlist button when no playlist exists                                                                               |
-| gray_empty_playlist_button | yes           | gray out the playlist button when no playlist exists                                                                       |
-| download_button            | yes           | show download button on web videos (requires yt-dlp and ffmpeg)                                                            |
-| download_path              | ~~desktop/mpv | default download directory for videos. [Learn more about setting paths here](https://mpv.io/manual/master/#paths).         |
-| screenshot_button          | no            | show screenshot button                                                                                                     |
-| ontop_button               | yes           | show `window on top (pin)` button                                                                                          |
-| loop_button                | no            | show `file loop` button                                                                                                    |
-| shuffle_button             | no            | show `shuffle` button                                                                                                      |
-| speed_button               | no            | show speed control button                                                                                                  |
-| speed_button_click         | 1             | speed change amount per click                                                                                              |
-| speed_button_scroll        | 0.25          | speed change amount on scroll                                                                                              |
-| loop_in_pause              | yes           | enable loop with mouse actions on pause button                                                                             |
-| buttons_always_active      | none          | force buttons to always be active. can add: `playlist_prev`, `playlist_next`                                               |
-| info_button                | yes           | show `info (stats)` button                                                                                                 |
-| fullscreen_button          | yes           | show `fullscreen toggle` button                                                                                            |
-| playpause_size             | 28            | icon size for the play/pause button                                                                                        |
-| midbuttons_size            | 24            | icon size for the middle buttons                                                                                           |
-| sidebuttons_size           | 24            | icon size for the side buttons                                                                                             |
-| zoom_control               | yes           | show zoom controls in image viewer mode                                                                                    |
-| zoom_in_max                | 4             | maximum zoom in value                                                                                                      |
-| zoom_out_min               | -1            | minimum zoom out value                                                                                                     |
+| Option                     | Value         | Description                                                                                                        |
+| -------------------------- | ------------- | ------------------------------------------------------------------------------------------------------------------ |
+| subtitles_button           | yes           | show the subtitles menu button                                                                                     |
+| audio_tracks_button        | yes           | show the audio tracks menu button                                                                                  |
+| jump_buttons               | yes           | show "jump forward/backward 10 seconds" buttons                                                                    |
+| jump_amount                | 10            | change the jump amount in seconds                                                                                  |
+| jump_more_amount           | 60            | change the jump amount in seconds when right-clicking jump buttons and shift-clicking chapter skip buttons         |
+| jump_icon_number           | yes           | show different icon for `5`, `10`, or `30` second jumps                                                            |
+| jump_mode                  | relative      | seek mode for jump buttons                                                                                         |
+| jump_softrepeat            | yes           | enable continuous jumping when holding down seek buttons                                                           |
+| chapter_skip_buttons       | no            | show the skip back and forward (chapter) buttons                                                                   |
+| chapter_softrepeat         | yes           | enable continuous skipping when holding down chapter skip buttons                                                  |
+| track_nextprev_buttons     | yes           | show next/previous playlist track buttons                                                                          |
+| volume_control             | yes           | show mute button and volume slider                                                                                 |
+| volume_control_type        | linear        | volume scale type: `"linear"` or `"logarithmic"`                                                                   |
+| playlist_button            | yes           | show playlist button: Left-click for simple playlist, Right-click for interactive playlist                         |
+| hide_empty_playlist_button | yes           | hide playlist button when no playlist exists                                                                       |
+| gray_empty_playlist_button | yes           | gray out the playlist button when no playlist exists                                                               |
+| download_button            | yes           | show download button on web videos (requires yt-dlp and ffmpeg)                                                    |
+| download_path              | ~~desktop/mpv | default download directory for videos. [Learn more about setting paths here](https://mpv.io/manual/master/#paths). |
+| screenshot_button          | no            | show screenshot button                                                                                             |
+| ontop_button               | yes           | show `window on top (pin)` button                                                                                  |
+| loop_button                | no            | show `file loop` button                                                                                            |
+| shuffle_button             | no            | show `shuffle` button                                                                                              |
+| speed_button               | no            | show speed control button                                                                                          |
+| speed_button_click         | 1             | speed change amount per click                                                                                      |
+| speed_button_scroll        | 0.25          | speed change amount on scroll                                                                                      |
+| loop_in_pause              | yes           | enable loop with mouse actions on pause button                                                                     |
+| buttons_always_active      | none          | force buttons to always be active. can add: `playlist_prev`, `playlist_next`                                       |
+| info_button                | yes           | show `info (stats)` button                                                                                         |
+| fullscreen_button          | yes           | show `fullscreen toggle` button                                                                                    |
+| playpause_size             | 28            | icon size for the play/pause button                                                                                |
+| midbuttons_size            | 24            | icon size for the middle buttons                                                                                   |
+| sidebuttons_size           | 24            | icon size for the side buttons                                                                                     |
+| zoom_control               | yes           | show zoom controls in image viewer mode                                                                            |
+| zoom_in_max                | 4             | maximum zoom in value                                                                                              |
+| zoom_out_min               | -1            | minimum zoom out value                                                                                             |
 
 
 ### Colors and style
@@ -168,10 +169,10 @@ Create `modernz.conf` in your mpv script-opts directory:
 
 ### Tooltips and hints
 
-| Option                         | Value | Description                                                              |
-| ------------------------------ | ----- | -------------------------------------------------------------------------|
-| tooltips_for_disabled_elements | yes   | enable tooltips for disabled buttons and elements                        |
-| tooltip_hints                  | yes   | enable text hints for info, loop, shuffle, ontop, and screenshot buttons |
+| Option                         | Value | Description                                                               |
+| ------------------------------ | ----- | ------------------------------------------------------------------------- |
+| tooltips_for_disabled_elements | yes   | enable tooltips for disabled buttons and elements                         |
+| tooltip_hints                  | yes   | enable text hints for info, loop, shuffle, ontop, and screenshot buttons  |
 
 ### Progress bar settings
 
@@ -227,45 +228,45 @@ Useful when adjusting font size or type, this will help you change the affected 
 
 Customize the button function based on mouse actions.
 
-| Type                          | Option                           | Function                                                                        |
-| ----------------------------- | -------------------------------- | ------------------------------------------------------------------------------- |
-| Title (above seekbar)         | title_mbtn_left_command          | `script-binding stats/display-page-5`                                           |
-|                               | title_mbtn_mid_command           | `show-text ${path}`                                                             |
-|                               | title_mbtn_right_command         | `script-binding select/select-watch-history; script-message-to modernz osc-hide`|
-| Playlist Button               | playlist_mbtn_left_command       | `script-binding select/select-playlist; script-message-to modernz osc-hide`     |
-|                               | playlist_mbtn_right_command      | `script-binding select/menu; script-message-to modernz osc-hide`                |
-| Volume Control                | vol_ctrl_mbtn_left_command       | `no-osd cycle mute`                                                             |
-|                               | vol_ctrl_mbtn_right_command      | `script-binding select/select-audio-device; script-message-to modernz osc-hide` |
-|                               | vol_ctrl_wheel_down_command      | `no-osd add volume -5`                                                          |
-|                               | vol_ctrl_wheel_up_command        | `no-osd add volume 5`                                                           |
-| Audio Button                  | audio_track_mbtn_left_command    | `script-binding select/select-aid; script-message-to modernz osc-hide`          |
-|                               | audio_track_mbtn_mid_command     | `cycle audio down`                                                              |
-|                               | audio_track_mbtn_right_command   | `cycle audio`                                                                   |
-|                               | audio_track_wheel_down_command   | `cycle audio`                                                                   |
-|                               | audio_track_wheel_up_command     | `cycle audio down`                                                              |
-| Subtitle Button               | sub_track_mbtn_left_command      | `script-binding select/select-sid; script-message-to modernz osc-hide`          |
-|                               | sub_track_mbtn_mid_command       | `cycle sub down`                                                                |
-|                               | sub_track_mbtn_right_command     | `cycle sub`                                                                     |
-|                               | sub_track_wheel_down_command     | `cycle sub`                                                                     |
-|                               | sub_track_wheel_up_command       | `cycle sub down`                                                                |
-| Chapter Skip Buttons          | chapter_prev_mbtn_left_command   | `add chapter -1`                                                                |
-|                               | chapter_prev_mbtn_mid_command    | `show-text ${chapter-list} 3000`                                                |
-|                               | chapter_prev_mbtn_right_command  | `script-binding select/select-chapter; script-message-to modernz osc-hide`      |
-|                               | chapter_next_mbtn_left_command   | `add chapter 1`                                                                 |
-|                               | chapter_next_mbtn_mid_command    | `show-text ${chapter-list} 3000`                                                |
-|                               | chapter_next_mbtn_right_command  | `script-binding select/select-chapter; script-message-to modernz osc-hide`      |
-| Chapter Title (below seekbar) | chapter_title_mbtn_left_command  | `script-binding select/select-chapter; script-message-to modernz osc-hide`      |
-|                               | chapter_title_mbtn_right_command | `show-text ${chapter-list} 3000`                                                |
-| Playlist Skip Buttons         | playlist_prev_mbtn_left_command  | `playlist-prev`                                                                 |
-|                               | playlist_prev_mbtn_mid_command   | `show-text ${playlist} 3000`                                                    |
-|                               | playlist_prev_mbtn_right_command | `script-binding select/select-playlist; script-message-to modernz osc-hide`     |
-|                               | playlist_next_mbtn_left_command  | `playlist-next`                                                                 |
-|                               | playlist_next_mbtn_mid_command   | `show-text ${playlist} 3000`                                                    |
-|                               | playlist_next_mbtn_right_command | `script-binding select/select-playlist; script-message-to modernz osc-hide`     |
-| Fullscreen Button             | fullscreen_mbtn_left_command     | `cycle fullscreen`                                                              |
-|                               | fullscreen_mbtn_right_command    | `cycle window-maximized`                                                        |
-| Info Button                   | info_mbtn_left_command           | `script-binding stats/display-page-1-toggle`                                    |
-| Screenshot Button             | screenshot_mbtn_left_command     | `osd-msg screenshot subtitles`                                                  |
+| Type                          | Option                           | Function                                      |
+| ----------------------------- | -------------------------------- | --------------------------------------------- |
+| Title (above seekbar)         | title_mbtn_left_command          | `script-binding stats/display-page-5`         |
+|                               | title_mbtn_mid_command           | `show-text ${path}`                           |
+|                               | title_mbtn_right_command         | `script-binding select/select-watch-history`  |
+| Playlist Button               | playlist_mbtn_left_command       | `script-binding select/select-playlist`       |
+|                               | playlist_mbtn_right_command      | `script-binding select/menu`                  |
+| Volume Control                | vol_ctrl_mbtn_left_command       | `no-osd cycle mute`                           |
+|                               | vol_ctrl_mbtn_right_command      | `script-binding select/select-audio-device`   |
+|                               | vol_ctrl_wheel_down_command      | `no-osd add volume -5`                        |
+|                               | vol_ctrl_wheel_up_command        | `no-osd add volume 5`                         |
+| Audio Button                  | audio_track_mbtn_left_command    | `script-binding select/select-aid`            |
+|                               | audio_track_mbtn_mid_command     | `cycle audio down`                            |
+|                               | audio_track_mbtn_right_command   | `cycle audio`                                 |
+|                               | audio_track_wheel_down_command   | `cycle audio`                                 |
+|                               | audio_track_wheel_up_command     | `cycle audio down`                            |
+| Subtitle Button               | sub_track_mbtn_left_command      | `script-binding select/select-sid`            |
+|                               | sub_track_mbtn_mid_command       | `cycle sub down`                              |
+|                               | sub_track_mbtn_right_command     | `cycle sub`                                   |
+|                               | sub_track_wheel_down_command     | `cycle sub`                                   |
+|                               | sub_track_wheel_up_command       | `cycle sub down`                              |
+| Chapter Skip Buttons          | chapter_prev_mbtn_left_command   | `add chapter -1`                              |
+|                               | chapter_prev_mbtn_mid_command    | `show-text ${chapter-list} 3000`              |
+|                               | chapter_prev_mbtn_right_command  | `script-binding select/select-chapter`        |
+|                               | chapter_next_mbtn_left_command   | `add chapter 1`                               |
+|                               | chapter_next_mbtn_mid_command    | `show-text ${chapter-list} 3000`              |
+|                               | chapter_next_mbtn_right_command  | `script-binding select/select-chapter`        |
+| Chapter Title (below seekbar) | chapter_title_mbtn_left_command  | `script-binding select/select-chapter`        |
+|                               | chapter_title_mbtn_right_command | `show-text ${chapter-list} 3000`              |
+| Playlist Skip Buttons         | playlist_prev_mbtn_left_command  | `playlist-prev`                               |
+|                               | playlist_prev_mbtn_mid_command   | `show-text ${playlist} 3000`                  |
+|                               | playlist_prev_mbtn_right_command | `script-binding select/select-playlist`       |
+|                               | playlist_next_mbtn_left_command  | `playlist-next`                               |
+|                               | playlist_next_mbtn_mid_command   | `show-text ${playlist} 3000`                  |
+|                               | playlist_next_mbtn_right_command | `script-binding select/select-playlist`       |
+| Fullscreen Button             | fullscreen_mbtn_left_command     | `cycle fullscreen`                            |
+|                               | fullscreen_mbtn_right_command    | `cycle window-maximized`                      |
+| Info Button                   | info_mbtn_left_command           | `script-binding stats/display-page-1-toggle`  |
+| Screenshot Button             | screenshot_mbtn_left_command     | `osd-msg screenshot subtitles`                |
 
 ### Auto Profile
 
