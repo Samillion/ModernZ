@@ -3875,8 +3875,8 @@ mp.observe_property("idle-active", "bool", function(_, val)
     state.idle = val
     request_tick()
 end)
-mp.observe_property("user-data/mpv/console/open", "bool", function(_, value)
-    if value and user_opts.visibility == "auto" and not user_opts.showonselect then
+mp.observe_property("user-data/mpv/console/open", "bool", function(_, val)
+    if val and user_opts.visibility == "auto" and not user_opts.showonselect then
         osc_visible(false)
     end
 end)
