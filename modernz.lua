@@ -3071,23 +3071,21 @@ local function osc_init()
     ne.visible = (osc_param.playresx >= visible_min_width)
     ne.content = function ()
         if not cache_enabled() then return "" end
-        local dmx_cache = state.cache_state["cache-duration"]
-        local thresh = math.min(state.dmx_cache * 0.05, 5)  -- 5% or 5s
-        if dmx_cache and math.abs(dmx_cache - state.dmx_cache) >= thresh then
-            state.dmx_cache = dmx_cache
-        else
-            dmx_cache = state.dmx_cache
+        local cache_state = state.cache_state and state.cache_state["cache-duration"]
+        local thresh = math.min(state.dmx_cache * 0.05, 5) -- 5% or 5s
+        if cache_state and math.abs(cache_state - state.dmx_cache) >= thresh then
+            state.dmx_cache = cache_state
         end
+        local dmx_cache = state.dmx_cache
         local min = math.floor(dmx_cache / 60)
-        local sec = math.floor(dmx_cache % 60) -- don't round e.g. 59.9 to 60
-        local cache_time = (min > 0 and string.format("%sm%02.0fs", min, sec) or string.format("%3.0fs", sec))
-
-        local dmx_speed = state.cache_state["raw-input-rate"] or 0
+        local sec = math.floor(dmx_cache % 60)
+        local cache_time = (min > 0 and string.format("%sm%02ds", min, sec) or string.format("%3ds", sec))
+        local dmx_speed = state.cache_state and state.cache_state["raw-input-rate"] or 0
         local cache_speed = utils.format_bytes_humanized(dmx_speed)
         local number, unit = cache_speed:match("([%d%.]+)%s*(%S+)")
-        local cache_info = state.buffering and locale.buffering .. ": " .. mp.get_property("cache-buffering-state") .. "%" or cache_time
-        local cache_info_speed = string.format("%8s %4s/s", number, unit)
-
+        local percent = mp.get_property("cache-buffering-state") or "0"
+        local cache_info = state.buffering and (locale.buffering .. ": " .. percent .. "%") or cache_time
+        local cache_info_speed = string.format("%8s %4s/s", (number or 0), (unit or "B"))
         return user_opts.cache_info_speed and cache_info .. "\\N" .. cache_info_speed or cache_info
     end
     ne.tooltip_style = osc_styles.tooltip
