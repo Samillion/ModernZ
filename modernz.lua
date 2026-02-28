@@ -2427,11 +2427,11 @@ layouts["modern-image"] = function ()
 
     if track_nextprev_buttons then
         lo = add_layout("playlist_prev")
-        lo.geometry = {x = 55 - (playlist_button and 0 or 25), y = refY - 30 , an = 5, w = 30, h = 24}
+        lo.geometry = {x = 55 - (playlist_button and 0 or 25), y = refY - 30 , an = 5, w = 24, h = 24}
         lo.style = osc_styles.control_2
 
         lo = add_layout("playlist_next")
-        lo.geometry = {x = 80 - (playlist_button and 0 or 25), y = refY - 30 , an = 5, w = 30, h = 24}
+        lo.geometry = {x = 85 - (playlist_button and 0 or 25), y = refY - 30 , an = 5, w = 24, h = 24}
         lo.style = osc_styles.control_2
     end
 
@@ -2448,10 +2448,12 @@ layouts["modern-image"] = function ()
         lo.layer = 13
         lo.alpha[1] = 128
         lo.style = osc_styles.volumebar_bg
+        lo.box.radius = user_opts.slider_rounded_corners and 2 or 0
 
         lo = add_layout("zoom_control")
         lo.geometry = {x = 145 - (playlist_button and 0 or 25) - (track_nextprev_buttons and 0 or 70), y = refY - 30, an = 4, w = 80, h = 10}
         lo.style = osc_styles.volumebar_fg
+        lo.slider.radius = user_opts.slider_rounded_corners and 2 or 0
         lo.slider.gap = 3
         lo.slider.tooltip_style = osc_styles.tooltip
         lo.slider.tooltip_an = 2
