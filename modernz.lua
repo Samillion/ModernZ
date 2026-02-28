@@ -4270,6 +4270,11 @@ local function validate_user_opts()
             table.insert(state.visibility_modes, str)
         end
     end
+
+    if user_opts.independent_wc and not user_opts.bottomhover then
+        msg.warn("independent_wc requires bottomhover. Setting bottomhover=yes.")
+        user_opts.bottomhover = true
+    end
 end
 
 -- read options from config and command-line
