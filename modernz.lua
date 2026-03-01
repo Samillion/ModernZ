@@ -3878,6 +3878,7 @@ end)
 mp.observe_property("user-data/mpv/console/open", "bool", function(_, val)
     if val and user_opts.visibility == "auto" and not user_opts.showonselect then
         osc_visible(false)
+        wc_visible(false)
     end
 end)
 mp.observe_property("display-fps", "number", set_tick_delay)
