@@ -557,8 +557,8 @@ end
 
 -- internal states, do not touch
 local state = {
-    showtime = mp.get_time(),               -- time of last invocation (last mouse move)
-    touchtime = mp.get_time(),              -- time of last invocation (last touch event)
+    showtime = nil,                         -- time of last invocation (last mouse move)
+    touchtime = nil,                        -- time of last invocation (last touch event)
     touchpoints = {},                       -- current touch points
     osc_visible = false,
     anistart = nil,                         -- time when the animation started
@@ -3513,14 +3513,14 @@ end
 local function mouse_leave()
     state.touchtime = nil
 
-    if get_hidetimeout() >= 0 and get_touchtimeout() <= 0 then
+    if get_hidetimeout() >= 0 and get_touchtimeout() <= 0 and state.showtime ~= nil then
         local elapsed_time = mp.get_time() - state.showtime
 
         if elapsed_time >= (get_hidetimeout() / 1000) then
             hide_osc()
         end
 
-        if user_opts.independent_wc and state.wc_showtime then
+        if user_opts.independent_wc and state.wc_showtime ~= nil then
             local wc_elapsed = mp.get_time() - state.wc_showtime
             if wc_elapsed >= (get_hidetimeout() / 1000) then
                 hide_wc()
@@ -3625,7 +3625,7 @@ local function process_event(source, what)
                     else
                         state.touchtime = nil
 
-                        if get_hidetimeout() >= 0 and get_touchtimeout() <= 0 then
+                        if get_hidetimeout() >= 0 and get_touchtimeout() <= 0 and state.showtime ~= nil then
                             local elapsed_time = mp.get_time() - state.showtime
 
                             if elapsed_time >= (get_hidetimeout() / 1000) then
