@@ -18,20 +18,19 @@ For the best experience, make sure you’re running the latest version of mpv (g
 
 Because the new layout is more compact, additional options remain easily accessible via: (thanks to @guidocella)
 
-- Right-click the **Playlist** button
+- Right-click the **Playlist** button (Menu)
 - Open the new **Context Menu**
 
-See the preview below (left to right) for a visual reference of both options.
-
-![modernz-menu-context](https://github.com/user-attachments/assets/e59afaaa-f869-4768-b23e-0ed3424d67f0)
+![modernz-menu-context](https://github.com/user-attachments/assets/b345c64b-3a9e-4885-9340-0d224a43e40d)
 
 To enable context-menu:
 - Bind context menu in your `input.conf`
   - Example: `MBTN_RIGHT  script-binding select/context-menu`
 - Optional: To adjust the context menu, you can use the default [menu.conf](https://github.com/mpv-player/mpv/blob/master/etc/menu.conf) as a reference
-  - Add `load-context-menu=yes` to your `mpv.conf`
   - Place your modified `menu.conf` in your mpv config folder, same location as `mpv.conf`
   - As an example, here is a modified [menu.conf](https://github.com/Samillion/mpv-conf/blob/master/menu.conf)
+
+Additionally, to not use native Windows context-menu, you can add `load-context-menu=yes` to your `mpv.conf`.
 
 ## Notes
 > [!IMPORTANT]
