@@ -21,12 +21,17 @@ A sleek and modern OSC for [mpv](https://mpv.io/), this project is a fork of Mod
 ## Features
 
 - 🎨 Modern, customizable interface with multiple layouts [[options](#configuration)]
+- 🖱️ Independent hover zone for top bar (window controls) and bottom bar (OSC)
 - 📷 Image Viewer mode with zoom controls [[details](/docs/IMAGE_VIEWER.md)]
 - 🎛️ Buttons: download, playlist, speed control, screenshot, pin, loop, cache and more. [[details](/docs/CONTROLS.md)]
-- 📄 Interactive menus for playlist, subtitles, chapters, audio tracks and audio devices [[details](#interactive-menus)]
+- 📄 Interactive menus for playlist, subtitles, chapters, audio tracks and audio devices
 - 🌐 Multi-language support with JSON [locale](#translations) integration
 - ⌨️ Configurable controls [[details](#controls)]
 - 🖼️ Video thumbnail previews with [thumbfast](https://github.com/po5/thumbfast)
+
+<a href="/docs/INTERACTIVE_MENUS.md">
+    <img width="350" alt="preview_features_button_md" src="https://github.com/user-attachments/assets/f7914071-0690-45ed-b1cf-6ced74f3a8e3" />
+</a>
 
 ## Customization
 Choose the layout design that suits your preference, between `modern` and `modern-compact` by using the `layout` option in your `modernz.conf`.
@@ -48,12 +53,6 @@ Not a fan of white buttons and text? You have complete control to customize colo
 ![modernz_osc_controls_bottom](https://github.com/user-attachments/assets/d4e56bf5-ce7b-44e9-90a3-e27e922dd6bd)
 
 See the [Color Customization](docs/USER_OPTS.md#colors-and-style) section in the configuration guide for details on how to customize colors and buttons.
-
-## Interactive Menus
-
-ModernZ supports mpv's built-in console/select ([v0.40+](https://github.com/mpv-player/mpv/releases/tag/v0.40.0)) for playlist, subtitles, chapter navigation and more.
-
-[![preview_menus](https://github.com/user-attachments/assets/4b7a3139-81f1-409b-98f5-f090a81d5ee6)](/docs/INTERACTIVE_MENUS.md)
 
 ## Installation
 
@@ -84,8 +83,8 @@ ModernZ supports mpv's built-in console/select ([v0.40+](https://github.com/mpv-
    ├── 📁 script-opts/
    │   └── 📄 modernz.conf
    └── 📁 scripts/
-   	   ├── 📄 modernz.lua
-   	   └── 📄 thumbfast.lua (optional)
+       ├── 📄 modernz.lua
+       └── 📄 thumbfast.lua (optional)
    ```
 
 ## Configuration
