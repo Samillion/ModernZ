@@ -194,7 +194,7 @@ For even more useful scripts, check out the [mpv User Scripts Wiki](https://gith
 **Why fork yet again?**
 
 - Add extensive feature support, including [Color Customization](docs/USER_OPTS.md#colors-and-style), advanced [Options](docs/USER_OPTS.md), and [Locale Integration](docs/TRANSLATIONS.md).
-- Integrate console and select functionality into the OSC—an approach that later inspired adoption in mpv’s stock OSC ([#1](https://github.com/mpv-player/mpv/pull/15016), [#2](https://github.com/mpv-player/mpv/pull/15031)).
+- Integrate `console` and `select` functionality — an approach that later inspired adoption in mpv’s stock OSC ([#1](https://github.com/mpv-player/mpv/pull/15016), [#2](https://github.com/mpv-player/mpv/pull/15031)).
 - Introduce a dedicated layout optimized for image viewing. See [details](/docs/IMAGE_VIEWER.md).
 - Refactor the project to align with mpv’s stock OSC standards, ensuring long-term compatibility.
 - Remove legacy bugs and redundant code to improve maintainability and stability.  
