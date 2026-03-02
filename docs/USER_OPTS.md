@@ -37,8 +37,10 @@ Create `modernz.conf` in your mpv script-opts directory:
 | minmousemove            | 0     | minimum mouse movement (in pixels) required to show OSC                |
 | bottomhover             | yes   | show OSC only when hovering at the bottom                              |
 | bottomhover_zone        | 130   | height of hover zone for bottomhover (in pixels)                       |
+| tophover_zone           | 40    | height of hover zone for top bar when `independent_wc` is enabled (in pixels) |
+| independent_wc          | no    | show/hide window controls independently from the OSC                   |
 | osc_on_seek             | no    | show OSC when seeking                                                  |
-| osc_on_start            | no    | show OSC on start of every file                                        |
+| osc_on_start            | no    | show OSC/window controls on start of every file (`no`, `bottom`, `top`, `both`) |
 | osc_keep_with_cursor    | yes   | keep OSC visible if mouse cursor is within OSC boundaries              |
 | mouse_seek_pause        | yes   | pause video while seeking with mouse move (on button hold)             |
 | force_seek_tooltip      | no    | force show seekbar tooltip on mouse drag, even if not hovering seekbar |
