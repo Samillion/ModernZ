@@ -128,7 +128,8 @@ ModernZ doesn't set keybinds by default to avoid interfering with your current s
 ```
 w   script-binding modernz/progress-toggle           # Toggle progress bar
 x   script-message-to modernz osc-show               # Show OSC
-y   script-message-to modernz osc-visibility cycle   # Cycle visibility modes
+y   script-message-to modernz osc-visibility cycle   # Set a visibility mode (cycle, auto, always, never)
+Y   script-binding modernz/visibility                # Cycle visibility modes
 z   script-message-to modernz osc-idlescreen         # Toggle idle screen
 ```
 
