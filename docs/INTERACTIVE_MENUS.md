@@ -1,27 +1,35 @@
 ## Interactive Menus
 https://github.com/user-attachments/assets/d8dc8ea4-3d03-40f5-9015-f81a44371711
 
-ModernZ integrates mpv's [console.lua](https://github.com/mpv-player/mpv/blob/master/player/lua/console.lua) and [select.lua](https://github.com/mpv-player/mpv/blob/master/player/lua/select.lua), which have been built in mpv starting v0.39+. Can be used in:
-- Playlist button
-- Subtitles button
-- Audio track button
-- Chapter title (chapters list)
-- Volume control button (audio device selector) [right mouse button]
+ModernZ integrates mpv’s built-in [`console.lua`](https://github.com/mpv-player/mpv/blob/master/player/lua/console.lua) and [`select.lua`](https://github.com/mpv-player/mpv/blob/master/player/lua/select.lua) scripts, available in mpv starting from **v0.39+**.
 
-For details on how to interact with these buttons, view the [controls manual](/docs/CONTROLS.md).
+These integrations are accessible through the following interface elements:
+
+- **Playlist** button (right and left click)
+- **Subtitles** button
+- **Audio Track** button
+- **Chapter Title** (opens the chapters list)
+- **Volume Control** button — right-click to open the audio device selector
+
+For detailed information on how to interact with these controls, please refer to the [Controls Manual](/docs/CONTROLS.md).
 
 ## Context Menu
-Make sure to update your mpv to latest (git/master) so you can enjoy all the new features that have been added. Especially useful alongside the new `modern-compact` layout. 
+For the best experience, make sure you’re running the latest version of mpv (git/master) to take advantage of all recently added features, especially when using the `modern-compact` layout.
 
-As the new layout is compact, you can still access additional options by either right clicking on the `playlist button` or using the new `context menu` (thanks to guidocella) as shown in the following preview respectively, left to right.
+Because the new layout is more compact, additional options remain easily accessible via: (thanks to @guidocella)
+
+- Right-click the **Playlist** button
+- Open the new **Context Menu**
+
+See the preview below (left to right) for a visual reference of both options.
 
 ![modernz-menu-context](https://github.com/user-attachments/assets/e59afaaa-f869-4768-b23e-0ed3424d67f0)
 
 To enable context-menu:
-- Add `load-context-menu=yes` to your `mpv.conf`
-- Bind mouse right click to context menu in your `input.conf`
+- Bind context menu in your `input.conf`
   - Example: `MBTN_RIGHT  script-binding select/context-menu`
 - Optional: To adjust the context menu, you can use the default [menu.conf](https://github.com/mpv-player/mpv/blob/master/etc/menu.conf) as a reference
+  - Add `load-context-menu=yes` to your `mpv.conf`
   - Place your modified `menu.conf` in your mpv config folder, same location as `mpv.conf`
   - As an example, here is a modified [menu.conf](https://github.com/Samillion/mpv-conf/blob/master/menu.conf)
 

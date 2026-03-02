@@ -133,9 +133,10 @@ Below is a list that explains the OSC buttons function depending on how you inte
 
 ## Keybinds
 
-| Function            | Input Command                                      | Description                                                              |
-| ------------------- | -------------------------------------------------- | ------------------------------------------------------------------------ |
-| Persistent Progress | `w script-binding modernz/progress-toggle`         | Toggle persistent progress bar                                           |
-| Show OSC            | `x script-message-to modernz osc-show`             | Show OSC on command without needing to move mouse                        |
-| OSC Visibility      | `y script-message-to modernz osc-visibility cycle` | OSC visibility mode. Accepts `never`, `auto`, `always` and `cycle`       |
-| Logo on Idle        | `z script-message-to modernz osc-idlescreen cycle` | The visibility of the mpv logo on idle. Accepts `yes`, `no`, and `cycle` |
+| Function             | Input Command                                      | Description                                                              |
+| -------------------- | -------------------------------------------------- | ------------------------------------------------------------------------ |
+| Persistent Progress  | `w script-binding modernz/progress-toggle`         | Toggle persistent progress bar                                           |
+| Show OSC             | `x script-message-to modernz osc-show`             | Show OSC on command without needing to move mouse                        |
+| OSC Visibility       | `y script-message-to modernz osc-visibility cycle` | OSC visibility mode. Accepts `never`, `auto`, `always` and `cycle`       |
+| Cycle OSC Visibility | `Y script-binding modernz/visibility `             | Cycle OSC visibility modes                                               |
+| Logo on Idle         | `z script-message-to modernz osc-idlescreen cycle` | The visibility of the mpv logo on idle. Accepts `yes`, `no`, and `cycle` |
