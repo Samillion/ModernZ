@@ -2,7 +2,7 @@
 
 A sleek and modern OSC for [mpv](https://mpv.io/), this project is a fork of ModernX designed to enhance functionality by adding more features, all while preserving the core standards of mpv's OSC.
 
-![54b36db099](https://github.com/user-attachments/assets/9c11c28d-25d7-46e5-9044-67d4653b189a)
+![ModernZ-OSC](https://github.com/user-attachments/assets/9c11c28d-25d7-46e5-9044-67d4653b189a)
 
 <p align="center">
     <a href="#installation"><strong>Installation »</strong></a>
@@ -10,8 +10,6 @@ A sleek and modern OSC for [mpv](https://mpv.io/), this project is a fork of Mod
   <a href="#configuration">Configuration</a>
   ·
   <a href="#controls">Controls</a>
-  ·
-  <a href="#interactive-menus">Interactive Menus</a>
   ·
   <a href="#translations">OSC Language</a>
   ·
@@ -193,12 +191,14 @@ For even more useful scripts, check out the [mpv User Scripts Wiki](https://gith
 
 **Why fork yet again?**
 
-- Add extensive feature support, including [Color Customization](docs/USER_OPTS.md#colors-and-style), advanced [Options](docs/USER_OPTS.md), and [Locale Integration](docs/TRANSLATIONS.md).
-- Integrate `console` and `select` functionality — an approach that later inspired adoption in mpv’s stock OSC ([#1](https://github.com/mpv-player/mpv/pull/15016), [#2](https://github.com/mpv-player/mpv/pull/15031)).
-- Introduce a dedicated layout optimized for image viewing. See [details](/docs/IMAGE_VIEWER.md).
-- Refactor the project to align with mpv’s stock OSC standards, ensuring long-term compatibility.
-- Remove legacy bugs and redundant code to improve maintainability and stability.  
-  - This also enables other `Modern` forks to build on ModernZ as a foundation, such as [zydezu/ModernX](https://github.com/zydezu/ModernX) ([reference](https://github.com/zydezu/ModernX/releases/tag/0.3.9)).
+- Add extensive feature support, including [color customization](docs/USER_OPTS.md#colors-and-style), advanced [options](docs/USER_OPTS.md), and [locale integration](docs/TRANSLATIONS.md)
+- Integrate mpv's `console` and `select` functionality to OSC
+  - An approach that later inspired adoption in mpv’s stock OSC ([#1](https://github.com/mpv-player/mpv/pull/15016), [#2](https://github.com/mpv-player/mpv/pull/15031))
+- Introduce a dedicated layout optimized for image viewing. See [details](/docs/IMAGE_VIEWER.md)
+- Add `modern` and `modern-compact` layouts and icon themes support
+- Refactor the project to align with mpv’s stock OSC standards, ensuring long-term compatibility
+- Remove legacy bugs and redundant code to improve maintainability and stability
+  - This also enables other `Modern` forks to build on ModernZ as a foundation, such as [zydezu/ModernX](https://github.com/zydezu/ModernX) ([reference](https://github.com/zydezu/ModernX/releases/tag/0.3.9))
 
 In essence, to maintain and revive the `modern-osc` origin.
 
