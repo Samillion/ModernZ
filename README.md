@@ -177,12 +177,9 @@ For a complete list of available languages, contribution guidelines, and in-dept
 The following scripts are ones I wrote and maintain, feel free to use them if they're useful to you.
 
 - [Pause-Indicator-Lite](/extras/pause-indicator-lite) - A simple script that displays an indicator on pause
-
-- [PiP-Lite](/extras/pip-lite) - Add PiP (Picture-in-Picture) mode to ModernZ pin button and when ontop is enabled
-
-- [ytdlAutoFormat](https://github.com/Samillion/mpv-ytdlautoformat) - A simple mpv script to automatically change `ytdl-format` (yt-dlp) for specified domains.
-
-- [BoxtoWide](https://github.com/Samillion/mpv-boxtowide) - A simple mpv script to change 4:3 aspect-ratio of video files/streams to 16:9 automatically.
+- [PiP-Lite](/extras/pip-lite) - Add a PiP mode (Picture-in-Picture) to ModernZ pin button and when `ontop` is enabled
+- [ytdlAutoFormat](https://github.com/Samillion/mpv-ytdlautoformat) - A simple mpv script to automatically change `ytdl-format` (yt-dlp) for specified domains
+- [BoxtoWide](https://github.com/Samillion/mpv-boxtowide) - A simple mpv script to change the aspect-ratio of video files/streams to a specific target ratio automatically
 
 For even more useful scripts, check out the [mpv User Scripts Wiki](https://github.com/mpv-player/mpv/wiki/User-Scripts). It offers a wide range of community-contributed scripts to enhance your mpv experience.
 
@@ -195,12 +192,12 @@ For even more useful scripts, check out the [mpv User Scripts Wiki](https://gith
 
 **Why fork yet again?**
 
-- To add many features in: [Color Customization](docs/USER_OPTS.md#colors-and-style), [Options](docs/USER_OPTS.md) and [Locale Integration](docs/TRANSLATIONS.md)
-- To integrate console and select into the osc, which inspired mpv to apply it in the stock osc. [ref [#1](https://github.com/mpv-player/mpv/pull/15016), [#2](https://github.com/mpv-player/mpv/pull/15031)]
-- To add a dedicated layout for images. [[details](/docs/IMAGE_VIEWER.md)]
-- To re-do the project entirely to match mpv's stock osc standards, to ensure compatibility
-- To eliminate old bugs and redundancy within the code
-    - Which allows other `Modern` forks to use ModernZ as a base, such as [zydezu/ModernX](https://github.com/zydezu/ModernX). [[Reference](https://github.com/zydezu/ModernX/releases/tag/0.3.9)]
+- Add extensive feature support, including [Color Customization](docs/USER_OPTS.md#colors-and-style), advanced [Options](docs/USER_OPTS.md), and [Locale Integration](docs/TRANSLATIONS.md).
+- Integrate console and select functionality into the OSC—an approach that later inspired adoption in mpv’s stock OSC ([#1](https://github.com/mpv-player/mpv/pull/15016), [#2](https://github.com/mpv-player/mpv/pull/15031)).
+- Introduce a dedicated layout optimized for image viewing. See [details](/docs/IMAGE_VIEWER.md).
+- Refactor the project to align with mpv’s stock OSC standards, ensuring long-term compatibility.
+- Remove legacy bugs and redundant code to improve maintainability and stability.  
+  - This also enables other `Modern` forks to build on ModernZ as a foundation, such as [zydezu/ModernX](https://github.com/zydezu/ModernX) ([reference](https://github.com/zydezu/ModernX/releases/tag/0.3.9)).
 
 In essence, to maintain and revive the `modern-osc` origin.
 
