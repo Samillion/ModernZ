@@ -5,10 +5,9 @@ Answers for frequently asked questions and helpful guidelines that might be usef
 You can most likely achieve this by implementing an auto profile in your `mpv.conf` that applies specific ModernZ user options in certain or specific scenarios.
 
 **Auto-profile examples:**
-- [Custom fullscreen](https://github.com/Samillion/ModernZ/issues/206#issuecomment-2470315786)
 - [PIP mode](https://github.com/Samillion/ModernZ/tree/main/extras/pip-lite) (Picture-in-Picture)
 - [Image viewer mode](https://github.com/Samillion/ModernZ/blob/main/docs/IMAGE_VIEWER.md#recommended)
-- [Custom mode](https://github.com/Samillion/ModernZ/blob/main/docs/USER_OPTS.md#auto-profile)
+- [Custom options](https://github.com/Samillion/ModernZ/blob/main/docs/USER_OPTS.md#auto-profile) for specific scenarios (ie: on fullscreen)
 
 ## Issues or bug reports
 - ModernZ is compatible with the latest mpv builds, please make sure to update your mpv to see if the issue persists
