@@ -28,6 +28,7 @@ local user_opts = {
     window_top_bar = "auto",               -- show OSC window top bar: "auto", "yes", or "no" (borderless/fullscreen)
     showwindowed = true,                   -- show OSC when windowed
     showfullscreen = true,                 -- show OSC when fullscreen
+    showonselect = false,                  -- show OSC when select menu is open
     showonpause = true,                    -- show OSC when paused
     keeponpause = true,                    -- disable OSC hide timeout when paused
     greenandgrumpy = false,                -- disable Santa hat in December
@@ -219,27 +220,27 @@ local user_opts = {
     -- title above seekbar mouse actions
     title_mbtn_left_command = "script-binding stats/display-page-5",
     title_mbtn_mid_command = "show-text ${path}",
-    title_mbtn_right_command = "script-binding select/select-watch-history; script-message-to modernz osc-hide",
+    title_mbtn_right_command = "script-binding select/select-watch-history",
 
     -- playlist button mouse actions
-    playlist_mbtn_left_command = "script-binding select/select-playlist; script-message-to modernz osc-hide",
-    playlist_mbtn_right_command = "script-binding select/menu; script-message-to modernz osc-hide",
+    playlist_mbtn_left_command = "script-binding select/select-playlist",
+    playlist_mbtn_right_command = "script-binding select/menu",
 
     -- volume mouse actions
     vol_ctrl_mbtn_left_command = "no-osd cycle mute",
-    vol_ctrl_mbtn_right_command = "script-binding select/select-audio-device; script-message-to modernz osc-hide",
+    vol_ctrl_mbtn_right_command = "script-binding select/select-audio-device",
     vol_ctrl_wheel_down_command = "no-osd add volume -5",
     vol_ctrl_wheel_up_command = "no-osd add volume 5",
 
     -- audio button mouse actions
-    audio_track_mbtn_left_command = "script-binding select/select-aid; script-message-to modernz osc-hide",
+    audio_track_mbtn_left_command = "script-binding select/select-aid",
     audio_track_mbtn_mid_command = "cycle audio down",
     audio_track_mbtn_right_command = "cycle audio",
     audio_track_wheel_down_command = "cycle audio",
     audio_track_wheel_up_command = "cycle audio down",
 
     -- subtitle button mouse actions
-    sub_track_mbtn_left_command = "script-binding select/select-sid; script-message-to modernz osc-hide",
+    sub_track_mbtn_left_command = "script-binding select/select-sid",
     sub_track_mbtn_mid_command = "cycle sub down",
     sub_track_mbtn_right_command = "cycle sub",
     sub_track_wheel_down_command = "cycle sub",
@@ -248,24 +249,24 @@ local user_opts = {
     -- chapter skip buttons mouse actions
     chapter_prev_mbtn_left_command = "add chapter -1",
     chapter_prev_mbtn_mid_command = "show-text ${chapter-list} 3000",
-    chapter_prev_mbtn_right_command = "script-binding select/select-chapter; script-message-to modernz osc-hide",
+    chapter_prev_mbtn_right_command = "script-binding select/select-chapter",
 
     chapter_next_mbtn_left_command = "add chapter 1",
     chapter_next_mbtn_mid_command = "show-text ${chapter-list} 3000",
-    chapter_next_mbtn_right_command = "script-binding select/select-chapter; script-message-to modernz osc-hide",
+    chapter_next_mbtn_right_command = "script-binding select/select-chapter",
 
     -- chapter title (below seekbar) mouse actions
-    chapter_title_mbtn_left_command = "script-binding select/select-chapter; script-message-to modernz osc-hide",
+    chapter_title_mbtn_left_command = "script-binding select/select-chapter",
     chapter_title_mbtn_right_command = "show-text ${chapter-list} 3000",
 
     -- playlist skip buttons mouse actions
     playlist_prev_mbtn_left_command = "playlist-prev",
     playlist_prev_mbtn_mid_command = "show-text ${playlist} 3000",
-    playlist_prev_mbtn_right_command = "script-binding select/select-playlist; script-message-to modernz osc-hide",
+    playlist_prev_mbtn_right_command = "script-binding select/select-playlist",
 
     playlist_next_mbtn_left_command = "playlist-next",
     playlist_next_mbtn_mid_command = "show-text ${playlist} 3000",
-    playlist_next_mbtn_right_command = "script-binding select/select-playlist; script-message-to modernz osc-hide",
+    playlist_next_mbtn_right_command = "script-binding select/select-playlist",
 
     -- fullscreen button mouse actions
     fullscreen_mbtn_left_command = "cycle fullscreen",
@@ -4006,6 +4007,12 @@ end)
 mp.observe_property("idle-active", "bool", function(_, val)
     state.idle = val
     request_tick()
+end)
+mp.observe_property("user-data/mpv/console/open", "bool", function(_, val)
+    if val and user_opts.visibility == "auto" and not user_opts.showonselect then
+        osc_visible(false)
+        wc_visible(false)
+    end
 end)
 mp.observe_property("display-fps", "number", set_tick_delay)
 mp.observe_property("demuxer-cache-state", "native", cache_state)
