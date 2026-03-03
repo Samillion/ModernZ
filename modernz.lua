@@ -3605,12 +3605,21 @@ local function process_event(source, what)
         state.mouse_in_window = true
 
         local mouseX, mouseY = get_virt_mouse_pos()
+        if mouseX ~= -1 and mouseY ~= -1 then
+            if state.last_mouseX == nil or state.last_mouseY == nil then
+                state.last_mouseX, state.last_mouseY = mouseX, mouseY
+            end
+        end
+
         if user_opts.minmousemove == 0 or
             ((state.last_mouseX ~= nil and state.last_mouseY ~= nil) and
                 ((math.abs(mouseX - state.last_mouseX) >= user_opts.minmousemove)
                     or (math.abs(mouseY - state.last_mouseY) >= user_opts.minmousemove)
                 )
             ) then
+                if mouseX ~= -1 and mouseY ~= -1 then
+                    state.last_mouseX, state.last_mouseY = mouseX, mouseY
+                end
                 if user_opts.bottomhover then -- if enabled, only show osc if mouse is hovering at the bottom of the screen (where the UI elements are)
                     local top_hover = window_controls_enabled() and (user_opts.show_window_title or user_opts.window_controls)
                     local in_bottom = mouseY > osc_param.playresy - (user_opts.bottomhover_zone or 130)
@@ -3640,7 +3649,6 @@ local function process_event(source, what)
                     end
                 end
         end
-        state.last_mouseX, state.last_mouseY = mouseX, mouseY
 
         local n = state.active_element
         if element_has_action(elements[n], action) then
@@ -3707,7 +3715,7 @@ local function render()
 
         -- store initial mouse position
         if (state.last_mouseX == nil or state.last_mouseY == nil)
-            and not (mouseX == nil or mouseY == nil) then
+            and not (mouseX == nil or mouseY == nil or mouseX == -1 or mouseY == -1) then
 
             state.last_mouseX, state.last_mouseY = mouseX, mouseY
         end
