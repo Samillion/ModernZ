@@ -3624,9 +3624,9 @@ local function process_event(source, what)
                         if in_top then show_wc() end
                     elseif in_bottom or in_top then
                         show_osc()
-                else
-                    state.touchtime = nil
-                end
+                    else
+                        state.touchtime = nil
+                    end
                 else
                     show_osc()
                     if user_opts.independent_wc then
