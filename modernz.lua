@@ -3512,22 +3512,12 @@ end
 
 local function mouse_leave()
     state.touchtime = nil
-
-    if get_hidetimeout() >= 0 and get_touchtimeout() <= 0 and state.showtime ~= nil then
-        local elapsed_time = mp.get_time() - state.showtime
-
-        if elapsed_time >= (get_hidetimeout() / 1000) then
-            hide_osc()
-        end
-
-        if user_opts.independent_wc and state.wc_showtime ~= nil then
-            local wc_elapsed = mp.get_time() - state.wc_showtime
-            if wc_elapsed >= (get_hidetimeout() / 1000) then
-                hide_wc()
-            end
+    if get_hidetimeout() >= 0 and get_touchtimeout() <= 0 then
+        hide_osc()
+        if user_opts.independent_wc then
+            hide_wc()
         end
     end
-
     -- reset mouse position
     state.last_mouseX, state.last_mouseY = nil, nil
     state.mouse_in_window = false
@@ -3550,8 +3540,11 @@ end
 -- Event handling
 --
 local function reset_timeout()
-    state.showtime = mp.get_time()
-    state.wc_showtime = mp.get_time()
+    local now = mp.get_time()
+    state.showtime = now
+    if user_opts.independent_wc then
+        state.wc_showtime = now
+    end
 end
 
 local function element_has_action(element, action)
@@ -3631,17 +3624,9 @@ local function process_event(source, what)
                         if in_top then show_wc() end
                     elseif in_bottom or in_top then
                         show_osc()
-                    else
-                        state.touchtime = nil
-
-                        if get_hidetimeout() >= 0 and get_touchtimeout() <= 0 and state.showtime ~= nil then
-                            local elapsed_time = mp.get_time() - state.showtime
-
-                            if elapsed_time >= (get_hidetimeout() / 1000) then
-                                hide_osc()
-                            end
-                        end
-                    end
+                else
+                    state.touchtime = nil
+                end
                 else
                     show_osc()
                     if user_opts.independent_wc then
