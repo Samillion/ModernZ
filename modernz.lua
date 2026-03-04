@@ -1835,7 +1835,6 @@ local function window_controls()
 
     local lo
     local controlbox_w = window_control_box_width
-    local titlebox_w = wc_geo.w - controlbox_w
     local controlbox_left = wc_geo.w - controlbox_w
     local titlebox_left = wc_geo.x
     local titlebox_right = wc_geo.w - controlbox_w
