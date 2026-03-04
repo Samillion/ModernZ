@@ -477,7 +477,6 @@ if external then
     end
 end
 
-
 local icons
 local iconfont
 local function set_icon_theme()
@@ -1535,7 +1534,6 @@ local function render_elements(master_ass, osc_vis, wc_vis)
                     end
                 end
             end
-
         elseif element.type == "button" then
             local buttontext
             if type(element.content) == "function" then
@@ -3184,7 +3182,6 @@ local function osc_init()
         end
     end
     visible_min_width = visible_min_width + (user_opts.download_button and 100 or 0)
-
 
     -- cache info
     ne = new_element("cache_info", "button")
