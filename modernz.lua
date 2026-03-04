@@ -2309,8 +2309,8 @@ layouts["modern-compact"] = function ()
     -- Time codes width calculation
     local remsec = mp.get_property_number("playtime-remaining", 0)
     local dur = mp.get_property_number("duration", 0)
-    local show_hours = mp.get_property_number("playback-time", 0) >= 3600
-    local show_remhours = (state.tc_right_rem and remsec >= 3600) or (not state.tc_right_rem and dur >= 3600)
+    local show_hours = mp.get_property_number("playback-time", 0) >= 3600 or user_opts.time_format ~= "dynamic"
+    local show_remhours = (state.tc_right_rem and remsec >= 3600) or (not state.tc_right_rem and dur >= 3600) or user_opts.time_format ~= "dynamic"
     local time_codes_width =
         80 + (state.tc_ms and 50 or 0) + (state.tc_right_rem and 15 or 0) + (show_hours and 20 or 0) +
         (show_remhours and 20 or 0)
@@ -3212,6 +3212,31 @@ local function osc_init()
     ne.tooltipF = (user_opts.tooltip_hints and cache_enabled()) and locale.cache or ""
     ne.eventresponder["mbtn_left_up"] = function() mp.command("script-binding stats/display-page-3") end
 
+    -- Helper function to format time, shared by seekbar tooltip and time codes display
+    local function format_time(seconds)
+        if not seconds then return "--:--" end
+
+        local hours = math.floor(seconds / 3600)
+        local minutes = math.floor((seconds % 3600) / 60)
+        local secs = math.floor(seconds % 60)
+        local show_hours = hours > 0 or user_opts.time_format == "fixed"
+
+        if state.tc_ms then
+            local ms = math.floor((seconds % 1) * 1000)
+            if show_hours then
+                return string.format("%02d:%02d:%02d.%03d", hours, minutes, secs, ms)
+            else
+                return string.format("%02d:%02d.%03d", minutes, secs, ms)
+            end
+        else
+            if show_hours then
+                return string.format("%02d:%02d:%02d", hours, minutes, secs)
+            else
+                return string.format("%02d:%02d", minutes, secs)
+            end
+        end
+    end
+
     --seekbar
     ne = new_element("seekbar", "slider")
     ne.enabled = mp.get_property("percent-pos") ~= nil
@@ -3238,13 +3263,7 @@ local function osc_init()
         state.touchingprogressbar = true
         local duration = mp.get_property_number("duration")
         if duration ~= nil and pos ~= nil then
-            local possec = duration * (pos / 100)
-            local time = mp.format_time(possec)
-            -- If video is less than 1 hour, and the time format is not fixed, strip the "00:" prefix
-            if possec < 3600 and user_opts.time_format ~= "fixed" then
-                time = time:gsub("^00:", "")
-            end
-            return time
+            return format_time(duration * (pos / 100))
         else
             return ""
         end
@@ -3362,36 +3381,6 @@ local function osc_init()
             return nranges
         end
         return nil
-    end
-
-    -- Helper function to format time
-    local function format_time(seconds)
-        if not seconds then return "--:--" end
-
-        local hours = math.floor(seconds / 3600)
-        local minutes = math.floor((seconds % 3600) / 60)
-        local whole_seconds = math.floor(seconds % 60)
-        local milliseconds = state.tc_ms and math.floor((seconds % 1) * 1000) or nil
-
-        -- Always show HH:MM:SS if user_opts.time_format is "fixed"
-        local force_hours = user_opts.time_format == "fixed"
-
-        -- Format string templates
-        local format_with_ms = (hours > 0 or force_hours) and "%02d:%02d:%02d.%03d" or "%02d:%02d.%03d"
-        local format_without_ms = (hours > 0 or force_hours) and "%02d:%02d:%02d" or "%02d:%02d"
-
-        if state.tc_ms then
-            return string.format(format_with_ms,
-                (hours > 0 or force_hours) and hours or minutes,
-                (hours > 0 or force_hours) and minutes or whole_seconds,
-                (hours > 0 or force_hours) and whole_seconds or milliseconds,
-                (hours > 0 or force_hours) and milliseconds or nil)
-        else
-            return string.format(format_without_ms,
-                (hours > 0 or force_hours) and hours or minutes,
-                (hours > 0 or force_hours) and minutes or whole_seconds,
-                (hours > 0 or force_hours) and whole_seconds or nil)
-        end
     end
 
     -- Time codes display
