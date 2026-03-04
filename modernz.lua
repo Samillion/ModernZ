@@ -465,11 +465,6 @@ if external then
                 if strings[key] == nil then
                     strings[key] = value or ""  -- fallback to empty string if key is missing
                 end
-
-                -- debug log to verify all keys are populated
-                if strings[key] == nil then
-                    mp.msg.warn("Locale key '" .. key .. "' is nil in language: " .. lang)
-                end
             end
         else
             mp.msg.warn("Locale data for language " .. lang .. " is not in the correct format.")
@@ -487,7 +482,7 @@ end
 local locale
 local function set_osc_locale()
     locale = language[user_opts.language] or language["en"]
-    local idle_ass_tags = "{\\fs24\\1c&H0&\\1c&HFFFFFF&}"
+    local idle_ass_tags = "{\\fs24\\1c&HFFFFFF&}"
     locale.idle = idle_ass_tags .. locale.idle
 end
 
@@ -1180,10 +1175,9 @@ local function draw_seekbar_ranges(element, elem_ass, xp, rh, override_alpha)
     elem_ass:draw_stop()
     elem_ass:merge(element.style_ass)
     ass_append_alpha(elem_ass, element.layout.alpha, override_alpha or user_opts.seekrangealpha)
-    elem_ass:append("{\\1cH&" .. osc_color_convert(user_opts.seekbar_cache_color) .. "&}")
+    elem_ass:append("{\\1c&H" .. osc_color_convert(user_opts.seekbar_cache_color) .. "&}")
     elem_ass:merge(element.static_ass)
 
-    local slider_lo = element.layout.slider
     local radius = slider_lo.radius or 0
 
     for _, range in pairs(seekRanges) do
@@ -1320,7 +1314,6 @@ local function render_elements(master_ass, osc_vis, wc_vis)
     -- disable displaying chapter name in title when thumbfast is available
     -- because thumbfast will render it above the thumbnail instead
     if thumbfast.disabled then
-        local se, ae = state.slider_element, elements[state.active_element]
         if user_opts.chapter_fmt ~= "no" and state.touchingprogressbar then
             local dur = mp.get_property_number("duration", 0)
             if dur > 0 then
@@ -1445,7 +1438,7 @@ local function render_elements(master_ass, osc_vis, wc_vis)
                         -- add hovered chapter title above time code tooltip on seekbar hover
                         if thumbfast.disabled and not user_opts.show_title and not user_opts.show_chapter_title then
                             local osd_w = mp.get_property_number("osd-width")
-                            local r_w, r_h = get_virt_scale_factor()
+                            local r_w = get_virt_scale_factor()
                             if osd_w then
                                 if user_opts.chapter_fmt ~= "no" and state.touchingprogressbar then
                                     local dur = mp.get_property_number("duration", 0)
@@ -1504,7 +1497,6 @@ local function render_elements(master_ass, osc_vis, wc_vis)
                                 end
 
                                 -- chapter title tooltip
-                                local se, ae = state.slider_element, elements[state.active_element]
                                 if user_opts.chapter_fmt ~= "no" and state.touchingprogressbar then
                                     local dur = mp.get_property_number("duration", 0)
                                     if dur > 0 then
@@ -1843,7 +1835,6 @@ local function window_controls()
 
     local lo
     local controlbox_w = window_control_box_width
-    local titlebox_w = wc_geo.w - controlbox_w
     local controlbox_left = wc_geo.w - controlbox_w
     local titlebox_left = wc_geo.x
     local titlebox_right = wc_geo.w - controlbox_w
@@ -3129,7 +3120,7 @@ local function osc_init()
             mp.command("playlist-unshuffle")
         end
     end
-    visible_min_width = visible_min_width + (user_opts.loop_button and 100 or 0)
+    visible_min_width = visible_min_width + (user_opts.shuffle_button and 100 or 0)
 
     --tog_speed
     ne = new_element("tog_speed", "button")
@@ -3178,7 +3169,7 @@ local function osc_init()
                 state.url_path
             }
 
-            local status = exec(command, download_done)
+            exec(command, download_done)
         end
     end
     visible_min_width = visible_min_width + (user_opts.download_button and 100 or 0)
@@ -4046,8 +4037,8 @@ mp.set_key_bindings({
                             function() process_event("shift+mbtn_left", "down")  end},
     {"mbtn_right",          function() process_event("mbtn_right", "up") end,
                             function() process_event("mbtn_right", "down")  end},
-    {"shift+mbtn_right",    function(e) process_event("shift+mbtn_right", "up") end,
-                            function(e) process_event("shift+mbtn_right", "down")  end},
+    {"shift+mbtn_right",    function() process_event("shift+mbtn_right", "up") end,
+                            function() process_event("shift+mbtn_right", "down")  end},
     -- alias to shift_mbtn_left for single-handed mouse use
     {"mbtn_mid",            function() process_event("shift+mbtn_left", "up") end,
                             function() process_event("shift+mbtn_left", "down")  end},
