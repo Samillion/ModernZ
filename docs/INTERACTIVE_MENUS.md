@@ -32,6 +32,25 @@ To enable context-menu:
 
 Additionally, to not use native Windows context-menu, you can add `load-context-menu=yes` to your `mpv.conf`.
 
+### Open File Dialog (Optional)
+The solution below only works for Windows, however you can search for one that works for your operating system in [mpv user scripts](https://github.com/mpv-player/mpv/wiki/User-Scripts) or [awesome-mpv](https://github.com/stax76/awesome-mpv), then apply it the same way.
+
+<img width="1740" height="832" alt="image" src="https://github.com/user-attachments/assets/5f27079d-ceab-4aa2-90ca-36f1194a850a" />
+
+To be able to open a file directly from mpv, you can use [open-file.lua](https://github.com/Samillion/mpv-conf/blob/master/scripts/open-file.lua) script.
+
+In your `input.conf`, add:
+```
+Ctrl+o script-binding open_file/open
+```
+
+In your `menu.conf`, add:
+```
+&Open File	script-binding open_file/open
+```
+
+You can see how that's done by viewing this [input.conf](https://github.com/Samillion/mpv-conf/blob/master/input.conf) and this [menu.conf](https://github.com/Samillion/mpv-conf/blob/master/menu.conf).
+
 ## Notes
 > [!IMPORTANT]
 > If the menus are not functioning as shown in the video, it is most likely because you're using an outdated version of mpv
