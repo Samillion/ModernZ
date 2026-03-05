@@ -578,7 +578,6 @@ local state = {
     tick_timer = nil,
     tick_last_time = 0,                     -- when the last tick() was run
     hide_timer = nil,
-    wc_hide_timer = nil,
     cache_state = nil,
     idle = false,
     enabled = true,
@@ -752,6 +751,18 @@ end
 
 local function mouse_hit(element)
     return mouse_hit_coords(get_element_hitbox(element))
+end
+
+local function mouse_in_area(names)
+    if type(names) == "string" then names = {names} end
+    for _, name in pairs(names) do
+        for _, cords in pairs(osc_param.areas[name] or {}) do
+            if mouse_hit_coords(cords.x1, cords.y1, cords.x2, cords.y2) then
+                return true
+            end
+        end
+    end
+    return false
 end
 
 local function limit_range(min, max, val)
@@ -3664,16 +3675,14 @@ local function render()
     do_enable_keybindings()
 
     --mouse input area
-    local mouse_over_osc = false
-    local mouse_over_wc  = false
     local wc_vis
     if user_opts.independent_wc then
-        wc_vis = state.wc_visible   -- independent: top bar tracks its own state
+        wc_vis = state.wc_visible
     else
-        wc_vis = state.osc_visible  -- coupled: top bar mirrors bottom bar
+        wc_vis = state.osc_visible
     end
 
-    local function update_input_area(area_name, visible, enabled_key, enable_fn, set_mouse_over)
+    local function update_input_area(area_name, visible, enabled_key, enable_fn)
         local areas = osc_param.areas[area_name]
         if not areas then return end
         for _, cords in ipairs(areas) do
@@ -3686,57 +3695,46 @@ local function render()
                 if visible then enable_fn() else mp.disable_key_bindings(area_name) end
                 state[enabled_key] = visible
             end
-            if mouse_hit_coords(cords.x1, cords.y1, cords.x2, cords.y2) then
-                set_mouse_over()
-            end
         end
     end
 
     update_input_area("input", state.osc_visible, "input_enabled",
-        function() mp.enable_key_bindings("input") end,
-        function() mouse_over_osc = true end)
+        function() mp.enable_key_bindings("input") end)
     update_input_area("window-controls", wc_vis, "windowcontrols_buttons",
-        function() mp.enable_key_bindings("window-controls") end,
-        function() mouse_over_wc = true end)
+        function() mp.enable_key_bindings("window-controls") end)
     update_input_area("window-controls-title", wc_vis, "windowcontrols_title",
-        function() mp.enable_key_bindings("window-controls-title", "allow-vo-dragging") end,
-        function() mouse_over_wc = true end)
+        function() mp.enable_key_bindings("window-controls-title", "allow-vo-dragging") end)
 
     -- autohide
-    local function run_autohide(showtime_key, timer_key, hide_fn, mouse_over)
+    local function run_autohide(showtime_key, hide_fn, input_areas)
         if state[showtime_key] == nil or get_hidetimeout() < 0 then return end
         local timeout = state[showtime_key] + (get_hidetimeout() / 1000) - now
         if timeout <= 0 and get_touchtimeout() <= 0 then
-            if (state.active_element == nil and not mouse_over) or not user_opts.osc_keep_with_cursor then
+            if (state.active_element == nil and not mouse_in_area(input_areas)) or not user_opts.osc_keep_with_cursor then
                 hide_fn()
             end
         else
-            if not state[timer_key] then
-                state[timer_key] = mp.add_timeout(0, tick)
+            if not state.hide_timer then
+                state.hide_timer = mp.add_timeout(0, tick)
             end
-            -- only re-arm when the new deadline is sooner than the current one
-            if timeout < state[timer_key].timeout then
-                state[timer_key].timeout = timeout
-                state[timer_key]:kill()
-                state[timer_key]:resume()
+            if timeout < state.hide_timer.timeout then
+                state.hide_timer.timeout = timeout
+                state.hide_timer:kill()
+                state.hide_timer:resume()
             end
         end
     end
 
-    local osc_mouse
-    if user_opts.independent_wc then
-        osc_mouse = mouse_over_osc                   -- independent: only bottom area keeps bottom bar
-    else
-        osc_mouse = mouse_over_osc or mouse_over_wc  -- coupled: either zone keeps both bars
+    local osc_areas = {"input"}
+    local wc_areas  = {"window-controls", "window-controls-title"}
+    if not user_opts.independent_wc then
+        osc_areas = {"input", "window-controls", "window-controls-title"}
+        wc_areas  = osc_areas
     end
 
-    if state.hide_timer    then state.hide_timer.timeout    = math.huge end
-    if state.wc_hide_timer then state.wc_hide_timer.timeout = math.huge end
-
-    run_autohide("showtime", "hide_timer", hide_osc, osc_mouse)
-    if user_opts.independent_wc then
-        run_autohide("wc_showtime", "wc_hide_timer", hide_wc, mouse_over_wc)
-    end
+    if state.hide_timer then state.hide_timer.timeout = math.huge end
+    run_autohide("showtime",    hide_osc, osc_areas)
+    run_autohide("wc_showtime", hide_wc,  wc_areas)
 
     -- actual rendering
     local ass = assdraw.ass_new()
