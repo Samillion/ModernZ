@@ -1283,13 +1283,13 @@ local function render_elements(master_ass, osc_vis, wc_vis)
 
     state.touchingprogressbar = false
 
-    for n=1, #elements do repeat
+    for n=1, #elements do
         local element = elements[n]
 
         -- skip elements whose group is not currently visible
         local is_top = element.layout.group == "top"
         if (is_top and not wc_vis) or (not is_top and not osc_vis) then
-            break
+            goto continue
         end
 
         -- use wc animation for top group in independent mode
@@ -1569,7 +1569,8 @@ local function render_elements(master_ass, osc_vis, wc_vis)
         end
 
         master_ass:merge(elem_ass)
-    until true end
+        ::continue::
+    end
 end
 
 local function render_persistentprogressbar(master_ass)
