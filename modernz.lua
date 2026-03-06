@@ -42,7 +42,7 @@ local user_opts = {
     bottomhover = true,                    -- show OSC only when hovering at the bottom
     bottomhover_zone = 130,                -- height of hover zone for bottomhover (in pixels)
     tophover_zone = 40,                    -- height of hover zone for top bar (in pixels)
-    independent_wc = false,                -- show/hide window controls independently from OSC
+    independent_zones = true,              -- show/hide top and bottom bar independently based on hover area
     osc_on_seek = false,                   -- show OSC when seeking
     osc_on_start = "no",                   -- show OSC on start of every file ("no", "bottom", "top", "both")
     osc_keep_with_cursor = true,           -- keep OSC visible if mouse cursor is within OSC boundaries
@@ -1306,7 +1306,7 @@ local function render_elements(master_ass, osc_vis, wc_vis)
         -- use wc animation for top group in independent mode
         -- use 0 to block fallback to state.animation when wc has no active animation
         local anim_override = nil
-        if user_opts.independent_wc and is_top then
+        if user_opts.independent_zones and is_top then
             anim_override = state.wc_animation or 0
         end
 
@@ -3406,7 +3406,7 @@ end
 local function show_osc()
     show_bar("osc", "showtime", "osc_visible", "anitype", osc_visible)
 
-    if not user_opts.independent_wc and not user_opts.bottomhover then
+    if not user_opts.independent_zones and not user_opts.bottomhover then
         show_wc()
     end
 end
@@ -3422,7 +3422,7 @@ local function hide_osc()
     end
     hide_bar("osc", "osc_visible", "anitype", osc_visible)
     -- couple wc with osc when not independent
-    if not user_opts.independent_wc then
+    if not user_opts.independent_zones then
         hide_wc()
     end
 end
@@ -3441,7 +3441,7 @@ local function mouse_leave()
     state.touchtime = nil
     if get_hidetimeout() >= 0 and get_touchtimeout() <= 0 then
         hide_osc()
-        if user_opts.independent_wc then
+        if user_opts.independent_zones then
             hide_wc()
         end
     end
@@ -3469,7 +3469,7 @@ end
 local function reset_timeout()
     local now = mp.get_time()
     state.showtime = now
-    if user_opts.independent_wc then
+    if user_opts.independent_zones then
         state.wc_showtime = now
     end
 end
@@ -3546,7 +3546,7 @@ local function process_event(source, what)
                     local in_top = ((user_opts.window_top_bar == "yes" or not (state.border and state.title_bar)) or state.fullscreen)
                         and (mouseY < user_opts.tophover_zone and top_hover)
 
-                    if user_opts.independent_wc then
+                    if user_opts.independent_zones then
                         if in_bottom then show_osc() end
                         if in_top then show_wc() end
                     else
@@ -3558,7 +3558,7 @@ local function process_event(source, what)
                     end
                 else
                     show_osc()
-                    if user_opts.independent_wc then
+                    if user_opts.independent_zones then
                         show_wc()
                     end
                 end
@@ -3590,7 +3590,7 @@ local function enable_osc(enable)
         do_enable_keybindings()
     else
         hide_osc() -- acts immediately when state.enabled == false
-        if user_opts.independent_wc then hide_wc() end
+        if user_opts.independent_zones then hide_wc() end
         if state.showhide_enabled then
             mp.disable_key_bindings("showhide")
             mp.disable_key_bindings("showhide_wc")
@@ -3676,7 +3676,7 @@ local function render()
 
     --mouse input area
     local wc_vis
-    if user_opts.independent_wc then
+    if user_opts.independent_zones then
         wc_vis = state.wc_visible
     else
         wc_vis = state.osc_visible
@@ -3727,7 +3727,7 @@ local function render()
 
     local osc_areas = {"input"}
     local wc_areas  = {"window-controls", "window-controls-title"}
-    if not user_opts.independent_wc then
+    if not user_opts.independent_zones then
         osc_areas = {"input", "window-controls", "window-controls-title"}
         wc_areas  = osc_areas
     end
@@ -4009,10 +4009,10 @@ local function always_on(val)
     if state.enabled then
         if val then
             show_osc()
-            if user_opts.independent_wc then show_wc() end
+            if user_opts.independent_zones then show_wc() end
         else
             hide_osc()
-            if user_opts.independent_wc then hide_wc() end
+            if user_opts.independent_zones then hide_wc() end
         end
     end
 end
@@ -4117,7 +4117,7 @@ mp.observe_property("pause", "bool", function(name, enabled)
             end
             -- reset timer so it gets a fresh hidetimeout on unpause
             if state.osc_visible then state.showtime = mp.get_time() end
-            if user_opts.independent_wc and state.wc_visible then
+            if user_opts.independent_zones and state.wc_visible then
                 state.wc_showtime = mp.get_time()
             end
         end
@@ -4200,8 +4200,8 @@ local function validate_user_opts()
         end
     end
 
-    if user_opts.independent_wc and not user_opts.bottomhover then
-        msg.warn("independent_wc requires bottomhover. Setting bottomhover=yes.")
+    if user_opts.independent_zones and not user_opts.bottomhover then
+        msg.warn("independent_zones requires bottomhover. Setting bottomhover=yes.")
         user_opts.bottomhover = true
     end
 end
