@@ -1846,6 +1846,8 @@ local function window_controls()
 
         add_area("window-controls-title", titlebox_left, 0, titlebox_right, wc_geo.h)
     end
+    -- top bar margins
+    osc_param.video_margins.t = wc_geo.h / osc_param.playresy
 end
 
 --
@@ -2669,6 +2671,9 @@ local function osc_init()
 
     -- stop seeking with the slider to prevent skipping files
     state.active_element = nil
+
+    -- reset margins
+    osc_param.video_margins = {l = 0, r = 0, t = 0, b = 0}
 
     elements = {}
 
