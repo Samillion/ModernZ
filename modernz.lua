@@ -4204,6 +4204,11 @@ local function validate_user_opts()
         msg.warn("independent_zones requires bottomhover. Setting bottomhover=yes.")
         user_opts.bottomhover = true
     end
+
+    if user_opts.keeponpause and not user_opts.showonpause then
+        msg.warn("keeponpause requires showonpause. Setting showonpause=yes.")
+        user_opts.showonpause = true
+    end
 end
 
 -- read options from config and command-line
