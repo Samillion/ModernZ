@@ -22,7 +22,7 @@ Create `modernz.conf` in your mpv script-opts directory:
 | window_top_bar  | auto            | show OSC window top bar: `"auto"`, `"yes"`, or `"no"` (borderless/fullscreen)                                                  |
 | showwindowed    | yes             | show OSC when windowed                                                                                                         |
 | showfullscreen  | yes             | show OSC when fullscreen                                                                                                       |
-| showonselect    | no              | show OSC when console is open                                                                                                  |
+| showonselect    | no              | show OSC when a select menu is open                                                                                            |
 | showonpause     | yes             | show OSC when paused                                                                                                           |
 | keeponpause     | yes             | disable OSC hide timeout when paused                                                                                           |
 | greenandgrumpy  | no              | disable Santa hat in December                                                                                                  |
@@ -59,7 +59,7 @@ Create `modernz.conf` in your mpv script-opts directory:
 | chapter_title_font_size | 14               | chapter title font size                                                          |
 | show_chapter_title      | yes              | show chapter title (above seekbar)                                               |
 | chapter_fmt             | %s               | format for chapter display on seekbar hover (set to `"no"` to disable)           |
-| timetotal               | yes              | show total time instead of remaining time                                        |
+| timecurrent             | yes              | show current time instead of remaining time                                      |
 | timems                  | no               | show timecodes with milliseconds                                                 |
 | unicodeminus            | no               | use the Unicode minus sign in remaining time                                     |
 | time_format             | dynamic          | `"dynamic"` or `"fixed"`. shows MM:SS when possible, fixed always shows HH:MM:SS |
