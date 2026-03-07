@@ -66,7 +66,7 @@ local user_opts = {
     show_chapter_title = true,             -- show chapter title (above seekbar)
     chapter_fmt = "%s",                    -- format for chapter display on seekbar hover (set to "no" to disable)
 
-    timetotal = true,                      -- show total time instead of remaining time
+    timecurrent = true,                    -- show current time instead of remaining time
     timems = false,                        -- show timecodes with milliseconds
     unicodeminus = false,                  -- use the Unicode minus sign in remaining time
     time_format = "dynamic",               -- "dynamic" or "fixed". dynamic shows MM:SS when possible, fixed always shows HH:MM:SS
@@ -566,7 +566,7 @@ local state = {
     mouse_down_counter = 0,                 -- used for softrepeat
     active_element = nil,                   -- nil = none, 0 = background, 1+ = see elements[]
     active_event_source = nil,              -- the "button" that issued the current event
-    tc_right_rem = not user_opts.timetotal, -- if the right timecode should display total or remaining time
+    tc_left_rem = not user_opts.timecurrent,-- if the left timecode should display current or remaining time
     tc_ms = user_opts.timems,               -- Should the timecodes display their time with milliseconds
     screen_sizeX = nil, screen_sizeY = nil, -- last screen-resolution, to detect resolution changes to issue reINITs
     initREQ = false,                        -- is a re-init request pending?
@@ -664,9 +664,9 @@ local function set_osd(res_x, res_y, text, z)
     state.osd:update()
 end
 
-local function set_time_styles(timetotal_changed, timems_changed)
-    if timetotal_changed then
-        state.tc_right_rem = not user_opts.timetotal
+local function set_time_styles(timecurrent_changed, timems_changed)
+    if timecurrent_changed then
+        state.tc_left_rem = not user_opts.timecurrent
     end
     if timems_changed then
         state.tc_ms = user_opts.timems
@@ -2084,7 +2084,7 @@ layouts["modern"] = function ()
     local remsec = mp.get_property_number("playtime-remaining", 0)
     local dur = mp.get_property_number("duration", 0)
     local show_hours = mp.get_property_number("playback-time", 0) >= 3600 or user_opts.time_format ~= "dynamic"
-    local show_remhours = (state.tc_right_rem and remsec >= 3600) or (not state.tc_right_rem and dur >= 3600) or user_opts.time_format ~= "dynamic"
+    local show_remhours = (state.tc_left_rem and remsec >= 3600) or (not state.tc_left_rem and dur >= 3600) or user_opts.time_format ~= "dynamic"
     local auto_hide_volbar = (audio_track and user_opts.volume_control) and osc_param.playresx < (user_opts.hide_volume_bar_trigger - outeroffset)
     local time_codes_x = start_x
         - (auto_hide_volbar and 75 or 0) -- window width with audio track and elements
@@ -2092,7 +2092,7 @@ layouts["modern"] = function ()
         - (not audio_track and 12 or 0) -- remove extra padding
     local time_codes_width = 80
         + (state.tc_ms and 50 or 0)
-        + (state.tc_right_rem and 15 or 0)
+        + (state.tc_left_rem and 15 or 0)
         + (show_hours and 20 or 0)
         + (show_remhours and 20 or 0)
     local narrow_win = osc_param.playresx < (
@@ -2269,9 +2269,9 @@ layouts["modern-compact"] = function ()
     local remsec = mp.get_property_number("playtime-remaining", 0)
     local dur = mp.get_property_number("duration", 0)
     local show_hours = mp.get_property_number("playback-time", 0) >= 3600 or user_opts.time_format ~= "dynamic"
-    local show_remhours = (state.tc_right_rem and remsec >= 3600) or (not state.tc_right_rem and dur >= 3600) or user_opts.time_format ~= "dynamic"
+    local show_remhours = (state.tc_left_rem and remsec >= 3600) or (not state.tc_left_rem and dur >= 3600) or user_opts.time_format ~= "dynamic"
     local time_codes_width =
-        80 + (state.tc_ms and 50 or 0) + (state.tc_right_rem and 15 or 0) + (show_hours and 20 or 0) +
+        80 + (state.tc_ms and 50 or 0) + (state.tc_left_rem and 15 or 0) + (show_hours and 20 or 0) +
         (show_remhours and 20 or 0)
 
     -- OSC title
@@ -3365,16 +3365,16 @@ local function osc_init()
         local duration = mp.get_property_number("duration", 0)
         if duration <= 0 then return "--:--" end
 
-        local playtime_remaining = state.tc_right_rem and
-            mp.get_property_number("playtime-remaining", 0) or duration
+        local playtime_remaining = state.tc_left_rem and
+            mp.get_property_number("playtime-remaining", 0) or playback_time
 
-        local prefix = state.tc_right_rem and
+        local prefix = state.tc_left_rem and
             (user_opts.unicodeminus and UNICODE_MINUS or "-") or ""
 
-        return format_time(playback_time) .. " / " .. prefix .. format_time(playtime_remaining)
+        return prefix .. format_time(playtime_remaining) .. " / " .. format_time(duration)
     end
     ne.eventresponder["mbtn_left_up"] = function()
-        state.tc_right_rem = not state.tc_right_rem
+        state.tc_left_rem = not state.tc_left_rem
     end
     ne.eventresponder["mbtn_right_up"] = function()
         state.tc_ms = not state.tc_ms
@@ -4222,7 +4222,7 @@ opt.read_options(user_opts, "modernz", function(changed)
     set_osc_locale()
     set_icon_theme()
     set_osc_styles()
-    set_time_styles(changed.timetotal, changed.timems)
+    set_time_styles(changed.timecurrent, changed.timems)
     if changed.tick_delay or changed.tick_delay_follow_display_fps then
         set_tick_delay("display_fps", mp.get_property_number("display_fps"))
     end
