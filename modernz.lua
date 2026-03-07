@@ -592,6 +592,7 @@ local state = {
     buffering = false,
     new_file_flag = false,                  -- flag to detect new file starts
     temp_visibility_mode = nil,             -- store temporary visibility mode state
+    pause_osc_locked = false,               -- lock bottom bar from hiding while paused (keeponpause + independent_zones)
     chapter_list = {},                      -- sorted by time
     visibility_modes = {},                  -- visibility_modes to cycle through
     mute = false,
@@ -3448,7 +3449,9 @@ end
 local function mouse_leave()
     state.touchtime = nil
     if get_hidetimeout() >= 0 and get_touchtimeout() <= 0 then
-        hide_osc()
+        if not state.pause_osc_locked then
+            hide_osc()
+        end
         if user_opts.independent_zones then
             hide_wc()
         end
@@ -3716,6 +3719,8 @@ local function render()
     -- autohide
     local function run_autohide(showtime_key, hide_fn, input_areas)
         if state[showtime_key] == nil or get_hidetimeout() < 0 then return end
+        -- keeponpause + independent_zones: bottom bar is locked, top bar hides normally
+        if state.pause_osc_locked and showtime_key == "showtime" then return end
         local timeout = state[showtime_key] + (get_hidetimeout() / 1000) - now
         if timeout <= 0 and get_touchtimeout() <= 0 then
             if (state.active_element == nil and not mouse_in_area(input_areas)) or not user_opts.osc_keep_with_cursor then
@@ -4103,18 +4108,25 @@ mp.observe_property("pause", "bool", function(name, enabled)
     if user_opts.showonpause and user_opts.visibility ~= "never" then
         state.enabled = enabled
         if enabled then
-            -- save mode if a temporary change is needed
-            if not state.temp_visibility_mode and user_opts.visibility ~= "always" then
-                state.temp_visibility_mode = user_opts.visibility
-            end
-
             if user_opts.keeponpause then
-                -- set visibility to "always" temporarily
-                visibility_mode("always", true)
+                if user_opts.independent_zones then
+                    show_osc()
+                    state.pause_osc_locked = true
+                else
+                    -- save mode and set visibility to "always" temporarily
+                    if not state.temp_visibility_mode and user_opts.visibility ~= "always" then
+                        state.temp_visibility_mode = user_opts.visibility
+                    end
+                    visibility_mode("always", true)
+                end
             else
                 show_osc()
             end
         else
+            -- unlock bottom bar
+            if state.pause_osc_locked then
+                state.pause_osc_locked = false
+            end
             -- restore mode if it was changed temporarily
             if state.temp_visibility_mode then
                 visibility_mode(state.temp_visibility_mode, true)
