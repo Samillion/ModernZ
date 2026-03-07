@@ -3718,7 +3718,7 @@ local function render()
         if state[showtime_key] == nil or get_hidetimeout() < 0 then return end
         local timeout = state[showtime_key] + (get_hidetimeout() / 1000) - now
         if timeout <= 0 and get_touchtimeout() <= 0 then
-            if (state.active_element == nil and not mouse_in_area(input_areas)) or not user_opts.osc_keep_with_cursor then
+            if (state.active_element == nil and not mouse_in_area(input_areas)) or (state.active_element == nil and not user_opts.osc_keep_with_cursor) then
                 hide_fn()
             end
         else
