@@ -100,7 +100,6 @@ local user_opts = {
     volume_control = true,                 -- show mute button and volume slider
     volume_control_type = "linear",        -- volume scale type: "linear" or "logarithmic"
     playlist_button = true,                -- show playlist button: Left-click for simple playlist, Right-click for interactive playlist
-    hide_empty_playlist_button = false,    -- hide playlist button when no playlist exists
     gray_empty_playlist_button = false,    -- gray out the playlist button when no playlist exists
 
     fullscreen_button = true,              -- show fullscreen toggle button
@@ -1967,7 +1966,7 @@ layouts["modern"] = function ()
     local shuffle_button = user_opts.shuffle_button
     local speed_button = user_opts.speed_button
     local download_button = user_opts.download_button and state.is_URL
-    local playlist_button = user_opts.playlist_button and (not user_opts.hide_empty_playlist_button or mp.get_property_number("playlist-count", 0) > 1)
+    local playlist_button = user_opts.playlist_button and not have_pl
 
     local offset = jump_buttons and 60 or 0
     local outeroffset = (chapter_skip_buttons and 0 or 100) + (jump_buttons and 0 or 100)
@@ -2488,7 +2487,7 @@ layouts["modern-image"] = function ()
     local fullscreen_button = user_opts.fullscreen_button
     local info_button = user_opts.info_button
     local ontop_button = user_opts.ontop_button
-    local playlist_button = user_opts.playlist_button and (not user_opts.hide_empty_playlist_button or mp.get_property_number("playlist-count", 0) > 1)
+    local playlist_button = user_opts.playlist_button and not have_pl
     local zoom_control = user_opts.zoom_control
 
     -- Playlist

@@ -103,8 +103,7 @@ Create `modernz.conf` in your mpv script-opts directory:
 | volume_control             | yes           | show mute button and volume slider                                                                                 |
 | volume_control_type        | linear        | volume scale type: `"linear"` or `"logarithmic"`                                                                   |
 | playlist_button            | yes           | show playlist button: Left-click for simple playlist, Right-click for interactive playlist                         |
-| hide_empty_playlist_button | yes           | hide playlist button when no playlist exists                                                                       |
-| gray_empty_playlist_button | yes           | gray out the playlist button when no playlist exists                                                               |
+| gray_empty_playlist_button | no            | gray out the playlist button when no playlist exists                                                               |
 | download_button            | yes           | show download button on web videos (requires yt-dlp and ffmpeg)                                                    |
 | download_path              | ~~desktop/mpv | default download directory for videos. [Learn more about setting paths here](https://mpv.io/manual/master/#paths). |
 | screenshot_button          | no            | show screenshot button                                                                                             |
