@@ -454,16 +454,17 @@ local function set_osc_locale()
 end
 
 local function contains(list, item)
-    local t = type(list) == "table" and list or {}
-    if type(list) ~= "table" then
+    local t
+    if type(list) == "table" then
+        t = list
+    else
+        t = {}
         for str in string.gmatch(list, '([^,]+)') do
             t[#t + 1] = str:match("^%s*(.-)%s*$") -- trim spaces
         end
     end
     for _, v in ipairs(t) do
-        if v == item then
-            return true
-        end
+        if v == item then return true end
     end
     return false
 end
@@ -489,9 +490,9 @@ end
 local osc_styles
 
 local function set_osc_styles()
-    local playpause_size = user_opts.playpause_size or 28
-    local midbuttons_size = user_opts.midbuttons_size or 24
-    local sidebuttons_size = user_opts.sidebuttons_size or 24
+    local playpause_size = user_opts.playpause_size
+    local midbuttons_size = user_opts.midbuttons_size
+    local sidebuttons_size = user_opts.sidebuttons_size
     osc_styles = {
         osc_fade_bg = "{\\blur" .. user_opts.fade_blur_strength .. "\\bord" .. user_opts.fade_alpha .. "\\1c&H0&\\3c&H" .. osc_color_convert(user_opts.osc_color) .. "&}",
         window_fade_bg = "{\\blur" .. user_opts.window_fade_blur_strength .. "\\bord" .. user_opts.window_fade_alpha .. "\\1c&H0&\\3c&H" .. osc_color_convert(user_opts.osc_color) .. "&}",
@@ -733,12 +734,7 @@ local function mouse_in_area(names)
 end
 
 local function limit_range(min, max, val)
-    if val > max then
-        val = max
-    elseif val < min then
-        val = min
-    end
-    return val
+    return math.max(min, math.min(max, val))
 end
 
 -- translate value into element coordinates
@@ -1596,13 +1592,26 @@ local function is_url(s)
     return string.match(s, url_pattern) ~= nil
 end
 
-local function exec_filesize(args)
+local function is_image()
+    local current_track = mp.get_property_native("current-tracks/video")
+    state.is_image = current_track ~= nil and current_track.image == true and current_track.albumart ~= true
+end
+
+local function get_ytdl_format()
+    local mpv_ytdl = mp.get_property("file-local-options/ytdl-format") or mp.get_property("ytdl-format") or ""
+    return mpv_ytdl ~= "" and ("-f " .. mpv_ytdl) or "-f bestvideo+bestaudio/best"
+end
+
+local function strip_empty_args(args)
     for i = #args, 1, -1 do
         if args[i] == nil or args[i] == "" then
             table.remove(args, i)
         end
     end
+end
 
+local function exec_filesize(args)
+    strip_empty_args(args)
     mp.command_native_async({
         name = "subprocess",
         args = args,
@@ -1645,21 +1654,14 @@ local function download_done(success, result, error)
 end
 
 local function exec(args, callback)
-    for i = #args, 1, -1 do
-        if args[i] == nil or args[i] == "" then
-            table.remove(args, i)
-        end
-    end
-
+    strip_empty_args(args)
     msg.info("Executing command: " .. table.concat(args, " "))
-
     local ret = mp.command_native_async({
         name = "subprocess",
         args = args,
         capture_stdout = true,
         capture_stderr = true
     }, callback)
-
     return ret and ret.status or nil
 end
 
@@ -1676,10 +1678,6 @@ local function check_path_url()
         path = string.gsub(path, "ytdl://", "https://") -- Replace "ytdl://" with "https://"
     end
 
-    -- use current or default ytdl-format
-    local mpv_ytdl = mp.get_property("file-local-options/ytdl-format") or mp.get_property("ytdl-format") or ""
-    local ytdl_format = (mpv_ytdl and mpv_ytdl ~= "") and "-f " .. mpv_ytdl or "-f " .. "bestvideo+bestaudio/best"
-
     if is_url(path) then
         state.is_URL = true
         state.url_path = path
@@ -1689,7 +1687,7 @@ local function check_path_url()
             msg.info("Fetching file size...")
             local command = {
                 "yt-dlp",
-                state.is_image and "" or ytdl_format,
+                state.is_image and "" or get_ytdl_format(),
                 "--no-download",
                 "-O",
                 "%(filesize,filesize_approx)s", -- Fetch file size or approximate size
@@ -1783,26 +1781,32 @@ local function window_controls()
 
     -- Window controls
     if user_opts.window_controls then
+        local size_hover = contains(user_opts.hover_effect, "size") and
+            string.format("\\fscx%s\\fscy%s", user_opts.hover_button_size, user_opts.hover_button_size) or ""
+        local function wc_hoverstyle(color)
+            return "{\\c&H" .. osc_color_convert(color) .. "&" .. size_hover .. "}"
+        end
+
         -- Close: 🗙
         lo = add_layout("close")
         lo.geometry = third_geo
         lo.style = osc_styles.window_control
         lo.group = "top"
-        lo.button.hoverstyle = "{\\c&H" .. osc_color_convert(user_opts.windowcontrols_close_hover) .. "&" .. (contains(user_opts.hover_effect, "size") and string.format("\\fscx%s\\fscy%s", user_opts.hover_button_size, user_opts.hover_button_size) or "") .. "}"
+        lo.button.hoverstyle = wc_hoverstyle(user_opts.windowcontrols_close_hover)
 
         -- Minimize: 🗕
         lo = add_layout("minimize")
         lo.geometry = first_geo
         lo.style = osc_styles.window_control
         lo.group = "top"
-        lo.button.hoverstyle = "{\\c&H" .. osc_color_convert(user_opts.windowcontrols_min_hover) .. "&" .. (contains(user_opts.hover_effect, "size") and string.format("\\fscx%s\\fscy%s", user_opts.hover_button_size, user_opts.hover_button_size) or "") .. "}"
+        lo.button.hoverstyle = wc_hoverstyle(user_opts.windowcontrols_min_hover)
 
         -- Maximize: 🗖 /🗗
         lo = add_layout("maximize")
         lo.geometry = second_geo
         lo.style = osc_styles.window_control
         lo.group = "top"
-        lo.button.hoverstyle = "{\\c&H" .. osc_color_convert(user_opts.windowcontrols_max_hover) .. "&" .. (contains(user_opts.hover_effect, "size") and string.format("\\fscx%s\\fscy%s", user_opts.hover_button_size, user_opts.hover_button_size) or "") .. "}"
+        lo.button.hoverstyle = wc_hoverstyle(user_opts.windowcontrols_max_hover)
 
         add_area("window-controls", get_hitbox_coords(controlbox_left, wc_geo.y, wc_geo.an, controlbox_w, wc_geo.h))
     end
@@ -1825,6 +1829,27 @@ end
 --
 
 local layouts = {}
+
+-- create the OSC fade background box and window bar alpha box
+local function setup_bg_elements(posX, posY, osc_w, osc_alpha3, wc_alpha3)
+    new_element("osc_fade_bg", "box")
+    local lo = add_layout("osc_fade_bg")
+    lo.geometry = {x = posX, y = posY, an = 7, w = osc_w, h = 1}
+    lo.style = osc_styles.osc_fade_bg
+    lo.layer = 10
+    lo.alpha[3] = osc_alpha3
+
+    local top_titlebar = window_controls_enabled() and (user_opts.show_window_title or user_opts.window_controls)
+    if ((user_opts.window_top_bar == "yes" or not (state.border and state.title_bar)) or state.fullscreen) and top_titlebar then
+        new_element("window_bar_alpha_bg", "box")
+        lo = add_layout("window_bar_alpha_bg")
+        lo.geometry = {x = posX, y = -100, an = 7, w = osc_w, h = -1}
+        lo.style = osc_styles.window_fade_bg
+        lo.layer = 10
+        lo.group = "top"
+        lo.alpha[3] = wc_alpha3
+    end
+end
 
 -- Default layout
 layouts["modern"] = function ()
@@ -1867,25 +1892,7 @@ layouts["modern"] = function ()
     -- Controller Background
     local lo, geo
 
-    new_element("osc_fade_bg", "box")
-    lo = add_layout("osc_fade_bg")
-    lo.geometry = {x = posX, y = posY, an = 7, w = osc_w, h = 1}
-    lo.style = osc_styles.osc_fade_bg
-    lo.layer = 10
-    lo.alpha[3] = user_opts.fade_transparency_strength
-
-    local top_titlebar = window_controls_enabled() and (user_opts.show_window_title or user_opts.window_controls)
-
-    -- Window bar alpha
-    if ((user_opts.window_top_bar == "yes" or not (state.border and state.title_bar)) or state.fullscreen) and top_titlebar then
-        new_element("window_bar_alpha_bg", "box")
-        lo = add_layout("window_bar_alpha_bg")
-        lo.geometry = {x = posX, y = -100, an = 7, w = osc_w, h = -1}
-        lo.style = osc_styles.window_fade_bg
-        lo.layer = 10
-        lo.group = "top"
-        lo.alpha[3] = user_opts.window_fade_transparency_strength
-    end
+    setup_bg_elements(posX, posY, osc_w, user_opts.fade_transparency_strength, user_opts.window_fade_transparency_strength)
 
     -- Alignment
     local refX = osc_w / 2
@@ -2182,25 +2189,7 @@ layouts["modern-compact"] = function ()
     -- Controller Background
     local lo, geo
 
-    new_element("osc_fade_bg", "box")
-    lo = add_layout("osc_fade_bg")
-    lo.geometry = {x = posX, y = posY, an = 7, w = osc_w, h = 1}
-    lo.style = osc_styles.osc_fade_bg
-    lo.layer = 10
-    lo.alpha[3] = 50
-
-    local top_titlebar = window_controls_enabled() and (user_opts.show_window_title or user_opts.window_controls)
-
-    -- Window bar alpha
-    if ((user_opts.window_top_bar == "yes" or not (state.border and state.title_bar)) or state.fullscreen) and top_titlebar then
-        new_element("window_bar_alpha_bg", "box")
-        lo = add_layout("window_bar_alpha_bg")
-        lo.geometry = {x = posX, y = -100, an = 7, w = osc_w, h = -1}
-        lo.style = osc_styles.window_fade_bg
-        lo.layer = 10
-        lo.group = "top"
-        lo.alpha[3] = 0
-    end
+    setup_bg_elements(posX, posY, osc_w, 50, 0)
 
     -- Alignment
     local refX = osc_w / 2
@@ -2426,25 +2415,7 @@ layouts["modern-image"] = function ()
     -- Controller Background
     local lo, geo
 
-    new_element("osc_fade_bg", "box")
-    lo = add_layout("osc_fade_bg")
-    lo.geometry = {x = posX, y = posY, an = 7, w = osc_w, h = 1}
-    lo.style = osc_styles.osc_fade_bg
-    lo.layer = 10
-    lo.alpha[3] = user_opts.fade_transparency_strength
-
-    local top_titlebar = window_controls_enabled() and (user_opts.show_window_title or user_opts.window_controls)
-
-    -- Window bar alpha
-    if ((user_opts.window_top_bar == "yes" or not (state.border and state.title_bar)) or state.fullscreen) and top_titlebar then
-        new_element("window_bar_alpha_bg", "box")
-        lo = add_layout("window_bar_alpha_bg")
-        lo.geometry = {x = posX, y = -100, an = 7, w = osc_w, h = -1}
-        lo.style = osc_styles.window_fade_bg
-        lo.layer = 10
-        lo.group = "top"
-        lo.alpha[3] = user_opts.window_fade_transparency_strength
-    end
+    setup_bg_elements(posX, posY, osc_w, user_opts.fade_transparency_strength, user_opts.window_fade_transparency_strength)
 
     -- Alignment
     local refX = osc_w / 2
@@ -2573,14 +2544,6 @@ local function adjust_subtitles(visible)
     end
 end
 
-local function is_image()
-    local current_track = mp.get_property_native("current-tracks/video")
-    if current_track and current_track.image and not current_track.albumart then
-        state.is_image = true
-    else
-        state.is_image = false
-    end
-end
 
 local function set_bar_visible(visible_key, visible, with_margins, on_change)
     if state[visible_key] ~= visible then
@@ -3100,12 +3063,9 @@ local function osc_init()
         else
             mp.commandv("show-text", locale.downloading .. "...")
             state.downloading = true
-            -- use current or default ytdl-format
-            local mpv_ytdl = mp.get_property("file-local-options/ytdl-format") or mp.get_property("ytdl-format") or ""
-            local ytdl_format = (mpv_ytdl and mpv_ytdl ~= "") and "-f " .. mpv_ytdl or "-f " .. "bestvideo+bestaudio/best"
             local command = {
                 "yt-dlp",
-                state.is_image and "" or ytdl_format,
+                state.is_image and "" or get_ytdl_format(),
                 "--add-metadata",
                 "--embed-subs",
                 "-o", "%(title)s.%(ext)s",
@@ -3169,6 +3129,21 @@ local function osc_init()
         end
     end
 
+    -- build cache seek ranges from state
+    local function build_cache_seek_ranges()
+        if not user_opts.seekrange or not cache_enabled() then return nil end
+        local duration = mp.get_property_number("duration")
+        if not duration or duration <= 0 then return nil end
+        local nranges = {}
+        for _, range in pairs(state.cache_state["seekable-ranges"]) do
+            nranges[#nranges + 1] = {
+                ["start"] = 100 * range["start"] / duration,
+                ["end"]   = 100 * range["end"]   / duration,
+            }
+        end
+        return nranges
+    end
+
     --seekbar
     ne = new_element("seekbar", "slider")
     ne.enabled = mp.get_property("percent-pos") ~= nil
@@ -3200,23 +3175,7 @@ local function osc_init()
             return ""
         end
     end
-    ne.slider.seekRangesF = function()
-        if not user_opts.seekrange or not cache_enabled() then
-            return nil
-        end
-        local duration = mp.get_property_number("duration")
-        if duration == nil or duration <= 0 then
-            return nil
-        end
-        local nranges = {}
-        for _, range in pairs(state.cache_state["seekable-ranges"]) do
-            nranges[#nranges + 1] = {
-                ["start"] = 100 * range["start"] / duration,
-                ["end"] = 100 * range["end"] / duration,
-            }
-        end
-        return nranges
-    end
+    ne.slider.seekRangesF = build_cache_seek_ranges
     ne.eventresponder["mouse_move"] = function (element)
         if not element.state.mbtnleft then return end -- allow drag for mbtnleft only!
         -- mouse move events may pile up during seeking and may still get
@@ -3288,29 +3247,7 @@ local function osc_init()
     ne.slider.tooltipF = function() return "" end
     ne.slider.seekRangesF = function()
         if user_opts.persistentbuffer then
-            if not user_opts.seekrange then
-                return nil
-            end
-            local cache_state = state.cache_state
-            if not cache_state then
-                return nil
-            end
-            local duration = mp.get_property_number("duration")
-            if duration == nil or duration <= 0 then
-                return nil
-            end
-            local ranges = cache_state["seekable-ranges"]
-            if #ranges == 0 then
-                return nil
-            end
-            local nranges = {}
-            for _, range in pairs(ranges) do
-                nranges[#nranges + 1] = {
-                    ["start"] = 100 * range["start"] / duration,
-                    ["end"] = 100 * range["end"] / duration,
-                }
-            end
-            return nranges
+            return build_cache_seek_ranges()
         end
         return nil
     end
@@ -3820,8 +3757,7 @@ local function on_duration() request_init() end
 local duration_watched = false
 local function update_duration_watch()
     local want_watch = user_opts.livemarkers and
-                       (mp.get_property_number("chapters", 0) or 0) > 0 and
-                       true or false  -- ensure it's a boolean
+                       (mp.get_property_number("chapters", 0) or 0) > 0
 
     if want_watch ~= duration_watched then
         if want_watch then
@@ -3848,11 +3784,7 @@ mp.register_event("file-loaded", function()
     state.file_size_normalized = "Approximating size..."
     check_path_url()
     if user_opts.automatickeyframemode then
-       if mp.get_property_number("duration", 0) > user_opts.automatickeyframelimit then
-            user_opts.seekbarkeyframes = true
-       else
-            user_opts.seekbarkeyframes = false
-       end
+        user_opts.seekbarkeyframes = mp.get_property_number("duration", 0) > user_opts.automatickeyframelimit
     end
     local oos = user_opts.osc_on_start
     if oos == true or oos == "yes" then oos = "both" end
@@ -3932,11 +3864,7 @@ end)
 mp.observe_property("paused-for-cache", "bool", function(_, val) state.buffering = val end)
 -- ensure compatibility with auto loop scripts (eg: a script that sets videos under 2 seconds to loop by default)
 mp.observe_property("loop-file", "bool", function(_, val)
-    if (val == nil) then
-        state.file_loop = true
-    else
-        state.file_loop = false
-    end
+    state.file_loop = (val == nil)
 end)
 mp.observe_property("sub-pos", "native", function(_, value)
     if value == nil then return end
@@ -4047,18 +3975,10 @@ end
 
 local function idlescreen_visibility(mode, no_osd)
     if mode == "cycle" then
-        if user_opts.idlescreen then
-            mode = "no"
-        else
-            mode = "yes"
-        end
+        mode = user_opts.idlescreen and "no" or "yes"
     end
 
-    if mode == "yes" then
-        user_opts.idlescreen = true
-    else
-        user_opts.idlescreen = false
-    end
+    user_opts.idlescreen = (mode == "yes")
 
     mp.set_property_native("user-data/osc/idlescreen", user_opts.idlescreen)
 
