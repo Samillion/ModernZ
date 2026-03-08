@@ -2890,13 +2890,13 @@ local function osc_init()
         local pos = get_slider_value(element)
         local setvol = set_volume(pos)
         if element.state.lastseek == nil or element.state.lastseek ~= setvol then
-                mp.commandv("osd-msg", "set", "volume", setvol)
+                mp.commandv("set", "volume", setvol)
                 element.state.lastseek = setvol
         end
     end
     ne.eventresponder["mbtn_left_down"] = function (element)
         local pos = get_slider_value(element)
-        mp.commandv("osd-msg", "set", "volume", set_volume(pos))
+        mp.commandv("set", "volume", set_volume(pos))
     end
     ne.eventresponder["reset"] = function (element) element.state.lastseek = nil end
     ne.eventresponder["wheel_up_press"] = command_callback(user_opts.vol_ctrl_wheel_up_command)
@@ -3039,11 +3039,11 @@ local function osc_init()
 
     local function adjust_speed(delta)
         local new_speed = mp.get_property_number("speed", 1) + delta
-        mp.commandv("osd-msg", "set", "speed", math.max(0.25, math.min(100, new_speed)))
+        mp.commandv("set", "speed", math.max(0.25, math.min(100, new_speed)))
     end
 
     ne.eventresponder["mbtn_left_up"] = function() adjust_speed(user_opts.speed_button_click) end
-    ne.eventresponder["mbtn_right_up"] = function() mp.commandv("osd-msg", "set", "speed", 1) end
+    ne.eventresponder["mbtn_right_up"] = function() mp.commandv("set", "speed", 1) end
     ne.eventresponder["wheel_up_press"] = function() adjust_speed(user_opts.speed_button_scroll) end
     ne.eventresponder["wheel_down_press"] = function() adjust_speed(-user_opts.speed_button_scroll) end
 
