@@ -36,7 +36,6 @@ local user_opts = {
 
     -- OSC behaviour and scaling
     hidetimeout = 1500,                    -- time (in ms) before OSC hides if no mouse movement
-    seek_resets_hidetimeout = true,        -- if seeking should reset the hidetimeout
     fadeduration = 200,                    -- fade-out duration (in ms), set to 0 for no fade
     fadein = false,                        -- whether to enable fade-in effect
     minmousemove = 0,                      -- minimum mouse movement (in pixels) required to show OSC
@@ -3812,7 +3811,7 @@ mp.register_event("seek", function()
     end
 end)
 mp.observe_property("seeking", "native", function(_, seeking)
-    if user_opts.seek_resets_hidetimeout then
+    if user_opts.osc_on_seek then
         reset_timeout()
     end
 end)
