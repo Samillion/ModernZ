@@ -2,7 +2,7 @@
 
 A sleek and modern OSC for [mpv](https://mpv.io/), this project is a fork of ModernX designed to enhance functionality by adding more features, all while preserving the core standards of mpv's OSC.
 
-<img width="1717" height="967" alt="ModernZ-OSC" src="https://github.com/user-attachments/assets/16ecc414-9888-4b57-b025-5eab4cd234ee" />
+<img width="1717" height="967" alt="ModernZ-OSC" src="https://github.com/user-attachments/assets/7573bc13-bdb3-46f6-8baa-fca377280e17" />
 
 <p align="center">
     <a href="#installation"><strong>Installation »</strong></a>
@@ -18,7 +18,7 @@ A sleek and modern OSC for [mpv](https://mpv.io/), this project is a fork of Mod
 
 ## Features
 
-- 🎨 Modern, customizable interface with multiple layouts [[options](#configuration)]
+- 🎨 Modern, customizable interface with multiple layouts, themes and icon styles [[options](#configuration)]
 - 🖱️ Independent hover zone for top bar (window controls) and bottom bar (OSC)
 - 📷 Image Viewer mode with zoom controls [[details](/docs/IMAGE_VIEWER.md)]
 - 🎛️ Buttons: download, playlist, speed control, screenshot, pin, loop, cache and more. [[details](/docs/CONTROLS.md)]
@@ -44,7 +44,7 @@ Choose the layout design that suits your preference, between `modern` and `moder
     </thead>
     <tbody>
         <tr>
-            <td><img width="1717" height="120" alt="fluent_mixed_modernz" src="https://github.com/user-attachments/assets/25d0a53b-d191-4378-aa7f-3940610c47e6" /></td>
+            <td><img width="1717" height="120" alt="fluent_mixed_modernz" src="https://github.com/user-attachments/assets/b1e1a865-d8b2-4ca6-aeff-fe36e30ed138" /></td>
         </tr>
     </tbody>
 </table>
@@ -57,7 +57,7 @@ Choose the layout design that suits your preference, between `modern` and `moder
     </thead>
     <tbody>
         <tr>
-            <td><img width="1717" height="147" alt="fluent_mixed_modern-compact" src="https://github.com/user-attachments/assets/a7e7ffb2-0752-459f-9859-9c1352e9ef81" /></td>
+            <td><img width="1717" height="150" alt="modern-compact_mixed_fluent" src="https://github.com/user-attachments/assets/98c082a7-877c-4d52-bbcb-3dd2621ac055" /></td>
         </tr>
     </tbody>
 </table>
@@ -74,7 +74,7 @@ You can also change the icon theme to `fluent` or `material` to match your prefe
     </thead>
     <tbody>
         <tr>
-            <td><img width="1717" height="120" alt="fluent_mixed_modernz" src="https://github.com/user-attachments/assets/25d0a53b-d191-4378-aa7f-3940610c47e6" /></td>
+            <td><img width="1717" height="120" alt="fluent_mixed_modernz" src="https://github.com/user-attachments/assets/b1e1a865-d8b2-4ca6-aeff-fe36e30ed138" /></td>
         </tr>
     </tbody>
 </table>
@@ -94,7 +94,7 @@ You can also change the icon theme to `fluent` or `material` to match your prefe
 
 ### Theme Styles
 
-Both `fluent` and `material` themes have different styles as well. By using the `icon_style` option, you can choose `mixed`, `filled` and `outline`.
+Both `fluent` and `material` themes have different styles as well. By using the `icon_style` option, you can choose `mixed`, `filled` or `outline`.
 
 <table>
     <thead>
@@ -109,7 +109,7 @@ Both `fluent` and `material` themes have different styles as well. By using the 
     <tbody>
         <tr>
             <td><code>mixed</code></td>
-            <td><img width="1717" height="120" alt="fluent_mixed_modernz" src="https://github.com/user-attachments/assets/25d0a53b-d191-4378-aa7f-3940610c47e6" /></td>
+            <td><img width="1717" height="120" alt="fluent_mixed_modernz" src="https://github.com/user-attachments/assets/b1e1a865-d8b2-4ca6-aeff-fe36e30ed138" /></td>
         </tr>
         <tr>
             <td><code>filled</code></td>
