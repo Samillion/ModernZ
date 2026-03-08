@@ -304,13 +304,11 @@ local function build_icons(theme_name, style)
     local theme = icon_themes[theme_name] or icon_themes["fluent"]
     local p = theme.prefix
 
-    local function f(name) -- filled in "mixed" and "filled", outline in "outline"
-        return p .. name .. (style ~= "outline" and "_filled" or "")
-    end
+    local filled_suffix  = (style ~= "outline") and "_filled" or ""
+    local outline_suffix = (style == "filled")  and "_filled" or ""
 
-    local function o(name) -- outline in "mixed" and "outline", filled in "filled"
-        return p .. name .. (style == "filled" and "_filled" or "")
-    end
+    local function f(name) return p .. name .. filled_suffix  end
+    local function o(name) return p .. name .. outline_suffix end
 
     return {
         iconfont = icon_font,
