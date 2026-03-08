@@ -26,7 +26,7 @@ Below is a list that explains the OSC buttons function depending on how you inte
 | Right mouse click      | Seek to the head of chosen chapter |
 | Scroll wheel           | Seek forward/backwards             |
 
-### Play Time Codes
+### Time Codes
 
 | Action            | Function                                     |
 | ----------------- | -------------------------------------------- |
@@ -42,7 +42,7 @@ Below is a list that explains the OSC buttons function depending on how you inte
 | Middle mouse click     | Toggle enable/disable playlist loop |
 | Shift+left mouse click | Toggle enable/disable playlist loop |
 
-### Playlist Track Back/Forward
+### Track Back/Forward
 
 | Action                 | Function                |
 | ---------------------- | ----------------------- |
