@@ -1,6 +1,5 @@
 # ModernZ Controls Guide
-
-![modernz_osc_controls](https://github.com/user-attachments/assets/deb52cf2-8288-4f40-9993-9b7cb3e863e0)
+<img width="1717" height="120" alt="modernz_buttons" src="https://github.com/user-attachments/assets/81a983f6-6300-4c3f-9ebd-876bca86cc5e" />
 
 ## Button Interactions
 
@@ -11,10 +10,10 @@ Below is a list that explains the OSC buttons function depending on how you inte
 
 ### Title
 
-| Action            | Function                  |
-| ----------------- | ------------------------- |
-| Left mouse click  | Show `media-title` in OSD |
-| Right mouse click | Show `filename` in OSD    |
+| Action            | Function                     |
+| ----------------- | ---------------------------- |
+| Left mouse click  | Show current track details   |
+| Right mouse click | Show menu with watch history |
 
 ### Seekbar
 
@@ -47,7 +46,7 @@ Below is a list that explains the OSC buttons function depending on how you inte
 | Action                 | Function                |
 | ---------------------- | ----------------------- |
 | Left mouse click       | Play previous/next file |
-| Right mouse click      | Show a simple playlist  |
+| Right mouse click      | Show a playlist menu    |
 | Shift+left mouse click | Show a simple playlist  |
 | Middle mouse click     | Show a simple playlist  |
 
@@ -75,7 +74,7 @@ Below is a list that explains the OSC buttons function depending on how you inte
 | ---------------------- | ----------------------------------- |
 | Left mouse click       | Show an interactive tracks list     |
 | Right mouse click      | Cycle audio/subtitle track          |
-| Shift+left mouse click | Show a simple tracks list           |
+| Shift+left mouse click | Cycle audio/subtitle track down     |
 | Scroll wheel           | Cycle audio/subtitle tracks up/down |
 
 ### Playlist
@@ -87,10 +86,11 @@ Below is a list that explains the OSC buttons function depending on how you inte
 
 ### Volume
 
-| Action           | Function              |
-| ---------------- | --------------------- |
-| Left mouse click | Toggle mute on/off    |
-| Scroll wheel     | Change volume up/down |
+| Action            | Function                       |
+| ----------------- | ------------------------------ |
+| Left mouse click  | Toggle mute on/off             |
+| Right mouse click | Show audio device select menu |
+| Scroll wheel      | Change volume up/down          |
 
 ### Screenshot
 
@@ -113,8 +113,8 @@ Below is a list that explains the OSC buttons function depending on how you inte
 
 ### Shuffle
 
-| Action            | Function             |
-| ----------------- | -------------------- |
+| Action            | Function                     |
+| ----------------- | ---------------------------- |
 | Left mouse click  | Shuffle/Unshuffle playlist   |
 
 ### Speed Control
