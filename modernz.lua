@@ -2135,7 +2135,7 @@ layouts["modern"] = function ()
     if speed_button then
         lo = add_layout("tog_speed")
         lo.geometry = {x = end_x, y = refY - 35, an = 5, w = 24, h = 24}
-        lo.style = osc_styles.control_3
+        lo.style = osc_styles.time
         lo.visible = (osc_param.playresx >= 600 - outeroffset)
         end_x = end_x - 45
     end
@@ -2339,14 +2339,6 @@ layouts["modern-compact"] = function ()
         end_x = end_x - 55
     end
 
-    elements.tog_speed.visible = user_opts.speed_button and osc_geo.w >= 300
-    if elements.tog_speed.visible then
-        lo = add_layout("tog_speed")
-        lo.geometry = {x = end_x, y = refY - 35, an = 5, w = 24, h = 24}
-        lo.style = osc_styles.control_2
-        end_x = end_x - 55
-    end
-
     elements.sub_track.visible = user_opts.subtitles_button and sub_track_count > 0 and osc_geo.w >= 600
     if elements.sub_track.visible then
         lo = add_layout("sub_track")
@@ -2376,6 +2368,14 @@ layouts["modern-compact"] = function ()
         lo = add_layout("download")
         lo.geometry = {x = end_x, y = refY - 35, an = 5, w = 24, h = 24}
         lo.style = osc_styles.control_2
+        end_x = end_x - 55
+    end
+
+    elements.tog_speed.visible = user_opts.speed_button and osc_geo.w >= 300
+    if elements.tog_speed.visible then
+        lo = add_layout("tog_speed")
+        lo.geometry = {x = end_x, y = refY - 35, an = 5, w = 24, h = 24}
+        lo.style = osc_styles.time
         end_x = end_x - 55
     end
 
@@ -3030,20 +3030,23 @@ local function osc_init()
 
     --tog_speed
     ne = new_element("tog_speed", "button")
-    ne.content = icons.speed
+    ne.content = function()
+        return string.format("%g", mp.get_property_number("speed", 1)) .. "×"
+    end
     ne.visible = (osc_param.playresx >= visible_min_width)
     ne.tooltip_style = osc_styles.tooltip
     ne.tooltipF = user_opts.tooltip_hints and locale.speed_control or ""
-    ne.eventresponder["mbtn_left_up"] = function ()
-        mp.commandv("osd-msg", "set", "speed", math.min(100, mp.get_property_number("speed") + user_opts.speed_button_click))
+
+    local function adjust_speed(delta)
+        local new_speed = mp.get_property_number("speed", 1) + delta
+        mp.commandv("osd-msg", "set", "speed", math.max(0.25, math.min(100, new_speed)))
     end
-    ne.eventresponder["mbtn_right_up"] = function () mp.commandv("osd-msg", "set", "speed", 1) end
-    ne.eventresponder["wheel_up_press"] = function ()
-        mp.commandv("osd-msg", "set", "speed", math.min(100, mp.get_property_number("speed") + user_opts.speed_button_scroll))
-    end
-    ne.eventresponder["wheel_down_press"] = function ()
-        mp.commandv("osd-msg", "set", "speed", math.max(0.25, mp.get_property_number("speed") - user_opts.speed_button_scroll))
-    end
+
+    ne.eventresponder["mbtn_left_up"] = function() adjust_speed(user_opts.speed_button_click) end
+    ne.eventresponder["mbtn_right_up"] = function() mp.commandv("osd-msg", "set", "speed", 1) end
+    ne.eventresponder["wheel_up_press"] = function() adjust_speed(user_opts.speed_button_scroll) end
+    ne.eventresponder["wheel_down_press"] = function() adjust_speed(-user_opts.speed_button_scroll) end
+
     visible_min_width = visible_min_width + (user_opts.speed_button and 100 or 0)
 
     --download
