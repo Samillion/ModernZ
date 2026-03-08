@@ -2,7 +2,7 @@
 
 A sleek and modern OSC for [mpv](https://mpv.io/), this project is a fork of ModernX designed to enhance functionality by adding more features, all while preserving the core standards of mpv's OSC.
 
-![ModernZ-OSC](https://github.com/user-attachments/assets/9c11c28d-25d7-46e5-9044-67d4653b189a)
+<img width="1717" height="967" alt="ModernZ-OSC" src="https://github.com/user-attachments/assets/7573bc13-bdb3-46f6-8baa-fca377280e17" />
 
 <p align="center">
     <a href="#installation"><strong>Installation »</strong></a>
@@ -18,7 +18,7 @@ A sleek and modern OSC for [mpv](https://mpv.io/), this project is a fork of Mod
 
 ## Features
 
-- 🎨 Modern, customizable interface with multiple layouts [[options](#configuration)]
+- 🎨 Modern, customizable interface with multiple layouts, themes and icon styles [[options](#configuration)]
 - 🖱️ Independent hover zone for top bar (window controls) and bottom bar (OSC)
 - 📷 Image Viewer mode with zoom controls [[details](/docs/IMAGE_VIEWER.md)]
 - 🎛️ Buttons: download, playlist, speed control, screenshot, pin, loop, cache and more. [[details](/docs/CONTROLS.md)]
@@ -34,21 +34,139 @@ A sleek and modern OSC for [mpv](https://mpv.io/), this project is a fork of Mod
 ## Customization
 Choose the layout design that suits your preference, between `modern` and `modern-compact` by using the `layout` option in your `modernz.conf`.
 
-![modern_layout](https://github.com/user-attachments/assets/452c56ce-446f-4180-b3a2-cadcdb4f97f2)
+### Layouts
 
-![modern_compact_layout](https://github.com/user-attachments/assets/dc53fdf3-45af-4605-a367-e172d635a4f2)
+<table>
+    <thead>
+        <tr>
+            <th><code>modern</code></th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><img width="1717" height="120" alt="fluent_mixed_modernz" src="https://github.com/user-attachments/assets/b1e1a865-d8b2-4ca6-aeff-fe36e30ed138" /></td>
+        </tr>
+    </tbody>
+</table>
+
+<table>
+    <thead>
+        <tr>
+            <th><code>modern-compact</code></th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><img width="1717" height="150" alt="modern-compact_mixed_fluent" src="https://github.com/user-attachments/assets/98c082a7-877c-4d52-bbcb-3dd2621ac055" /></td>
+        </tr>
+    </tbody>
+</table>
+
+### Themes
 
 You can also change the icon theme to `fluent` or `material` to match your preferred style by using the `icon_theme` option in your `modernz.conf`
 
-![modernz_fluent](https://github.com/user-attachments/assets/3aafac8c-a13f-4840-8119-739523eb7a8e)
+<table>
+    <thead>
+        <tr>
+            <th><code>fluent</code></th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><img width="1717" height="120" alt="fluent_mixed_modernz" src="https://github.com/user-attachments/assets/b1e1a865-d8b2-4ca6-aeff-fe36e30ed138" /></td>
+        </tr>
+    </tbody>
+</table>
 
-![modernz_material](https://github.com/user-attachments/assets/e5ad6d06-f071-42ef-9210-296d95906d94)
+<table>
+    <thead>
+        <tr>
+            <th><code>material</code></th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><img width="1717" height="120" alt="material_mixed_modernz" src="https://github.com/user-attachments/assets/ed4056c6-a672-47a0-b356-cde3d7186079" /></td>
+        </tr>
+    </tbody>
+</table>
 
-Not a fan of white buttons and text? You have complete control to customize colors and button layouts to perfectly reflect your style.
+### Theme Styles
 
-![modernz_osc_controls_top](https://github.com/user-attachments/assets/9e3df3af-d3ea-41bb-8c9a-9bf64c1d895a)
+Both `fluent` and `material` themes have different styles as well. By using the `icon_style` option, you can choose `mixed`, `filled` or `outline`.
 
-![modernz_osc_controls_bottom](https://github.com/user-attachments/assets/d4e56bf5-ce7b-44e9-90a3-e27e922dd6bd)
+<table>
+    <thead>
+        <tr>
+            <th colspan="2"><code>fluent</code></th>
+        </tr>
+        <tr>
+            <th>Style</th>
+            <th>Preview</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><code>mixed</code></td>
+            <td><img width="1717" height="120" alt="fluent_mixed_modernz" src="https://github.com/user-attachments/assets/b1e1a865-d8b2-4ca6-aeff-fe36e30ed138" /></td>
+        </tr>
+        <tr>
+            <td><code>filled</code></td>
+            <td><img width="1717" height="120" alt="fluent_filled_modernz" src="https://github.com/user-attachments/assets/d91ee69d-29b2-43b6-9959-f84d8d8a06eb" /></td>
+        </tr>
+        <tr>
+            <td><code>outline</code></td>
+            <td><img width="1717" height="120" alt="fluent_outline_modernz" src="https://github.com/user-attachments/assets/f3a0572a-a8eb-47d9-83a3-807165fb88d0" /></td>
+        </tr>
+    </tbody>
+</table>
+
+<table>
+    <thead>
+        <tr>
+            <th colspan="2"><code>material</code></th>
+        </tr>
+        <tr>
+            <th>Style</th>
+            <th>Preview</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><code>mixed</code></td>
+            <td><img width="1717" height="120" alt="material_mixed_modernz" src="https://github.com/user-attachments/assets/ed4056c6-a672-47a0-b356-cde3d7186079" /></td>
+        </tr>
+        <tr>
+            <td><code>filled</code></td>
+            <td><img width="1717" height="120" alt="material_filled_modernz" src="https://github.com/user-attachments/assets/39fbd0e7-88c7-49cf-b7f2-bed9a95bd9a8" /></td>
+        </tr>
+        <tr>
+            <td><code>outline</code></td>
+            <td><img width="1717" height="120" alt="material_outline_modernz" src="https://github.com/user-attachments/assets/baf38eaf-c481-4822-8a90-8c0720fbcb42" /></td>
+        </tr>
+    </tbody>
+</table>
+
+### Colors
+
+Not a fan of white buttons and text? You have complete control to customize colors to perfectly reflect your style.
+
+<table>
+    <thead>
+        <tr>
+            <th>Colors</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><img width="1717" height="108" alt="modernz_colors_top" src="https://github.com/user-attachments/assets/5367e5c6-4c2e-4eb9-9ff8-44496629945e" /></td>
+        </tr>
+        <tr>
+            <td><img width="1717" height="190" alt="modernz_colors_bottom" src="https://github.com/user-attachments/assets/1f82250a-58af-4097-9ad6-f6e5d784d16b" /></td>
+        </tr>
+    </tbody>
+</table>
 
 See the [Color Customization](docs/USER_OPTS.md#colors-and-style) section in the configuration guide for details on how to customize colors and buttons.
 
