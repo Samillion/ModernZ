@@ -86,11 +86,11 @@ Below is a list that explains the OSC buttons function depending on how you inte
 
 ### Volume
 
-| Action            | Function                       |
-| ----------------- | ------------------------------ |
-| Left mouse click  | Toggle mute on/off             |
+| Action            | Function                      |
+| ----------------- | ----------------------------- |
+| Left mouse click  | Toggle mute on/off            |
 | Right mouse click | Show audio device select menu |
-| Scroll wheel      | Change volume up/down          |
+| Scroll wheel      | Change volume up/down         |
 
 ### Screenshot
 
