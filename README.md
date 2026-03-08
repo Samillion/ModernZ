@@ -76,8 +76,7 @@ See the [Color Customization](docs/USER_OPTS.md#colors-and-style) section in the
    ```
    📁 mpv/
    ├── 📁 fonts/
-   │   ├── 📄 fluent-system-icons.ttf
-   │   └── 📄 material-design-icons.ttf
+   │   └── 📄 modernz-icons.ttf
    ├── 📁 script-opts/
    │   └── 📄 modernz.conf
    └── 📁 scripts/
@@ -206,9 +205,8 @@ Having said that, ModernZ still uses parts of the old code, and every previous a
 
 #### Credits:
 
-- Font: Fluent UI System Icons [[details](https://github.com/microsoft/fluentui-system-icons)] [[font file](./fluent-system-icons.ttf)] [[license](https://github.com/microsoft/fluentui-system-icons/blob/main/LICENSE)]
-- Font: Material Design Icons [[details](https://github.com/Templarian/MaterialDesign-Webfont)] [[font file](./material-design-icons.ttf)] [[license](https://github.com/Templarian/MaterialDesign-Webfont/blob/master/LICENSE)]
-- Font Fluent UI Systems Icons modified by [Xurdejl](https://github.com/Xurdejl) for use on ModernZ osc
+- [Material Symbols](https://github.com/google/material-design-icons) by Google — [Apache 2.0](https://github.com/google/material-design-icons?tab=Apache-2.0-1-ov-file#readme)
+- [Fluent System Icons](https://github.com/microsoft/fluentui-system-icons) by Microsoft — [MIT](https://github.com/microsoft/fluentui-system-icons?tab=MIT-1-ov-file#readme) *(some icons modified or created to suit the OSC's needs)*
 - [mpv](https://github.com/mpv-player/mpv) and their [osc.lua](https://github.com/mpv-player/mpv/blob/master/player/lua/osc.lua), as ModernZ osc was re-based on the stock osc standards and applies updates from it
 - All modern osc origin and their forks as mentioned in [history](#history)
 - All [contributors](https://github.com/Samillion/ModernZ/graphs/contributors), testers and users that helped directly or indirectly with ModernZ osc ❤️

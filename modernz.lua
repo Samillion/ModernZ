@@ -22,6 +22,7 @@ local user_opts = {
     language = "en",                       -- set language (for available options, see: https://github.com/Samillion/ModernZ/blob/main/docs/TRANSLATIONS.md)
     layout = "modern",                     -- set layout: "modern" or "modern-compact"
     icon_theme = "fluent",                 -- set icon theme. accepts "fluent" or "material"
+    icon_style = "mixed",                  -- "mixed", "filled", "outline"
     font = "mpv-osd-symbols",              -- font for the OSC (default: mpv-osd-symbols or the one set in mpv.conf)
 
     idlescreen = true,                     -- show mpv logo when idle
@@ -292,104 +293,77 @@ local osc_param = {                  -- calculated by osc_init()
     },
 }
 
-local icon_theme = {
-    ["fluent"] = {
-        iconfont = "fluent-system-icons",
-        window = {
-            maximize = "\238\159\171",
-            unmaximize = "\238\174\150",
-            minimize = "\238\175\144",
-            close = "\239\141\169",
-        },
-        audio = "\238\175\139",
-        subtitle = "\238\175\141",
-        playlist = "\238\161\159",
-        menu = "\238\160\170",
-        volume_mute = "\238\173\138",
-        volume_quiet = "\238\172\184",
-        volume_low = "\238\172\189",
-        volume_high = "\238\173\130",
+local icon_font = "modernz-icons"
 
-        play = "\238\166\143",
-        pause = "\238\163\140",
-        replay = "\238\189\191",
-        previous = "\239\152\167",
-        next = "\239\149\168",
-        rewind = "\238\168\158",
-        forward = "\238\152\135",
-        jump = {
-            [5] = {"\238\171\186", "\238\171\187"},
-            [10] = {"\238\171\188", "\238\172\129"},
-            [30] = {"\238\172\133", "\238\172\134"},
-            default = {"\238\172\138", "\238\172\138"}, -- second icon is mirrored in layout()
-        },
-
-        fullscreen = "\239\133\160",
-        fullscreen_exit = "\239\133\166",
-        info = "\239\146\164",
-        ontop_on = "\238\165\190",
-        ontop_off = "\238\166\129",
-        screenshot = "\238\169\150",
-        loop_off = "\239\133\178",
-        loop_on = "\239\133\181",
-        shuffle_off = "\238\188\188",
-        shuffle_on  = "\238\188\184",
-        speed = "\239\160\177",
-        download = "\239\133\144",
-        downloading = "\239\140\174",
-
-        zoom_in = "\238\186\142",
-        zoom_out = "\238\186\143",
-    },
-    ["material"] = {
-        iconfont = "Material Design Icons",
-        window = {
-            maximize = '\243\176\150\175',
-            unmaximize = '\243\176\150\178',
-            minimize = '\243\176\150\176',
-            close = '\243\176\150\173',
-        },
-        audio = '\243\176\151\133',
-        subtitle = '\243\176\168\150',
-        playlist = '\243\176\141\156', -- this icon is better suited as a generic menu button
-        menu = '\243\176\149\178', -- this icon would be better suited for playlists
-        volume_mute = '\243\176\184\136',
-        volume_quiet = '\243\176\149\191',
-        volume_low = '\243\176\150\128',
-        volume_high = '\243\176\149\190',
-
-        play = '\243\176\144\138',
-        pause = '\243\176\143\164',
-        replay = '\243\176\145\153',
-        previous = '\243\176\146\171',
-        next = '\243\176\146\172',
-        rewind = '\243\176\145\159',
-        forward = '\243\176\136\145',
-        jump = {
-            [5] = {'\243\177\135\185', '\243\177\135\184'},
-            [10] = {'\243\176\180\170', '\243\176\181\177'},
-            [30] = {'\243\176\182\150', '\243\176\180\134'},
-            default = {'\243\176\147\151', '\243\176\147\151'}, -- first would be '\243\176\147\149' but icon is mirrored in layout()
-        },
-
-        fullscreen = '\243\176\138\147',
-        fullscreen_exit = '\243\176\138\148',
-        info = '\243\176\139\189',
-        ontop_on = '\243\176\144\131',
-        ontop_off = '\243\176\164\176',
-        screenshot = '\243\176\132\128',
-        loop_off = '\243\176\145\151',
-        loop_on = '\243\176\145\150',
-        shuffle_off = '\243\176\146\158',
-        shuffle_on = '\243\176\146\157',
-        speed = '\243\176\163\191',
-        download = '\243\176\129\136',
-        downloading = '\243\176\166\151',
-
-        zoom_in = '\243\176\155\173',
-        zoom_out = '\243\176\155\172',
-    },
+local icon_themes = {
+    fluent   = { prefix = "fluent_"   },
+    material = { prefix = "material_" },
 }
+
+local function build_icons(theme_name, style)
+    local theme = icon_themes[theme_name] or icon_themes["fluent"]
+    local p = theme.prefix
+
+    local filled_suffix  = (style ~= "outline") and "_filled" or ""
+    local outline_suffix = (style == "filled")  and "_filled" or ""
+
+    local function f(name) return p .. name .. filled_suffix  end
+    local function o(name) return p .. name .. outline_suffix end
+
+    return {
+        iconfont = icon_font,
+        window = {
+            maximize   = "window_maximize",
+            unmaximize = "window_unmaximize",
+            minimize   = "window_minimize",
+            close      = "window_close",
+        },
+
+        play     = f("play_arrow"),
+        pause    = f("pause"),
+        replay   = f("replay"),
+        previous = f("skip_previous"),
+        next     = f("skip_next"),
+        rewind   = f("fast_rewind"),
+        forward  = f("fast_forward"),
+        jump = {
+            [5]     = { f("replay_5"),   f("forward_5")   },
+            [10]    = { f("replay_10"),  f("forward_10")  },
+            [30]    = { f("replay_30"),  f("forward_30")  },
+            default = { f("skip_back"),  f("skip_forward") },
+        },
+
+        audio        = o("surround_sound"),
+        subtitle     = o("subtitles"),
+        playlist     = o("playlist_play"),
+        menu         = o("more_vert"),
+        volume_mute  = f("volume_off"),
+        volume_quiet = f("volume_mute"),
+        volume_low   = f("volume_down"),
+        volume_high  = f("volume_up"),
+
+        download        = o("download"),
+        downloading     = o("downloading"),
+        speed           = o("speed"),
+        shuffle_on      = o("shuffle_on"),
+        shuffle_off     = o("shuffle"),
+        loop_on         = o("repeat_on"),
+        loop_off        = o("repeat"),
+        screenshot      = o("photo_camera"),
+        ontop_on        = o("pip"),
+        ontop_off       = o("pip_exit"),
+        info            = o("info"),
+        fullscreen      = o("fullscreen"),
+        fullscreen_exit = o("fullscreen_exit"),
+
+        zoom_in         = o("zoom_in"),
+        zoom_out        = o("zoom_out"),
+    }
+end
+
+local function set_icon_theme()
+    icons = build_icons(user_opts.icon_theme, user_opts.icon_style)
+end
 
 --- localization
 local language = {
@@ -472,13 +446,6 @@ if external then
     end
 end
 
-local icons
-local iconfont
-local function set_icon_theme()
-    icons = icon_theme[user_opts.icon_theme] or icon_theme["fluent"]
-    iconfont = icons.iconfont
-end
-
 local locale
 local function set_osc_locale()
     locale = language[user_opts.language] or language["en"]
@@ -528,7 +495,7 @@ local function set_osc_styles()
     osc_styles = {
         osc_fade_bg = "{\\blur" .. user_opts.fade_blur_strength .. "\\bord" .. user_opts.fade_alpha .. "\\1c&H0&\\3c&H" .. osc_color_convert(user_opts.osc_color) .. "&}",
         window_fade_bg = "{\\blur" .. user_opts.window_fade_blur_strength .. "\\bord" .. user_opts.window_fade_alpha .. "\\1c&H0&\\3c&H" .. osc_color_convert(user_opts.osc_color) .. "&}",
-        window_control = "{\\blur0\\bord0\\1c&H" .. osc_color_convert(user_opts.window_controls_color) .. "&\\3c&H0&\\fs25\\fn" .. iconfont .. "}",
+        window_control = "{\\blur0\\bord0\\1c&H" .. osc_color_convert(user_opts.window_controls_color) .. "&\\3c&H0&\\fs25\\fn" .. icons.iconfont .. "}",
         window_title = "{\\blur1\\bord0.5\\1c&H" .. osc_color_convert(user_opts.window_title_color) .. "&\\3c&H0&\\fs".. user_opts.window_title_font_size .."\\q2\\fn" .. user_opts.font .. "}",
         title = "{\\blur1\\bord0.5\\1c&H" .. osc_color_convert(user_opts.title_color) .. "&\\3c&H0&\\fs".. user_opts.title_font_size .."\\q2\\fn" .. user_opts.font .. "}",
         chapter_title = "{\\blur0\\bord0\\1c&H" .. osc_color_convert(user_opts.chapter_title_color) .. "&\\3c&H0&\\fs" .. user_opts.chapter_title_font_size .. "\\fn" .. user_opts.font .. "}",
@@ -540,10 +507,9 @@ local function set_osc_styles()
         tooltip = "{\\blur1\\bord0.5\\1c&HFFFFFF&\\3c&H0&\\fs" .. user_opts.tooltip_font_size .. "\\fn" .. user_opts.font .. "}",
         volumebar_bg = "{\\blur0\\bord0\\1c&H999999&}",
         volumebar_fg = "{\\blur1\\bord1\\1c&H" .. osc_color_convert(user_opts.side_buttons_color) .. "&}",
-        control_1 = "{\\blur0\\bord0\\1c&H" .. osc_color_convert(user_opts.playpause_color) .. "&\\3c&HFFFFFF&\\fs" .. playpause_size .. "\\fn" .. iconfont .. "}",
-        control_2 = "{\\blur0\\bord0\\1c&H" .. osc_color_convert(user_opts.middle_buttons_color) .. "&\\3c&HFFFFFF&\\fs" .. midbuttons_size .. "\\fn" .. iconfont .. "}",
-        control_2_flip = "{\\blur0\\bord0\\1c&H" .. osc_color_convert(user_opts.middle_buttons_color) .. "&\\3c&HFFFFFF&\\fs" .. midbuttons_size .. "\\fn" .. iconfont .. "\\fry180}",
-        control_3 = "{\\blur0\\bord0\\1c&H" .. osc_color_convert(user_opts.side_buttons_color) .. "&\\3c&HFFFFFF&\\fs" .. sidebuttons_size .. "\\fn" .. iconfont .. "}",
+        control_1 = "{\\blur0\\bord0\\1c&H" .. osc_color_convert(user_opts.playpause_color) .. "&\\3c&HFFFFFF&\\fs" .. playpause_size .. "\\fn" .. icons.iconfont .. "}",
+        control_2 = "{\\blur0\\bord0\\1c&H" .. osc_color_convert(user_opts.middle_buttons_color) .. "&\\3c&HFFFFFF&\\fs" .. midbuttons_size .. "\\fn" .. icons.iconfont .. "}",
+        control_3 = "{\\blur0\\bord0\\1c&H" .. osc_color_convert(user_opts.side_buttons_color) .. "&\\3c&HFFFFFF&\\fs" .. sidebuttons_size .. "\\fn" .. icons.iconfont .. "}",
         element_down = "{\\1c&H" .. osc_color_convert(user_opts.held_element_color) .. "&}",
         element_hover = "{" .. (contains(user_opts.hover_effect, "color") and "\\1c&H" .. osc_color_convert(user_opts.hover_effect_color) .. "&" or "") .."\\2c&HFFFFFF&" .. (contains(user_opts.hover_effect, "size") and string.format("\\fscx%s\\fscy%s", user_opts.hover_button_size, user_opts.hover_button_size) or "") .. "}",
     }
@@ -2002,7 +1968,7 @@ layouts["modern"] = function ()
     if jump_buttons then
         lo = add_layout("jump_backward")
         lo.geometry = {x = refX - 60, y = refY - 35, an = 5, w = 30, h = 24}
-        lo.style = (user_opts.jump_icon_number and icons.jump[user_opts.jump_amount] ~= nil) and osc_styles.control_2 or osc_styles.control_2_flip
+        lo.style = osc_styles.control_2
     end
 
     lo = add_layout("play_pause")
@@ -2327,7 +2293,7 @@ layouts["modern-compact"] = function ()
    if user_opts.jump_buttons and osc_geo.w >= 600 then
         lo = add_layout("jump_backward")
         lo.geometry = {x = start_x, y = refY - 35, an = 5, w = 30, h = 24}
-        lo.style = (user_opts.jump_icon_number and icons.jump[user_opts.jump_amount] ~= nil) and osc_styles.control_2 or osc_styles.control_2_flip
+        lo.style = osc_styles.control_2
         start_x = start_x + 55
     end
 
