@@ -476,8 +476,6 @@ local thumbfast = {
 }
 
 local tick_delay = 1 / 60
-local audio_track_count = 0
-local sub_track_count = 0
 local window_control_box_width = 150
 local is_december = os.date("*t").month == 12
 local UNICODE_MINUS = string.char(0xe2, 0x88, 0x92)  -- UTF-8 for U+2212 MINUS SIGN
@@ -546,6 +544,8 @@ local state = {
     hide_timer = nil,
     cache_state = nil,
     idle = false,
+    audio_track_count = 0,
+    sub_track_count = 0,
     enabled = true,
     input_enabled = true,
     showhide_enabled = false,
@@ -921,21 +921,19 @@ local function hide_bar(label, visible_key, anitype_key, set_visible)
     end
 end
 
---
--- Tracklist Management
---
+local function update_tracklist(_, track_list)
+    state.audio_track_count = 0
+    state.sub_track_count = 0
 
--- updates the OSC internal playlists, should be run each time the track-layout changes
-local function update_tracklist()
-    audio_track_count, sub_track_count = 0, 0
-
-    for _, track in pairs(mp.get_property_native("track-list")) do
+    for _, track in pairs(track_list) do
         if track.type == "audio" then
-            audio_track_count = audio_track_count + 1
+            state.audio_track_count = state.audio_track_count + 1
         elseif track.type == "sub" then
-            sub_track_count = sub_track_count + 1
+            state.sub_track_count = state.sub_track_count + 1
         end
     end
+
+    request_init()
 end
 
 -- convert slider_pos to logarithmic depending on volume_control user_opts
@@ -1926,8 +1924,8 @@ layouts["modern"] = function ()
         lo.slider.tooltip_an = 0
     end
 
-    local audio_track = audio_track_count > 0
-    local subtitle_track = sub_track_count > 0
+    local audio_track = state.audio_track_count > 0
+    local subtitle_track = state.sub_track_count > 0
     local jump_buttons = user_opts.jump_buttons
     local chapter_skip_buttons = user_opts.chapter_skip_buttons
     local track_nextprev_buttons = user_opts.track_nextprev_buttons
@@ -2292,7 +2290,7 @@ layouts["modern-compact"] = function ()
         start_x = start_x + 55
     end
 
-    if audio_track_count > 0 and user_opts.volume_control then
+    if state.audio_track_count > 0 and user_opts.volume_control then
         lo = add_layout("vol_ctrl")
         lo.geometry = {x = start_x, y = refY - 35, an = 5, w = 24, h = 24}
         lo.style = osc_styles.control_2
@@ -2339,7 +2337,7 @@ layouts["modern-compact"] = function ()
         end_x = end_x - 55
     end
 
-    elements.sub_track.visible = user_opts.subtitles_button and sub_track_count > 0 and osc_geo.w >= 600
+    elements.sub_track.visible = user_opts.subtitles_button and state.sub_track_count > 0 and osc_geo.w >= 600
     if elements.sub_track.visible then
         lo = add_layout("sub_track")
         lo.geometry = {x = end_x, y = refY - 35, an = 5, w = 24, h = 24}
@@ -2347,7 +2345,7 @@ layouts["modern-compact"] = function ()
         end_x = end_x - 55
     end
 
-    elements.audio_track.visible = user_opts.audio_tracks_button and audio_track_count > 0 and osc_geo.w >= 750
+    elements.audio_track.visible = user_opts.audio_tracks_button and state.audio_track_count > 0 and osc_geo.w >= 750
     if elements.audio_track.visible then
         lo = add_layout("audio_track")
         lo.geometry = {x = end_x, y = refY - 35, an = 5, w = 24, h = 24}
@@ -2619,8 +2617,8 @@ local function osc_init()
     local nojumpoffset = user_opts.jump_buttons and 0 or 100
     local noskipoffset = user_opts.chapter_skip_buttons and 0 or 100
     local outeroffset = noskipoffset + nojumpoffset
-    local audio_offset = (audio_track_count == 0 or not mp.get_property_native("aid")) and 100 or 0
-    local sub_offset = (sub_track_count == 0 or not mp.get_property_native("sid")) and 100 or 0
+    local audio_offset = (state.audio_track_count == 0 or not mp.get_property_native("aid")) and 100 or 0
+    local sub_offset = (state.sub_track_count == 0 or not mp.get_property_native("sid")) and 100 or 0
     local playlist_offset = not have_pl and 100 or 0
 
     local ne
@@ -2783,8 +2781,6 @@ local function osc_init()
     ne.eventresponder["shift+mbtn_left_down"] = command_callback(user_opts.chapter_next_mbtn_mid_command)
     ne.eventresponder["shift+mbtn_right_down"] = function () mp.commandv("seek", jump_more_amount, jump_mode) end
 
-    update_tracklist()
-
     local visible_min_width = 550 - outeroffset
 
     --tog_playlist
@@ -2802,14 +2798,14 @@ local function osc_init()
 
     --audio_track
     ne = new_element("audio_track", "button")
-    ne.enabled = audio_track_count > 0
-    ne.off = audio_track_count == 0 or not mp.get_property_native("aid")
+    ne.enabled = state.audio_track_count > 0
+    ne.off = state.audio_track_count == 0 or not mp.get_property_native("aid")
     ne.visible = (osc_param.playresx >= visible_min_width)
     ne.content = icons.audio
     ne.tooltip_style = osc_styles.tooltip
     ne.tooltipF = function ()
         local prop = mp.get_property("current-tracks/audio/title") or mp.get_property("current-tracks/audio/lang") or locale.na
-        return (user_opts.tooltip_hints and (locale.audio .. " " .. mp.get_property_number("aid", "-") .. "/" .. audio_track_count .. " [" .. prop .. "]") or "")
+        return (user_opts.tooltip_hints and (locale.audio .. " " .. mp.get_property_number("aid", "-") .. "/" .. state.audio_track_count .. " [" .. prop .. "]") or "")
     end
     ne.nothingavailable = locale.no_audio
     ne.eventresponder["mbtn_left_up"] = command_callback(user_opts.audio_track_mbtn_left_command)
@@ -2821,14 +2817,14 @@ local function osc_init()
 
     --sub_track
     ne = new_element("sub_track", "button")
-    ne.enabled = sub_track_count > 0
-    ne.off = sub_track_count == 0 or not mp.get_property_native("sid")
+    ne.enabled = state.sub_track_count > 0
+    ne.off = state.sub_track_count == 0 or not mp.get_property_native("sid")
     ne.visible = (osc_param.playresx >= visible_min_width - outeroffset)
     ne.content = icons.subtitle
     ne.tooltip_style = osc_styles.tooltip
     ne.tooltipF = function ()
         local prop = mp.get_property("current-tracks/sub/title") or mp.get_property("current-tracks/sub/lang") or locale.na
-        return (user_opts.tooltip_hints and (locale.subtitle .. " " .. mp.get_property_number("sid", "-") .. "/" .. sub_track_count .. " [" .. prop .. "]") or "")
+        return (user_opts.tooltip_hints and (locale.subtitle .. " " .. mp.get_property_number("sid", "-") .. "/" .. state.sub_track_count .. " [" .. prop .. "]") or "")
     end
     ne.nothingavailable = locale.no_subs
     ne.eventresponder["mbtn_left_up"] = command_callback(user_opts.sub_track_mbtn_left_command)
@@ -2841,8 +2837,8 @@ local function osc_init()
     -- vol_ctrl
     local vol_visible_offset = sub_offset + playlist_offset
     ne = new_element("vol_ctrl", "button")
-    ne.enabled = audio_track_count > 0
-    ne.off = audio_track_count == 0
+    ne.enabled = state.audio_track_count > 0
+    ne.off = state.audio_track_count == 0
     ne.visible = (osc_param.playresx >= 900 - vol_visible_offset - outeroffset) and user_opts.volume_control
     ne.content = function ()
         local volume = mp.get_property_number("volume", 0)
@@ -2875,7 +2871,7 @@ local function osc_init()
     local volume_max = volume_max_prop > 0 and volume_max_prop or 100
     ne = new_element("volumebar", "slider")
     ne.visible = (osc_param.playresx >= 1150 - outeroffset) and user_opts.volume_control
-    ne.enabled = audio_track_count > 0
+    ne.enabled = state.audio_track_count > 0
     ne.slider = {min = {value = 0}, max = {value = volume_max}}
     ne.slider.markerF = function () return {} end
     ne.slider.seekRangesF = function() return nil end
@@ -2887,7 +2883,7 @@ local function osc_init()
             return volume
         end
     end
-    ne.slider.tooltipF = function (pos) return (audio_track_count > 0) and set_volume(pos) or "" end
+    ne.slider.tooltipF = function (pos) return (state.audio_track_count > 0) and set_volume(pos) or "" end
     ne.eventresponder["mouse_move"] = function (element)
         local pos = get_slider_value(element)
         local setvol = set_volume(pos)
@@ -3800,7 +3796,7 @@ mp.register_event("file-loaded", function()
     if oos == "top" or oos == "both" then show_wc() end
 end)
 mp.register_event("start-file", request_init)
-mp.observe_property("track-list", "native", request_init)
+mp.observe_property("track-list", "native", update_tracklist)
 mp.observe_property("playlist-count", "native", request_init)
 mp.observe_property("playlist-pos", "native", request_init)
 mp.observe_property("chapter-list", "native", function(_, list)
