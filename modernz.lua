@@ -3202,14 +3202,22 @@ local function osc_init()
     end
     ne.eventresponder["mbtn_left_down"] = function (element)
         element.state.mbtnleft = true
+        state.playing_and_seeking = false  -- clear state
         mp.commandv("seek", get_slider_value(element), "absolute-percent+exact")
     end
     ne.eventresponder["shift+mbtn_left_down"] = function (element)
         element.state.mbtnleft = true
+        state.playing_and_seeking = false
         mp.commandv("seek", get_slider_value(element), "absolute-percent")
     end
     ne.eventresponder["mbtn_left_up"] = function (element)
         element.state.mbtnleft = false
+        if state.playing_and_seeking then
+            if mp.get_property("eof-reached") == "no" and user_opts.mouse_seek_pause then
+                mp.commandv("cycle", "pause")
+            end
+            state.playing_and_seeking = false
+        end
     end
     ne.eventresponder["mbtn_right_down"] = function (element)
         local chapter
@@ -3229,12 +3237,6 @@ local function osc_init()
     end
     ne.eventresponder["reset"] = function (element)
         element.state.lastseek = nil
-        if state.playing_and_seeking then
-            if mp.get_property("eof-reached") == "no" and user_opts.mouse_seek_pause then
-                mp.commandv("cycle", "pause")
-            end
-            state.playing_and_seeking = false
-        end
     end
     ne.eventresponder["wheel_up_press"] = function () mp.commandv("seek", 10) end
     ne.eventresponder["wheel_down_press"] = function () mp.commandv("seek", -10) end
