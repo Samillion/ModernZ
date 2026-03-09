@@ -397,6 +397,8 @@ local language = {
         downloading = "Downloading",
         downloaded = "Already downloaded",
         menu = "Menu",
+        mute = "Mute",
+        unmute = "Unmute",
     },
 }
 
@@ -2858,12 +2860,7 @@ local function osc_init()
         end
     end
     ne.tooltip_style = osc_styles.tooltip
-    ne.tooltipF = function ()
-        local volume = mp.get_property_number("volume", 0) or 0
-        -- show only one decimal, if decimals exist
-        volume = volume % 1 == 0 and string.format("%.0f", volume) or string.format("%.1f", volume)
-        return volume
-    end
+    ne.tooltipF = function() return user_opts.tooltip_hints and (state.mute and locale.unmute or locale.mute) or "" end
     ne.eventresponder["mbtn_left_up"] = command_callback(user_opts.vol_ctrl_mbtn_left_command)
     ne.eventresponder["mbtn_right_up"] = command_callback(user_opts.vol_ctrl_mbtn_right_command)
     ne.eventresponder["wheel_up_press"] = command_callback(user_opts.vol_ctrl_wheel_up_command)
@@ -2885,7 +2882,16 @@ local function osc_init()
             return volume
         end
     end
-    ne.slider.tooltipF = function (pos) return (audio_track_count > 0) and set_volume(pos) or "" end
+    ne.slider.tooltipF = function(pos)
+    if audio_track_count > 0 then
+        local vol = set_volume(pos)
+        if state.mute then
+            vol = vol .. " (Muted)"
+        end
+            return vol
+        end
+    end
+
     ne.eventresponder["mouse_move"] = function (element)
         local pos = get_slider_value(element)
         local setvol = set_volume(pos)
