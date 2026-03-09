@@ -239,8 +239,8 @@ Customize the button function based on mouse actions.
 |                               | playlist_mbtn_right_command      | `script-binding select/menu`                  |
 | Volume Control                | vol_ctrl_mbtn_left_command       | `no-osd cycle mute`                           |
 |                               | vol_ctrl_mbtn_right_command      | `script-binding select/select-audio-device`   |
-|                               | vol_ctrl_wheel_down_command      | `no-osd add volume -5`                        |
-|                               | vol_ctrl_wheel_up_command        | `no-osd add volume 5`                         |
+|                               | vol_ctrl_wheel_down_command      | `osd-msg add volume -5`                       |
+|                               | vol_ctrl_wheel_up_command        | `osd-msg add volume 5`                        |
 | Audio Button                  | audio_track_mbtn_left_command    | `script-binding select/select-aid`            |
 |                               | audio_track_mbtn_mid_command     | `cycle audio down`                            |
 |                               | audio_track_mbtn_right_command   | `cycle audio`                                 |
