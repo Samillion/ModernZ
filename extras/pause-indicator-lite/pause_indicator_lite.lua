@@ -44,7 +44,7 @@ local options = {
 
     -- mute options
     mute_indicator = false,               -- show a mute indicator
-    mute_indicator_pos = "middle_right",  -- position of mute indicator. top_left, top_right, top_center
+    mute_indicator_pos = "top_right",     -- position of mute indicator. top_left, top_right, top_center
                                           -- also: middle_*, bottom_* same as top_* (ie: bottom_right)
 
     mute_icon_size = 50,                  -- size of the mute speaker icon
