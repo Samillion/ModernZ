@@ -3202,18 +3202,21 @@ local function osc_init()
     end
     ne.eventresponder["mbtn_left_down"] = function (element)
         element.state.mbtnleft = true
+        element.state.was_paused = mp.get_property("pause") == "yes"
         state.playing_and_seeking = false  -- clear state
         mp.commandv("seek", get_slider_value(element), "absolute-percent+exact")
     end
     ne.eventresponder["shift+mbtn_left_down"] = function (element)
         element.state.mbtnleft = true
+        element.state.was_paused = mp.get_property("pause") == "yes"
         state.playing_and_seeking = false
         mp.commandv("seek", get_slider_value(element), "absolute-percent")
     end
     ne.eventresponder["mbtn_left_up"] = function (element)
         element.state.mbtnleft = false
         if state.playing_and_seeking then
-            if mp.get_property("eof-reached") == "no" and user_opts.mouse_seek_pause then
+            -- only unpause if the video was playing before the drag started
+            if not element.state.was_paused and mp.get_property("eof-reached") == "no" and user_opts.mouse_seek_pause then
                 mp.commandv("cycle", "pause")
             end
             state.playing_and_seeking = false
