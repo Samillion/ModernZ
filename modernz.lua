@@ -374,6 +374,7 @@ local language = {
         subtitle = "Subtitle",
         no_subs = "No subtitles available",
         no_audio = "No audio tracks available",
+        muted = " (Muted)",
         playlist = "Playlist",
         no_playlist = "Playlist is empty",
         chapter = "Chapter",
@@ -397,8 +398,6 @@ local language = {
         downloading = "Downloading",
         downloaded = "Already downloaded",
         menu = "Menu",
-        mute = "Mute",
-        unmute = "Unmute",
     },
 }
 
@@ -2860,7 +2859,12 @@ local function osc_init()
         end
     end
     ne.tooltip_style = osc_styles.tooltip
-    ne.tooltipF = function() return user_opts.tooltip_hints and (state.mute and locale.unmute or locale.mute) or "" end
+    ne.tooltipF = function ()
+        local volume = mp.get_property_number("volume", 0) or 0
+        -- show only one decimal, if decimals exist
+        volume = volume % 1 == 0 and string.format("%.0f", volume) or string.format("%.1f", volume)
+        return state.mute and (volume .. locale.muted) or volume
+    end
     ne.eventresponder["mbtn_left_up"] = command_callback(user_opts.vol_ctrl_mbtn_left_command)
     ne.eventresponder["mbtn_right_up"] = command_callback(user_opts.vol_ctrl_mbtn_right_command)
     ne.eventresponder["wheel_up_press"] = command_callback(user_opts.vol_ctrl_wheel_up_command)
@@ -2883,13 +2887,9 @@ local function osc_init()
         end
     end
     ne.slider.tooltipF = function(pos)
-    if audio_track_count > 0 then
-        local vol = set_volume(pos)
-        if state.mute then
-            vol = vol .. " (Muted)"
-        end
-            return vol
-        end
+        if audio_track_count <= 0 then return end
+        local volume = set_volume(pos)
+        return state.mute and (volume .. locale.muted) or volume
     end
 
     ne.eventresponder["mouse_move"] = function (element)
