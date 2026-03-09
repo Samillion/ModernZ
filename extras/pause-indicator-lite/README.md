@@ -1,6 +1,5 @@
 ## Pause Indicator Lite
-| ![pause-icon](https://github.com/user-attachments/assets/cd41333c-8fdd-4de9-8977-15eea95798dc) | ![play-icon](https://github.com/user-attachments/assets/0d1671f8-9b1b-4f10-ade3-82d1748b2d93) |
-|:---:|:---:|
+![pause_indicator_preview](https://github.com/user-attachments/assets/a70653fd-2d88-4e86-b03d-8f00a5f94cd9)
 
 A simple script that displays an indicator on pause (and mute), with options to adjust icon type, color, height, width, opacity and whether to toggle pause with a keybind or not.
 
