@@ -1506,7 +1506,7 @@ local function render_elements(master_ass, osc_vis, wc_vis)
             -- add tooltip for button elements
             if element.tooltipF ~= nil and (user_opts.tooltips_for_disabled_elements or element.enabled) then
                 if mouse_hit(element) then
-                    local tooltiplabel = element.tooltipF
+                    local tooltiplabel
                     local an = 1
                     local ty = element.hitbox.y1 - user_opts.tooltip_height_offset
                     local tx = get_virt_mouse_pos()
@@ -1886,7 +1886,7 @@ layouts["modern"] = function ()
     add_area("showhide", 0, 0, osc_param.playresx, osc_param.playresy)
 
     -- fetch values
-    local osc_w, osc_h = osc_geo.w, osc_geo.h
+    local osc_w = osc_geo.w
 
     -- Controller Background
     local lo, geo
@@ -2120,7 +2120,7 @@ layouts["modern"] = function ()
         lo = add_layout("tog_file_loop")
         lo.geometry = {x = end_x, y = refY - 35, an = 5, w = 24, h = 24}
         lo.style = osc_styles.control_3
-        lo.visible = (osc_param.playresx >= 600 - outeroffset) and loop_button
+        lo.visible = (osc_param.playresx >= 600 - outeroffset)
         end_x = end_x - 45
     end
 
@@ -2128,7 +2128,7 @@ layouts["modern"] = function ()
         lo = add_layout("tog_shuffle")
         lo.geometry = { x = end_x, y = refY - 35, an = 5, w = 24, h = 24 }
         lo.style = osc_styles.control_3
-        lo.visible = (osc_param.playresx >= 600 - outeroffset) and shuffle_button
+        lo.visible = (osc_param.playresx >= 600 - outeroffset)
         end_x = end_x - 45
     end
 
@@ -2168,7 +2168,7 @@ layouts["modern-compact"] = function ()
     }
 
     -- update bottom margin
-    osc_param.video_margins.b = math.max(145, 120) / osc_param.playresy
+    osc_param.video_margins.b = math.max(osc_geo.h, user_opts.fade_alpha) / osc_param.playresy
 
     -- origin of the controllers, left/bottom corner
     local posX = 0
@@ -2183,7 +2183,7 @@ layouts["modern-compact"] = function ()
     add_area("showhide", 0, 0, osc_param.playresx, osc_param.playresy)
 
     -- fetch values
-    local osc_w, osc_h = osc_geo.w, osc_geo.h
+    local osc_w = osc_geo.w
 
     -- Controller Background
     local lo, geo
@@ -2409,10 +2409,10 @@ layouts["modern-image"] = function ()
     add_area("showhide", 0, 0, osc_param.playresx, osc_param.playresy)
 
     -- fetch values
-    local osc_w, osc_h = osc_geo.w, osc_geo.h
+    local osc_w = osc_geo.w
 
     -- Controller Background
-    local lo, geo
+    local lo
 
     setup_bg_elements(posX, posY, osc_w, user_opts.fade_transparency_strength, user_opts.window_fade_transparency_strength)
 
@@ -2508,7 +2508,7 @@ local function adjust_subtitles(visible)
 
     local scale = state.fullscreen and user_opts.scalefullscreen or user_opts.scalewindowed
 
-    if visible and user_opts.raise_subtitles and state.osc_visible == true then
+    if visible and user_opts.raise_subtitles and state.osc_visible then
         local w, h = mp.get_osd_size()
         if h > 0 then
             local raise_factor = user_opts.raise_subtitle_amount
@@ -2618,7 +2618,7 @@ local function osc_init()
 
     local nojumpoffset = user_opts.jump_buttons and 0 or 100
     local noskipoffset = user_opts.chapter_skip_buttons and 0 or 100
-    local outeroffset = (user_opts.chapter_skip_buttons and 0 or 100) + (user_opts.jump_buttons and 0 or 100)
+    local outeroffset = noskipoffset + nojumpoffset
     local audio_offset = (audio_track_count == 0 or not mp.get_property_native("aid")) and 100 or 0
     local sub_offset = (sub_track_count == 0 or not mp.get_property_native("sid")) and 100 or 0
     local playlist_offset = not have_pl and 100 or 0
@@ -2686,9 +2686,10 @@ local function osc_init()
     ne.eventresponder["mbtn_right_up"] = command_callback(user_opts.chapter_title_mbtn_right_command)
 
     -- playlist buttons
+    local pl_nav_visible_w = (state.is_image and 300 or 500) - nojumpoffset - noskipoffset*(nojumpoffset == 0 and 1 or 10)
     -- prev
     ne = new_element("playlist_prev", "button")
-    ne.visible = (osc_param.playresx >= (state.is_image and 300 or 500) - nojumpoffset - noskipoffset*(nojumpoffset == 0 and 1 or 10))
+    ne.visible = (osc_param.playresx >= pl_nav_visible_w)
     ne.content = icons.previous
     ne.enabled = (pl_pos > 1) or (loop ~= "no") or contains(user_opts.buttons_always_active, "playlist_prev")
     ne.eventresponder["mbtn_left_up"] = command_callback(user_opts.playlist_prev_mbtn_left_command)
@@ -2697,7 +2698,7 @@ local function osc_init()
 
     --next
     ne = new_element("playlist_next", "button")
-    ne.visible = (osc_param.playresx >= (state.is_image and 300 or 500) - nojumpoffset - noskipoffset*(nojumpoffset == 0 and 1 or 10))
+    ne.visible = (osc_param.playresx >= pl_nav_visible_w)
     ne.content = icons.next
     ne.enabled = (have_pl and (pl_pos < pl_count)) or (loop ~= "no") or contains(user_opts.buttons_always_active, "playlist_next")
     ne.eventresponder["mbtn_left_up"] = command_callback(user_opts.playlist_next_mbtn_left_command)
@@ -2746,7 +2747,7 @@ local function osc_init()
 
     --jump_backward
     ne = new_element("jump_backward", "button")
-    ne.softrepeat = user_opts.jump_softrepeat == true
+    ne.softrepeat = user_opts.jump_softrepeat
     ne.content = jump_icon[1]
     ne.eventresponder["mbtn_left_down"] = function () mp.commandv("seek", -jump_amount, jump_mode) end
     ne.eventresponder["mbtn_right_down"] = function () mp.commandv("seek", -jump_more_amount, jump_mode) end
@@ -2754,7 +2755,7 @@ local function osc_init()
 
     --jump_forward
     ne = new_element("jump_forward", "button")
-    ne.softrepeat = user_opts.jump_softrepeat == true
+    ne.softrepeat = user_opts.jump_softrepeat
     ne.content = jump_icon[2]
     ne.eventresponder["mbtn_left_down"] = function () mp.commandv("seek", jump_amount, jump_mode) end
     ne.eventresponder["mbtn_right_down"] = function () mp.commandv("seek", jump_more_amount, jump_mode) end
@@ -2763,9 +2764,9 @@ local function osc_init()
     --chapter_backward
     ne = new_element("chapter_backward", "button")
     ne.visible = (osc_param.playresx >= 400 - nojumpoffset*10)
-    ne.softrepeat = user_opts.chapter_softrepeat == true
+    ne.softrepeat = user_opts.chapter_softrepeat
     ne.content = icons.rewind
-    ne.enabled = (have_ch) -- disables button when no chapters available.
+    ne.enabled = have_ch -- disables button when no chapters available.
     ne.eventresponder["mbtn_left_down"] = command_callback(user_opts.chapter_prev_mbtn_left_command)
     ne.eventresponder["mbtn_right_down"] = command_callback(user_opts.chapter_prev_mbtn_right_command)
     ne.eventresponder["shift+mbtn_left_down"] = command_callback(user_opts.chapter_prev_mbtn_mid_command)
@@ -2774,9 +2775,9 @@ local function osc_init()
     --chapter_forward
     ne = new_element("chapter_forward", "button")
     ne.visible = (osc_param.playresx >= 400 - nojumpoffset*10)
-    ne.softrepeat = user_opts.chapter_softrepeat == true
+    ne.softrepeat = user_opts.chapter_softrepeat
     ne.content = icons.forward
-    ne.enabled = (have_ch) -- disables button when no chapters available.
+    ne.enabled = have_ch -- disables button when no chapters available.
     ne.eventresponder["mbtn_left_down"] = command_callback(user_opts.chapter_next_mbtn_left_command)
     ne.eventresponder["mbtn_right_down"] = command_callback(user_opts.chapter_next_mbtn_right_command)
     ne.eventresponder["shift+mbtn_left_down"] = command_callback(user_opts.chapter_next_mbtn_mid_command)
@@ -2870,7 +2871,8 @@ local function osc_init()
     ne.eventresponder["wheel_down_press"] = command_callback(user_opts.vol_ctrl_wheel_down_command)
 
     --volumebar
-    local volume_max = mp.get_property_number("volume-max") > 0 and mp.get_property_number("volume-max") or 100
+    local volume_max_prop = mp.get_property_number("volume-max") or 0
+    local volume_max = volume_max_prop > 0 and volume_max_prop or 100
     ne = new_element("volumebar", "slider")
     ne.visible = (osc_param.playresx >= 1150 - outeroffset) and user_opts.volume_control
     ne.enabled = audio_track_count > 0
@@ -3240,7 +3242,6 @@ local function osc_init()
     --persistent seekbar
     ne = new_element("persistentseekbar", "slider")
     ne.enabled = mp.get_property("percent-pos") ~= nil
-    state.slider_element = ne.enabled and ne or nil  -- used for forced_title
     ne.slider.markerF = function () return {} end
     ne.slider.posF = function ()
         if mp.get_property_bool("eof-reached") then return 100 end
