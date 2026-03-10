@@ -33,16 +33,17 @@ Replace `"language-code"` with your language code (e.g. `"es"` for Spanish).
 
 ModernZ currently has translations for the following languages:
 
+- Arabic (ar)
+- Danish (dk)
+- English (en)
 - French (fr)
 - German (de)
-- Spanish (es)
-- Polish (pl)
-- Japanese (jp)
-- Simplified Chinese (zh)
-- Arabic (ar)
-- Russian (ru)
 - Icelandic (is)
-- Danish (dk)
+- Japanese (jp)
+- Polish (pl)
+- Russian (ru)
+- Spanish (es)
+- Simplified Chinese (zh)
 
 ## Adding a New Language
 
@@ -59,26 +60,27 @@ ModernZ currently has translations for the following languages:
         "video": "Video",
         "audio": "Audio",
         "subtitle": "Subtitle",
-        "no_subs": "No subtitles available",
-        "no_audio": "No audio tracks available",
+        "no_subs": "No subtitles",
+        "no_audio": "No audio tracks",
+        "muted": "Muted",
         "playlist": "Playlist",
-        "no_playlist": "Playlist is empty",
+        "no_playlist": "Playlist empty",
         "chapter": "Chapter",
-        "ontop": "Pin Window",
-        "ontop_disable": "Unpin Window",
-        "file_loop_enable": "Loop file",
-        "file_loop_disable": "Disable file loop",
-        "playlist_loop_enable": "Playlist Loop Enabled",
-        "playlist_loop_disable": "Playlist Loop Disabled",
-        "shuffle": "Shuffle Playlist",
-        "unshuffle": "Unshuffle Playlist",
-        "speed_control": "Speed Control",
+        "ontop": "Pin window",
+        "ontop_disable": "Unpin window",
+        "file_loop_enable": "Loop file on",
+        "file_loop_disable": "Loop file off",
+        "playlist_loop_enable": "Loop playlist on",
+        "playlist_loop_disable": "Loop playlist off",
+        "shuffle": "Shuffle playlist on",
+        "unshuffle": "Shuffle playlist off",
+        "speed_control": "Playback speed",
         "screenshot": "Screenshot",
-        "stats_info": "Information",
+        "stats_info": "Statistics",
         "cache": "Cache",
         "buffering": "Buffering",
-        "zoom_in": "Zoom In",
-        "zoom_out": "Zoom Out",
+        "zoom_in": "Zoom in",
+        "zoom_out": "Zoom out",
         "download": "Download",
         "download_in_progress": "Download in progress",
         "downloading": "Downloading",
