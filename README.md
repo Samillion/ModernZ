@@ -178,48 +178,52 @@ See the [Color Customization](docs/USER_OPTS.md#colors-and-style) section in the
 
 2. **Copy Files**
 
-   - Place `modernz.lua` in your mpv scripts directory
-   - Place `fluent-system-icons.ttf` and `material-design-icons.ttf` in your mpv fonts directory
-   - (OPTIONAL) Place `thumbfast.lua` in your mpv scripts directory
+   - Place [`modernz.lua`](/modernz.lua) in your mpv `scripts` directory
+   - Place [`modernz-icons.ttf`](/modernz-icons.ttf) in your mpv `fonts` directory
+   - (OPTIONAL) Place [`modernz-locale.json`](/extras/locale/modernz-locale.json) in your mpv `script-opts` directory
+   - (OPTIONAL) Place `thumbfast.lua` in your mpv `scripts` directory
 
 3. **Locations**
 
-   ```
-   Linux:   ~/.config/mpv/
-   Windows: C:/Users/%username%/AppData/Roaming/mpv/
-   macOS:   ~/Library/Application Support/mpv/
-   ```
+```
+Linux:   ~/.config/mpv/
+Windows: C:/Users/%username%/AppData/Roaming/mpv/
+macOS:   ~/Library/Application Support/mpv/
+```
 
 4. **Folder Structure** [[mpv manual](https://mpv.io/manual/master/#files)]
-   ```
-   📁 mpv/
-   ├── 📁 fonts/
-   │   └── 📄 modernz-icons.ttf
-   ├── 📁 script-opts/
-   │   └── 📄 modernz.conf
-   └── 📁 scripts/
-       ├── 📄 modernz.lua
-       └── 📄 thumbfast.lua (optional)
-   ```
+
+```
+📁 mpv/
+├── 📁 fonts/
+│   └── 📄 modernz-icons.ttf
+├── 📁 script-opts/
+│   ├── 📄 modernz.conf
+│   └── 📄 modernz-locale.json (optional)
+└── 📁 scripts/
+    ├── 📄 modernz.lua
+    └── 📄 thumbfast.lua (optional)
+```
 
 ## Configuration
 
-1. Create `modernz.conf` in the `/script-opts` folder to customize settings
+- Place `modernz.conf` in the `/script-opts` folder to customize settings
 
-   - [Download default modernz.conf](./modernz.conf)
+   - Download [modernz.conf](./modernz.conf) with all default options
 
-2. Example of a short configuration:
+- Alternatively, you can create a short configuration of the options you want changed only:
 
-   ```EditorConfig
-   # Seekbar color (hex format)
-   seekbarfg_color=#B7410E
+```EditorConfig
+# Short configuration example
+# Seekbar color (hex format)
+seekbarfg_color=#B7410E
 
-   # Interface options
-   playlist_button=no
-   title=${media-title}
-   scalewindowed=1.0
-   window_top_bar=auto
-   ```
+# Interface options
+speed_button=yes
+title=${media-title}
+icon_theme=fluent
+icon_style=outline
+```
 
 For a full list of options, [check out the detailed list here](docs/USER_OPTS.md).
 
@@ -252,37 +256,23 @@ z   script-message-to modernz osc-idlescreen         # Toggle idle screen
 
 ModernZ is currently available in English, but you can easily switch it to your preferred language! Here's how:
 
-1. **Download the locale pack:**
+1. **Download the locale pack**
 
 Grab the [modernz-locale.json](/extras/locale/modernz-locale.json) file from this repository. This file holds translations for various languages.
 
-2. **Add the locales to mpv:**
+2. **Add the locales to mpv**
 
 Copy the downloaded `modernz-locale.json` file to your mpv's `/script-opts` folder.
 
-3. **Choose your language:**
+3. **Choose your language**
 
-There are two ways to set your preferred language:
+4. Adjust or add the `language` option in `modernz.conf` file
 
-- **Recommended:** Use the `modernz.conf` file
-
-  ```ini
-  # Example configuration in modernz.conf
-  # Set language to Simplified Chinese
-  language=zh
-  ```
-
-- **Alternative:** Edit the `modernz.lua` script
-
-  Open `modernz.lua` and find the `user_opts` section near the beginning. Change the `language` value to your preferred code:
-
-  ```lua
-  local user_opts = {
-      -- General
-      language = "en",  -- Change this to your preferred language code
-      ...
-  }
-  ```
+```ini
+# Example configuration in modernz.conf
+# Set language to Simplified Chinese
+language=zh
+```
 
 **Need More Info?**
 
