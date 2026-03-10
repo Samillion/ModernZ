@@ -372,27 +372,27 @@ local language = {
         video = "Video",
         audio = "Audio",
         subtitle = "Subtitle",
-        no_subs = "No subtitles available",
-        no_audio = "No audio tracks available",
+        no_subs = "No subtitles",
+        no_audio = "No audio tracks",
         muted = "Muted",
         playlist = "Playlist",
-        no_playlist = "Playlist is empty",
+        no_playlist = "Playlist empty",
         chapter = "Chapter",
-        ontop = "Pin Window",
-        ontop_disable = "Unpin Window",
-        file_loop_enable = "Loop file",
-        file_loop_disable = "Disable file loop",
-        playlist_loop_enable = "Playlist Loop Enabled",
-        playlist_loop_disable = "Playlist Loop Disabled",
-        shuffle = "Shuffle Playlist",
-        unshuffle = "Unshuffle Playlist",
-        speed_control = "Speed Control",
+        ontop = "Pin window",
+        ontop_disable = "Unpin window",
+        file_loop_enable = "Loop file on",
+        file_loop_disable = "Loop file off",
+        playlist_loop_enable = "Loop playlist on",
+        playlist_loop_disable = "Loop playlist off",
+        shuffle = "Shuffle playlist on",
+        unshuffle = "Shuffle playlist off",
+        speed_control = "Playback speed",
         screenshot = "Screenshot",
-        stats_info = "Information",
+        stats_info = "Statistics",
         cache = "Cache",
         buffering = "Buffering",
-        zoom_in = "Zoom In",
-        zoom_out = "Zoom Out",
+        zoom_in = "Zoom in",
+        zoom_out = "Zoom out",
         download = "Download",
         download_in_progress = "Download in progress",
         downloading = "Downloading",
@@ -3006,7 +3006,7 @@ local function osc_init()
     ne.content = function() return state.file_loop and icons.loop_on or icons.loop_off end
     ne.visible = (osc_param.playresx >= visible_min_width)
     ne.tooltip_style = osc_styles.tooltip
-    ne.tooltipF = function() return user_opts.tooltip_hints and (state.file_loop and locale.file_loop_disable or locale.file_loop_enable) or "" end
+    ne.tooltipF = function() return user_opts.tooltip_hints and (state.file_loop and locale.file_loop_enable or locale.file_loop_disable) or "" end
     ne.eventresponder["mbtn_left_up"] = function ()
         mp.command("show-text '" .. (state.file_loop and locale.file_loop_disable or locale.file_loop_enable) .. "'")
         state.file_loop = not state.file_loop
@@ -3019,15 +3019,11 @@ local function osc_init()
     ne.content = function() return state.shuffled and icons.shuffle_on or icons.shuffle_off end
     ne.visible = (osc_param.playresx >= visible_min_width)
     ne.tooltip_style = osc_styles.tooltip
-    ne.tooltipF = function() return user_opts.tooltip_hints and (state.shuffled and locale.unshuffle or locale.shuffle) or "" end
+    ne.tooltipF = function() return user_opts.tooltip_hints and (state.shuffled and locale.shuffle or locale.unshuffle) or "" end
     ne.eventresponder["mbtn_left_up"] = function()
         mp.command("show-text '" .. (state.shuffled and locale.unshuffle or locale.shuffle) .. "'")
         state.shuffled = not state.shuffled
-        if state.shuffled then
-            mp.command("playlist-shuffle")
-        else
-            mp.command("playlist-unshuffle")
-        end
+        mp.command("playlist-" .. (state.shuffled and "shuffle" or "unshuffle"))
     end
     visible_min_width = visible_min_width + (user_opts.shuffle_button and 100 or 0)
 
