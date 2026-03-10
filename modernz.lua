@@ -374,6 +374,7 @@ local language = {
         subtitle = "Subtitle",
         no_subs = "No subtitles available",
         no_audio = "No audio tracks available",
+        muted = "Muted",
         playlist = "Playlist",
         no_playlist = "Playlist is empty",
         chapter = "Chapter",
@@ -2859,7 +2860,7 @@ local function osc_init()
         local volume = mp.get_property_number("volume", 0) or 0
         -- show only one decimal, if decimals exist
         volume = volume % 1 == 0 and string.format("%.0f", volume) or string.format("%.1f", volume)
-        return volume
+        return state.mute and (volume .. " (" .. locale.muted .. ")") or volume
     end
     ne.eventresponder["mbtn_left_up"] = command_callback(user_opts.vol_ctrl_mbtn_left_command)
     ne.eventresponder["mbtn_right_up"] = command_callback(user_opts.vol_ctrl_mbtn_right_command)
