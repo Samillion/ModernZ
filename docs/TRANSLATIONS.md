@@ -112,33 +112,34 @@ ModernZ currently has translations for the following languages:
 
 ## Translation Keys Reference
 
-| Key                                        | Description             | Format Notes                |
-| ------------------------------------------ | ----------------------- | --------------------------- |
-| idle                                       | Idle state message      | Be brief                    |
-| na                                         | Not available           | Menu label                  |
-| video                                      | Video label             | Menu label                  |
-| audio                                      | Audio label             | Menu label                  |
-| subtitle                                   | Subtitle label          | Menu label                  |
-| no_subs                                    | No subtitles label      | Menu label                  |
-| no_audio                                   | No audio label          | Menu label                  |
-| playlist                                   | Playlist label          | Menu label                  |
-| no_playlist                                | No playlist label       | Menu label                  |
-| chapter                                    | Chapter label           | Menu label                  |
-| ontop/ontop_disable                        | Window pin states       | Action labels               |
-| file_loop_enable/file_loop_disable         | File loop states        | Action labels               |
-| playlist_loop_enable/playlist_loop_disable | Playlist loop states    | Action labels               |
-| shuffle/unshuffle                          | Playlist shuffle states | Action labels               |
-| screenshot                                 | Screenshot label        | Action label                |
-| stats_info                                 | Information label       | Menu label                  |
-| cache                                      | Information label       | Text label                  |
-| buffering                                  | Information label       | Text label                  |
-| zoom_in                                    | Information label       | Menu label                  |
-| zoom_out                                   | Information label       | Menu label                  |
-| download                                   | Information label       | Menu label                  |
-| download_in_progress                       | Information label       | Menu label                  |
-| downloading                                | Information label       | Menu label                  |
-| downloaded                                 | Information label       | Menu label                  |
-| menu                                       | Information label       | Menu label                  |
+| Key                                            | Description             | Format Notes  |
+| ---------------------------------------------- | ----------------------- | ------------- |
+| `idle`                                         | Idle message            | State label   |
+| `na`                                           | Not available           | Text label    |
+| `video`                                        | Video                   | Text label    |
+| `audio`                                        | Audio tracks            | Button label  |
+| `subtitle`                                     | Subtitle tracks         | Button label  |
+| `no_subs`                                      | No subtitle tracks      | Button label  |
+| `no_audio`                                     | No audio tracks         | Button label  |
+| `muted`                                        | Audio muted             | State label   |
+| `playlist`                                     | Playlist                | Button label  |
+| `no_playlist`                                  | Playlist is empty       | Button label  |
+| `chapter`                                      | Chapter                 | Text label    |
+| `ontop`/`ontop_disable`                        | Window pin states       | Action labels |
+| `file_loop_enable`/`file_loop_disable`         | File loop states        | Action labels |
+| `playlist_loop_enable`/`playlist_loop_disable` | Playlist loop states    | Action labels |
+| `shuffle`/`unshuffle`                          | Playlist shuffle states | Action labels |
+| `screenshot`                                   | Screenshot              | Button label  |
+| `stats_info`                                   | Statistics              | Button label  |
+| `cache`                                        | Cache                   | Text label    |
+| `buffering`                                    | Buffering               | State label   |
+| `zoom_in`                                      | Zoom in                 | Button label  |
+| `zoom_out`                                     | Zoom out                | Button label  |
+| `download`                                     | Download                | Button label  |
+| `download_in_progress`                         | Download in progress    | State label   |
+| `downloading`                                  | Downloading state       | State label   |
+| `downloaded`                                   | Downloaded state        | State label   |
+| `menu`                                         | Menu                    | Button label  |
 
 ## Contributing
 
