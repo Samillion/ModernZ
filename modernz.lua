@@ -2883,7 +2883,11 @@ local function osc_init()
             return volume
         end
     end
-    ne.slider.tooltipF = function (pos) return (state.audio_track_count > 0) and set_volume(pos) or "" end
+    ne.slider.tooltipF = function(pos)
+        if state.audio_track_count <= 0 then return end
+        local volume = set_volume(pos)
+        return state.mute and (volume .. " (" .. locale.muted .. ")") or volume
+    end
     ne.eventresponder["mouse_move"] = function (element)
         local pos = get_slider_value(element)
         local setvol = set_volume(pos)
