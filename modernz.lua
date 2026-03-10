@@ -570,7 +570,6 @@ local state = {
     touchingprogressbar = false,            -- if the mouse is touching the progress bar
     initialborder = mp.get_property("border"),
     playtime_hour_force_init = false,       -- used to force request_init() once
-    playtime_nohour_force_init = false,     -- used to force request_init() once
     playing_and_seeking = false,
     persistent_progress_toggle = user_opts.persistentprogress,
     user_subpos = mp.get_property_number("sub-pos") or 100,
@@ -1393,7 +1392,8 @@ local function render_elements(master_ass, osc_vis, wc_vis)
 
                             if osd_w then
                                 local hover_sec = 0
-                                if mp.get_property_number("duration") then hover_sec = mp.get_property_number("duration") * sliderpos / 100 end
+                                local hover_dur = mp.get_property_number("duration")
+                                if hover_dur then hover_sec = hover_dur * sliderpos / 100 end
                                 local thumbPad = user_opts.thumbnail_border
                                 local thumbMarginX = 18 / r_w
                                 local thumbMarginY = user_opts.time_font_size + thumbPad + 2 / r_h
@@ -1559,9 +1559,7 @@ local function render_persistentprogressbar(master_ass)
 
                 local elem_ass = assdraw.ass_new()
                 elem_ass:merge(style_ass)
-                if element.type ~= "button" then
-                    elem_ass:merge(element.static_ass)
-                end
+                elem_ass:merge(element.static_ass)
 
                 -- draw pos marker
                 draw_seekbar_progress(element, elem_ass)
@@ -1838,7 +1836,7 @@ local function setup_bg_elements(posX, posY, osc_w, osc_alpha3, wc_alpha3)
     lo.alpha[3] = osc_alpha3
 
     local top_titlebar = window_controls_enabled() and (user_opts.show_window_title or user_opts.window_controls)
-    if ((user_opts.window_top_bar == "yes" or not (state.border and state.title_bar)) or state.fullscreen) and top_titlebar then
+    if top_titlebar then
         new_element("window_bar_alpha_bg", "box")
         lo = add_layout("window_bar_alpha_bg")
         lo.geometry = {x = posX, y = -100, an = 7, w = osc_w, h = -1}
@@ -2857,7 +2855,7 @@ local function osc_init()
     end
     ne.tooltip_style = osc_styles.tooltip
     ne.tooltipF = function ()
-        local volume = mp.get_property_number("volume", 0) or 0
+        local volume = mp.get_property_number("volume", 0)
         -- show only one decimal, if decimals exist
         volume = volume % 1 == 0 and string.format("%.0f", volume) or string.format("%.1f", volume)
         return state.mute and (volume .. " (" .. locale.muted .. ")") or volume
@@ -2907,16 +2905,15 @@ local function osc_init()
 
     -- zoom control
     -- zoom out icon
-    local current_zoom = mp.get_property_number("video-zoom")
     ne = new_element("zoom_out_icon", "button")
     ne.visible = (osc_param.playresx >= 400)
     ne.content = icons.zoom_out
     ne.tooltip_style = osc_styles.tooltip
     ne.tooltipF = user_opts.tooltip_hints and locale.zoom_out or ""
-    ne.eventresponder["mbtn_left_up"] = function () mp.commandv("osd-msg", "set", "video-zoom", math.max(user_opts.zoom_out_min, current_zoom - 0.05)) end
+    ne.eventresponder["mbtn_left_up"] = function () mp.commandv("osd-msg", "set", "video-zoom", math.max(user_opts.zoom_out_min, mp.get_property_number("video-zoom", 0) - 0.05)) end
     ne.eventresponder["mbtn_right_up"] = function () mp.commandv("osd-msg", "set", "video-zoom", 0) end
-    ne.eventresponder["wheel_up_press"] = function () mp.commandv("osd-msg", "set", "video-zoom", math.min(user_opts.zoom_in_max, current_zoom + 0.05)) end
-    ne.eventresponder["wheel_down_press"] = function () mp.commandv("osd-msg", "set", "video-zoom", math.max(user_opts.zoom_out_min, current_zoom - 0.05)) end
+    ne.eventresponder["wheel_up_press"] = function () mp.commandv("osd-msg", "set", "video-zoom", math.min(user_opts.zoom_in_max, mp.get_property_number("video-zoom", 0) + 0.05)) end
+    ne.eventresponder["wheel_down_press"] = function () mp.commandv("osd-msg", "set", "video-zoom", math.max(user_opts.zoom_out_min, mp.get_property_number("video-zoom", 0) - 0.05)) end
 
     -- zoom slider
     ne = new_element("zoom_control", "slider")
@@ -2936,8 +2933,8 @@ local function osc_init()
     ne.eventresponder["mbtn_left_down"] = function (element) mp.commandv("osd-msg", "set", "video-zoom", get_slider_value(element)) end
     ne.eventresponder["reset"] = function (element) element.state.lastseek = nil end
     ne.eventresponder["mbtn_right_up"] = function () mp.commandv("osd-msg", "set", "video-zoom", 0) end
-    ne.eventresponder["wheel_up_press"] = function () mp.commandv("osd-msg", "set", "video-zoom", math.min(user_opts.zoom_in_max, current_zoom + 0.05)) end
-    ne.eventresponder["wheel_down_press"] = function () mp.commandv("osd-msg", "set", "video-zoom", math.max(user_opts.zoom_out_min, current_zoom - 0.05)) end
+    ne.eventresponder["wheel_up_press"] = function () mp.commandv("osd-msg", "set", "video-zoom", math.min(user_opts.zoom_in_max, mp.get_property_number("video-zoom", 0) + 0.05)) end
+    ne.eventresponder["wheel_down_press"] = function () mp.commandv("osd-msg", "set", "video-zoom", math.max(user_opts.zoom_out_min, mp.get_property_number("video-zoom", 0) - 0.05)) end
 
     -- zoom in icon
     ne = new_element("zoom_in_icon", "button")
@@ -2945,10 +2942,10 @@ local function osc_init()
     ne.content = icons.zoom_in
     ne.tooltip_style = osc_styles.tooltip
     ne.tooltipF = user_opts.tooltip_hints and locale.zoom_in or ""
-    ne.eventresponder["mbtn_left_up"] = function () mp.commandv("osd-msg", "set", "video-zoom", math.min(user_opts.zoom_in_max, current_zoom + 0.05)) end
+    ne.eventresponder["mbtn_left_up"] = function () mp.commandv("osd-msg", "set", "video-zoom", math.min(user_opts.zoom_in_max, mp.get_property_number("video-zoom", 0) + 0.05)) end
     ne.eventresponder["mbtn_right_up"] = function () mp.commandv("osd-msg", "set", "video-zoom", 0) end
-    ne.eventresponder["wheel_up_press"] = function () mp.commandv("osd-msg", "set", "video-zoom", math.min(user_opts.zoom_in_max, current_zoom + 0.05)) end
-    ne.eventresponder["wheel_down_press"] = function () mp.commandv("osd-msg", "set", "video-zoom", math.max(user_opts.zoom_out_min, current_zoom - 0.05)) end
+    ne.eventresponder["wheel_up_press"] = function () mp.commandv("osd-msg", "set", "video-zoom", math.min(user_opts.zoom_in_max, mp.get_property_number("video-zoom", 0) + 0.05)) end
+    ne.eventresponder["wheel_down_press"] = function () mp.commandv("osd-msg", "set", "video-zoom", math.max(user_opts.zoom_out_min, mp.get_property_number("video-zoom", 0) - 0.05)) end
 
     visible_min_width = 550 - outeroffset
     --tog_fullscreen
@@ -3270,7 +3267,6 @@ local function osc_init()
             if hour_or_more ~= state.playtime_hour_force_init then
                 request_init()
                 state.playtime_hour_force_init = hour_or_more
-                state.playtime_nohour_force_init = not hour_or_more
             end
         end
 
@@ -3355,7 +3351,6 @@ local function cache_state(_, st)
 end
 
 local function mouse_leave()
-    state.touchtime = nil
     if get_hidetimeout() >= 0 and get_touchtimeout() <= 0 then
         if not state.pause_osc_locked then
             hide_osc()
@@ -3625,12 +3620,13 @@ local function render()
 
     -- autohide
     local function run_autohide(showtime_key, hide_fn, input_areas)
-        if state[showtime_key] == nil or get_hidetimeout() < 0 then return end
+        local hide_timeout = get_hidetimeout()
+        if state[showtime_key] == nil or hide_timeout < 0 then return end
         -- keeponpause + independent_zones: bottom bar is locked, top bar hides normally
         if state.pause_osc_locked and showtime_key == "showtime" then return end
-        local timeout = state[showtime_key] + (get_hidetimeout() / 1000) - now
+        local timeout = state[showtime_key] + (hide_timeout / 1000) - now
         if timeout <= 0 and get_touchtimeout() <= 0 then
-            if (state.active_element == nil and not mouse_in_area(input_areas)) or (state.active_element == nil and not user_opts.osc_keep_with_cursor) then
+            if state.active_element == nil and (not mouse_in_area(input_areas) or not user_opts.osc_keep_with_cursor) then
                 hide_fn()
             end
         else
