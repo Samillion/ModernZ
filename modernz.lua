@@ -3400,9 +3400,14 @@ end
 --
 local function reset_timeout()
     local now = mp.get_time()
-    state.showtime = now
     if user_opts.independent_zones then
-        state.wc_showtime = now
+        if mouse_in_area({"window-controls", "window-controls-title"}) then
+            state.wc_showtime = now
+        else
+            state.showtime = now
+        end
+    else
+        state.showtime = now
     end
 end
 
