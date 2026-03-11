@@ -82,7 +82,7 @@ local user_opts = {
 
     -- Subtitle and OSD display settings
     sub_margins = true,                    -- raise subtitles above the OSC when shown
-    osd_margins = false,                   -- adjust osd-margin-y to not overlap with OSC
+    osd_margins = false,                   -- adjust OSD to not overlap with OSC
     dynamic_margins = true,                -- update margins dynamically with OSC visibility
 
     -- Buttons display and functionality
@@ -281,7 +281,7 @@ local user_opts = {
 
     -- DEPRECATED options
     raise_subtitles = false,               -- DEPRECATED: use sub_margins and dynamic_margins instead
-    raise_subtitles_amount = false,        -- DEPRECATED: use sub_margins and dynamic_margins instead
+    raise_subtitle_amount = false,         -- DEPRECATED: use sub_margins and dynamic_margins instead
 }
 
 mp.observe_property("osc", "bool", function(name, value) if value == true then mp.set_property("osc", "no") end end)
@@ -4135,8 +4135,8 @@ local function validate_user_opts()
         user_opts.showonpause = true
     end
 
-    if user_opts.raise_subtitles or user_opts.raise_subtitles_amount then
-        msg.warn("raise_subtitles / raise_subtitles_amount are deprecated. Use sub_margins=yes and dynamic_margins=yes.")
+    if user_opts.raise_subtitles or user_opts.raise_subtitle_amount then
+        msg.warn("raise_subtitles / raise_subtitle_amount are deprecated. Use sub_margins=yes and dynamic_margins=yes.")
     end
 end
 
