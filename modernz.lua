@@ -281,6 +281,7 @@ local user_opts = {
 
     -- DEPRECATED options
     raise_subtitles = false,               -- DEPRECATED: use sub_margins and dynamic_margins instead
+    raise_subtitles_amount = false,        -- DEPRECATED: use sub_margins and dynamic_margins instead
 }
 
 mp.observe_property("osc", "bool", function(name, value) if value == true then mp.set_property("osc", "no") end end)
@@ -848,7 +849,7 @@ local function set_margin_offset(prop, offset)
 end
 
 local function reset_margins()
-    -- restore subtitle position if it was shifted
+    -- restore subtitle position if it was changed
     if state.osc_adjusted_subpos ~= nil then
         mp.set_property_number("sub-pos", state.user_subpos)
         state.osc_adjusted_subpos = nil
@@ -867,8 +868,7 @@ local function update_margins()
         b = (use_margins and bottom_vis) and osc_param.video_margins.b or 0,
     }
 
-    -- sub-pos: works with both SRT and ASS subtitles
-    -- raise amount is derived from OSC height
+    -- raise amount is based on OSC height
     if user_opts.sub_margins and mp.get_property_native("sid") then
         if margins.b > 0 then
             local raise_percent = margins.b * 100
@@ -4135,7 +4135,7 @@ local function validate_user_opts()
         user_opts.showonpause = true
     end
 
-    if user_opts.raise_subtitles then
+    if user_opts.raise_subtitles or user_opts.raise_subtitles_amount then
         msg.warn("raise_subtitles / raise_subtitles_amount are deprecated. Use sub_margins=yes and dynamic_margins=yes.")
     end
 end
