@@ -18,33 +18,33 @@ To adjust them you can either:
 - Place [pause_indicator_lite.conf](./pause_indicator_lite.conf) in `script-opts` and change the values in it [recommended]
 - Simply change their values in `local options` within the script itself
 
-| Option                   | Value     | Description                                                                                                                                |
-|--------------------------|-----------|--------------------------------------------------------------------------------------------------------------------------------------------|
-| `indicator_icon`         | pause     | indicator icon type.  `pause`, `play`                                                                                                      |
-| `indicator_stay`         | yes       | keep indicator visibile during pause                                                                                                       |
-| `indicator_timeout`      | 0.6       | timeout (seconds) if indicator doesn't stay                                                                                                |
-| `keybind_allow`          | yes       | allow keybind to toggle pause                                                                                                              |
-| `keybind_set`            | mbtn_left | the used keybind to toggle pause [[reference](https://github.com/mpv-player/mpv/blob/master/etc/input.conf)]                               |
-| `keybind_mode`           | onpause   | mode to activate keybind<br>`onpause`: only active when paused, to unpause<br>`always`: always active to toggle pause/unpause              |
-| `keybind_eof_disable`    | yes       | disable keybind on eof (end of file) [[reference](https://github.com/Samillion/ModernZ/issues/291)]                                        |
-| `icon_color`             | `#FFFFFF` | icon fill color                                                                                                                            |
-| `icon_border_color`      | `#111111` | icon border color                                                                                                                          |
-| `icon_border_width`      | 1.5       | icon border width                                                                                                                          |
-| `icon_opacity`           | 40        | icon opacity (0-100)                                                                                                                       |
-| `rectangles_width`       | 30        | width of rectangles (pause icon)                                                                                                           |
-| `rectangles_height`      | 80        | height of rectangles (pause icon)                                                                                                          |
-| `rectangles_spacing`     | 20        | spacing between the two rectangles (pause icon)                                                                                            |
-| `triangle_width`         | 80        | width of triangle (play icon)                                                                                                              |
-| `triangle_height`        | 80        | height of triangle (play icon)                                                                                                             |
-| `flash_play_icon`        | yes       | flash play icon on unpause (best with pause indicator icon)                                                                                |
-| `flash_icon_timeout`     | 0.3       | timeout (seconds) for flash icon                                                                                                           |
-| `themed_icons`           | no        | use icon theme specified in `icon_theme` requires `fonts/modernz-icons.ttf`                                                                |
-| `icon_theme`             | fluent    | set icon theme. accepts `fluent` or `material`                                                                                             |
-| `theme_style`            | outline   | set theme style. accepts `outline` or `filled`                                                                                             |
-| `themed_icon_size`       | 80        | themed icon size                                                                                                                           |
-| `mute_indicator`         | no        | show a mute indicator                                                                                                                      |
-| `mute_indicator_pos`     | top_right | position of mute indicator<br>`top_left`, `top_right`, `top_center`. also: `middle_*`, `bottom_*`<br>same as `top_*` (ie: `bottom_right`)  |
-| `mute_icon_size`         | 50        | mute indicator size                                                                                                                        |
+| Option                   | Value           | Description                                                                                                                                |
+|--------------------------|-----------------|--------------------------------------------------------------------------------------------------------------------------------------------|
+| `indicator_icon`         | pause           | indicator icon type.  `pause`, `play`                                                                                                      |
+| `indicator_stay`         | yes             | keep indicator visibile during pause                                                                                                       |
+| `indicator_timeout`      | 0.6             | timeout (seconds) if indicator doesn't stay                                                                                                |
+| `keybind_allow`          | no              | allow keybind to toggle pause                                                                                                              |
+| `keybind_set`            | shift+mbtn_left | the used keybind to toggle pause [[reference](https://github.com/mpv-player/mpv/blob/master/etc/input.conf)]                               |
+| `keybind_mode`           | onpause         | mode to activate keybind<br>`onpause`: only active when paused, to unpause<br>`always`: always active to toggle pause/unpause              |
+| `keybind_eof_disable`    | yes             | disable keybind on eof (end of file) [[reference](https://github.com/Samillion/ModernZ/issues/291)]                                        |
+| `icon_color`             | `#FFFFFF`       | icon fill color                                                                                                                            |
+| `icon_border_color`      | `#111111`       | icon border color                                                                                                                          |
+| `icon_border_width`      | 1.5             | icon border width                                                                                                                          |
+| `icon_opacity`           | 40              | icon opacity (0-100)                                                                                                                       |
+| `rectangles_width`       | 30              | width of rectangles (pause icon)                                                                                                           |
+| `rectangles_height`      | 80              | height of rectangles (pause icon)                                                                                                          |
+| `rectangles_spacing`     | 20              | spacing between the two rectangles (pause icon)                                                                                            |
+| `triangle_width`         | 80              | width of triangle (play icon)                                                                                                              |
+| `triangle_height`        | 80              | height of triangle (play icon)                                                                                                             |
+| `flash_play_icon`        | yes             | flash play icon on unpause (best with pause indicator icon)                                                                                |
+| `flash_icon_timeout`     | 0.3             | timeout (seconds) for flash icon                                                                                                           |
+| `themed_icons`           | no              | use icon theme specified in `icon_theme` requires `fonts/modernz-icons.ttf`                                                                |
+| `icon_theme`             | fluent          | set icon theme. accepts `fluent` or `material`                                                                                             |
+| `theme_style`            | outline         | set theme style. accepts `outline` or `filled`                                                                                             |
+| `themed_icon_size`       | 80              | themed icon size                                                                                                                           |
+| `mute_indicator`         | no              | show a mute indicator                                                                                                                      |
+| `mute_indicator_pos`     | top_right       | position of mute indicator<br>`top_left`, `top_right`, `top_center`. also: `middle_*`, `bottom_*`<br>same as `top_*` (ie: `bottom_right`)  |
+| `mute_icon_size`         | 50              | mute indicator size                                                                                                                        |
 
 ### How to install
 
