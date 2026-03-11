@@ -214,7 +214,7 @@ So, to control the raise amount of subtitles, adjust your `osc_height` and `fade
 | ----------------------------- | ----------------- | ------------------------------------------------------------- |
 | visibility                    | auto              | only used at init to set visibility_mode(...)                 |
 | visibility_modes              | never_auto_always | visibility modes to cycle through, modes are separated by `_` |
-| tick_delay                    | 1 / 60            | minimum interval between OSC redraws (in seconds)             |
+| tick_delay                    | 0.0167            | minimum interval between OSC redraws (in seconds)             |
 | tick_delay_follow_display_fps | no                | use display FPS as the minimum redraw interval                |
 
 ### Elements Position
