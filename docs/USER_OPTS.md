@@ -78,12 +78,23 @@ Create `modernz.conf` in your mpv script-opts directory:
 | window_title_font_size  | 26               | window title font size                                                    |
 | window_controls         | yes              | show window controls (close, minimize, maximize) in borderless/fullscreen |
 
-### Subtitle display settings
+### Subtitle and OSD display settings
+**IMPORTANT**: It is recommended to add the following in your `mpv.conf`, to circumvent subtitle or OSD bad positioning when watch later options are used.
 
-| Option                | Value | Description                                                            |
-| --------------------- | ----- | ---------------------------------------------------------------------- |
-| raise_subtitles       | yes   | raise subtitles above the OSC when shown                               |
-| raise_subtitle_amount | 125   | amount by which subtitles are raised when the OSC is shown (in pixels) |
+```EditorConfig
+watch-later-options-remove=sub-pos
+watch-later-options-remove=osd-margin-y
+```
+
+If `sub_margins` is enabled, the subtitles are raised above the OSC. Calculated by both `osc_height` and `fade_alpha`, specifically whichever of them is highest.
+
+So, to control the raise amount of subtitles, adjust your `osc_height` and `fade_alpha` options in `modernz.conf` to change the OSC boundary.
+
+| Option          | Value | Description                                    |
+| --------------- | ----- | ---------------------------------------------- |
+| sub_margins     | yes   | raise subtitles above the OSC when shown       |
+| osd_margins     | no    | adjust OSD to not overlap with OSC             |
+| dynamic_margins | yes   | update margins dynamically with OSC visibility |
 
 ### Buttons display and functionality
 

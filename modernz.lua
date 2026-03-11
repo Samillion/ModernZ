@@ -80,9 +80,10 @@ local user_opts = {
     window_title_font_size = 26,           -- window title font size
     window_controls = true,                -- show window controls (close, minimize, maximize) in borderless/fullscreen
 
-    -- Subtitle display settings
-    raise_subtitles = true,                -- raise subtitles above the OSC when shown
-    raise_subtitle_amount = 125,           -- amount by which subtitles are raised when the OSC is shown (in pixels)
+    -- Subtitle and OSD display settings
+    sub_margins = true,                    -- raise subtitles above the OSC when shown
+    osd_margins = false,                   -- adjust OSD to not overlap with OSC
+    dynamic_margins = true,                -- update margins dynamically with OSC visibility
 
     -- Buttons display and functionality
     subtitles_button = true,               -- show the subtitles menu button
@@ -277,6 +278,10 @@ local user_opts = {
 
     -- screenshot button mouse actions
     screenshot_mbtn_left_command = "osd-msg screenshot subtitles",
+
+    -- DEPRECATED options
+    raise_subtitles = false,               -- DEPRECATED: use sub_margins and dynamic_margins instead
+    raise_subtitle_amount = false,         -- DEPRECATED: use sub_margins and dynamic_margins instead
 }
 
 mp.observe_property("osc", "bool", function(name, value) if value == true then mp.set_property("osc", "no") end end)
@@ -831,15 +836,70 @@ local function cache_enabled()
     return state.cache_state and #state.cache_state["seekable-ranges"] > 0
 end
 
-local function update_margins()
-    local margins = osc_param.video_margins
+local function set_margin_offset(prop, offset)
+    if offset > 0 then
+        if not state[prop] then
+            state[prop] = mp.get_property_number(prop)
+        end
+        mp.set_property_number(prop, state[prop] + offset)
+    elseif state[prop] then
+        mp.set_property_number(prop, state[prop])
+        state[prop] = nil
+    end
+end
 
-    -- Don't use margins if it's visible only temporarily.
-    if not state.osc_visible or get_hidetimeout() >= 0 or
-       (state.fullscreen and not user_opts.showfullscreen) or
-       (not state.fullscreen and not user_opts.showwindowed)
-    then
-        margins = {l = 0, r = 0, t = 0, b = 0}
+local function reset_margins()
+    -- restore subtitle position if it was changed
+    if state.osc_adjusted_subpos ~= nil then
+        mp.set_property_number("sub-pos", state.user_subpos)
+        state.osc_adjusted_subpos = nil
+    end
+    set_margin_offset("osd-margin-y", 0)
+end
+
+local function update_margins()
+    local use_margins = get_hidetimeout() < 0 or user_opts.dynamic_margins
+    local top_vis    = state.wc_visible
+    local bottom_vis = state.osc_visible
+    local margins = {
+        l = 0,
+        r = 0,
+        t = (use_margins and top_vis)    and osc_param.video_margins.t or 0,
+        b = (use_margins and bottom_vis) and osc_param.video_margins.b or 0,
+    }
+
+    -- raise amount is based on OSC height
+    if user_opts.sub_margins and mp.get_property_native("sid") then
+        if margins.b > 0 then
+            local raise_percent = margins.b * 100
+            -- only raise if subs are low enough that they would overlap the OSC
+            if state.user_subpos >= (100 - raise_percent) then
+                local adjusted = math.floor((1 - margins.b) * 100)
+                if adjusted < 0 then adjusted = state.user_subpos end
+                state.osc_adjusted_subpos = adjusted
+                mp.set_property_number("sub-pos", adjusted)
+            else
+                -- sub pos is high; do nothing
+                state.osc_adjusted_subpos = nil
+            end
+        else
+            -- restore original sub position
+            if state.osc_adjusted_subpos ~= nil then
+                mp.set_property_number("sub-pos", state.user_subpos)
+                state.osc_adjusted_subpos = nil
+            end
+        end
+    end
+
+    if user_opts.osd_margins then
+        local align = mp.get_property("osd-align-y")
+        local osd_margin = 0
+        if align == "top" and top_vis then
+            osd_margin = margins.t
+        elseif align == "bottom" and bottom_vis then
+            osd_margin = margins.b
+        end
+        set_margin_offset("osd-margin-y", osd_margin * osc_param.playresy)
     end
 
     mp.set_property_native("user-data/osc/margins", margins)
@@ -2500,62 +2560,20 @@ layouts["modern-image"] = function ()
     end
 end
 
-local function adjust_subtitles(visible)
-    if not mp.get_property_native("sid") then return end
-
-    local scale = state.fullscreen and user_opts.scalefullscreen or user_opts.scalewindowed
-
-    if visible and user_opts.raise_subtitles and state.osc_visible then
-        local w, h = mp.get_osd_size()
-        if h > 0 then
-            local raise_factor = user_opts.raise_subtitle_amount
-
-            -- adjust for scale
-            if scale > 1 then
-                raise_factor = raise_factor * (1 + (scale - 1) * 0.2)
-            elseif scale < 1 then
-                raise_factor = raise_factor * (0.8 + (scale - 0.5) * 0.5)
-            end
-
-            -- raise percentage
-            local raise_percent = (raise_factor / osc_param.playresy) * 100
-
-            -- don't adjust if user's sub-pos is higher than the raise factor
-            if state.user_subpos >= (100 - raise_percent) then
-                local adjusted = math.floor((osc_param.playresy - raise_factor) / osc_param.playresy * 100)
-                if adjusted < 0 then adjusted = state.user_subpos end
-
-                state.osc_adjusted_subpos = adjusted
-                mp.set_property_number("sub-pos", adjusted)
-            else
-                state.osc_adjusted_subpos = nil
-            end
-        end
-    elseif user_opts.raise_subtitles then
-        -- restore user's original subtitle position
-        if state.user_subpos then
-            mp.set_property_number("sub-pos", state.user_subpos)
-        end
-        state.osc_adjusted_subpos = nil
-    end
-end
-
-
-local function set_bar_visible(visible_key, visible, with_margins, on_change)
+local function set_bar_visible(visible_key, visible)
     if state[visible_key] ~= visible then
         state[visible_key] = visible
-        if with_margins then update_margins() end
-        if on_change then on_change() end
+        update_margins()
     end
     request_tick()
 end
 
 local function osc_visible(visible)
-    set_bar_visible("osc_visible", visible, true, function() adjust_subtitles(true) end)
+    set_bar_visible("osc_visible", visible)
 end
 
 local function wc_visible(visible)
-    set_bar_visible("wc_visible", visible, false)
+    set_bar_visible("wc_visible", visible)
 end
 
 local function command_callback(command)
@@ -3329,9 +3347,9 @@ local function hide_osc()
     if thumbfast.width ~= 0 and thumbfast.height ~= 0 then
         mp.commandv("script-message-to", "thumbfast", "clear")
     end
-    -- when disabled, restore subtitles before hide_bar wipes the overlay
+    -- reset margins before hide_bar wipes the overlay
     if not state.enabled then
-        adjust_subtitles(false)
+        reset_margins()
     end
     hide_bar("osc", "osc_visible", "anitype", osc_visible)
     -- couple wc with osc when not independent
@@ -3778,6 +3796,10 @@ local function set_tick_delay(_, display_fps)
     tick_delay = 1 / display_fps
 end
 
+mp.register_event("shutdown", function()
+    reset_margins()
+    mp.del_property("user-data/osc")
+end)
 mp.register_event("file-loaded", function()
     is_image() -- check if file is an image
     state.new_file_flag = true
@@ -3819,7 +3841,6 @@ end)
 mp.observe_property("fullscreen", "bool", function(_, val)
     state.fullscreen = val
     state.marginsREQ = true
-    adjust_subtitles(state.osc_visible)
     request_init_resize()
 end)
 mp.observe_property("border", "bool", function(_, val)
@@ -3852,7 +3873,6 @@ mp.observe_property("osd-dimensions", "native", function()
     -- (we could use the value instead of re-querying it all the time, but then
     --  we might have to worry about property update ordering)
     request_init_resize()
-    adjust_subtitles(state.osc_visible)
 end)
 mp.observe_property("osd-scale-by-window", "native", request_init_resize)
 mp.observe_property("touch-pos", "native", handle_touch)
@@ -3868,7 +3888,6 @@ mp.observe_property("loop-file", "bool", function(_, val)
 end)
 mp.observe_property("sub-pos", "native", function(_, value)
     if value == nil then return end
-
     if state.osc_adjusted_subpos == nil or value ~= state.osc_adjusted_subpos then
         state.user_subpos = value
     end
@@ -4114,6 +4133,10 @@ local function validate_user_opts()
     if user_opts.keeponpause and not user_opts.showonpause then
         msg.warn("keeponpause requires showonpause. Setting showonpause=yes.")
         user_opts.showonpause = true
+    end
+
+    if user_opts.raise_subtitles or user_opts.raise_subtitle_amount then
+        msg.warn("raise_subtitles / raise_subtitle_amount are deprecated. Use sub_margins=yes and dynamic_margins=yes.")
     end
 end
 
