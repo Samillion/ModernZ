@@ -12,8 +12,8 @@ local options = {
     indicator_timeout = 0.6,              -- timeout (seconds) if indicator doesn't stay
 
     -- keybind
-    keybind_allow = true,                 -- allow keybind to toggle pause
-    keybind_set = "mbtn_left",            -- the used keybind to toggle pause
+    keybind_allow = false,                -- allow keybind to toggle pause
+    keybind_set = "shift+mbtn_left",      -- the used keybind to toggle pause
     keybind_mode = "onpause",             -- mode to activate keybind. "onpause", "always"
     keybind_eof_disable = true,           -- disable keybind on eof (end of file)
 
