@@ -3400,9 +3400,14 @@ end
 --
 local function reset_timeout()
     local now = mp.get_time()
-    state.showtime = now
     if user_opts.independent_zones then
-        state.wc_showtime = now
+        if mouse_in_area({"window-controls", "window-controls-title"}) then
+            state.wc_showtime = now
+        else
+            state.showtime = now
+        end
+    else
+        state.showtime = now
     end
 end
 
@@ -3644,7 +3649,9 @@ local function render()
         if state.pause_osc_locked and showtime_key == "showtime" then return end
         local timeout = state[showtime_key] + (hide_timeout / 1000) - now
         if timeout <= 0 and get_touchtimeout() <= 0 then
-            if state.active_element == nil and (not mouse_in_area(input_areas) or not user_opts.osc_keep_with_cursor) then
+            -- area elements should affect the specific area only. (ie: seekbar drag shouldn't affect top bar)
+            local element_blocks_hide = state.active_element ~= nil and mouse_in_area(input_areas)
+            if not element_blocks_hide and (not mouse_in_area(input_areas) or not user_opts.osc_keep_with_cursor) then
                 hide_fn()
             end
         else
