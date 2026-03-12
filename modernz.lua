@@ -277,7 +277,7 @@ local user_opts = {
     info_mbtn_left_command = "script-binding stats/display-page-1-toggle",
 
     -- screenshot button mouse actions
-    screenshot_mbtn_left_command = "osd-msg screenshot subtitles",
+    screenshot_mbtn_left_command = "osd-msg screenshot video",
 
     -- DEPRECATED options
     raise_subtitles = false,               -- DEPRECATED: use sub_margins and dynamic_margins instead
@@ -486,6 +486,11 @@ local window_control_box_width = 150
 local is_december = os.date("*t").month == 12
 local UNICODE_MINUS = string.char(0xe2, 0x88, 0x92)  -- UTF-8 for U+2212 MINUS SIGN
 
+-- hover_effect flags
+local hover_effect_size  = false
+local hover_effect_color = false
+local hover_effect_glow  = false
+
 local function osc_color_convert(color)
     return color:sub(6,7) .. color:sub(4,5) ..  color:sub(2,3)
 end
@@ -517,6 +522,10 @@ local function set_osc_styles()
         element_down = "{\\1c&H" .. osc_color_convert(user_opts.held_element_color) .. "&}",
         element_hover = "{" .. (contains(user_opts.hover_effect, "color") and "\\1c&H" .. osc_color_convert(user_opts.hover_effect_color) .. "&" or "") .."\\2c&HFFFFFF&" .. (contains(user_opts.hover_effect, "size") and string.format("\\fscx%s\\fscy%s", user_opts.hover_button_size, user_opts.hover_button_size) or "") .. "}",
     }
+    -- cache hover_effect flags
+    hover_effect_size  = contains(user_opts.hover_effect, "size")
+    hover_effect_color = contains(user_opts.hover_effect, "color")
+    hover_effect_glow  = contains(user_opts.hover_effect, "glow")
 end
 
 -- internal states, do not touch
@@ -727,8 +736,8 @@ end
 
 local function mouse_in_area(names)
     if type(names) == "string" then names = {names} end
-    for _, name in pairs(names) do
-        for _, cords in pairs(osc_param.areas[name] or {}) do
+    for _, name in ipairs(names) do
+        for _, cords in ipairs(osc_param.areas[name] or {}) do
             if mouse_hit_coords(cords.x1, cords.y1, cords.x2, cords.y2) then
                 return true
             end
@@ -790,7 +799,7 @@ end
 local function ass_append_alpha(ass, alpha, modifier, inverse, anim_override)
     local ar = {}
 
-    for ai, av in pairs(alpha) do
+    for ai, av in ipairs(alpha) do
         av = mult_alpha(av, modifier)
         local animpos = anim_override or state.animation
         if animpos then
@@ -1129,7 +1138,7 @@ local function draw_seekbar_handle(element, elem_ass, override_alpha)
     if display_handle then
         -- Apply size hover_effect only if hovering over the handle
         if handle_hovered and user_opts.hover_effect_for_sliders then
-            if contains(user_opts.hover_effect, "size") then
+            if hover_effect_size then
                 rh = rh * (user_opts.hover_button_size / 100)
             end
         end
@@ -1544,7 +1553,7 @@ local function render_elements(master_ass, osc_vis, wc_vis)
             )
             local hovered = mouse_hit(element) and is_clickable and element.enabled and state.mouse_down_counter == 0
             local hoverstyle = button_lo.hoverstyle
-            if hovered and (contains(user_opts.hover_effect, "size") or contains(user_opts.hover_effect, "color")) then
+            if hovered and (hover_effect_size or hover_effect_color) then
                 -- remove font scale tags for these elements, it looks out of place
                 if element.name == "title" or element.name == "time_codes" or element.name == "chapter_title" or element.name == "cache_info" then
                     hoverstyle = hoverstyle:gsub("\\fscx%d+\\fscy%d+", "")
@@ -1555,7 +1564,7 @@ local function render_elements(master_ass, osc_vis, wc_vis)
             end
 
             -- apply blur effect if "glow" is in hover effects
-            if hovered and contains(user_opts.hover_effect, "glow") then
+            if hovered and hover_effect_glow then
                 local shadow_ass = assdraw.ass_new()
                 shadow_ass:merge(style_ass)
                 shadow_ass:append("{\\blur" .. user_opts.button_glow_amount .. "}" .. hoverstyle .. buttontext)
@@ -1639,11 +1648,7 @@ end
 -- Initialisation and Layout
 --
 local function is_url(s)
-    if not s then
-        user_opts.download_button = false
-        return false
-    end
-
+    if not s then return false end
     local url_pattern = "^[%w]+://[%w%.%-_]+%.[%a]+[-%w%.%-%_/?&=]*"
     return string.match(s, url_pattern) ~= nil
 end
@@ -1837,7 +1842,7 @@ local function window_controls()
 
     -- Window controls
     if user_opts.window_controls then
-        local size_hover = contains(user_opts.hover_effect, "size") and
+        local size_hover = hover_effect_size and
             string.format("\\fscx%s\\fscy%s", user_opts.hover_button_size, user_opts.hover_button_size) or ""
         local function wc_hoverstyle(color)
             return "{\\c&H" .. osc_color_convert(color) .. "&" .. size_hover .. "}"
@@ -2584,6 +2589,46 @@ local function command_callback(command)
     end
 end
 
+-- format seconds into a time string
+local function format_time(seconds)
+    if not seconds then return "--:--" end
+
+    local hours   = math.floor(seconds / 3600)
+    local minutes = math.floor((seconds % 3600) / 60)
+    local secs    = math.floor(seconds % 60)
+    local show_hours = hours > 0 or user_opts.time_format == "fixed"
+
+    if state.tc_ms then
+        local ms = math.floor((seconds % 1) * 1000)
+        if show_hours then
+            return string.format("%02d:%02d:%02d.%03d", hours, minutes, secs, ms)
+        else
+            return string.format("%02d:%02d.%03d", minutes, secs, ms)
+        end
+    else
+        if show_hours then
+            return string.format("%02d:%02d:%02d", hours, minutes, secs)
+        else
+            return string.format("%02d:%02d", minutes, secs)
+        end
+    end
+end
+
+-- build cache seek ranges from state
+local function build_cache_seek_ranges()
+    if not user_opts.seekrange or not cache_enabled() then return nil end
+    local duration = mp.get_property_number("duration")
+    if not duration or duration <= 0 then return nil end
+    local nranges = {}
+    for _, range in ipairs(state.cache_state["seekable-ranges"]) do
+        nranges[#nranges + 1] = {
+            ["start"] = 100 * range["start"] / duration,
+            ["end"]   = 100 * range["end"]   / duration,
+        }
+    end
+    return nranges
+end
+
 local function osc_init()
     msg.debug("osc_init")
 
@@ -2685,7 +2730,7 @@ local function osc_init()
             return ""
         end
 
-        local chapters = mp.get_property_native("chapter-list", {})
+        local chapters = state.chapter_list
         local chapter_data = chapters[chapter_index + 1]
         local chapter_title = chapter_data and chapter_data.title ~= "" and chapter_data.title
             or string.format("%s: %d/%d", locale.chapter, chapter_index + 1, #chapters)
@@ -2724,16 +2769,16 @@ local function osc_init()
     --play_pause
     ne = new_element("play_pause", "button")
     ne.content = function ()
-        if mp.get_property("eof-reached") == "yes" then
+        if mp.get_property_bool("eof-reached") then
             return icons.replay
-        elseif mp.get_property("pause") == "yes" and not state.playing_and_seeking then
+        elseif mp.get_property_bool("pause") and not state.playing_and_seeking then
             return icons.play
         else
             return icons.pause
         end
     end
     ne.eventresponder["mbtn_left_up"] = function ()
-        if mp.get_property("eof-reached") == "yes" then
+        if mp.get_property_bool("eof-reached") then
             mp.commandv("seek", 0, "absolute-percent")
             mp.commandv("set", "pause", "no")
         else
@@ -2985,14 +3030,14 @@ local function osc_init()
 
     --tog_ontop
     ne = new_element("tog_ontop", "button")
-    ne.content = function () return mp.get_property("ontop") == "no" and icons.ontop_on or icons.ontop_off end
+    ne.content = function () return not mp.get_property_bool("ontop") and icons.ontop_on or icons.ontop_off end
     ne.tooltip_style = osc_styles.tooltip
-    ne.tooltipF = function () return user_opts.tooltip_hints and (mp.get_property("ontop") == "no" and locale.ontop or locale.ontop_disable) or "" end
+    ne.tooltipF = function () return user_opts.tooltip_hints and (not mp.get_property_bool("ontop") and locale.ontop or locale.ontop_disable) or "" end
     ne.visible = (osc_param.playresx >= visible_min_width)
     ne.eventresponder["mbtn_left_up"] = function ()
         mp.commandv("cycle", "ontop")
         if state.initialborder == "yes" then
-            if mp.get_property("ontop") == "yes" then
+            if mp.get_property_bool("ontop") then
                 mp.commandv("set", "border", "no")
             else
                 mp.commandv("set", "border", "yes")
@@ -3001,7 +3046,7 @@ local function osc_init()
     end
     ne.eventresponder["mbtn_right_up"] = function ()
         mp.commandv("cycle", "ontop")
-        if mp.get_property("border") == "no" then
+        if not mp.get_property_bool("border") then
             mp.commandv("set", "border", "yes")
         end
     end
@@ -3120,55 +3165,14 @@ local function osc_init()
     ne.tooltipF = (user_opts.tooltip_hints and cache_enabled()) and locale.cache or ""
     ne.eventresponder["mbtn_left_up"] = function() mp.command("script-binding stats/display-page-3") end
 
-    -- Helper function to format time, shared by seekbar tooltip and time codes display
-    local function format_time(seconds)
-        if not seconds then return "--:--" end
-
-        local hours = math.floor(seconds / 3600)
-        local minutes = math.floor((seconds % 3600) / 60)
-        local secs = math.floor(seconds % 60)
-        local show_hours = hours > 0 or user_opts.time_format == "fixed"
-
-        if state.tc_ms then
-            local ms = math.floor((seconds % 1) * 1000)
-            if show_hours then
-                return string.format("%02d:%02d:%02d.%03d", hours, minutes, secs, ms)
-            else
-                return string.format("%02d:%02d.%03d", minutes, secs, ms)
-            end
-        else
-            if show_hours then
-                return string.format("%02d:%02d:%02d", hours, minutes, secs)
-            else
-                return string.format("%02d:%02d", minutes, secs)
-            end
-        end
-    end
-
-    -- build cache seek ranges from state
-    local function build_cache_seek_ranges()
-        if not user_opts.seekrange or not cache_enabled() then return nil end
-        local duration = mp.get_property_number("duration")
-        if not duration or duration <= 0 then return nil end
-        local nranges = {}
-        for _, range in pairs(state.cache_state["seekable-ranges"]) do
-            nranges[#nranges + 1] = {
-                ["start"] = 100 * range["start"] / duration,
-                ["end"]   = 100 * range["end"]   / duration,
-            }
-        end
-        return nranges
-    end
-
     --seekbar
     ne = new_element("seekbar", "slider")
     ne.enabled = mp.get_property("percent-pos") ~= nil
     ne.thumbnailable = true
-    state.slider_element = ne.enabled and ne or nil  -- used for forced_title
     ne.slider.markerF = function ()
         local duration = mp.get_property_number("duration")
-        if duration ~= nil then
-            local chapters = mp.get_property_native("chapter-list", {})
+        if duration and duration > 0 then
+            local chapters = state.chapter_list
             local markers = {}
             for n = 1, #chapters do
                 markers[n] = (chapters[n].time / duration * 100)
@@ -3198,7 +3202,7 @@ local function osc_init()
         -- sent when the user is done seeking, so we need to throw away
         -- identical seeks
         state.playing_and_seeking = true
-        if mp.get_property("pause") == "no" and user_opts.mouse_seek_pause then
+        if not mp.get_property_bool("pause") and user_opts.mouse_seek_pause then
             mp.commandv("cycle", "pause")
         end
         local seekto = get_slider_value(element)
@@ -3214,13 +3218,13 @@ local function osc_init()
     end
     ne.eventresponder["mbtn_left_down"] = function (element)
         element.state.mbtnleft = true
-        element.state.was_paused = mp.get_property("pause") == "yes"
+        element.state.was_paused = mp.get_property_bool("pause")
         state.playing_and_seeking = false  -- clear state
         mp.commandv("seek", get_slider_value(element), "absolute-percent+exact")
     end
     ne.eventresponder["shift+mbtn_left_down"] = function (element)
         element.state.mbtnleft = true
-        element.state.was_paused = mp.get_property("pause") == "yes"
+        element.state.was_paused = mp.get_property_bool("pause")
         state.playing_and_seeking = false
         mp.commandv("seek", get_slider_value(element), "absolute-percent")
     end
@@ -3228,7 +3232,7 @@ local function osc_init()
         element.state.mbtnleft = false
         if state.playing_and_seeking then
             -- only unpause if the video was playing before the drag started
-            if not element.state.was_paused and mp.get_property("eof-reached") == "no" and user_opts.mouse_seek_pause then
+            if not element.state.was_paused and not mp.get_property_bool("eof-reached") and user_opts.mouse_seek_pause then
                 mp.commandv("cycle", "pause")
             end
             state.playing_and_seeking = false
@@ -3358,11 +3362,6 @@ local function hide_osc()
     end
 end
 
-local function pause_state(_, enabled)
-    state.paused = enabled
-    request_tick()
-end
-
 local function cache_state(_, st)
     state.cache_state = st
     request_tick()
@@ -3462,22 +3461,16 @@ local function process_event(source, what)
         state.mouse_in_window = true
 
         local mouseX, mouseY = get_virt_mouse_pos()
-        if mouseX ~= -1 and mouseY ~= -1 then
-            if state.last_mouseX == nil or state.last_mouseY == nil then
-                state.last_mouseX, state.last_mouseY = mouseX, mouseY
-            end
+        -- init last pos on first mouse_move for comparison below to be valid
+        if state.last_mouseX == nil then
+            state.last_mouseX, state.last_mouseY = mouseX, mouseY
         end
 
         if user_opts.minmousemove == 0 or
-            ((state.last_mouseX ~= nil and state.last_mouseY ~= nil) and
-                ((math.abs(mouseX - state.last_mouseX) >= user_opts.minmousemove)
-                    or (math.abs(mouseY - state.last_mouseY) >= user_opts.minmousemove)
-                )
-            ) then
-                if mouseX ~= -1 and mouseY ~= -1 then
-                    state.last_mouseX, state.last_mouseY = mouseX, mouseY
-                end
-                if user_opts.bottomhover then -- if enabled, only show osc if mouse is hovering at the bottom of the screen (where the UI elements are)
+            math.abs(mouseX - state.last_mouseX) >= user_opts.minmousemove or
+            math.abs(mouseY - state.last_mouseY) >= user_opts.minmousemove then
+                state.last_mouseX, state.last_mouseY = mouseX, mouseY
+                if user_opts.bottomhover then
                     local top_hover = window_controls_enabled() and (user_opts.show_window_title or user_opts.window_controls)
                     local in_bottom = mouseY > osc_param.playresy - user_opts.bottomhover_zone
                     local in_top = mouseY < user_opts.tophover_zone and top_hover
@@ -3564,9 +3557,7 @@ local function render()
         state.initREQ = false
 
         -- store initial mouse position
-        if (state.last_mouseX == nil or state.last_mouseY == nil)
-            and not (mouseX == nil or mouseY == nil or mouseX == -1 or mouseY == -1) then
-
+        if state.last_mouseX == nil and mouseX ~= -1 then
             state.last_mouseX, state.last_mouseY = mouseX, mouseY
         end
     end
@@ -3889,9 +3880,9 @@ mp.observe_property("mute", "bool", function(_, val)
     request_tick()
 end)
 mp.observe_property("paused-for-cache", "bool", function(_, val) state.buffering = val end)
--- ensure compatibility with auto loop scripts (eg: a script that sets videos under 2 seconds to loop by default)
+-- ensure compatibility with auto loop scripts
 mp.observe_property("loop-file", "bool", function(_, val)
-    state.file_loop = (val == nil)
+    state.file_loop = (val ~= false)
 end)
 mp.observe_property("sub-pos", "native", function(_, value)
     if value == nil then return end
@@ -4015,8 +4006,8 @@ local function idlescreen_visibility(mode, no_osd)
     request_tick()
 end
 
-mp.observe_property("pause", "bool", function(name, enabled)
-    pause_state(name, enabled)
+mp.observe_property("pause", "bool", function(_, enabled)
+    request_tick()
     if user_opts.showonpause and user_opts.visibility ~= "never" then
         state.enabled = enabled
         if enabled then
@@ -4124,6 +4115,7 @@ local function validate_user_opts()
         end
     end
 
+    state.visibility_modes = {}
     for str in string.gmatch(user_opts.visibility_modes, "([^_]+)") do
         if str ~= "auto" and str ~= "always" and str ~= "never" then
             msg.warn("Ignoring unknown visibility mode '" .. str .."' in list")
@@ -4168,7 +4160,7 @@ set_osc_locale()
 set_icon_theme()
 set_osc_styles()
 set_time_styles(true, true)
-set_tick_delay("display_fps", mp.get_property_number("display_fps"))
+set_tick_delay()
 visibility_mode(user_opts.visibility, true)
 update_duration_watch()
 
