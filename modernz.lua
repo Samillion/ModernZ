@@ -2091,7 +2091,7 @@ layouts["modern"] = function ()
         lo.geometry = {x = start_x, y = refY - 35, an = 5, w = 24, h = 24}
         lo.style = osc_styles.control_3
         lo.visible = (osc_param.playresx >= 600 - outeroffset)
-        start_x = start_x + 28
+        start_x = start_x + 20
 
         -- Volumebar
         lo = new_element("volumebarbg", "box")
@@ -2120,7 +2120,7 @@ layouts["modern"] = function ()
     local show_remhours = (state.tc_left_rem and remsec >= 3600) or (not state.tc_left_rem and dur >= 3600) or user_opts.time_format ~= "dynamic"
     local auto_hide_volbar = (audio_track and user_opts.volume_control) and osc_param.playresx < (user_opts.hide_volume_bar_trigger - outeroffset)
     local time_codes_x = start_x
-        - (auto_hide_volbar and 75 or 0) -- window width with audio track and elements
+        - (auto_hide_volbar and 67 or 0) -- window width with audio track and elements
         - (audio_track and not user_opts.volume_control and 115 or 0) -- audio track with no elements
         - (not audio_track and 12 or 0) -- remove extra padding
     local time_codes_width = 80
@@ -2353,21 +2353,21 @@ layouts["modern-compact"] = function ()
         lo = add_layout("vol_ctrl")
         lo.geometry = {x = start_x, y = refY - 35, an = 5, w = 24, h = 24}
         lo.style = osc_styles.control_2
-        start_x = start_x + 28
+        start_x = start_x + 20
 
         new_element("volumebarbg", "box")
         elements.volumebar.visible = osc_geo.w >= 850
         elements.volumebarbg.visible = elements.volumebar.visible
         if elements.volumebar.visible then
             lo = add_layout("volumebarbg")
-            lo.geometry = {x = start_x, y = refY - 35, an = 4, w = 65, h = 4}
+            lo.geometry = {x = start_x, y = refY - 35, an = 4, w = 55, h = 4}
             lo.layer = 13
             lo.alpha[1] = 128
             lo.style = user_opts.volumebar_match_seek_color and osc_styles.seekbar_bg or osc_styles.volumebar_bg
             lo.box.radius = user_opts.slider_rounded_corners and 2 or 0
 
             lo = add_layout("volumebar")
-            lo.geometry = {x = start_x, y = refY - 35, an = 4, w = 65, h = 10}
+            lo.geometry = {x = start_x, y = refY - 35, an = 4, w = 55, h = 10}
             lo.style = user_opts.volumebar_match_seek_color and osc_styles.seekbar_fg or osc_styles.volumebar_fg
             lo.slider.gap = 3
             lo.slider.radius = user_opts.slider_rounded_corners and 2 or 0
@@ -2903,7 +2903,7 @@ local function osc_init()
     ne.slider.tooltipF = function(pos)
         if state.audio_track_count <= 0 then return end
         local volume = set_volume(pos)
-        return state.mute and (volume .. " (" .. locale.muted .. ")") or volume
+        return volume
     end
     ne.eventresponder["mouse_move"] = function (element)
         local pos = get_slider_value(element)
