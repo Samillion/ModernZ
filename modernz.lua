@@ -2618,6 +2618,7 @@ local function osc_init()
 
     -- stop seeking with the slider to prevent skipping files
     state.active_element = nil
+    state.playing_and_seeking = false
 
     -- reset margins
     osc_param.video_margins = {l = 0, r = 0, t = 0, b = 0}
@@ -3252,6 +3253,15 @@ local function osc_init()
     end
     ne.eventresponder["reset"] = function (element)
         element.state.lastseek = nil
+        if element.state.mbtnleft then
+            element.state.mbtnleft = false
+            if state.playing_and_seeking then
+                if not element.state.was_paused and not mp.get_property_bool("eof-reached") and user_opts.mouse_seek_pause then
+                    mp.commandv("cycle", "pause")
+                end
+                state.playing_and_seeking = false
+            end
+        end
     end
     ne.eventresponder["wheel_up_press"] = function () mp.commandv("seek", 10) end
     ne.eventresponder["wheel_down_press"] = function () mp.commandv("seek", -10) end
