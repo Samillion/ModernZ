@@ -90,9 +90,9 @@ local user_opts = {
     audio_tracks_button = true,            -- show the audio tracks menu button
     jump_buttons = true,                   -- show the jump backward and forward buttons
     jump_amount = 10,                      -- change the jump amount in seconds
-    jump_more_amount = 60,                 -- change the jump amount in seconds when right-clicking jump buttons and shift-clicking chapter skip buttons
+    jump_more_amount = 60,                 -- change the jump amount in seconds on right click
     jump_icon_number = true,               -- show different icon when jump_amount is set to 5, 10, or 30
-    jump_mode = "relative",                -- seek mode for jump buttons
+    jump_mode = "relative",                -- seek mode for jump buttons: "relative" or "exact"
     jump_softrepeat = true,                -- enable continuous jumping when holding down seek buttons
     chapter_skip_buttons = false,          -- show the chapter skip backward and forward buttons
     chapter_softrepeat = true,             -- enable continuous skipping when holding down chapter skip buttons
@@ -2831,7 +2831,6 @@ local function osc_init()
     ne.eventresponder["mbtn_left_down"] = command_callback(user_opts.chapter_prev_mbtn_left_command)
     ne.eventresponder["mbtn_right_down"] = command_callback(user_opts.chapter_prev_mbtn_right_command)
     ne.eventresponder["shift+mbtn_left_down"] = command_callback(user_opts.chapter_prev_mbtn_mid_command)
-    ne.eventresponder["shift+mbtn_right_down"] = function () mp.commandv("seek", -jump_more_amount, jump_mode) end
 
     --chapter_forward
     ne = new_element("chapter_forward", "button")
@@ -2842,7 +2841,6 @@ local function osc_init()
     ne.eventresponder["mbtn_left_down"] = command_callback(user_opts.chapter_next_mbtn_left_command)
     ne.eventresponder["mbtn_right_down"] = command_callback(user_opts.chapter_next_mbtn_right_command)
     ne.eventresponder["shift+mbtn_left_down"] = command_callback(user_opts.chapter_next_mbtn_mid_command)
-    ne.eventresponder["shift+mbtn_right_down"] = function () mp.commandv("seek", jump_more_amount, jump_mode) end
 
     local visible_min_width = 550 - outeroffset
 
