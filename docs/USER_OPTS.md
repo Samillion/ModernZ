@@ -104,7 +104,6 @@ So, to control the raise amount of subtitles, adjust your `osc_height` and `fade
 | audio_tracks_button        | yes           | show the audio tracks menu button                                                                                  |
 | jump_buttons               | yes           | show "jump forward/backward 10 seconds" buttons                                                                    |
 | jump_amount                | 10            | change the jump amount in seconds                                                                                  |
-| jump_more_amount           | 60            | change the jump amount in seconds when right-clicking jump buttons and shift-clicking chapter skip buttons         |
 | jump_icon_number           | yes           | show different icon for `5`, `10`, or `30` second jumps                                                            |
 | jump_mode                  | relative      | seek mode for jump buttons: `"relative"` or `"exact"`                                                              |
 | jump_softrepeat            | yes           | enable continuous jumping when holding down seek buttons                                                           |
