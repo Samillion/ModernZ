@@ -106,7 +106,7 @@ So, to control the raise amount of subtitles, adjust your `osc_height` and `fade
 | jump_amount                | 10            | change the jump amount in seconds                                                                                  |
 | jump_more_amount           | 60            | change the jump amount in seconds when right-clicking jump buttons and shift-clicking chapter skip buttons         |
 | jump_icon_number           | yes           | show different icon for `5`, `10`, or `30` second jumps                                                            |
-| jump_mode                  | relative      | seek mode for jump buttons                                                                                         |
+| jump_mode                  | relative      | seek mode for jump buttons: `"relative"` or `"exact"`                                                              |
 | jump_softrepeat            | yes           | enable continuous jumping when holding down seek buttons                                                           |
 | chapter_skip_buttons       | no            | show the skip back and forward (chapter) buttons                                                                   |
 | chapter_softrepeat         | yes           | enable continuous skipping when holding down chapter skip buttons                                                  |
@@ -114,8 +114,8 @@ So, to control the raise amount of subtitles, adjust your `osc_height` and `fade
 | volume_control             | yes           | show mute button and volume slider                                                                                 |
 | volume_control_type        | linear        | volume scale type: `"linear"` or `"logarithmic"`                                                                   |
 | playlist_button            | yes           | show playlist button: Left-click for simple playlist, Right-click for interactive playlist                         |
-| hide_empty_playlist_button | yes           | hide playlist button when no playlist exists                                                                       |
-| gray_empty_playlist_button | yes           | gray out the playlist button when no playlist exists                                                               |
+| hide_empty_playlist_button | no            | hide playlist button when no playlist exists                                                                       |
+| gray_empty_playlist_button | no            | gray out the playlist button when no playlist exists                                                               |
 | download_button            | yes           | show download button on web videos (requires yt-dlp and ffmpeg)                                                    |
 | download_path              | ~~desktop/mpv | default download directory for videos. [Learn more about setting paths here](https://mpv.io/manual/master/#paths). |
 | screenshot_button          | no            | show screenshot button                                                                                             |
@@ -262,6 +262,8 @@ Customize the button function based on mouse actions.
 |                               | sub_track_mbtn_right_command     | `cycle sub`                                   |
 |                               | sub_track_wheel_down_command     | `cycle sub`                                   |
 |                               | sub_track_wheel_up_command       | `cycle sub down`                              |
+| Jump Buttons                  | jump_backward_mbtn_right_command | `seek -60 relative`                           |
+|                               | jump_forward_mbtn_right_command  | `seek 60 relative`                            |
 | Chapter Skip Buttons          | chapter_prev_mbtn_left_command   | `add chapter -1`                              |
 |                               | chapter_prev_mbtn_mid_command    | `show-text ${chapter-list} 3000`              |
 |                               | chapter_prev_mbtn_right_command  | `script-binding select/select-chapter`        |

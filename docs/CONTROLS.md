@@ -27,10 +27,10 @@ Below is a list that explains the OSC buttons function depending on how you inte
 
 ### Time Codes
 
-| Action            | Function                                     |
-| ----------------- | -------------------------------------------- |
-| Left mouse click  | Display remaining time instead of total time |
-| Right mouse click | Display time in milliseconds                 |
+| Action            | Function                                       |
+| ----------------- | --------------------------------------------   |
+| Left mouse click  | Display remaining time instead of current time |
+| Right mouse click | Display time in milliseconds                   |
 
 ### Play/Pause
 
@@ -56,8 +56,7 @@ Below is a list that explains the OSC buttons function depending on how you inte
 | ----------------------- | ------------------------------------- |
 | Left mouse click        | Go to previous/next chapter           |
 | Right mouse click       | Show an interactive chapters list     |
-| Shift+left mouse click  | Jump forwards/backwards by 60 seconds |
-| Shift+right mouse click | Show a simple chapters list           |
+| Shift+left mouse click  | Show a simple chapters list           |
 
 ### Jump Back/Forward
 
