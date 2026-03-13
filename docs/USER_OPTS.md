@@ -279,7 +279,7 @@ Customize the button function based on mouse actions.
 | Fullscreen Button             | fullscreen_mbtn_left_command     | `cycle fullscreen`                            |
 |                               | fullscreen_mbtn_right_command    | `cycle window-maximized`                      |
 | Info Button                   | info_mbtn_left_command           | `script-binding stats/display-page-1-toggle`  |
-| Screenshot Button             | screenshot_mbtn_left_command     | `osd-msg screenshot subtitles`                |
+| Screenshot Button             | screenshot_mbtn_left_command     | `osd-msg screenshot video`                    |
 
 ### Auto Profile
 
