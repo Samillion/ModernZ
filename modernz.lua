@@ -90,6 +90,7 @@ local user_opts = {
     audio_tracks_button = true,            -- show the audio tracks menu button
     jump_buttons = true,                   -- show the jump backward and forward buttons
     jump_amount = 10,                      -- change the jump amount in seconds
+    jump_more_amount = 60,                 -- change the jump amount in seconds on right click
     jump_icon_number = true,               -- show different icon when jump_amount is set to 5, 10, or 30
     jump_mode = "relative",                -- seek mode for jump buttons: "relative" or "exact"
     jump_softrepeat = true,                -- enable continuous jumping when holding down seek buttons
@@ -245,10 +246,6 @@ local user_opts = {
     sub_track_mbtn_right_command = "cycle sub",
     sub_track_wheel_down_command = "cycle sub",
     sub_track_wheel_up_command = "cycle sub down",
-
-    -- jump buttons mouse actions
-    jump_backward_mbtn_right_command = "seek -60 relative",
-    jump_forward_mbtn_right_command = "seek 60 relative",
 
     -- chapter skip buttons mouse actions
     chapter_prev_mbtn_left_command = "add chapter -1",
@@ -2805,6 +2802,7 @@ local function osc_init()
     end
 
     local jump_amount = user_opts.jump_amount
+    local jump_more_amount = user_opts.jump_more_amount
     local jump_mode = user_opts.jump_mode
     local jump_icon = user_opts.jump_icon_number and icons.jump[jump_amount] or icons.jump.default
 
@@ -2813,7 +2811,7 @@ local function osc_init()
     ne.softrepeat = user_opts.jump_softrepeat
     ne.content = jump_icon[1]
     ne.eventresponder["mbtn_left_down"] = function () mp.commandv("seek", -jump_amount, jump_mode) end
-    ne.eventresponder["mbtn_right_down"] = command_callback(user_opts.jump_backward_mbtn_right_command)
+    ne.eventresponder["mbtn_right_down"] = function () mp.commandv("seek", -jump_more_amount, jump_mode) end
     ne.eventresponder["shift+mbtn_left_down"] = function () mp.commandv("frame-back-step") end
 
     --jump_forward
@@ -2821,7 +2819,7 @@ local function osc_init()
     ne.softrepeat = user_opts.jump_softrepeat
     ne.content = jump_icon[2]
     ne.eventresponder["mbtn_left_down"] = function () mp.commandv("seek", jump_amount, jump_mode) end
-    ne.eventresponder["mbtn_right_down"] = command_callback(user_opts.jump_forward_mbtn_right_command)
+    ne.eventresponder["mbtn_right_down"] = function () mp.commandv("seek", jump_more_amount, jump_mode) end
     ne.eventresponder["shift+mbtn_left_down"] = function () mp.commandv("frame-step") end
 
     --chapter_backward

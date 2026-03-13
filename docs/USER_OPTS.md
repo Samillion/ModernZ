@@ -104,6 +104,7 @@ So, to control the raise amount of subtitles, adjust your `osc_height` and `fade
 | audio_tracks_button        | yes           | show the audio tracks menu button                                                                                  |
 | jump_buttons               | yes           | show "jump forward/backward 10 seconds" buttons                                                                    |
 | jump_amount                | 10            | change the jump amount in seconds                                                                                  |
+| jump_more_amount           | 60            | change the jump amount in seconds on right click                                                                   |
 | jump_icon_number           | yes           | show different icon for `5`, `10`, or `30` second jumps                                                            |
 | jump_mode                  | relative      | seek mode for jump buttons: `"relative"` or `"exact"`                                                              |
 | jump_softrepeat            | yes           | enable continuous jumping when holding down seek buttons                                                           |
@@ -261,8 +262,6 @@ Customize the button function based on mouse actions.
 |                               | sub_track_mbtn_right_command     | `cycle sub`                                   |
 |                               | sub_track_wheel_down_command     | `cycle sub`                                   |
 |                               | sub_track_wheel_up_command       | `cycle sub down`                              |
-| Jump Buttons                  | jump_backward_mbtn_right_command | `seek -60 relative`                           |
-|                               | jump_forward_mbtn_right_command  | `seek 60 relative`                            |
 | Chapter Skip Buttons          | chapter_prev_mbtn_left_command   | `add chapter -1`                              |
 |                               | chapter_prev_mbtn_mid_command    | `show-text ${chapter-list} 3000`              |
 |                               | chapter_prev_mbtn_right_command  | `script-binding select/select-chapter`        |
