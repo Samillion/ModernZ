@@ -1340,25 +1340,6 @@ local function draw_seekbar_progress(element, elem_ass)
 end
 
 local function render_elements(master_ass, osc_vis, wc_vis)
-    -- when the slider is dragged or hovered and we have a target chapter name
-    -- then we use it instead of the normal title. we calculate it before the
-    -- render iterations because the title may be rendered before the slider.
-    state.forced_title = nil
-
-    -- disable displaying chapter name in title when thumbfast is available
-    -- because thumbfast will render it above the thumbnail instead
-    if thumbfast.disabled then
-        if user_opts.chapter_fmt ~= "no" and state.touchingprogressbar then
-            local dur = mp.get_property_number("duration", 0)
-            if dur > 0 then
-                local ch = get_chapter(state.sliderpos * dur / 100)
-                if ch and ch.title and ch.title ~= "" then
-                    state.forced_title = string.format(user_opts.chapter_fmt, ch.title)
-                end
-            end
-        end
-    end
-
     state.touchingprogressbar = false
 
     local function render_element(n)
@@ -2748,7 +2729,7 @@ local function osc_init()
     ne = new_element("title", "button")
     ne.visible = user_opts.show_title
     ne.content = function ()
-        local title = state.forced_title or mp.command_native({"expand-text", user_opts.title})
+        local title = mp.command_native({"expand-text", user_opts.title})
         title = title:gsub("\n", " ")
         return title ~= "" and mp.command_native({"escape-ass", title}) or "mpv"
     end
@@ -2771,9 +2752,6 @@ local function osc_init()
             or string.format("%s: %d/%d", locale.chapter, chapter_index + 1, #chapters)
 
         chapter_title = mp.command_native({"escape-ass", chapter_title})
-        if thumbfast.disabled and not user_opts.show_title and state.forced_title then
-            chapter_title = state.forced_title
-        end
 
         return string.format(user_opts.chapter_fmt, chapter_title)
     end
