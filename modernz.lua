@@ -3088,7 +3088,7 @@ local function osc_init()
     --tog_speed
     ne = new_element("tog_speed", "button")
     ne.content = function()
-        return string.format("%g", mp.get_property_number("speed", 1)) .. "×"
+        return (speed % 1 == 0) and string.format("%.1f×", speed) or string.format("%g×", speed)
     end
     ne.visible = (osc_param.playresx >= visible_min_width)
     ne.tooltip_style = osc_styles.tooltip
