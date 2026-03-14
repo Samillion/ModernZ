@@ -695,6 +695,44 @@ local function scale_value(x0, x1, y0, y1, val)
     return (m * val) + b
 end
 
+local tooltip_osd = mp.create_osd_overlay and mp.create_osd_overlay("ass-events") or nil
+if tooltip_osd then
+    tooltip_osd.hidden = true
+    tooltip_osd.compute_bounds = true
+end
+
+local text_width_cache = {}
+
+local function estimate_text_width(text, style)
+    if text == nil then return 0 end
+    text = tostring(text)
+    if #text == 0 then return 0 end
+
+    -- Replace digits with '0' to ensure width is perfectly stable during playback
+    local measure_text = text:gsub("%d", "0")
+    local cache_key = measure_text .. (style or "")
+
+    if text_width_cache[cache_key] then
+        return text_width_cache[cache_key]
+    end
+
+    local width = 0
+
+    if tooltip_osd and tooltip_osd.update then
+        tooltip_osd.res_x = osc_param.playresx
+        tooltip_osd.res_y = osc_param.playresy
+        tooltip_osd.data = (style or "") .. measure_text
+
+        local bounds = tooltip_osd:update()
+        if bounds and bounds.x1 and bounds.x0 then
+            width = bounds.x1 - bounds.x0
+        end
+    end
+
+    text_width_cache[cache_key] = width
+    return width
+end
+
 -- returns hitbox spanning coordinates (top left, bottom right corner)
 -- according to alignment
 local function get_hitbox_coords(x, y, an, w, h)
@@ -1328,9 +1366,7 @@ local function render_elements(master_ass, osc_vis, wc_vis)
 
         -- skip elements whose group is not currently visible
         local is_top = element.layout.group == "top"
-        if (is_top and not wc_vis) or (not is_top and not osc_vis) then
-            return
-        end
+        if (is_top and not wc_vis) or (not is_top and not osc_vis) then return end
 
         -- use wc animation for top group in independent mode
         -- use 0 to block fallback to state.animation when wc has no active animation
@@ -1350,12 +1386,9 @@ local function render_elements(master_ass, osc_vis, wc_vis)
             end
             if mouse_hit(element) then
                 -- mouse down styling
-                if element.styledown then
-                    style_ass:append(osc_styles.element_down)
-                end
+                if element.styledown then style_ass:append(osc_styles.element_down) end
                 if element.softrepeat and state.mouse_down_counter >= 15
                     and state.mouse_down_counter % 5 == 0 then
-
                     element.eventresponder[state.active_event_source.."_down"](element)
                 end
                 state.mouse_down_counter = state.mouse_down_counter + 1
@@ -1390,14 +1423,14 @@ local function render_elements(master_ass, osc_vis, wc_vis)
 
                 elem_ass:draw_stop()
 
-                -- add tooltip
-                if element.slider.tooltipF ~= nil and element.enabled then
+                if element.slider and element.slider.tooltipF ~= nil and element.enabled then
                     local force_seek_tooltip = user_opts.force_seek_tooltip
                         and element.name == "seekbar"
                         and element.eventresponder["mbtn_left_down"]
                         and element.state.mbtnleft
                         and state.mouse_down_counter > 0
                         and state.playing_and_seeking
+
                     if mouse_hit(element) or force_seek_tooltip then
                         local sliderpos = get_slider_value(element)
                         local tooltiplabel = element.slider.tooltipF(sliderpos)
@@ -1410,19 +1443,35 @@ local function render_elements(master_ass, osc_vis, wc_vis)
                         end
 
                         local tx = get_virt_mouse_pos()
-                        if slider_lo.adjust_tooltip then
-                            if an == 2 then
-                                if sliderpos < (s_min + 3) then
-                                    an = an - 1
-                                elseif sliderpos > (s_max - 3) then
-                                    an = an + 1
+                        local osd_w = mp.get_property_number("osd-width")
+                        local r_w, r_h = get_virt_scale_factor()
+
+                        local tooltip_width = estimate_text_width(tooltiplabel, slider_lo.tooltip_style)
+
+                        local chapter_text = nil
+                        local chapter_width = 0
+
+                        if osd_w and r_w > 0 then
+                            -- Only attempt to fetch and measure chapter logic if this is the seekbar
+                            if element.name == "seekbar" and user_opts.chapter_fmt ~= "no" and state.touchingprogressbar then
+                                local dur = mp.get_property_number("duration", 0)
+                                if dur > 0 then
+                                    local ch = get_chapter(sliderpos * dur / 100)
+                                    if ch and ch.title and ch.title ~= "" then
+                                        chapter_text = string.format(user_opts.chapter_fmt, ch.title)
+                                        chapter_width = estimate_text_width(chapter_text, slider_lo.tooltip_style)
+                                    end
                                 end
-                            elseif (sliderpos > (s_max+s_min)/2) then
-                                an = an + 1
-                                tx = tx - 5
-                            else
-                                an = an - 1
-                                tx = tx + 10
+                            end
+
+                            -- Clamping layer ensures horizontal boundaries are strictly respected
+                            if slider_lo.adjust_tooltip or (element.thumbnailable and not thumbfast.disabled) then
+                                local max_text_width = math.max(tooltip_width, chapter_width)
+                                local margin = 10 * r_w
+                                local half_width = max_text_width / 2
+                                local min_x = margin + half_width
+                                local max_x = osc_param.playresx - margin - half_width
+                                tx = math.min(max_x, math.max(min_x, tx))
                             end
                         end
 
@@ -1430,35 +1479,18 @@ local function render_elements(master_ass, osc_vis, wc_vis)
                             state.sliderpos = sliderpos
                         end
 
-                        -- chapter title tooltip on show_title=false and no thumbfast
-                        -- add hovered chapter title above time code tooltip on seekbar hover
-                        if thumbfast.disabled and not user_opts.show_title and not user_opts.show_chapter_title then
-                            local osd_w = mp.get_property_number("osd-width")
-                            local r_w = get_virt_scale_factor()
-                            if osd_w then
-                                if user_opts.chapter_fmt ~= "no" and state.touchingprogressbar then
-                                    local dur = mp.get_property_number("duration", 0)
-                                    if dur > 0 then
-                                        local ch = get_chapter(state.sliderpos * dur / 100)
-                                        if ch and ch.title and ch.title ~= "" then
-                                            local titleX = math.min(osd_w - (50 / r_w), math.max((60 / r_w), tx / r_w))
-                                            local titleY = ty - (user_opts.time_font_size * 1.3)
-
-                                            elem_ass:new_event()
-                                            elem_ass:pos(titleX * r_w, titleY)
-                                            elem_ass:an(2)
-                                            elem_ass:append(slider_lo.tooltip_style)
-                                            ass_append_alpha(elem_ass, slider_lo.alpha, 0)
-                                            elem_ass:append(string.format(user_opts.chapter_fmt, ch.title))
-                                        end
-                                    end
-                                end
+                        if thumbfast.disabled then
+                            if chapter_text and osd_w and r_w > 0 then
+                                local titleY = ty - (user_opts.time_font_size * 1.3)
+                                elem_ass:new_event()
+                                elem_ass:pos(tx, titleY)
+                                elem_ass:an(2)
+                                elem_ass:append(slider_lo.tooltip_style)
+                                ass_append_alpha(elem_ass, slider_lo.alpha, 0)
+                                elem_ass:append(chapter_text)
                             end
                         -- thumbfast
                         elseif element.thumbnailable and not thumbfast.disabled then
-                            local osd_w = mp.get_property_number("osd-width")
-                            local r_w, r_h = get_virt_scale_factor()
-
                             if osd_w then
                                 local hover_sec = 0
                                 local hover_dur = mp.get_property_number("duration")
@@ -1466,6 +1498,7 @@ local function render_elements(master_ass, osc_vis, wc_vis)
                                 local thumbPad = user_opts.thumbnail_border
                                 local thumbMarginX = 18 / r_w
                                 local thumbMarginY = user_opts.time_font_size + thumbPad + 2 / r_h
+
                                 local thumbX = math.min(osd_w - thumbfast.width - thumbMarginX, math.max(thumbMarginX, tx / r_w - thumbfast.width / 2))
                                 local thumbY = (ty - thumbMarginY) / r_h - thumbfast.height
 
@@ -1493,20 +1526,14 @@ local function render_elements(master_ass, osc_vis, wc_vis)
                                     mp.commandv("script-message-to", "thumbfast", "thumb", hover_sec, thumbX, thumbY)
                                 end
 
-                                -- chapter title tooltip
-                                if user_opts.chapter_fmt ~= "no" and state.touchingprogressbar then
-                                    local dur = mp.get_property_number("duration", 0)
-                                    if dur > 0 then
-                                        local ch = get_chapter(state.sliderpos * dur / 100)
-                                        if ch and ch.title and ch.title ~= "" then
-                                            elem_ass:new_event()
-                                            elem_ass:pos((thumbX + thumbfast.width / 2) * r_w, thumbY * r_h - user_opts.time_font_size / 2)
-                                            elem_ass:an(an)
-                                            elem_ass:append(slider_lo.tooltip_style)
-                                            ass_append_alpha(elem_ass, slider_lo.alpha, 0)
-                                            elem_ass:append(string.format(user_opts.chapter_fmt, ch.title))
-                                        end
-                                    end
+                                an = 2
+                                if chapter_text then
+                                    elem_ass:new_event()
+                                    elem_ass:pos(tx, thumbY * r_h - user_opts.time_font_size / 2)
+                                    elem_ass:an(an)
+                                    elem_ass:append(slider_lo.tooltip_style)
+                                    ass_append_alpha(elem_ass, slider_lo.alpha, 0)
+                                    elem_ass:append(chapter_text)
                                 end
                             end
                         end
@@ -1541,8 +1568,7 @@ local function render_elements(master_ass, osc_vis, wc_vis)
                     end
                     buttontext = buttontext .. "..."
                 end
-                buttontext = string.format("{\\fscx%f}",
-                    (maxchars/#buttontext)*100) .. buttontext
+                buttontext = string.format("{\\fscx%f}", (maxchars/#buttontext)*100) .. buttontext
             end
 
             -- add hover effects
@@ -1575,14 +1601,6 @@ local function render_elements(master_ass, osc_vis, wc_vis)
             if element.tooltipF ~= nil and (user_opts.tooltips_for_disabled_elements or element.enabled) then
                 if mouse_hit(element) then
                     local tooltiplabel
-                    local an = 1
-                    local ty = element.hitbox.y1 - user_opts.tooltip_height_offset
-                    local tx = get_virt_mouse_pos()
-
-                    if ty < osc_param.playresy / 2 then
-                        ty = element.hitbox.y2 - user_opts.tooltip_height_offset
-                        an = 7
-                    end
 
                     -- tooltip label
                     if element.enabled then
@@ -1595,8 +1613,26 @@ local function render_elements(master_ass, osc_vis, wc_vis)
                         tooltiplabel = element.nothingavailable
                     end
 
-                    if tx > osc_param.playresx / 2 then -- move tooltip to left side of mouse cursor
-                        tx = tx - string.len(tooltiplabel) * user_opts.tooltip_left_offset
+                    local an = 2
+                    local ty = element.hitbox.y1 - user_opts.tooltip_height_offset
+                    local tx = (element.hitbox.x1 + element.hitbox.x2) / 2
+
+                    if ty < osc_param.playresy / 2 then
+                        ty = element.hitbox.y2 - user_opts.tooltip_height_offset
+                        an = 8
+                    end
+
+                    local osd_w = mp.get_property_number("osd-width")
+                    local r_w = get_virt_scale_factor()
+                    if osd_w and r_w > 0 then
+                        local tooltip_width = estimate_text_width(tooltiplabel, element.tooltip_style)
+                        local margin = 10 * r_w
+                        local half_width = tooltip_width / 2
+
+                        local min_x = margin + half_width
+                        local max_x = osc_param.playresx - margin - half_width
+
+                        tx = math.min(max_x, math.max(min_x, tx))
                     end
 
                     elem_ass:new_event()
@@ -1612,9 +1648,7 @@ local function render_elements(master_ass, osc_vis, wc_vis)
         master_ass:merge(elem_ass)
     end
 
-    for n = 1, #elements do
-        render_element(n)
-    end
+    for n = 1, #elements do render_element(n) end
 end
 
 local function render_persistentprogressbar(master_ass)
