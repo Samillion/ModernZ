@@ -39,10 +39,9 @@ local user_opts = {
     fadeduration = 200,                    -- fade-out duration (in ms), set to 0 for no fade
     fadein = false,                        -- whether to enable fade-in effect
     minmousemove = 0,                      -- minimum mouse movement (in pixels) required to show OSC
-    bottomhover = true,                    -- show OSC only when hovering at the bottom
-    bottomhover_zone = 130,                -- height of hover zone for bottomhover (in pixels)
-    tophover_zone = 40,                    -- height of hover zone for top bar (in pixels)
-    independent_zones = true,              -- show/hide top and bottom bar independently based on hover area
+    zones_hover_mode = "always",           -- mode for showing OSC/WC on mouse move: "always", "zones", "independent"
+    bottomhover_zone = 130,                -- height of the bottom hover zone (in pixels)
+    tophover_zone = 40,                    -- height of the top hover zone (in pixels)
     osc_on_seek = false,                   -- show OSC when seeking
     osc_on_start = "no",                   -- show OSC on start of every file ("no", "bottom", "top", "both")
     osc_keep_with_cursor = true,           -- keep OSC visible if mouse cursor is within OSC boundaries
@@ -573,7 +572,7 @@ local state = {
     buffering = false,
     new_file_flag = false,                  -- flag to detect new file starts
     temp_visibility_mode = nil,             -- store temporary visibility mode state
-    pause_osc_locked = false,               -- lock bottom bar from hiding while paused (keeponpause + independent_zones)
+    pause_osc_locked = false,               -- lock bottom bar from hiding while paused (keeponpause + independent mode)
     chapter_list = {},                      -- sorted by time
     visibility_modes = {},                  -- visibility_modes to cycle through
     mute = false,
@@ -1335,7 +1334,7 @@ local function render_elements(master_ass, osc_vis, wc_vis)
         -- use wc animation for top group in independent mode
         -- use 0 to block fallback to state.animation when wc has no active animation
         local anim_override = nil
-        if user_opts.independent_zones and is_top then
+        if user_opts.zones_hover_mode == "independent" and is_top then
             anim_override = state.wc_animation or 0
         end
 
@@ -3349,7 +3348,7 @@ end
 local function show_osc()
     show_bar("osc", "showtime", "osc_visible", "anitype", osc_visible)
 
-    if not user_opts.independent_zones and not user_opts.bottomhover then
+    if user_opts.zones_hover_mode == "always" then
         show_wc()
     end
 end
@@ -3365,7 +3364,7 @@ local function hide_osc()
     end
     hide_bar("osc", "osc_visible", "anitype", osc_visible)
     -- couple wc with osc when not independent
-    if not user_opts.independent_zones then
+    if user_opts.zones_hover_mode ~= "independent" then
         hide_wc()
     end
 end
@@ -3380,7 +3379,7 @@ local function mouse_leave()
         if not state.pause_osc_locked then
             hide_osc()
         end
-        if user_opts.independent_zones then
+        if user_opts.zones_hover_mode == "independent" then
             hide_wc()
         end
     end
@@ -3407,7 +3406,7 @@ end
 --
 local function reset_timeout()
     local now = mp.get_time()
-    if user_opts.independent_zones then
+    if user_opts.zones_hover_mode == "independent" then
         if mouse_in_area({"window-controls", "window-controls-title"}) then
             state.wc_showtime = now
         else
@@ -3478,25 +3477,23 @@ local function process_event(source, what)
             math.abs(mouseX - state.last_mouseX) >= user_opts.minmousemove or
             math.abs(mouseY - state.last_mouseY) >= user_opts.minmousemove then
                 state.last_mouseX, state.last_mouseY = mouseX, mouseY
-                if user_opts.bottomhover then
+                local mode = user_opts.zones_hover_mode
+                if mode == "always" then
+                    show_osc()
+                else
                     local top_hover = window_controls_enabled() and (user_opts.show_window_title or user_opts.window_controls)
                     local in_bottom = mouseY > osc_param.playresy - user_opts.bottomhover_zone
                     local in_top = mouseY < user_opts.tophover_zone and top_hover
 
-                    if user_opts.independent_zones then
+                    if mode == "independent" then
                         if in_bottom then show_osc() end
                         if in_top then show_wc() end
-                    else
+                    else -- "zones"
                         if in_bottom or in_top then
                             show_osc()
                         else
                             state.touchtime = nil
                         end
-                    end
-                else
-                    show_osc()
-                    if user_opts.independent_zones then
-                        show_wc()
                     end
                 end
         end
@@ -3527,7 +3524,7 @@ local function enable_osc(enable)
         do_enable_keybindings()
     else
         hide_osc() -- acts immediately when state.enabled == false
-        if user_opts.independent_zones then hide_wc() end
+        if user_opts.zones_hover_mode == "independent" then hide_wc() end
         if state.showhide_enabled then
             mp.disable_key_bindings("showhide")
             mp.disable_key_bindings("showhide_wc")
@@ -3611,7 +3608,7 @@ local function render()
 
     --mouse input area
     local wc_vis
-    if user_opts.independent_zones then
+    if user_opts.zones_hover_mode == "independent" then
         wc_vis = state.wc_visible
     else
         wc_vis = state.osc_visible
@@ -3644,7 +3641,7 @@ local function render()
     local function run_autohide(showtime_key, hide_fn, input_areas)
         local hide_timeout = get_hidetimeout()
         if state[showtime_key] == nil or hide_timeout < 0 then return end
-        -- keeponpause + independent_zones: bottom bar is locked, top bar hides normally
+        -- keeponpause + independent mode: bottom bar is locked, top bar hides normally
         if state.pause_osc_locked and showtime_key == "showtime" then return end
         local timeout = state[showtime_key] + (hide_timeout / 1000) - now
         if timeout <= 0 and get_touchtimeout() <= 0 then
@@ -3667,7 +3664,7 @@ local function render()
 
     local osc_areas = {"input"}
     local wc_areas  = {"window-controls", "window-controls-title"}
-    if not user_opts.independent_zones then
+    if user_opts.zones_hover_mode ~= "independent" then
         osc_areas = {"input", "window-controls", "window-controls-title"}
         wc_areas  = osc_areas
     end
@@ -3941,10 +3938,10 @@ local function always_on(val)
     if state.enabled then
         if val then
             show_osc()
-            if user_opts.independent_zones then show_wc() end
+            if user_opts.zones_hover_mode == "independent" then show_wc() end
         else
             hide_osc()
-            if user_opts.independent_zones then hide_wc() end
+            if user_opts.zones_hover_mode == "independent" then hide_wc() end
         end
     end
 end
@@ -4020,7 +4017,7 @@ mp.observe_property("pause", "bool", function(_, enabled)
         state.enabled = enabled
         if enabled then
             if user_opts.keeponpause then
-                if user_opts.independent_zones then
+                if user_opts.zones_hover_mode == "independent" then
                     show_osc()
                     state.pause_osc_locked = true
                 else
@@ -4048,7 +4045,7 @@ mp.observe_property("pause", "bool", function(_, enabled)
             end
             -- reset timer so it gets a fresh hidetimeout on unpause
             if state.osc_visible then state.showtime = mp.get_time() end
-            if user_opts.independent_zones and state.wc_visible then
+            if user_opts.zones_hover_mode == "independent" and state.wc_visible then
                 state.wc_showtime = mp.get_time()
             end
         end
@@ -4132,9 +4129,10 @@ local function validate_user_opts()
         end
     end
 
-    if user_opts.independent_zones and not user_opts.bottomhover then
-        msg.warn("independent_zones requires bottomhover. Setting bottomhover=yes.")
-        user_opts.bottomhover = true
+    local valid_zone_modes = {always = true, zones = true, independent = true}
+    if not valid_zone_modes[user_opts.zones_hover_mode] then
+        msg.warn("Unknown zones_hover_mode '" .. user_opts.zones_hover_mode .. "'. Defaulting to 'always'.")
+        user_opts.zones_hover_mode = "always"
     end
 
     if user_opts.keeponpause and not user_opts.showonpause then
