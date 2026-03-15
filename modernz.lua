@@ -571,6 +571,7 @@ local state = {
     osd = mp.create_osd_overlay("ass-events"),
     buffering = false,
     new_file_flag = false,                  -- flag to detect new file starts
+    cursor_hide_flag = nil,                 -- flag to add allow-hide-cursor when osc_keep_with_cursor=no, init nil
     temp_visibility_mode = nil,             -- store temporary visibility mode state
     pause_osc_locked = false,               -- lock bottom bar from hiding while paused (keeponpause + independent mode)
     chapter_list = {},                      -- sorted by time
@@ -3630,11 +3631,11 @@ local function render()
     end
 
     update_input_area("input", state.osc_visible, "input_enabled",
-        function() mp.enable_key_bindings("input", "allow-hide-cursor") end)
+        function() mp.enable_key_bindings("input", state.cursor_hide_flag) end)
     update_input_area("window-controls", wc_vis, "windowcontrols_buttons",
-        function() mp.enable_key_bindings("window-controls", "allow-hide-cursor") end)
+        function() mp.enable_key_bindings("window-controls", state.cursor_hide_flag) end)
     update_input_area("window-controls-title", wc_vis, "windowcontrols_title",
-        function() mp.enable_key_bindings("window-controls-title", "allow-vo-dragging+allow-hide-cursor") end)
+        function() mp.enable_key_bindings("window-controls-title", state.cursor_hide_flag and "allow-vo-dragging+allow-hide-cursor" or "allow-vo-dragging") end)
 
     -- autohide
     local function run_autohide(showtime_key, hide_fn, input_areas)
@@ -3925,13 +3926,13 @@ mp.set_key_bindings({
     {"shift+mbtn_left_dbl", "ignore"},
     {"mbtn_right_dbl",      "ignore"},
 }, "input", "force")
-mp.enable_key_bindings("input", "allow-hide-cursor")
+mp.enable_key_bindings("input", state.cursor_hide_flag)
 
 mp.set_key_bindings({
     {"mbtn_left",           function() process_event("mbtn_left", "up") end,
                             function() process_event("mbtn_left", "down")  end},
 }, "window-controls", "force")
-mp.enable_key_bindings("window-controls", "allow-hide-cursor")
+mp.enable_key_bindings("window-controls", state.cursor_hide_flag)
 
 local function always_on(val)
     if state.enabled then
@@ -4142,6 +4143,8 @@ local function validate_user_opts()
     if user_opts.raise_subtitles or user_opts.raise_subtitle_amount then
         msg.warn("raise_subtitles / raise_subtitle_amount are deprecated. Use sub_margins=yes and dynamic_margins=yes.")
     end
+
+    state.cursor_hide_flag = not user_opts.osc_keep_with_cursor and "allow-hide-cursor" or nil
 end
 
 -- read options from config and command-line
