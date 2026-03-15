@@ -31,7 +31,7 @@ local user_opts = {
     showfullscreen = true,                 -- show OSC when fullscreen
     showonselect = false,                  -- show OSC when a select menu is open
     showonpause = true,                    -- show OSC when paused
-    keeponpause = true,                    -- disable OSC hide timeout when paused
+    keeponpause = false,                   -- disable OSC hide timeout when paused
     greenandgrumpy = false,                -- disable Santa hat in December
 
     -- OSC behaviour and scaling
@@ -41,9 +41,9 @@ local user_opts = {
     minmousemove = 0,                      -- minimum mouse movement (in pixels) required to show OSC
     zones_hover_mode = "always",           -- mode for showing OSC/WC on mouse move: "always", "zones", "independent"
     bottomhover_zone = 130,                -- height of the bottom hover zone (in pixels)
-    tophover_zone = 40,                    -- height of the top hover zone (in pixels)
-    osc_on_seek = false,                   -- show OSC when seeking
-    osc_on_start = "no",                   -- show OSC on start of every file ("no", "bottom", "top", "both")
+    tophover_zone = 130,                   -- height of the top hover zone (in pixels)
+    osc_on_seek = true,                    -- show OSC when seeking
+    osc_on_start = "both",                 -- show OSC on start of every file ("no", "bottom", "top", "both")
     osc_keep_with_cursor = true,           -- keep OSC visible if mouse cursor is within OSC boundaries
     mouse_seek_pause = true,               -- pause video while seeking with mouse move (on button hold)
     force_seek_tooltip = false,            -- force show seekbar tooltip on mouse drag, even if not hovering seekbar
@@ -106,14 +106,14 @@ local user_opts = {
     fullscreen_button = true,              -- show fullscreen toggle button
     info_button = true,                    -- show info button
     ontop_button = true,                   -- show window on top button
-    screenshot_button = false,             -- show screenshot button
+    screenshot_button = true,              -- show screenshot button
 
     download_button = true,                -- show download button on web videos (requires yt-dlp and ffmpeg)
     download_path = "~~desktop/mpv",       -- default download directory for videos (https://mpv.io/manual/master/#paths)
 
-    loop_button = false,                   -- show file loop button
+    loop_button = true,                    -- show file loop button
     shuffle_button = false,                -- show shuffle button
-    speed_button = false,                  -- show speed control button
+    speed_button = true,                   -- show speed control button
     speed_button_click = 1,                -- speed change amount per click
     speed_button_scroll = 0.25,            -- speed change amount on scroll
 
