@@ -581,7 +581,6 @@ local state = {
     shuffled = false,
     sliderpos = 0,
     touchingprogressbar = false,            -- if the mouse is touching the progress bar
-    initialborder = mp.get_property("border"),
     playtime_hour_force_init = false,       -- used to force request_init() once
     playing_and_seeking = false,
     persistent_progress_toggle = user_opts.persistentprogress,
@@ -3034,19 +3033,7 @@ local function osc_init()
     ne.visible = (osc_param.playresx >= visible_min_width)
     ne.eventresponder["mbtn_left_up"] = function ()
         mp.commandv("cycle", "ontop")
-        if state.initialborder == "yes" then
-            if mp.get_property_bool("ontop") then
-                mp.commandv("set", "border", "no")
-            else
-                mp.commandv("set", "border", "yes")
-            end
-        end
-    end
-    ne.eventresponder["mbtn_right_up"] = function ()
-        mp.commandv("cycle", "ontop")
-        if not mp.get_property_bool("border") then
-            mp.commandv("set", "border", "yes")
-        end
+        mp.command("show-text '" .. (mp.get_property_bool("ontop") and locale.ontop or locale.ontop_disable) .. "'")
     end
     visible_min_width = visible_min_width + (user_opts.ontop_button and 100 or 0)
 
