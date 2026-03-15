@@ -25,7 +25,7 @@ Create `modernz.conf` in your mpv script-opts directory:
 | showfullscreen  | yes             | show OSC when fullscreen                                                                                                       |
 | showonselect    | no              | show OSC when a select menu is open                                                                                            |
 | showonpause     | yes             | show OSC when paused                                                                                                           |
-| keeponpause     | yes             | disable OSC hide timeout when paused                                                                                           |
+| keeponpause     | no              | disable OSC hide timeout when paused                                                                                           |
 | greenandgrumpy  | no              | disable Santa hat in December                                                                                                  |
 
 ### OSC behaviour and scaling
@@ -38,9 +38,9 @@ Create `modernz.conf` in your mpv script-opts directory:
 | minmousemove            | 0      | minimum mouse movement (in pixels) required to show OSC                          |
 | zones_hover_mode        | always | mode for showing OSC/WC on mouse move: `always`, `zones`, `independent`          |
 | bottomhover_zone        | 130    | height of the bottom hover zone (in pixels)                                      |
-| tophover_zone           | 40     | height of the top hover zone (in pixels)                                         |
-| osc_on_seek             | no     | show OSC when seeking                                                            |
-| osc_on_start            | no     | show OSC/window controls on start of every file (`no`, `bottom`, `top`, `both`)  |
+| tophover_zone           | 130    | height of the top hover zone (in pixels)                                         |
+| osc_on_seek             | yes    | show OSC when seeking                                                            |
+| osc_on_start            | both   | show OSC/window controls on start of every file (`no`, `bottom`, `top`, `both`)  |
 | osc_keep_with_cursor    | yes    | keep OSC visible if mouse cursor is within OSC boundaries                        |
 | mouse_seek_pause        | yes    | pause video while seeking with mouse move (on button hold)                       |
 | force_seek_tooltip      | no     | force show seekbar tooltip on mouse drag, even if not hovering seekbar           |
@@ -85,7 +85,7 @@ watch-later-options-remove=sub-pos
 watch-later-options-remove=osd-margin-y
 ```
 
-If `sub_margins` is enabled, the subtitles are raised above the OSC. Calculated by both `osc_height` and `fade_alpha`, specifically whichever of them is highest.
+If `sub_margins` is enabled, the subtitles are raised above the OSC when it's visible. Measured by both `osc_height` and `fade_alpha`, specifically whichever of them is highest.
 
 So, to control the raise amount of subtitles, adjust your `osc_height` and `fade_alpha` options in `modernz.conf` to change the OSC boundary.
 
@@ -117,11 +117,11 @@ So, to control the raise amount of subtitles, adjust your `osc_height` and `fade
 | gray_empty_playlist_button | no            | gray out the playlist button when no playlist exists                                                               |
 | download_button            | yes           | show download button on web videos (requires yt-dlp and ffmpeg)                                                    |
 | download_path              | ~~desktop/mpv | default download directory for videos. [Learn more about setting paths here](https://mpv.io/manual/master/#paths). |
-| screenshot_button          | no            | show screenshot button                                                                                             |
+| screenshot_button          | yes           | show screenshot button                                                                                             |
 | ontop_button               | yes           | show `window on top (pin)` button                                                                                  |
-| loop_button                | no            | show `file loop` button                                                                                            |
+| loop_button                | yes           | show `file loop` button                                                                                            |
 | shuffle_button             | no            | show `shuffle` button                                                                                              |
-| speed_button               | no            | show speed control button                                                                                          |
+| speed_button               | yes           | show speed control button                                                                                          |
 | speed_button_click         | 1             | speed change amount per click                                                                                      |
 | speed_button_scroll        | 0.25          | speed change amount on scroll                                                                                      |
 | loop_in_pause              | yes           | enable loop with mouse actions on pause button                                                                     |
