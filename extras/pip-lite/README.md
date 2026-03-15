@@ -18,7 +18,7 @@ To adjust them you can either:
 | `geometry_restore`  | `50%:50%`     | window position when PiP is disabled. default: center [[details](https://mpv.io/manual/master/#options-geometry)]      |
 | `geometry_delay`    | `0.02`        | window position delay (in seconds) to avoid any racing issues                                                          |
 
-You can easily control other ModernZ or mpv options when PiP is enabled by using an auto-profile, for example:
+You can easily control other ModernZ or mpv options when PiP is enabled by using an auto-profile in `mpv.conf`, for example:
 
 ```EditorConfig
 [Window-PiP]
@@ -26,6 +26,7 @@ You can easily control other ModernZ or mpv options when PiP is enabled by using
     profile-cond=ontop == true and not fullscreen
     profile-restore=copy-equal
     script-opts-append=modernz-persistentprogress=yes
+    border=no
 ```
 
 ## How to install

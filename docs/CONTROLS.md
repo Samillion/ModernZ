@@ -101,8 +101,7 @@ Below is a list that explains the OSC buttons function depending on how you inte
 
 | Action            | Function                               |
 | ----------------- | -------------------------------------- |
-| Left mouse click  | Toggle pin and toggle window border    |
-| Right mouse click | Toggle pin without changing the border |
+| Left mouse click  | Toggle stay-on-top                     |
 
 ### Loop
 

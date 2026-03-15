@@ -98,7 +98,7 @@ local function convert_opacity(value)
     return string.format("%02X", (255 - (value * 2.55)))
 end
 
--- colors and opaicty
+-- colors and opacity
 local icon_color = convert_color(options.icon_color)
 local icon_border_color = convert_color(options.icon_border_color)
 local icon_opacity = convert_opacity(options.icon_opacity)
