@@ -3630,11 +3630,11 @@ local function render()
     end
 
     update_input_area("input", state.osc_visible, "input_enabled",
-        function() mp.enable_key_bindings("input") end)
+        function() mp.enable_key_bindings("input", "allow-hide-cursor") end)
     update_input_area("window-controls", wc_vis, "windowcontrols_buttons",
-        function() mp.enable_key_bindings("window-controls") end)
+        function() mp.enable_key_bindings("window-controls", "allow-hide-cursor") end)
     update_input_area("window-controls-title", wc_vis, "windowcontrols_title",
-        function() mp.enable_key_bindings("window-controls-title", "allow-vo-dragging") end)
+        function() mp.enable_key_bindings("window-controls-title", "allow-vo-dragging+allow-hide-cursor") end)
 
     -- autohide
     local function run_autohide(showtime_key, hide_fn, input_areas)
@@ -3925,13 +3925,13 @@ mp.set_key_bindings({
     {"shift+mbtn_left_dbl", "ignore"},
     {"mbtn_right_dbl",      "ignore"},
 }, "input", "force")
-mp.enable_key_bindings("input")
+mp.enable_key_bindings("input", "allow-hide-cursor")
 
 mp.set_key_bindings({
     {"mbtn_left",           function() process_event("mbtn_left", "up") end,
                             function() process_event("mbtn_left", "down")  end},
 }, "window-controls", "force")
-mp.enable_key_bindings("window-controls")
+mp.enable_key_bindings("window-controls", "allow-hide-cursor")
 
 local function always_on(val)
     if state.enabled then
