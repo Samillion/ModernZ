@@ -3828,12 +3828,11 @@ mp.observe_property("chapter-list", "native", function(_, list)
     request_init()
 end)
 mp.register_event("seek", function()
-local pos = mp.get_property_number("time-pos", 0)
     if state.new_file_flag then
         state.new_file_flag = false
         return
     end
-    if pos ~= 0 and user_opts.osc_on_seek then
+    if user_opts.osc_on_seek and not (state.file_loop and mp.get_property_number("time-pos", -1) == 0) then
         show_osc()
     end
 end)
