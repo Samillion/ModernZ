@@ -26,6 +26,7 @@ You can easily control other ModernZ or mpv options when PiP is enabled by using
     profile-cond=ontop == true and not fullscreen
     profile-restore=copy-equal
     script-opts-append=modernz-persistentprogress=yes
+    border=no
 ```
 
 ## How to install
