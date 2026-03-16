@@ -242,7 +242,7 @@ Customize the button function based on mouse actions.
 
 | Type                          | Option                           | Function                                      |
 | ----------------------------- | -------------------------------- | --------------------------------------------- |
-| Title (above seekbar)         | title_mbt          | `script-binding stats/display-page-5`         |
+| Title (above seekbar)         | title_mbtn_left_command          | `script-binding stats/display-page-5`         |
 |                               | title_mbtn_mid_command           | `show-text ${path}`                           |
 |                               | title_mbtn_right_command         | `script-binding select/select-watch-history`  |
 | Playlist Button               | playlist_mbtn_left_command       | `script-binding select/select-playlist`       |
