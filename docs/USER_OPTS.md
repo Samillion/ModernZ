@@ -242,15 +242,17 @@ Customize the button function based on mouse actions.
 
 | Type                          | Option                           | Function                                      |
 | ----------------------------- | -------------------------------- | --------------------------------------------- |
-| Title (above seekbar)         | title_mbtn_left_command          | `script-binding stats/display-page-5`         |
+| Title (above seekbar)         | title_mbt          | `script-binding stats/display-page-5`         |
 |                               | title_mbtn_mid_command           | `show-text ${path}`                           |
 |                               | title_mbtn_right_command         | `script-binding select/select-watch-history`  |
 | Playlist Button               | playlist_mbtn_left_command       | `script-binding select/select-playlist`       |
 |                               | playlist_mbtn_right_command      | `script-binding select/menu`                  |
-| Volume Control                | vol_ctrl_mbtn_left_command       | `no-osd cycle mute`                           |
+| Volume Icon                   | vol_ctrl_mbtn_left_command       | `no-osd cycle mute`                           |
 |                               | vol_ctrl_mbtn_right_command      | `script-binding select/select-audio-device`   |
 |                               | vol_ctrl_wheel_down_command      | `osd-msg add volume -5`                       |
 |                               | vol_ctrl_wheel_up_command        | `osd-msg add volume 5`                        |
+| Volume Bar                    | volumebar_wheel_down_command     | `osd-msg add volume -5`                       |
+|                               | volumebar_wheel_up_command       | `osd-msg add volume 5`                        |
 | Audio Button                  | audio_track_mbtn_left_command    | `script-binding select/select-aid`            |
 |                               | audio_track_mbtn_mid_command     | `cycle audio down`                            |
 |                               | audio_track_mbtn_right_command   | `cycle audio`                                 |
