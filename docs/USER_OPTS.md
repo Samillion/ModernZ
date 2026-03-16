@@ -245,40 +245,42 @@ Customize the button function based on mouse actions.
 | Title (above seekbar)         | title_mbtn_left_command          | `script-binding stats/display-page-5`         |
 |                               | title_mbtn_mid_command           | `show-text ${path}`                           |
 |                               | title_mbtn_right_command         | `script-binding select/select-watch-history`  |
-| Playlist Button               | playlist_mbtn_left_command       | `script-binding select/select-playlist`       |
+| Playlist button               | playlist_mbtn_left_command       | `script-binding select/select-playlist`       |
 |                               | playlist_mbtn_right_command      | `script-binding select/menu`                  |
-| Volume Control                | vol_ctrl_mbtn_left_command       | `no-osd cycle mute`                           |
+| Volume button                 | vol_ctrl_mbtn_left_command       | `no-osd cycle mute`                           |
 |                               | vol_ctrl_mbtn_right_command      | `script-binding select/select-audio-device`   |
 |                               | vol_ctrl_wheel_down_command      | `osd-msg add volume -5`                       |
 |                               | vol_ctrl_wheel_up_command        | `osd-msg add volume 5`                        |
-| Audio Button                  | audio_track_mbtn_left_command    | `script-binding select/select-aid`            |
+| Volume bar                    | volumebar_wheel_down_command     | `osd-msg add volume -5`                       |
+|                               | volumebar_wheel_up_command       | `osd-msg add volume 5`                        |
+| Audio button                  | audio_track_mbtn_left_command    | `script-binding select/select-aid`            |
 |                               | audio_track_mbtn_mid_command     | `cycle audio down`                            |
 |                               | audio_track_mbtn_right_command   | `cycle audio`                                 |
 |                               | audio_track_wheel_down_command   | `cycle audio`                                 |
 |                               | audio_track_wheel_up_command     | `cycle audio down`                            |
-| Subtitle Button               | sub_track_mbtn_left_command      | `script-binding select/select-sid`            |
+| Subtitle button               | sub_track_mbtn_left_command      | `script-binding select/select-sid`            |
 |                               | sub_track_mbtn_mid_command       | `cycle sub down`                              |
 |                               | sub_track_mbtn_right_command     | `cycle sub`                                   |
 |                               | sub_track_wheel_down_command     | `cycle sub`                                   |
 |                               | sub_track_wheel_up_command       | `cycle sub down`                              |
-| Chapter Skip Buttons          | chapter_prev_mbtn_left_command   | `add chapter -1`                              |
+| Chapter skip buttons          | chapter_prev_mbtn_left_command   | `add chapter -1`                              |
 |                               | chapter_prev_mbtn_mid_command    | `show-text ${chapter-list} 3000`              |
 |                               | chapter_prev_mbtn_right_command  | `script-binding select/select-chapter`        |
 |                               | chapter_next_mbtn_left_command   | `add chapter 1`                               |
 |                               | chapter_next_mbtn_mid_command    | `show-text ${chapter-list} 3000`              |
 |                               | chapter_next_mbtn_right_command  | `script-binding select/select-chapter`        |
-| Chapter Title (below seekbar) | chapter_title_mbtn_left_command  | `script-binding select/select-chapter`        |
+| Chapter title (below seekbar) | chapter_title_mbtn_left_command  | `script-binding select/select-chapter`        |
 |                               | chapter_title_mbtn_right_command | `show-text ${chapter-list} 3000`              |
-| Playlist Skip Buttons         | playlist_prev_mbtn_left_command  | `playlist-prev`                               |
+| Playlist skip Buttons         | playlist_prev_mbtn_left_command  | `playlist-prev`                               |
 |                               | playlist_prev_mbtn_mid_command   | `show-text ${playlist} 3000`                  |
 |                               | playlist_prev_mbtn_right_command | `script-binding select/select-playlist`       |
 |                               | playlist_next_mbtn_left_command  | `playlist-next`                               |
 |                               | playlist_next_mbtn_mid_command   | `show-text ${playlist} 3000`                  |
 |                               | playlist_next_mbtn_right_command | `script-binding select/select-playlist`       |
-| Fullscreen Button             | fullscreen_mbtn_left_command     | `cycle fullscreen`                            |
+| Fullscreen button             | fullscreen_mbtn_left_command     | `cycle fullscreen`                            |
 |                               | fullscreen_mbtn_right_command    | `cycle window-maximized`                      |
-| Info Button                   | info_mbtn_left_command           | `script-binding stats/display-page-1-toggle`  |
-| Screenshot Button             | screenshot_mbtn_left_command     | `osd-msg screenshot video`                    |
+| Info button                   | info_mbtn_left_command           | `script-binding stats/display-page-1-toggle`  |
+| Screenshot button             | screenshot_mbtn_left_command     | `osd-msg screenshot video`                    |
 
 ### Auto Profile
 
