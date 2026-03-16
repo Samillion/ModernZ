@@ -13,6 +13,7 @@ local assdraw = require "mp.assdraw"
 local msg = require "mp.msg"
 local opt = require "mp.options"
 local utils = require "mp.utils"
+mp.set_property("osc", "no")
 
 -- Parameters
 -- default user option values
@@ -284,8 +285,6 @@ local user_opts = {
     raise_subtitles = false,               -- DEPRECATED: use sub_margins and dynamic_margins instead
     raise_subtitle_amount = false,         -- DEPRECATED: use sub_margins and dynamic_margins instead
 }
-
-mp.observe_property("osc", "bool", function(name, value) if value == true then mp.set_property("osc", "no") end end)
 
 local osc_param = {                  -- calculated by osc_init()
     playresy = 0,                    -- canvas size Y
