@@ -2745,6 +2745,8 @@ local function osc_init()
         return title ~= "" and mp.command_native({"escape-ass", title}) or "mpv"
     end
     bind_buttons(ne, "title")
+
+    -- Chapter title (above seekbar)
     ne = new_element("chapter_title", "button")
     ne.visible = mp.get_property_number("chapter", -1) >= 0
     ne.content = function()
