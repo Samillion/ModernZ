@@ -1133,7 +1133,7 @@ local function prepare_elements()
         -- style it accordingly and kill the eventresponders
         if not element.enabled then
             element.layout.alpha[1] = 215
-            if not (element.name == "sub_track" or element.name == "audio_track" or element.name == "tog_playlist") then -- keep these to display tooltips
+            if not (element.name == "sub_track" or element.name == "audio_track" or element.name == "playlist") then -- keep these to display tooltips
                 element.eventresponder = nil
             end
         end
@@ -2043,7 +2043,7 @@ layouts["modern"] = function ()
     end
 
     if chapter_skip_buttons then
-        lo = add_layout("chapter_backward")
+        lo = add_layout("chapter_prev")
         lo.geometry = {x = refX - 60 - offset, y = refY - 35, an = 5, w = 30, h = 24}
         lo.style = osc_styles.control_2
     end
@@ -2065,7 +2065,7 @@ layouts["modern"] = function ()
     end
 
     if chapter_skip_buttons then
-        lo = add_layout("chapter_forward")
+        lo = add_layout("chapter_next")
         lo.geometry = {x = refX + 60 + offset, y = refY - 35, an = 5, w = 30, h = 24}
         lo.style = osc_styles.control_2
     end
@@ -2080,7 +2080,7 @@ layouts["modern"] = function ()
 
     -- Playlist
     if playlist_button then
-        lo = add_layout("tog_playlist")
+        lo = add_layout("playlist")
         lo.geometry = {x = start_x, y = refY - 35, an = 5, w = 24, h = 24}
         lo.style = osc_styles.control_3
         lo.visible = (osc_param.playresx >= 600 - outeroffset)
@@ -2162,7 +2162,7 @@ layouts["modern"] = function ()
     -- Fullscreen/Info/Pin/Screenshot/Loop/Speed
     local end_x = osc_geo.w - 37
     if fullscreen_button then
-        lo = add_layout("tog_fullscreen")
+        lo = add_layout("fullscreen")
         lo.geometry = {x = end_x, y = refY - 35, an = 5, w = 24, h = 24}
         lo.style = osc_styles.control_3
         lo.visible = (osc_param.playresx >= 250 - outeroffset)
@@ -2170,7 +2170,7 @@ layouts["modern"] = function ()
     end
 
     if info_button then
-        lo = add_layout("tog_info")
+        lo = add_layout("info")
         lo.geometry = {x = end_x, y = refY - 35, an = 5, w = 24, h = 24}
         lo.style = osc_styles.control_3
         lo.visible = (osc_param.playresx >= 300 - outeroffset)
@@ -2400,9 +2400,9 @@ layouts["modern-compact"] = function ()
     -- Right side buttons
     local end_x = osc_geo.w - 50
 
-    elements.tog_fullscreen.visible = user_opts.fullscreen_button and osc_geo.w >= 100
-    if elements.tog_fullscreen.visible then
-        lo = add_layout("tog_fullscreen")
+    elements.fullscreen.visible = user_opts.fullscreen_button and osc_geo.w >= 100
+    if elements.fullscreen.visible then
+        lo = add_layout("fullscreen")
         lo.geometry = {x = end_x, y = refY - 35, an = 5, w = 24, h = 24}
         lo.style = osc_styles.control_2
         end_x = end_x - 55
@@ -2432,9 +2432,9 @@ layouts["modern-compact"] = function ()
         end_x = end_x - 55
     end
 
-    elements.tog_playlist.visible = user_opts.playlist_button and osc_geo.w >= 550
-    if elements.tog_playlist.visible then
-        lo = add_layout("tog_playlist")
+    elements.playlist.visible = user_opts.playlist_button and osc_geo.w >= 550
+    if elements.playlist.visible then
+        lo = add_layout("playlist")
         lo.geometry = {x = end_x, y = refY - 35, an = 5, w = 24, h = 24}
         lo.style = osc_styles.control_2
         end_x = end_x - 55
@@ -2506,7 +2506,7 @@ layouts["modern-image"] = function ()
 
     -- Playlist
     if playlist_button then
-        lo = add_layout("tog_playlist")
+        lo = add_layout("playlist")
         lo.geometry = {x = 25, y = refY - 30, an = 5, w = 24, h = 24}
         lo.style = osc_styles.control_3
         lo.visible = osc_param.playresx >= 250
@@ -2552,14 +2552,14 @@ layouts["modern-image"] = function ()
 
     -- Fullscreen/Info/Pin/Download
     if fullscreen_button then
-        lo = add_layout("tog_fullscreen")
+        lo = add_layout("fullscreen")
         lo.geometry = {x = osc_geo.w - 37, y = refY - 30, an = 5, w = 24, h = 24}
         lo.style = osc_styles.control_3
         lo.visible = (osc_param.playresx >= 250)
     end
 
     if info_button then
-        lo = add_layout("tog_info")
+        lo = add_layout("info")
         lo.geometry = {x = osc_geo.w - 82 + (fullscreen_button and 0 or 45), y = refY - 30, an = 5, w = 24, h = 24}
         lo.style = osc_styles.control_3
         lo.visible = (osc_param.playresx >= 300)
@@ -2596,16 +2596,15 @@ local function wc_visible(visible)
     set_bar_visible("wc_visible", visible)
 end
 
--- opt_prefix: name prefix ("audio_track" => audio_track_mbtn_left_command)
 -- use_down: if true, uses _down instead of _up (for softrepeat buttons)
-local function bind_buttons(ne, opt_prefix, use_down)
+local function bind_buttons(ne, use_down)
     local ev = use_down and "_down" or "_up"
     local bindings = {
-        {"mbtn_left"  .. ev,     opt_prefix .. "_mbtn_left_command"},
-        {"mbtn_right" .. ev,     opt_prefix .. "_mbtn_right_command"},
-        {"shift+mbtn_left_down", opt_prefix .. "_mbtn_mid_command"},
-        {"wheel_up_press",       opt_prefix .. "_wheel_up_command"},
-        {"wheel_down_press",     opt_prefix .. "_wheel_down_command"},
+        {"mbtn_left"  .. ev,     ne.name .. "_mbtn_left_command"},
+        {"mbtn_right" .. ev,     ne.name .. "_mbtn_right_command"},
+        {"shift+mbtn_left_down", ne.name .. "_mbtn_mid_command"},
+        {"wheel_up_press",       ne.name .. "_wheel_up_command"},
+        {"wheel_down_press",     ne.name .. "_wheel_down_command"},
     }
     for _, b in ipairs(bindings) do
         local cmd = user_opts[b[2]]
@@ -2744,7 +2743,7 @@ local function osc_init()
         title = title:gsub("\n", " ")
         return title ~= "" and mp.command_native({"escape-ass", title}) or "mpv"
     end
-    bind_buttons(ne, "title")
+    bind_buttons(ne)
 
     -- Chapter title (above seekbar)
     ne = new_element("chapter_title", "button")
@@ -2764,7 +2763,7 @@ local function osc_init()
 
         return string.format(user_opts.chapter_fmt, chapter_title)
     end
-    bind_buttons(ne, "chapter_title")
+    bind_buttons(ne)
 
     -- playlist buttons
     local pl_nav_visible_w = (state.is_image and 300 or 500) - nojumpoffset - noskipoffset*(nojumpoffset == 0 and 1 or 10)
@@ -2773,14 +2772,14 @@ local function osc_init()
     ne.visible = (osc_param.playresx >= pl_nav_visible_w)
     ne.content = icons.previous
     ne.enabled = (pl_pos > 1) or (loop ~= "no") or contains(user_opts.buttons_always_active, "playlist_prev")
-    bind_buttons(ne, "playlist_prev")
+    bind_buttons(ne)
 
     --next
     ne = new_element("playlist_next", "button")
     ne.visible = (osc_param.playresx >= pl_nav_visible_w)
     ne.content = icons.next
     ne.enabled = (have_pl and (pl_pos < pl_count)) or (loop ~= "no") or contains(user_opts.buttons_always_active, "playlist_next")
-    bind_buttons(ne, "playlist_next")
+    bind_buttons(ne)
 
     --play control buttons
     --play_pause
@@ -2838,26 +2837,26 @@ local function osc_init()
     ne.eventresponder["mbtn_right_down"] = function () mp.commandv("seek", jump_more_amount, jump_mode) end
     ne.eventresponder["shift+mbtn_left_down"] = function () mp.commandv("frame-step") end
 
-    --chapter_backward
-    ne = new_element("chapter_backward", "button")
+    --chapter_prev
+    ne = new_element("chapter_prev", "button")
     ne.visible = (osc_param.playresx >= 400 - nojumpoffset*10)
     ne.softrepeat = user_opts.chapter_softrepeat
     ne.content = icons.rewind
     ne.enabled = have_ch -- disables button when no chapters available.
-    bind_buttons(ne, "chapter_prev", true)
+    bind_buttons(ne, true)
 
-    --chapter_forward
-    ne = new_element("chapter_forward", "button")
+    --chapter_next
+    ne = new_element("chapter_next", "button")
     ne.visible = (osc_param.playresx >= 400 - nojumpoffset*10)
     ne.softrepeat = user_opts.chapter_softrepeat
     ne.content = icons.forward
     ne.enabled = have_ch -- disables button when no chapters available.
-    bind_buttons(ne, "chapter_next", true)
+    bind_buttons(ne, true)
 
     local visible_min_width = 550 - outeroffset
 
-    --tog_playlist
-    ne = new_element("tog_playlist", "button")
+    --playlist
+    ne = new_element("playlist", "button")
     ne.enabled = have_pl or not user_opts.gray_empty_playlist_button
     ne.off = not have_pl and user_opts.gray_empty_playlist_button
     ne.visible = (osc_param.playresx >= (state.is_image and 250 or visible_min_width) - outeroffset)
@@ -2865,7 +2864,7 @@ local function osc_init()
     ne.tooltip_style = osc_styles.tooltip
     ne.tooltipF = user_opts.tooltip_hints and (have_pl and locale.playlist .. " [" .. pl_pos .. "/" .. pl_count .. "]" or locale.playlist .. " / " .. locale.menu) or ""
     ne.nothingavailable = locale.no_playlist
-    bind_buttons(ne, "playlist")
+    bind_buttons(ne)
     visible_min_width = visible_min_width + (ne.enabled and 100 or 0)
 
     --audio_track
@@ -2880,7 +2879,7 @@ local function osc_init()
         return (user_opts.tooltip_hints and (locale.audio .. " " .. mp.get_property_number("aid", "-") .. "/" .. state.audio_track_count .. " [" .. prop .. "]") or "")
     end
     ne.nothingavailable = locale.no_audio
-    bind_buttons(ne, "audio_track")
+    bind_buttons(ne)
     visible_min_width = visible_min_width + (ne.enabled and 100 or 0)
 
     --sub_track
@@ -2895,7 +2894,7 @@ local function osc_init()
         return (user_opts.tooltip_hints and (locale.subtitle .. " " .. mp.get_property_number("sid", "-") .. "/" .. state.sub_track_count .. " [" .. prop .. "]") or "")
     end
     ne.nothingavailable = locale.no_subs
-    bind_buttons(ne, "sub_track")
+    bind_buttons(ne)
     visible_min_width = visible_min_width + (ne.enabled and 100 or 0)
 
     -- vol_ctrl
@@ -2925,7 +2924,7 @@ local function osc_init()
         volume = volume % 1 == 0 and string.format("%.0f", volume) or string.format("%.1f", volume)
         return state.mute and (volume .. " (" .. locale.muted .. ")") or volume
     end
-    bind_buttons(ne, "vol_ctrl")
+    bind_buttons(ne)
 
     --volumebar
     local volume_max_prop = mp.get_property_number("volume-max") or 0
@@ -2962,7 +2961,7 @@ local function osc_init()
         mp.commandv("set", "volume", set_volume(pos))
     end
     ne.eventresponder["reset"] = function (element) element.state.lastseek = nil end
-    bind_buttons(ne, "volumebar")
+    bind_buttons(ne)
 
     -- zoom control
     -- zoom out icon
@@ -3009,20 +3008,20 @@ local function osc_init()
     ne.eventresponder["wheel_down_press"] = function () mp.commandv("osd-msg", "set", "video-zoom", math.max(user_opts.zoom_out_min, mp.get_property_number("video-zoom", 0) - 0.05)) end
 
     visible_min_width = 550 - outeroffset
-    --tog_fullscreen
-    ne = new_element("tog_fullscreen", "button")
+    --fullscreen
+    ne = new_element("fullscreen", "button")
     ne.content = function () return state.fullscreen and icons.fullscreen_exit or icons.fullscreen end
     ne.visible = (osc_param.playresx >= visible_min_width)
-    bind_buttons(ne, "fullscreen")
+    bind_buttons(ne)
     visible_min_width = visible_min_width + (user_opts.fullscreen_button and 100 or 0)
 
-    --tog_info
-    ne = new_element("tog_info", "button")
+    --info
+    ne = new_element("info", "button")
     ne.content = icons.info
     ne.tooltip_style = osc_styles.tooltip
     ne.tooltipF = user_opts.tooltip_hints and locale.stats_info or ""
     ne.visible = (osc_param.playresx >= visible_min_width)
-    bind_buttons(ne, "info")
+    bind_buttons(ne)
     visible_min_width = visible_min_width + (user_opts.info_button and 100 or 0)
 
     --tog_ontop
@@ -3043,7 +3042,7 @@ local function osc_init()
     ne.tooltip_style = osc_styles.tooltip
     ne.tooltipF = user_opts.tooltip_hints and locale.screenshot or ""
     ne.visible = (osc_param.playresx >= visible_min_width)
-    bind_buttons(ne, "screenshot")
+    bind_buttons(ne)
     visible_min_width = visible_min_width + (user_opts.screenshot_button and 100 or 0)
 
     --tog_file_loop
