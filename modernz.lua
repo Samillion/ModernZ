@@ -371,6 +371,7 @@ end
 --- localization
 local language = {
     ["en"] = {
+        lang_direction = "LTR",
         idle = "Drop files or URLs here to play",
         na = "Not available",
         video = "Video",
@@ -406,7 +407,7 @@ local language = {
 }
 
 -- locale JSON file handler
-function get_locale_from_json(path)
+local function get_locale_from_json(path)
     local expand_path = mp.command_native({'expand-path', path})
 
     local file_info = utils.file_info(expand_path)
@@ -430,8 +431,7 @@ function get_locale_from_json(path)
 end
 
 -- load external locales if available
-local locale_path = "~~/script-opts/modernz-locale.json"
-local external = get_locale_from_json(locale_path)
+local external = get_locale_from_json("~~/script-opts/modernz-locale.json")
 
 if external then
     for lang, strings in pairs(external) do
@@ -451,10 +451,10 @@ if external then
 end
 
 local locale
+local rtl = false                           -- locale language direction (true if RTL)
 local function set_osc_locale()
     locale = language[user_opts.language] or language["en"]
-    local idle_ass_tags = "{\\fs24\\1c&HFFFFFF&}"
-    locale.idle = idle_ass_tags .. locale.idle
+    rtl = (locale.lang_direction or "ltr"):lower() == "rtl"
 end
 
 local function contains(list, item)
@@ -1615,7 +1615,7 @@ local function render_elements(master_ass, osc_vis, wc_vis)
                     end
 
                     elem_ass:new_event()
-                    elem_ass:append("{\\rDefault}")
+                    elem_ass:append("{\\rDefault" .. (rtl and "\\fe-1" or "") .. "}")
                     elem_ass:pos(tx, ty)
                     elem_ass:an(an)
                     elem_ass:append(element.tooltip_style)
@@ -3732,7 +3732,7 @@ tick = function()
             ass:new_event()
             ass:pos(display_w / 2, icon_y + 65)
             ass:an(8)
-            ass:append(locale.idle)
+            ass:append("{\\fs24\\1c&HFFFFFF&}" .. locale.idle)
         end
         set_osd(display_w, display_h, ass.text, -1000)
 
