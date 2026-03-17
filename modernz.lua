@@ -73,6 +73,7 @@ local user_opts = {
     time_font_size = 16,                   -- font size of the time display
 
     tooltip_font_size = 14,                -- tooltips font size
+    speed_font_size = 16,                  -- speed button font size
 
     -- Title bar settings
     show_window_title = false,             -- show window title in borderless/fullscreen mode
@@ -100,7 +101,7 @@ local user_opts = {
 
     volume_control = true,                 -- show mute button and volume slider
     volume_control_type = "linear",        -- volume scale type: "linear" or "logarithmic"
-    playlist_button = true,                -- show playlist button: Left-click for simple playlist, Right-click for interactive playlist
+    playlist_button = true,                -- show playlist button
     hide_empty_playlist_button = false,    -- hide playlist button when no playlist exists
     gray_empty_playlist_button = false,    -- gray out the playlist button when no playlist exists
 
@@ -514,6 +515,7 @@ local function set_osc_styles()
         time = "{\\blur0\\bord0\\1c&H" .. osc_color_convert(user_opts.time_color) .. "&\\3c&H0&\\fs" .. user_opts.time_font_size .. "\\fn" .. user_opts.font .. "}",
         cache = "{\\blur0\\bord0\\1c&H" .. osc_color_convert(user_opts.cache_info_color) .. "&\\3c&H0&\\fs" .. user_opts.cache_info_font_size .. "\\fn" .. user_opts.font .. "}",
         tooltip = "{\\blur1\\bord0.5\\1c&HFFFFFF&\\3c&H0&\\fs" .. user_opts.tooltip_font_size .. "\\fn" .. user_opts.font .. "}",
+        speed = "{\\blur0\\bord0\\1c&H" .. osc_color_convert(user_opts.side_buttons_color) .. "&\\3c&H0&\\fs" .. user_opts.speed_font_size .. "\\fn" .. user_opts.font .. "}",
         volumebar_bg = "{\\blur0\\bord0\\1c&H999999&}",
         volumebar_fg = "{\\blur1\\bord1\\1c&H" .. osc_color_convert(user_opts.side_buttons_color) .. "&}",
         control_1 = "{\\blur0\\bord0\\1c&H" .. osc_color_convert(user_opts.playpause_color) .. "&\\3c&HFFFFFF&\\fs" .. playpause_size .. "\\fn" .. icons.iconfont .. "}",
@@ -2210,8 +2212,8 @@ layouts["modern"] = function ()
 
     if speed_button then
         lo = add_layout("speed")
-        lo.geometry = {x = end_x, y = refY - 35, an = 5, w = 24, h = 24}
-        lo.style = osc_styles.time
+        lo.geometry = {x = end_x, y = refY - 35, an = 5, w = 42, h = 24}
+        lo.style = osc_styles.speed
         lo.visible = (osc_param.playresx >= 600 - outeroffset)
         end_x = end_x - 45
     end
@@ -2451,7 +2453,7 @@ layouts["modern-compact"] = function ()
     if elements.speed.visible then
         lo = add_layout("speed")
         lo.geometry = {x = end_x, y = refY - 35, an = 5, w = 24, h = 24}
-        lo.style = osc_styles.time
+        lo.style = osc_styles.speed
         end_x = end_x - 55
     end
 
