@@ -65,8 +65,9 @@ Create `modernz.conf` in your mpv script-opts directory:
 | time_font_size          | 16               | font size of the time display                                                    |
 | cache_info              | no               | show cached time information                                                     |
 | cache_info_speed        | no               | show current cache speed per second                                              |
-| cache_info_font_size    | 12               | font size of the time display                                                    |
+| cache_info_font_size    | 12               | font size of the cache information                                               |
 | tooltip_font_size       | 14               | tooltips font size                                                               |
+| speed_font_size         | 16               | speed button font size                                                           |
 
 ### Title bar settings
 
