@@ -15,7 +15,7 @@ This guide provides everything you need to use, modify, and add translations for
 
 To get started with translations:
 
-1. **Locate the translation file:** Open the `modernz-locale.json` file from the repository (typically found at [modernz-locale.json](/extras/locale/modernz-locale.json)).
+1. **Locate the translation file:** Open the [`modernz-locale.json`](/extras/locale/modernz-locale.json) file from the repository.
 2. **Edit Translations:** Use the following format to add or modify translations:
 
 ```json
@@ -26,8 +26,8 @@ To get started with translations:
     }
 }
 ```
-
-Replace `"language-code"` with your language code (e.g. `"es"` for Spanish).
+3. **Set the correct language direction:** Make sure to set `lang_direction` to either RTL (Right-to-left) or LTR (Left-to-right)
+4. Replace `"language-code"` with your language code (e.g. `"es"` for Spanish).
 
 ## Available Languages
 
@@ -55,6 +55,7 @@ ModernZ currently has translations for the following languages:
 ```json
 {
     "en": {
+        "lang_direction": "LTR",
         "idle": "Drop files or URLs here to play",
         "na": "Not available",
         "video": "Video",
@@ -112,34 +113,35 @@ ModernZ currently has translations for the following languages:
 
 ## Translation Keys Reference
 
-| Key                                            | Description             | Format Notes  |
-| ---------------------------------------------- | ----------------------- | ------------- |
-| `idle`                                         | Idle message            | State label   |
-| `na`                                           | Not available           | Text label    |
-| `video`                                        | Video                   | Text label    |
-| `audio`                                        | Audio tracks            | Button label  |
-| `subtitle`                                     | Subtitle tracks         | Button label  |
-| `no_subs`                                      | No subtitle tracks      | Button label  |
-| `no_audio`                                     | No audio tracks         | Button label  |
-| `muted`                                        | Audio muted             | State label   |
-| `playlist`                                     | Playlist                | Button label  |
-| `no_playlist`                                  | Playlist is empty       | Button label  |
-| `chapter`                                      | Chapter                 | Text label    |
-| `ontop`/`ontop_disable`                        | Window pin states       | Action labels |
-| `file_loop_enable`/`file_loop_disable`         | File loop states        | Action labels |
-| `playlist_loop_enable`/`playlist_loop_disable` | Playlist loop states    | Action labels |
-| `shuffle`/`unshuffle`                          | Playlist shuffle states | Action labels |
-| `screenshot`                                   | Screenshot              | Button label  |
-| `stats_info`                                   | Statistics              | Button label  |
-| `cache`                                        | Cache                   | Text label    |
-| `buffering`                                    | Buffering               | State label   |
-| `zoom_in`                                      | Zoom in                 | Button label  |
-| `zoom_out`                                     | Zoom out                | Button label  |
-| `download`                                     | Download                | Button label  |
-| `download_in_progress`                         | Download in progress    | State label   |
-| `downloading`                                  | Downloading state       | State label   |
-| `downloaded`                                   | Downloaded state        | State label   |
-| `menu`                                         | Menu                    | Button label  |
+| Key                                            | Description                    | Format Notes     |
+| ---------------------------------------------- | ------------------------------ | ---------------- |
+| `lang_direction`                               | language direction. RTL or LTR | direction preset |
+| `idle`                                         | Idle message                   | State label      |
+| `na`                                           | Not available                  | Text label       |
+| `video`                                        | Video                          | Text label       |
+| `audio`                                        | Audio tracks                   | Button label     |
+| `subtitle`                                     | Subtitle tracks                | Button label     |
+| `no_subs`                                      | No subtitle tracks             | Button label     |
+| `no_audio`                                     | No audio tracks                | Button label     |
+| `muted`                                        | Audio muted                    | State label      |
+| `playlist`                                     | Playlist                       | Button label     |
+| `no_playlist`                                  | Playlist is empty              | Button label     |
+| `chapter`                                      | Chapter                        | Text label       |
+| `ontop`/`ontop_disable`                        | Window pin states              | Action labels    |
+| `file_loop_enable`/`file_loop_disable`         | File loop states               | Action labels    |
+| `playlist_loop_enable`/`playlist_loop_disable` | Playlist loop states           | Action labels    |
+| `shuffle`/`unshuffle`                          | Playlist shuffle states        | Action labels    |
+| `screenshot`                                   | Screenshot                     | Button label     |
+| `stats_info`                                   | Statistics                     | Button label     |
+| `cache`                                        | Cache                          | Text label       |
+| `buffering`                                    | Buffering                      | State label      |
+| `zoom_in`                                      | Zoom in                        | Button label     |
+| `zoom_out`                                     | Zoom out                       | Button label     |
+| `download`                                     | Download                       | Button label     |
+| `download_in_progress`                         | Download in progress           | State label      |
+| `downloading`                                  | Downloading state              | State label      |
+| `downloaded`                                   | Downloaded state               | State label      |
+| `menu`                                         | Menu                           | Button label     |
 
 ## Contributing
 

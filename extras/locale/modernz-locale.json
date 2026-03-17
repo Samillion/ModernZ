@@ -1,5 +1,6 @@
 {
     "fr": {
+        "lang_direction": "LTR",
         "idle": "Déposez des fichiers ou des URL ici pour lire",
         "na": "Non disponible",
         "video": "Vidéo",
@@ -33,6 +34,7 @@
         "menu": "Menu"
     },
     "de": {
+        "lang_direction": "LTR",
         "idle": "Dateien oder URLs hier ablegen, um sie abzuspielen",
         "na": "Nicht verfügbar",
         "video": "Video",
@@ -66,6 +68,7 @@
         "menu": "Menü"
     },
     "es": {
+        "lang_direction": "LTR",
         "idle": "Suelta archivos o URL aquí para reproducir",
         "na": "No disponible",
         "video": "Vídeo",
@@ -99,6 +102,7 @@
         "menu": "Menú"
     },
     "pl": {
+        "lang_direction": "LTR",
         "idle": "Upuść pliki lub adresy URL tutaj, aby odtworzyć",
         "na": "Niedostępne",
         "video": "Wideo",
@@ -132,6 +136,7 @@
         "menu": "Menu"
     },
     "jp": {
+        "lang_direction": "LTR",
         "idle": "ここにファイルやURLをドロップして再生",
         "na": "利用不可",
         "video": "ビデオ",
@@ -165,6 +170,7 @@
         "menu": "メニュー"
     },
     "zh": {
+        "lang_direction": "LTR",
         "idle": "将文件或 URL 拖放到此处播放",
         "na": "不可用",
         "video": "视频",
@@ -198,6 +204,7 @@
         "menu": "菜单"
     },
     "ar": {
+        "lang_direction": "RTL",
         "idle": "اسحب الملفات أو الروابط هنا للتشغيل",
         "na": "غير متاح",
         "video": "فيديو",
@@ -231,6 +238,7 @@
         "menu": "القائمة"
     },
     "ru": {
+        "lang_direction": "LTR",
         "idle": "Перетащите файлы или URL сюда для воспроизведения",
         "na": "Недоступно",
         "video": "Видео",
@@ -264,6 +272,7 @@
         "menu": "Меню"
     },
     "is": {
+        "lang_direction": "LTR",
         "idle": "Dragðu skrár eða vefslóðir hingað til að spila",
         "na": "Ekki tiltækt",
         "video": "Myndband",
@@ -297,6 +306,7 @@
         "menu": "Valmynd"
     },
     "dk": {
+        "lang_direction": "LTR",
         "idle": "Træk filer eller URL'er hertil for at afspille",
         "na": "Ikke tilgængelig",
         "video": "Video",
