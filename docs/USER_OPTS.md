@@ -21,7 +21,6 @@ Create `modernz.conf` in your mpv script-opts directory:
 | font                      | mpv-osd-symbols | font for the OSC (default: mpv-osd-symbols or the one set in mpv.conf)                                                         |
 | idlescreen                | yes             | show mpv logo when idle                                                                                                        |
 | window_top_bar            | auto            | show OSC window top bar: `"auto"`, `"yes"`, or `"no"` (borderless/fullscreen)                                                  |
-| windowcontrols_fullscreen | no              | show window controls in fullscreen                                                                                             |
 | showwindowed              | yes             | show OSC when windowed                                                                                                         |
 | showfullscreen            | yes             | show OSC when fullscreen                                                                                                       |
 | showonselect              | no              | show OSC when a select menu is open                                                                                            |
@@ -72,12 +71,13 @@ Create `modernz.conf` in your mpv script-opts directory:
 
 ### Title bar settings
 
-| Option                 | Value            | Description                                                               |
-| ---------------------- | ---------------- | ------------------------------------------------------------------------- |
-| show_window_title      | no               | show window title in borderless/fullscreen mode                           |
-| window_title           | `${media-title}` | same as title but for window_top_bar                                      |
-| window_title_font_size | 26               | window title font size                                                    |
-| window_controls        | yes              | show window controls (close, minimize, maximize) in borderless/fullscreen |
+| Option                    | Value            | Description                                                               |
+| ------------------------- | ---------------- | ------------------------------------------------------------------------- |
+| show_window_title         | no               | show window title in borderless/fullscreen mode                           |
+| window_title              | `${media-title}` | same as title but for window_top_bar                                      |
+| window_title_font_size    | 26               | window title font size                                                    |
+| window_controls           | yes              | show window controls (close, minimize, maximize) in borderless/fullscreen |
+| windowcontrols_fullscreen | yes              | show window controls in fullscreen                                        |
 
 ### Subtitle and OSD display settings
 
