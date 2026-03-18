@@ -28,7 +28,6 @@ local user_opts = {
 
     idlescreen = true,                     -- show mpv logo when idle
     window_top_bar = "auto",               -- show OSC window top bar: "auto", "yes", or "no" (borderless/fullscreen)
-    windowcontrols_fullscreen = false,     -- show window controls in fullscreen
     showwindowed = true,                   -- show OSC when windowed
     showfullscreen = true,                 -- show OSC when fullscreen
     showonselect = false,                  -- show OSC when a select menu is open
@@ -81,6 +80,7 @@ local user_opts = {
     window_title = "${media-title}",       -- same as title but for window_top_bar
     window_title_font_size = 26,           -- window title font size
     window_controls = true,                -- show window controls (close, minimize, maximize) in borderless/fullscreen
+    windowcontrols_fullscreen = true,      -- show window controls in fullscreen
 
     -- Subtitle and OSD display settings
     sub_margins = true,                    -- raise subtitles above the OSC when shown
