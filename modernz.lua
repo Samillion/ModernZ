@@ -28,6 +28,7 @@ local user_opts = {
 
     idlescreen = true,                     -- show mpv logo when idle
     window_top_bar = "auto",               -- show OSC window top bar: "auto", "yes", or "no" (borderless/fullscreen)
+    windowcontrols_fullscreen = false,     -- show window controls in fullscreen
     showwindowed = true,                   -- show OSC when windowed
     showfullscreen = true,                 -- show OSC when fullscreen
     showonselect = false,                  -- show OSC when a select menu is open
@@ -1071,9 +1072,12 @@ end
 local function window_controls_enabled()
     local val = user_opts.window_top_bar
     if val == "auto" then
-        return not (state.border and state.title_bar) or state.fullscreen
+        if state.fullscreen then
+            return user_opts.windowcontrols_fullscreen
+        end
+        return not state.border or not state.title_bar
     else
-        return val == "yes"
+        return val ~= "no"
     end
 end
 
