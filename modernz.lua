@@ -80,6 +80,7 @@ local user_opts = {
     window_title = "${media-title}",       -- same as title but for window_top_bar
     window_title_font_size = 26,           -- window title font size
     window_controls = true,                -- show window controls (close, minimize, maximize) in borderless/fullscreen
+    windowcontrols_fullscreen = true,      -- show window controls in fullscreen
 
     -- Subtitle and OSD display settings
     sub_margins = true,                    -- raise subtitles above the OSC when shown
@@ -1078,9 +1079,12 @@ end
 local function window_controls_enabled()
     local val = user_opts.window_top_bar
     if val == "auto" then
-        return not (state.border and state.title_bar) or state.fullscreen
+        if state.fullscreen then
+            return user_opts.windowcontrols_fullscreen
+        end
+        return not state.border or not state.title_bar
     else
-        return val == "yes"
+        return val ~= "no"
     end
 end
 
