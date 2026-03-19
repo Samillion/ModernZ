@@ -1,4 +1,4 @@
--- ModernZ v0.3.1 (https://github.com/Samillion/ModernZ)
+-- ModernZ v0.3.2rc (https://github.com/Samillion/ModernZ)
 --
 -- This script is a derivative of the original mpv-osc-modern by maoiscat
 -- and subsequent forks:
@@ -408,6 +408,11 @@ local language = {
     },
 }
 
+local bidi = {
+    fsi = "\226\129\168",   -- U+2068 first strong isolate
+    pdi = "\226\129\169",   -- U+2069 pop directional isolate
+}
+
 -- locale JSON file handler
 local function get_locale_from_json(path)
     local expand_path = mp.command_native({'expand-path', path})
@@ -453,12 +458,8 @@ if external then
 end
 
 local locale
-local rtl = false                  -- locale language direction (true if RTL)
-local rtl_reset = "{\\rDefault}"   -- cached ASS reset tag, includes \\fe-1 for RTL
 local function set_osc_locale()
     locale = language[user_opts.language] or language["en"]
-    rtl = (locale.lang_direction or "ltr"):lower() == "rtl"
-    rtl_reset = rtl and "{\\rDefault\\fe-1}" or "{\\rDefault}"
 end
 
 local function contains(list, item)
@@ -1646,11 +1647,11 @@ local function render_elements(master_ass, osc_vis, wc_vis)
                     end
 
                     elem_ass:new_event()
-                    elem_ass:append(rtl_reset)
+                    elem_ass:append("{\\rDefault}")
                     elem_ass:pos(tx, ty)
                     elem_ass:an(an)
                     elem_ass:append(element.tooltip_style)
-                    elem_ass:append(tooltiplabel)
+                    elem_ass:append(bidi.fsi .. tooltiplabel .. bidi.pdi)
                 end
             end
         end
