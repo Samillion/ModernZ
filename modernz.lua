@@ -745,30 +745,18 @@ end
 
 -- width of the time codes element
 local function get_time_codes_width()
-    local remsec = mp.get_property_number("playtime-remaining", 0)
     local dur = mp.get_property_number("duration", 0)
-    local pos = mp.get_property_number("playback-time", 0)
+    local rt_sec = state.tc_left_rem and mp.get_property_number("playtime-remaining", 0) or mp.get_property_number("playback-time", 0)
 
-    local function wide_time_format(seconds)
-        local show_h = (seconds >= 3600) or user_opts.time_format ~= "dynamic"
-
-        if show_h then
-            return state.tc_ms and "88:88:88.888" or "88:88:88"
-        else
-            return state.tc_ms and "88:88.888" or "88:88"
-        end
+    local function time_fmt(s)
+        local has_h = (s >= 3600) or user_opts.time_format ~= "dynamic"
+        return (has_h and "88:88:88" or "88:88") .. (state.tc_ms and ".888" or "")
     end
 
-    local rt_fmt = wide_time_format(state.tc_left_rem and remsec or pos)
-    local t_fmt = wide_time_format(dur)
     local prefix = state.tc_left_rem and (user_opts.unicodeminus and UNICODE_MINUS or "-") or ""
-    local w = estimate_text_width(prefix .. rt_fmt .. " / " .. t_fmt, osc_styles.time)
+    local w = estimate_text_width(prefix .. time_fmt(rt_sec) .. " / " .. time_fmt(dur), osc_styles.time)
 
-    if w == 0 then
-        w = 120 + (state.tc_ms and 40 or 0)
-    end
-
-    return w
+    return w ~= 0 and w or 120 + (state.tc_ms and 40 or 0)
 end
 
 -- returns hitbox spanning coordinates (top left, bottom right corner)
