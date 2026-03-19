@@ -747,15 +747,27 @@ end
 local function get_time_codes_width()
     local remsec = mp.get_property_number("playtime-remaining", 0)
     local dur = mp.get_property_number("duration", 0)
-    local show_h = mp.get_property_number("playback-time", 0) >= 3600 or user_opts.time_format ~= "dynamic"
-    local show_remh = (state.tc_left_rem and remsec >= 3600) or (not state.tc_left_rem and dur >= 3600) or user_opts.time_format ~= "dynamic"
-    local t_fmt = (show_h    and "00:00:00" or "00:00") .. (state.tc_ms and ".000" or "")
-    local rt_fmt = (show_remh and "00:00:00" or "00:00") .. (state.tc_ms and ".000" or "")
+    local pos = mp.get_property_number("playback-time", 0)
+
+    local function wide_time_format(seconds)
+        local show_h = (seconds >= 3600) or user_opts.time_format ~= "dynamic"
+
+        if show_h then
+            return state.tc_ms and "88:88:88.888" or "88:88:88"
+        else
+            return state.tc_ms and "88:88.888" or "88:88"
+        end
+    end
+
+    local rt_fmt = wide_time_format(state.tc_left_rem and remsec or pos)
+    local t_fmt = wide_time_format(dur)
     local prefix = state.tc_left_rem and (user_opts.unicodeminus and UNICODE_MINUS or "-") or ""
     local w = estimate_text_width(prefix .. rt_fmt .. " / " .. t_fmt, osc_styles.time)
+
     if w == 0 then
-        w = 80 + (state.tc_ms and 50 or 0) + (state.tc_left_rem and 15 or 0) + (show_h and 20 or 0) + (show_remh and 20 or 0)
+        w = 120 + (state.tc_ms and 40 or 0)
     end
+
     return w
 end
 
@@ -3166,6 +3178,11 @@ local function osc_init()
     ne.visible = mp.get_property_number("duration", 0) > 0
     ne.content = function()
         local playback_time = mp.get_property_number("playback-time", 0)
+        local duration = mp.get_property_number("duration", 0)
+        if duration <= 0 then return "--:--" end
+
+        local playtime_remaining = state.tc_left_rem and mp.get_property_number("playtime-remaining", 0) or playback_time
+        local prefix = state.tc_left_rem and (user_opts.unicodeminus and UNICODE_MINUS or "-") or ""
 
         -- call request_init() only when needed to update time code width
         if user_opts.time_format ~= "fixed" and playback_time then
@@ -3176,19 +3193,11 @@ local function osc_init()
             end
         end
 
-        local duration = mp.get_property_number("duration", 0)
-        if duration <= 0 then return "--:--" end
-
-        local playtime_remaining = state.tc_left_rem and
-            mp.get_property_number("playtime-remaining", 0) or playback_time
-
-        local prefix = state.tc_left_rem and
-            (user_opts.unicodeminus and UNICODE_MINUS or "-") or ""
-
         return prefix .. format_time(playtime_remaining) .. " / " .. format_time(duration)
     end
     ne.eventresponder["mbtn_left_up"] = function()
         state.tc_left_rem = not state.tc_left_rem
+        request_init()
     end
     ne.eventresponder["mbtn_right_up"] = function()
         state.tc_ms = not state.tc_ms
