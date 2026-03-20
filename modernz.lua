@@ -750,13 +750,13 @@ local function get_time_codes_width()
     local rt_sec = state.tc_left_rem and mp.get_property_number("playtime-remaining", 0) or mp.get_property_number("playback-time", 0)
 
     local function time_fmt(s)
-        local has_h = (s >= 3600) or user_opts.time_format ~= "dynamic"
-        return (has_h and "88:88:88" or "88:88") .. (state.tc_ms and ".888" or "")
+        local has_h = (s >= 3600) or user_opts.time_format == "fixed"
+        local base = has_h and (s >= 36000 and "88" or "8") .. ":88:88" or (s >= 600 and "88" or "8") .. ":88"
+        return base .. (state.tc_ms and ".888" or "")
     end
 
     local prefix = state.tc_left_rem and (user_opts.unicodeminus and UNICODE_MINUS or "-") or ""
     local w = estimate_text_width(prefix .. time_fmt(rt_sec) .. " / " .. time_fmt(dur), osc_styles.time)
-
     return w ~= 0 and w or 120 + (state.tc_ms and 40 or 0)
 end
 
@@ -2524,16 +2524,25 @@ end
 -- format seconds into a time string
 local function format_time(seconds)
     if not seconds then return "--:--" end
-    local hours = math.floor(seconds / 3600)
+
+    local hours   = math.floor(seconds / 3600)
     local minutes = math.floor((seconds % 3600) / 60)
-    local secs = math.floor(seconds % 60)
-    local ms = state.tc_ms and math.floor((seconds % 1) * 1000)
+    local secs    = math.floor(seconds % 60)
     local show_hours = hours > 0 or user_opts.time_format == "fixed"
-    local fmt = (user_opts.time_format == "fixed" and "%02d" or "%d") .. (show_hours and ":%02d:%02d" or ":%02d") .. (state.tc_ms and ".%03d" or "")
-    if show_hours then
-        return string.format(fmt, hours, minutes, secs, ms)
+
+    if state.tc_ms then
+        local ms = math.floor((seconds % 1) * 1000)
+        if show_hours then
+            return string.format("%d:%02d:%02d.%03d", hours, minutes, secs, ms)
+        else
+            return string.format("%d:%02d.%03d", minutes, secs, ms)
+        end
     else
-        return string.format(fmt, minutes, secs, ms)
+        if show_hours then
+            return string.format("%d:%02d:%02d", hours, minutes, secs)
+        else
+            return string.format("%d:%02d", minutes, secs)
+        end
     end
 end
 
