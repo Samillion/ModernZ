@@ -26,8 +26,8 @@ To get started with translations:
     }
 }
 ```
-3. **Set the correct language direction:** Make sure to set `lang_direction` to either RTL (Right-to-left) or LTR (Left-to-right)
-4. Replace `"language-code"` with your language code (e.g. `"es"` for Spanish).
+
+3. Replace `"language-code"` with your language code (e.g. `"es"` for Spanish).
 
 ## Available Languages
 
@@ -55,7 +55,6 @@ ModernZ currently has translations for the following languages:
 ```json
 {
     "en": {
-        "lang_direction": "LTR",
         "idle": "Drop files or URLs here to play",
         "na": "Not available",
         "video": "Video",
@@ -115,7 +114,6 @@ ModernZ currently has translations for the following languages:
 
 | Key                                            | Description                    | Format Notes     |
 | ---------------------------------------------- | ------------------------------ | ---------------- |
-| `lang_direction`                               | language direction. RTL or LTR | direction preset |
 | `idle`                                         | Idle message                   | State label      |
 | `na`                                           | Not available                  | Text label       |
 | `video`                                        | Video                          | Text label       |
