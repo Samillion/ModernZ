@@ -2525,19 +2525,33 @@ end
 local function format_time(seconds)
     if not seconds then return "--:--" end
 
-    local h = math.floor(seconds / 3600)
-    local m = math.floor((seconds % 3600) / 60)
-    local s = math.floor(seconds % 60)
-    local ms = state.tc_ms and math.floor((seconds % 1) * 1000)
+    local hours   = math.floor(seconds / 3600)
+    local minutes = math.floor((seconds % 3600) / 60)
+    local secs    = math.floor(seconds % 60)
+    local show_hours = hours > 0 or user_opts.time_format == "fixed"
 
-    local show_h = h > 0 or user_opts.time_format == "fixed"
-    local fmt = show_h
-        and (user_opts.time_format == "dynamic" and "%d:%02d:%02d" or "%02d:%02d:%02d")
-        or (user_opts.time_format == "dynamic" and "%d:%02d" or "%02d:%02d")
-
-    local time = string.format(fmt, show_h and h or m, show_h and m or s, s)
-    if ms then time = time .. string.format(".%03d", ms) end
-    return time
+    if state.tc_ms then
+        local ms = math.floor((seconds % 1) * 1000)
+        if show_hours then
+            return string.format(
+                user_opts.time_format == "fixed" and "%02d:%02d:%02d.%03d" or "%d:%02d:%02d.%03d",
+                hours, minutes, secs, ms)
+        else
+            return string.format(
+                user_opts.time_format == "fixed" and "%02d:%02d.%03d" or "%d:%02d.%03d",
+                minutes, secs, ms)
+        end
+    else
+        if show_hours then
+            return string.format(
+                user_opts.time_format == "fixed" and "%02d:%02d:%02d" or "%d:%02d:%02d",
+                hours, minutes, secs)
+        else
+            return string.format(
+                user_opts.time_format == "fixed" and "%02d:%02d" or "%d:%02d",
+                minutes, secs)
+        end
+    end
 end
 
 local function build_cache_seek_ranges()
