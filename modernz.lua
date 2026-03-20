@@ -2524,33 +2524,16 @@ end
 -- format seconds into a time string
 local function format_time(seconds)
     if not seconds then return "--:--" end
-
-    local hours   = math.floor(seconds / 3600)
+    local hours = math.floor(seconds / 3600)
     local minutes = math.floor((seconds % 3600) / 60)
-    local secs    = math.floor(seconds % 60)
+    local secs = math.floor(seconds % 60)
+    local ms = state.tc_ms and math.floor((seconds % 1) * 1000)
     local show_hours = hours > 0 or user_opts.time_format == "fixed"
-
-    if state.tc_ms then
-        local ms = math.floor((seconds % 1) * 1000)
-        if show_hours then
-            return string.format(
-                user_opts.time_format == "fixed" and "%02d:%02d:%02d.%03d" or "%d:%02d:%02d.%03d",
-                hours, minutes, secs, ms)
-        else
-            return string.format(
-                user_opts.time_format == "fixed" and "%02d:%02d.%03d" or "%d:%02d.%03d",
-                minutes, secs, ms)
-        end
+    local fmt = (user_opts.time_format == "fixed" and "%02d" or "%d") .. (show_hours and ":%02d:%02d" or ":%02d") .. (state.tc_ms and ".%03d" or "")
+    if show_hours then
+        return string.format(fmt, hours, minutes, secs, ms)
     else
-        if show_hours then
-            return string.format(
-                user_opts.time_format == "fixed" and "%02d:%02d:%02d" or "%d:%02d:%02d",
-                hours, minutes, secs)
-        else
-            return string.format(
-                user_opts.time_format == "fixed" and "%02d:%02d" or "%d:%02d",
-                minutes, secs)
-        end
+        return string.format(fmt, minutes, secs, ms)
     end
 end
 
