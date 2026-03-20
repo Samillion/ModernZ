@@ -2021,7 +2021,7 @@ layouts["modern"] = function ()
     local audio_track = state.audio_track_count > 0
     local subtitle_track = state.sub_track_count > 0
     local jump_buttons = user_opts.jump_buttons
-    local chapter_skip_buttons = user_opts.chapter_skip_buttons and mp.get_property_number("chapters", 0) > 0
+    local chapter_skip_buttons = user_opts.chapter_skip_buttons and type(state.chapter_list) == "table" and next(state.chapter_list)
     local track_nextprev_buttons = user_opts.track_nextprev_buttons
     local fullscreen_button = user_opts.fullscreen_button
     local info_button = user_opts.info_button
