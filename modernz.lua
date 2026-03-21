@@ -1492,7 +1492,7 @@ local function render_elements(master_ass, osc_vis, wc_vis)
 
                         if thumbfast.disabled then
                             if chapter_text and osd_w and r_w > 0 then
-                                local pad_h, pad_v = 10, 3
+                                local pad_h, pad_v = 5, 3
                                 local fs = user_opts.tooltip_font_size
                                 local titleY = ty - fs - 2 * pad_v - 5
                                 elem_ass:new_event()
@@ -1501,7 +1501,7 @@ local function render_elements(master_ass, osc_vis, wc_vis)
                                 elem_ass:an(7)
                                 elem_ass:append(osc_styles.thumbnail)
                                 elem_ass:draw_start()
-                                elem_ass:round_rect_cw(0, 0, chapter_width + 2 * pad_h, fs + 2 * pad_v, user_opts.thumbnail_border_radius)
+                                elem_ass:round_rect_cw(0, 0, chapter_width + 2 * pad_h, fs + 2 * pad_v, 8)
                                 elem_ass:draw_stop()
                                 elem_ass:new_event()
                                 elem_ass:pos(tx, titleY)
@@ -1549,16 +1549,16 @@ local function render_elements(master_ass, osc_vis, wc_vis)
 
                                 an = 2
                                 if chapter_text then
-                                    local pad_h, pad_v = 10, 3
+                                    local pad_h, pad_v = 5, 3
                                     local fs = user_opts.tooltip_font_size
                                     local chapterY = thumbY * r_h - thumbPad * r_h - pad_v - 5
                                     elem_ass:new_event()
-                                    elem_ass:append("{\\rDefault}")
+                                    elem_ass:append("{\\rDefault\\alpha&H80}")
                                     elem_ass:pos(tx - chapter_width / 2 - pad_h, chapterY - fs - pad_v)
                                     elem_ass:an(7)
                                     elem_ass:append(osc_styles.thumbnail)
                                     elem_ass:draw_start()
-                                    elem_ass:round_rect_cw(0, 0, chapter_width + 2 * pad_h, fs + 2 * pad_v, user_opts.thumbnail_border_radius)
+                                    elem_ass:round_rect_cw(0, 0, chapter_width + 2 * pad_h, fs + 2 * pad_v, 8)
                                     elem_ass:draw_stop()
                                     elem_ass:new_event()
                                     elem_ass:pos(tx, chapterY)
@@ -1572,15 +1572,15 @@ local function render_elements(master_ass, osc_vis, wc_vis)
 
                         -- tooltip label background box
                         if element.name == "seekbar" then
-                            local pad_h, pad_v = 10, 3
+                            local pad_h, pad_v = 5, 3
                             local fs = user_opts.tooltip_font_size
                             elem_ass:new_event()
-                            elem_ass:append("{\\rDefault}")
+                            elem_ass:append("{\\rDefault\\alpha&H80}")
                             elem_ass:pos(tx - tooltip_width / 2 - pad_h, ty - fs - pad_v)
                             elem_ass:an(7)
                             elem_ass:append(osc_styles.thumbnail)
                             elem_ass:draw_start()
-                            elem_ass:round_rect_cw(0, 0, tooltip_width + 2 * pad_h, fs + 2 * pad_v, user_opts.thumbnail_border_radius)
+                            elem_ass:round_rect_cw(0, 0, tooltip_width + 2 * pad_h, fs + 2 * pad_v, 8)
                             elem_ass:draw_stop()
                         end
 
