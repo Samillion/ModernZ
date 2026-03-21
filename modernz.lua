@@ -213,7 +213,7 @@ local user_opts = {
     hide_volume_bar_trigger = 1150,        -- hide volume bar trigger window width
     notitle_osc_h_offset = 25,             -- osc height offset if title above seekbar is disabled
     nochapter_osc_h_offset = 10,           -- osc height offset if chapter title is disabled or doesn't exist
-    seek_hover_tooltip_h_offset = 0,       -- seek hover timecodes tooltip height position offset
+    seek_hover_tooltip_h_offset = 5,       -- seek hover timecodes tooltip height position offset
     osc_height = 132,                      -- osc height without offsets
 
     -- Mouse commands
