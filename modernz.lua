@@ -2002,7 +2002,7 @@ layouts["modern"] = function ()
     lo = add_layout("seekbarbg")
     local seekbar_bg_h = 4
     lo.geometry = {x = refX, y = refY - 72, an = 5, w = osc_geo.w - 30, h = seekbar_bg_h}
-    lo.layer = 13
+    lo.layer = 15
     lo.style = osc_styles.seekbar_bg
     lo.box.radius = user_opts.slider_rounded_corners and 2 or 0
     lo.alpha[1] = 128
@@ -2126,7 +2126,7 @@ layouts["modern"] = function ()
         lo.visible = (osc_param.playresx >= 1150 - outeroffset) and user_opts.volume_control
         lo = add_layout("volumebarbg")
         lo.geometry = {x = start_x, y = refY - 35, an = 4, w = 55, h = 4}
-        lo.layer = 13
+        lo.layer = 15
         lo.alpha[1] = 128
         lo.style = user_opts.volumebar_match_seek_color and osc_styles.seekbar_bg or osc_styles.volumebar_bg
         lo.box.radius = user_opts.slider_rounded_corners and 2 or 0
@@ -2228,7 +2228,7 @@ layouts["modern-compact"] = function ()
     lo = add_layout("seekbarbg")
     local seekbar_bg_h = 4
     lo.geometry = {x = refX, y = refY - 72, an = 5, w = osc_geo.w - 30, h = seekbar_bg_h}
-    lo.layer = 13
+    lo.layer = 15
     lo.style = osc_styles.seekbar_bg
     lo.box.radius = user_opts.slider_rounded_corners and 2 or 0
     lo.alpha[1] = 152
@@ -2326,7 +2326,7 @@ layouts["modern-compact"] = function ()
         if elements.volumebar.visible then
             lo = add_layout("volumebarbg")
             lo.geometry = {x = start_x, y = refY - 35, an = 4, w = 55, h = 4}
-            lo.layer = 13
+            lo.layer = 15
             lo.alpha[1] = 128
             lo.style = user_opts.volumebar_match_seek_color and osc_styles.seekbar_bg or osc_styles.volumebar_bg
             lo.box.radius = user_opts.slider_rounded_corners and 2 or 0
@@ -2437,7 +2437,7 @@ layouts["modern-image"] = function ()
         lo.visible = osc_param.playresx >= 400 and user_opts.zoom_control
         lo = add_layout("zoom_control_bg")
         lo.geometry = {x = 145 - (playlist_button and 0 or 25) - (track_nextprev_buttons and 0 or 70), y = refY - 30, an = 4, w = 80, h = 4}
-        lo.layer = 13
+        lo.layer = 15
         lo.alpha[1] = 128
         lo.style = osc_styles.volumebar_bg
         lo.box.radius = user_opts.slider_rounded_corners and 2 or 0
