@@ -1492,7 +1492,17 @@ local function render_elements(master_ass, osc_vis, wc_vis)
 
                         if thumbfast.disabled then
                             if chapter_text and osd_w and r_w > 0 then
-                                local titleY = ty - (user_opts.time_font_size * 1.3)
+                                local titleY = ty - (user_opts.time_font_size * 1.3) - 3
+                                local pad_h, pad_v = 10, 3
+                                local fs = user_opts.tooltip_font_size
+                                elem_ass:new_event()
+                                elem_ass:append("{\\rDefault}")
+                                elem_ass:pos(tx - chapter_width / 2 - pad_h, titleY - fs - pad_v)
+                                elem_ass:an(7)
+                                elem_ass:append(osc_styles.thumbnail)
+                                elem_ass:draw_start()
+                                elem_ass:round_rect_cw(0, 0, chapter_width + 2 * pad_h, fs + 2 * pad_v, user_opts.thumbnail_border_radius)
+                                elem_ass:draw_stop()
                                 elem_ass:new_event()
                                 elem_ass:pos(tx, titleY)
                                 elem_ass:an(2)
@@ -1508,7 +1518,7 @@ local function render_elements(master_ass, osc_vis, wc_vis)
                                 if hover_dur then hover_sec = hover_dur * sliderpos / 100 end
                                 local thumbPad = user_opts.thumbnail_border
                                 local thumbMarginX = 18 / r_w
-                                local thumbMarginY = user_opts.time_font_size + thumbPad + 2 / r_h
+                                local thumbMarginY = user_opts.time_font_size + thumbPad + 2 / r_h + 2
 
                                 local thumbX = math.min(osd_w - thumbfast.width - thumbMarginX, math.max(thumbMarginX, tx / r_w - thumbfast.width / 2))
                                 local thumbY = (ty - thumbMarginY) / r_h - thumbfast.height
@@ -1539,8 +1549,19 @@ local function render_elements(master_ass, osc_vis, wc_vis)
 
                                 an = 2
                                 if chapter_text then
+                                    local chapterY = thumbY * r_h - user_opts.time_font_size / 2 - 2
+                                    local pad_h, pad_v = 10, 3
+                                    local fs = user_opts.tooltip_font_size
                                     elem_ass:new_event()
-                                    elem_ass:pos(tx, thumbY * r_h - user_opts.time_font_size / 2)
+                                    elem_ass:append("{\\rDefault}")
+                                    elem_ass:pos(tx - chapter_width / 2 - pad_h, chapterY - fs - pad_v)
+                                    elem_ass:an(7)
+                                    elem_ass:append(osc_styles.thumbnail)
+                                    elem_ass:draw_start()
+                                    elem_ass:round_rect_cw(0, 0, chapter_width + 2 * pad_h, fs + 2 * pad_v, user_opts.thumbnail_border_radius)
+                                    elem_ass:draw_stop()
+                                    elem_ass:new_event()
+                                    elem_ass:pos(tx, chapterY)
                                     elem_ass:an(an)
                                     elem_ass:append(slider_lo.tooltip_style)
                                     ass_append_alpha(elem_ass, slider_lo.alpha, 0)
@@ -1548,6 +1569,18 @@ local function render_elements(master_ass, osc_vis, wc_vis)
                                 end
                             end
                         end
+
+                        -- tooltip label background box
+                        local pad_h, pad_v = 10, 3
+                        local fs = user_opts.tooltip_font_size
+                        elem_ass:new_event()
+                        elem_ass:append("{\\rDefault}")
+                        elem_ass:pos(tx - tooltip_width / 2 - pad_h, ty - fs - pad_v)
+                        elem_ass:an(7)
+                        elem_ass:append(osc_styles.thumbnail)
+                        elem_ass:draw_start()
+                        elem_ass:round_rect_cw(0, 0, tooltip_width + 2 * pad_h, fs + 2 * pad_v, user_opts.thumbnail_border_radius)
+                        elem_ass:draw_stop()
 
                         -- tooltip label
                         elem_ass:new_event()
