@@ -1494,7 +1494,7 @@ local function render_elements(master_ass, osc_vis, wc_vis)
                             if chapter_text and osd_w and r_w > 0 then
                                 local pad_h, pad_v = 10, 3
                                 local fs = user_opts.tooltip_font_size
-                                local titleY = ty - fs - 2 * pad_v - 2
+                                local titleY = ty - fs - 2 * pad_v - 5
                                 elem_ass:new_event()
                                 elem_ass:append("{\\rDefault}")
                                 elem_ass:pos(tx - chapter_width / 2 - pad_h, titleY - fs - pad_v)
@@ -1551,7 +1551,7 @@ local function render_elements(master_ass, osc_vis, wc_vis)
                                 if chapter_text then
                                     local pad_h, pad_v = 10, 3
                                     local fs = user_opts.tooltip_font_size
-                                    local chapterY = thumbY * r_h - thumbPad * r_h - pad_v - 2
+                                    local chapterY = thumbY * r_h - thumbPad * r_h - pad_v - 5
                                     elem_ass:new_event()
                                     elem_ass:append("{\\rDefault}")
                                     elem_ass:pos(tx - chapter_width / 2 - pad_h, chapterY - fs - pad_v)
