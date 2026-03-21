@@ -77,7 +77,6 @@ Create `modernz.conf` in your mpv script-opts directory:
 | window_title              | `${media-title}` | same as title but for window_top_bar                                      |
 | window_title_font_size    | 26               | window title font size                                                    |
 | window_controls           | yes              | show window controls (close, minimize, maximize) in borderless/fullscreen |
-| windowcontrols_fullscreen | yes              | show window controls in fullscreen                                        |
 
 ### Subtitle and OSD display settings
 

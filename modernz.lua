@@ -80,7 +80,6 @@ local user_opts = {
     window_title = "${media-title}",       -- same as title but for window_top_bar
     window_title_font_size = 26,           -- window title font size
     window_controls = true,                -- show window controls (close, minimize, maximize) in borderless/fullscreen
-    windowcontrols_fullscreen = true,      -- show window controls in fullscreen
 
     -- Subtitle and OSD display settings
     sub_margins = true,                    -- raise subtitles above the OSC when shown
@@ -485,6 +484,7 @@ local thumbfast = {
     available = false
 }
 
+local platform = mp.get_property("platform")
 local tick_delay = 1 / 60
 local window_control_box_width = 150
 local is_december = os.date("*t").month == 12
@@ -1083,10 +1083,7 @@ end
 local function window_controls_enabled()
     local val = user_opts.window_top_bar
     if val == "auto" then
-        if state.fullscreen then
-            return user_opts.windowcontrols_fullscreen
-        end
-        return not state.border or not state.title_bar
+        return not state.border or not state.title_bar or (state.fullscreen and platform ~= "darwin")
     else
         return val ~= "no"
     end
