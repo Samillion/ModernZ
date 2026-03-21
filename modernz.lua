@@ -1492,9 +1492,9 @@ local function render_elements(master_ass, osc_vis, wc_vis)
 
                         if thumbfast.disabled then
                             if chapter_text and osd_w and r_w > 0 then
-                                local titleY = ty - (user_opts.time_font_size * 1.3) - 3
                                 local pad_h, pad_v = 10, 3
                                 local fs = user_opts.tooltip_font_size
+                                local titleY = ty - fs - 2 * pad_v - 2
                                 elem_ass:new_event()
                                 elem_ass:append("{\\rDefault}")
                                 elem_ass:pos(tx - chapter_width / 2 - pad_h, titleY - fs - pad_v)
@@ -1518,7 +1518,7 @@ local function render_elements(master_ass, osc_vis, wc_vis)
                                 if hover_dur then hover_sec = hover_dur * sliderpos / 100 end
                                 local thumbPad = user_opts.thumbnail_border
                                 local thumbMarginX = 18 / r_w
-                                local thumbMarginY = user_opts.time_font_size + thumbPad + 2 / r_h + 2
+                                local thumbMarginY = user_opts.tooltip_font_size + thumbPad + 5 + 2 / r_h
 
                                 local thumbX = math.min(osd_w - thumbfast.width - thumbMarginX, math.max(thumbMarginX, tx / r_w - thumbfast.width / 2))
                                 local thumbY = (ty - thumbMarginY) / r_h - thumbfast.height
@@ -1549,9 +1549,9 @@ local function render_elements(master_ass, osc_vis, wc_vis)
 
                                 an = 2
                                 if chapter_text then
-                                    local chapterY = thumbY * r_h - user_opts.time_font_size / 2 - 2
                                     local pad_h, pad_v = 10, 3
                                     local fs = user_opts.tooltip_font_size
+                                    local chapterY = thumbY * r_h - thumbPad * r_h - pad_v - 2
                                     elem_ass:new_event()
                                     elem_ass:append("{\\rDefault}")
                                     elem_ass:pos(tx - chapter_width / 2 - pad_h, chapterY - fs - pad_v)
