@@ -1496,7 +1496,7 @@ local function render_elements(master_ass, osc_vis, wc_vis)
                                 local fs = user_opts.tooltip_font_size
                                 local titleY = ty - fs - 2 * pad_v - 5
                                 elem_ass:new_event()
-                                elem_ass:append("{\\rDefault}")
+                                elem_ass:append("{\\rDefault\\alpha&H80}")
                                 elem_ass:pos(tx - chapter_width / 2 - pad_h, titleY - fs - pad_v)
                                 elem_ass:an(7)
                                 elem_ass:append(osc_styles.thumbnail)
