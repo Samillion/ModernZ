@@ -1571,16 +1571,18 @@ local function render_elements(master_ass, osc_vis, wc_vis)
                         end
 
                         -- tooltip label background box
-                        local pad_h, pad_v = 10, 3
-                        local fs = user_opts.tooltip_font_size
-                        elem_ass:new_event()
-                        elem_ass:append("{\\rDefault}")
-                        elem_ass:pos(tx - tooltip_width / 2 - pad_h, ty - fs - pad_v)
-                        elem_ass:an(7)
-                        elem_ass:append(osc_styles.thumbnail)
-                        elem_ass:draw_start()
-                        elem_ass:round_rect_cw(0, 0, tooltip_width + 2 * pad_h, fs + 2 * pad_v, user_opts.thumbnail_border_radius)
-                        elem_ass:draw_stop()
+                        if element.name == "seekbar" then
+                            local pad_h, pad_v = 10, 3
+                            local fs = user_opts.tooltip_font_size
+                            elem_ass:new_event()
+                            elem_ass:append("{\\rDefault}")
+                            elem_ass:pos(tx - tooltip_width / 2 - pad_h, ty - fs - pad_v)
+                            elem_ass:an(7)
+                            elem_ass:append(osc_styles.thumbnail)
+                            elem_ass:draw_start()
+                            elem_ass:round_rect_cw(0, 0, tooltip_width + 2 * pad_h, fs + 2 * pad_v, user_opts.thumbnail_border_radius)
+                            elem_ass:draw_stop()
+                        end
 
                         -- tooltip label
                         elem_ass:new_event()
