@@ -1492,7 +1492,7 @@ local function render_elements(master_ass, osc_vis, wc_vis)
 
                         if thumbfast.disabled then
                             if chapter_text and osd_w and r_w > 0 then
-                                local pad_h, pad_v = 5, 3
+                                local pad_h, pad_v = 2, 3
                                 local fs = user_opts.tooltip_font_size
                                 local titleY = ty - fs - 2 * pad_v - 5
                                 elem_ass:new_event()
@@ -1549,7 +1549,7 @@ local function render_elements(master_ass, osc_vis, wc_vis)
 
                                 an = 2
                                 if chapter_text then
-                                    local pad_h, pad_v = 5, 3
+                                    local pad_h, pad_v = 2, 3
                                     local fs = user_opts.tooltip_font_size
                                     local chapterY = thumbY * r_h - thumbPad * r_h - pad_v - 5
                                     elem_ass:new_event()
@@ -1572,7 +1572,7 @@ local function render_elements(master_ass, osc_vis, wc_vis)
 
                         -- tooltip label background box
                         if element.name == "seekbar" then
-                            local pad_h, pad_v = 5, 3
+                            local pad_h, pad_v = 2, 3
                             local fs = user_opts.tooltip_font_size
                             elem_ass:new_event()
                             elem_ass:append("{\\rDefault\\alpha&H80}")
