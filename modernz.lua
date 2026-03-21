@@ -2001,7 +2001,7 @@ layouts["modern"] = function ()
     new_element("seekbarbg", "box")
     lo = add_layout("seekbarbg")
     local seekbar_bg_h = 4
-    lo.geometry = {x = refX, y = refY - 72, an = 5, w = osc_geo.w - 50, h = seekbar_bg_h}
+    lo.geometry = {x = refX, y = refY - 72, an = 5, w = osc_geo.w - 30, h = seekbar_bg_h}
     lo.layer = 13
     lo.style = osc_styles.seekbar_bg
     lo.box.radius = user_opts.slider_rounded_corners and 2 or 0
@@ -2010,7 +2010,7 @@ layouts["modern"] = function ()
 
     lo = add_layout("seekbar")
     local seekbar_h = 18
-    lo.geometry = {x = refX, y = refY - 72, an = 5, w = osc_geo.w - 50, h = seekbar_h}
+    lo.geometry = {x = refX, y = refY - 72, an = 5, w = osc_geo.w - 30, h = seekbar_h}
     lo.layer = 51
     lo.style = osc_styles.seekbar_fg
     lo.slider.gap = (seekbar_h - seekbar_bg_h) / 2.0
@@ -2227,7 +2227,7 @@ layouts["modern-compact"] = function ()
     new_element("seekbarbg", "box")
     lo = add_layout("seekbarbg")
     local seekbar_bg_h = 4
-    lo.geometry = {x = refX, y = refY - 72, an = 5, w = osc_geo.w - 45, h = seekbar_bg_h}
+    lo.geometry = {x = refX, y = refY - 72, an = 5, w = osc_geo.w - 30, h = seekbar_bg_h}
     lo.layer = 13
     lo.style = osc_styles.seekbar_bg
     lo.box.radius = user_opts.slider_rounded_corners and 2 or 0
@@ -2236,7 +2236,7 @@ layouts["modern-compact"] = function ()
 
     lo = add_layout("seekbar")
     local seekbar_h = 18
-    lo.geometry = {x = refX, y = refY - 72, an = 5, w = osc_geo.w - 45, h = seekbar_h}
+    lo.geometry = {x = refX, y = refY - 72, an = 5, w = osc_geo.w - 30, h = seekbar_h}
     lo.layer = 51
     lo.style = osc_styles.seekbar_fg
     lo.slider.gap = (seekbar_h - seekbar_bg_h) / 2.0
@@ -2276,7 +2276,7 @@ layouts["modern-compact"] = function ()
     lo.style = osc_styles.time
 
     -- Left side buttons
-    local start_x = 50
+    local start_x = 37
 
     lo = add_layout("play_pause")
     lo.geometry = {x = start_x, y = refY - 35, an = 5, w = 24, h = 24}
@@ -2342,12 +2342,12 @@ layouts["modern-compact"] = function ()
     end
 
     -- Right side buttons
-    local end_x = osc_geo.w - 50
-    local function compact_right_side_button(name, vis_cond, style)
+    local end_x = osc_geo.w - 37
+    local function compact_right_side_button(name, vis_cond, style, w)
         elements[name].visible = vis_cond
         if vis_cond then
             lo = add_layout(name)
-            lo.geometry = {x = end_x, y = refY - 35, an = 5, w = 24, h = 24}
+            lo.geometry = {x = end_x, y = refY - 35, an = 5, w = (w or 24), h = 24}
             lo.style = style or osc_styles.control_2
             end_x = end_x - 55
         end
@@ -2359,7 +2359,7 @@ layouts["modern-compact"] = function ()
     compact_right_side_button("audio_track", user_opts.audio_tracks_button and state.audio_track_count > 0 and osc_geo.w >= 750)
     compact_right_side_button("playlist", user_opts.playlist_button and osc_geo.w >= 550)
     compact_right_side_button("download", state.is_URL and user_opts.download_button and osc_geo.w >= 450)
-    compact_right_side_button("speed", user_opts.speed_button and osc_geo.w >= 300, osc_styles.speed)
+    compact_right_side_button("speed", user_opts.speed_button and osc_geo.w >= 300, osc_styles.speed, 42)
 
     elements.cache_info.visible = user_opts.cache_info and osc_geo.w >= 500
     if elements.cache_info.visible then
