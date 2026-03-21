@@ -518,6 +518,7 @@ local function set_osc_styles()
         time = "{\\blur0\\bord0\\1c&H" .. osc_color_convert(user_opts.time_color) .. "&\\3c&H0&\\fs" .. user_opts.time_font_size .. "\\fn" .. user_opts.font .. "}",
         cache = "{\\blur0\\bord0\\1c&H" .. osc_color_convert(user_opts.cache_info_color) .. "&\\3c&H0&\\fs" .. user_opts.cache_info_font_size .. "\\fn" .. user_opts.font .. "}",
         tooltip = "{\\blur1\\bord0.5\\1c&HFFFFFF&\\3c&H0&\\fs" .. user_opts.tooltip_font_size .. "\\fn" .. user_opts.font .. "}",
+        tooltip_seek = "{\\blur0\\bord0\\1c&H" .. osc_color_convert(user_opts.thumbnail_border_color) .. "&}",
         speed = "{\\blur0\\bord0\\1c&H" .. osc_color_convert(user_opts.side_buttons_color) .. "&\\3c&H0&\\fs" .. user_opts.speed_font_size .. "\\fn" .. user_opts.font .. "}",
         volumebar_bg = "{\\blur0\\bord0\\1c&H999999&}",
         volumebar_fg = "{\\blur1\\bord1\\1c&H" .. osc_color_convert(user_opts.side_buttons_color) .. "&}",
@@ -1499,7 +1500,7 @@ local function render_elements(master_ass, osc_vis, wc_vis)
                                 elem_ass:append("{\\rDefault\\alpha&H80}")
                                 elem_ass:pos(tx - chapter_width / 2 - pad_h, titleY - fs - pad_v)
                                 elem_ass:an(7)
-                                elem_ass:append(osc_styles.thumbnail)
+                                elem_ass:append(osc_styles.tooltip_seek)
                                 elem_ass:draw_start()
                                 elem_ass:round_rect_cw(0, 0, chapter_width + 2 * pad_h, fs + 2 * pad_v, 8)
                                 elem_ass:draw_stop()
@@ -1556,7 +1557,7 @@ local function render_elements(master_ass, osc_vis, wc_vis)
                                     elem_ass:append("{\\rDefault\\alpha&H80}")
                                     elem_ass:pos(tx - chapter_width / 2 - pad_h, chapterY - fs - pad_v)
                                     elem_ass:an(7)
-                                    elem_ass:append(osc_styles.thumbnail)
+                                    elem_ass:append(osc_styles.tooltip_seek)
                                     elem_ass:draw_start()
                                     elem_ass:round_rect_cw(0, 0, chapter_width + 2 * pad_h, fs + 2 * pad_v, 8)
                                     elem_ass:draw_stop()
@@ -1578,7 +1579,7 @@ local function render_elements(master_ass, osc_vis, wc_vis)
                             elem_ass:append("{\\rDefault\\alpha&H80}")
                             elem_ass:pos(tx - tooltip_width / 2 - pad_h, ty - fs - pad_v)
                             elem_ass:an(7)
-                            elem_ass:append(osc_styles.thumbnail)
+                            elem_ass:append(osc_styles.tooltip_seek)
                             elem_ass:draw_start()
                             elem_ass:round_rect_cw(0, 0, tooltip_width + 2 * pad_h, fs + 2 * pad_v, 8)
                             elem_ass:draw_stop()
