@@ -2,7 +2,7 @@
 
 A sleek and modern OSC for [mpv](https://mpv.io/), this project is a fork of ModernX designed to enhance functionality by adding more features, all while preserving the core standards of mpv's OSC.
 
-<img width="1717" height="967" alt="ModernZ-OSC" src="https://github.com/user-attachments/assets/7573bc13-bdb3-46f6-8baa-fca377280e17" />
+<img width="1715" height="966" alt="ModernZ" src="https://github.com/user-attachments/assets/60108e23-01b4-4928-a2cf-9b5de73364dc" />
 
 <p align="center">
     <a href="#installation"><strong>Installation »</strong></a>
@@ -175,6 +175,7 @@ See the [Color Customization](docs/USER_OPTS.md#colors-and-style) section in the
 1. **Disable Stock OSC**
 
    - Add `osc=no` in your `mpv.conf`
+   - (OPTIONAL) Add `title-bar=no` in your `mpv.conf` for a clean look without the native operating system top bar
 
 2. **Copy Files**
 
@@ -268,7 +269,7 @@ Copy the downloaded `modernz-locale.json` file to your mpv's `/script-opts` fold
 
 4. Adjust or add the `language` option in `modernz.conf` file
 
-```ini
+```EditorConfig
 # Example configuration in modernz.conf
 # Set language to Simplified Chinese
 language=zh
@@ -301,11 +302,12 @@ For even more useful scripts, check out the [mpv User Scripts Wiki](https://gith
 - Add extensive feature support, including [color customization](docs/USER_OPTS.md#colors-and-style), advanced [options](docs/USER_OPTS.md), and [locale integration](docs/TRANSLATIONS.md)
 - Integrate mpv's `console` and `select` functionality to OSC
   - An approach that later inspired adoption in mpv’s stock OSC ([#1](https://github.com/mpv-player/mpv/pull/15016), [#2](https://github.com/mpv-player/mpv/pull/15031))
-- Introduce a dedicated layout optimized for image viewing. See [details](/docs/IMAGE_VIEWER.md)
+- Introduce a dedicated layout optimized for image viewing. [details](/docs/IMAGE_VIEWER.md)
 - Add `modern` and `modern-compact` layouts and icon themes support
 - Refactor the project to align with mpv’s stock OSC standards, ensuring long-term compatibility
 - Remove legacy bugs and redundant code to improve maintainability and stability
-  - This also enables other `Modern` forks to build on ModernZ as a foundation, such as [zydezu/ModernX](https://github.com/zydezu/ModernX) ([reference](https://github.com/zydezu/ModernX/releases/tag/0.3.9))
+  - This enables other `Modern` forks to build on ModernZ as a foundation
+    - Such as [zydezu/ModernX](https://github.com/zydezu/ModernX) ([reference](https://github.com/zydezu/ModernX/releases/tag/0.3.9))
 
 In essence, to maintain and revive the `modern-osc` origin.
 

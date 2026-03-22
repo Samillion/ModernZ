@@ -212,7 +212,7 @@ local user_opts = {
     hide_volume_bar_trigger = 1150,        -- hide volume bar trigger window width
     notitle_osc_h_offset = 25,             -- osc height offset if title above seekbar is disabled
     nochapter_osc_h_offset = 10,           -- osc height offset if chapter title is disabled or doesn't exist
-    seek_hover_tooltip_h_offset = 0,       -- seek hover timecodes tooltip height position offset
+    seek_hover_tooltip_h_offset = 5,       -- seek hover timecodes tooltip height position offset
     osc_height = 132,                      -- osc height without offsets
 
     -- Mouse commands
@@ -518,6 +518,7 @@ local function set_osc_styles()
         time = "{\\blur0\\bord0\\1c&H" .. osc_color_convert(user_opts.time_color) .. "&\\3c&H0&\\fs" .. user_opts.time_font_size .. "\\fn" .. user_opts.font .. "}",
         cache = "{\\blur0\\bord0\\1c&H" .. osc_color_convert(user_opts.cache_info_color) .. "&\\3c&H0&\\fs" .. user_opts.cache_info_font_size .. "\\fn" .. user_opts.font .. "}",
         tooltip = "{\\blur1\\bord0.5\\1c&HFFFFFF&\\3c&H0&\\fs" .. user_opts.tooltip_font_size .. "\\fn" .. user_opts.font .. "}",
+        tooltip_seek = "{\\blur0\\bord0\\1c&H" .. osc_color_convert(user_opts.osc_color) .. "&}",
         speed = "{\\blur0\\bord0\\1c&H" .. osc_color_convert(user_opts.side_buttons_color) .. "&\\3c&H0&\\fs" .. user_opts.speed_font_size .. "\\fn" .. user_opts.font .. "}",
         volumebar_bg = "{\\blur0\\bord0\\1c&H999999&}",
         volumebar_fg = "{\\blur1\\bord1\\1c&H" .. osc_color_convert(user_opts.side_buttons_color) .. "&}",
@@ -1455,6 +1456,9 @@ local function render_elements(master_ass, osc_vis, wc_vis)
                         local r_w, r_h = get_virt_scale_factor()
 
                         local tooltip_width = estimate_text_width(tooltiplabel, slider_lo.tooltip_style)
+                        local tooltip_fs = user_opts.tooltip_font_size
+                        local pad_h, pad_v = 2, 3 -- horizontal and vertical padding for seekbar tooltip box
+                        local tooltip_radius = (tooltip_fs + 2 * pad_v) / 2 -- seekbar tooltips; pill shape radius
 
                         local chapter_text = nil
                         local chapter_width = 0
@@ -1489,7 +1493,15 @@ local function render_elements(master_ass, osc_vis, wc_vis)
 
                         if thumbfast.disabled then
                             if chapter_text and osd_w and r_w > 0 then
-                                local titleY = ty - (user_opts.time_font_size * 1.3)
+                                local titleY = ty - tooltip_fs - 2 * pad_v - 5
+                                elem_ass:new_event()
+                                elem_ass:append("{\\rDefault\\alpha&H80&}")
+                                elem_ass:pos(tx - chapter_width / 2 - pad_h, titleY - tooltip_fs - pad_v)
+                                elem_ass:an(7)
+                                elem_ass:append(osc_styles.tooltip_seek)
+                                elem_ass:draw_start()
+                                elem_ass:round_rect_cw(0, 0, chapter_width + 2 * pad_h, tooltip_fs + 2 * pad_v, tooltip_radius)
+                                elem_ass:draw_stop()
                                 elem_ass:new_event()
                                 elem_ass:pos(tx, titleY)
                                 elem_ass:an(2)
@@ -1505,7 +1517,7 @@ local function render_elements(master_ass, osc_vis, wc_vis)
                                 if hover_dur then hover_sec = hover_dur * sliderpos / 100 end
                                 local thumbPad = user_opts.thumbnail_border
                                 local thumbMarginX = 18 / r_w
-                                local thumbMarginY = user_opts.time_font_size + thumbPad + 2 / r_h
+                                local thumbMarginY = user_opts.tooltip_font_size + thumbPad + 5 + 2 / r_h
 
                                 local thumbX = math.min(osd_w - thumbfast.width - thumbMarginX, math.max(thumbMarginX, tx / r_w - thumbfast.width / 2))
                                 local thumbY = (ty - thumbMarginY) / r_h - thumbfast.height
@@ -1536,14 +1548,35 @@ local function render_elements(master_ass, osc_vis, wc_vis)
 
                                 an = 2
                                 if chapter_text then
+                                    local chapterY = thumbY * r_h - thumbPad * r_h - pad_v - 5
                                     elem_ass:new_event()
-                                    elem_ass:pos(tx, thumbY * r_h - user_opts.time_font_size / 2)
+                                    elem_ass:append("{\\rDefault\\alpha&H80&}")
+                                    elem_ass:pos(tx - chapter_width / 2 - pad_h, chapterY - tooltip_fs - pad_v)
+                                    elem_ass:an(7)
+                                    elem_ass:append(osc_styles.tooltip_seek)
+                                    elem_ass:draw_start()
+                                    elem_ass:round_rect_cw(0, 0, chapter_width + 2 * pad_h, tooltip_fs + 2 * pad_v, tooltip_radius)
+                                    elem_ass:draw_stop()
+                                    elem_ass:new_event()
+                                    elem_ass:pos(tx, chapterY)
                                     elem_ass:an(an)
                                     elem_ass:append(slider_lo.tooltip_style)
                                     ass_append_alpha(elem_ass, slider_lo.alpha, 0)
                                     elem_ass:append(chapter_text)
                                 end
                             end
+                        end
+
+                        -- tooltip label background box
+                        if element.name == "seekbar" then
+                            elem_ass:new_event()
+                            elem_ass:append("{\\rDefault\\alpha&H80&}")
+                            elem_ass:pos(tx - tooltip_width / 2 - pad_h, ty - tooltip_fs - pad_v)
+                            elem_ass:an(7)
+                            elem_ass:append(osc_styles.tooltip_seek)
+                            elem_ass:draw_start()
+                            elem_ass:round_rect_cw(0, 0, tooltip_width + 2 * pad_h, tooltip_fs + 2 * pad_v, tooltip_radius)
+                            elem_ass:draw_stop()
                         end
 
                         -- tooltip label
