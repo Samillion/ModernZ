@@ -1459,6 +1459,9 @@ local function render_elements(master_ass, osc_vis, wc_vis)
                         local r_w, r_h = get_virt_scale_factor()
 
                         local tooltip_width = estimate_text_width(tooltiplabel, slider_lo.tooltip_style)
+                        local tooltip_fs = user_opts.tooltip_font_size
+                        local pad_h, pad_v = 2, 3 -- horizontal and vertical padding for seekbar tooltip box
+                        local tooltip_radius = (tooltip_fs + 2 * pad_v) / 2 -- seekbar tooltips; pill shape radius
 
                         local chapter_text = nil
                         local chapter_width = 0
@@ -1493,16 +1496,14 @@ local function render_elements(master_ass, osc_vis, wc_vis)
 
                         if thumbfast.disabled then
                             if chapter_text and osd_w and r_w > 0 then
-                                local pad_h, pad_v = 2, 3
-                                local fs = user_opts.tooltip_font_size
-                                local titleY = ty - fs - 2 * pad_v - 5
+                                local titleY = ty - tooltip_fs - 2 * pad_v - 5
                                 elem_ass:new_event()
                                 elem_ass:append("{\\rDefault\\alpha&H80}")
-                                elem_ass:pos(tx - chapter_width / 2 - pad_h, titleY - fs - pad_v)
+                                elem_ass:pos(tx - chapter_width / 2 - pad_h, titleY - tooltip_fs - pad_v)
                                 elem_ass:an(7)
                                 elem_ass:append(osc_styles.tooltip_seek)
                                 elem_ass:draw_start()
-                                elem_ass:round_rect_cw(0, 0, chapter_width + 2 * pad_h, fs + 2 * pad_v, 8)
+                                elem_ass:round_rect_cw(0, 0, chapter_width + 2 * pad_h, tooltip_fs + 2 * pad_v, tooltip_radius)
                                 elem_ass:draw_stop()
                                 elem_ass:new_event()
                                 elem_ass:pos(tx, titleY)
@@ -1550,16 +1551,14 @@ local function render_elements(master_ass, osc_vis, wc_vis)
 
                                 an = 2
                                 if chapter_text then
-                                    local pad_h, pad_v = 2, 3
-                                    local fs = user_opts.tooltip_font_size
                                     local chapterY = thumbY * r_h - thumbPad * r_h - pad_v - 5
                                     elem_ass:new_event()
                                     elem_ass:append("{\\rDefault\\alpha&H80}")
-                                    elem_ass:pos(tx - chapter_width / 2 - pad_h, chapterY - fs - pad_v)
+                                    elem_ass:pos(tx - chapter_width / 2 - pad_h, chapterY - tooltip_fs - pad_v)
                                     elem_ass:an(7)
                                     elem_ass:append(osc_styles.tooltip_seek)
                                     elem_ass:draw_start()
-                                    elem_ass:round_rect_cw(0, 0, chapter_width + 2 * pad_h, fs + 2 * pad_v, 8)
+                                    elem_ass:round_rect_cw(0, 0, chapter_width + 2 * pad_h, tooltip_fs + 2 * pad_v, tooltip_radius)
                                     elem_ass:draw_stop()
                                     elem_ass:new_event()
                                     elem_ass:pos(tx, chapterY)
@@ -1573,15 +1572,13 @@ local function render_elements(master_ass, osc_vis, wc_vis)
 
                         -- tooltip label background box
                         if element.name == "seekbar" then
-                            local pad_h, pad_v = 2, 3
-                            local fs = user_opts.tooltip_font_size
                             elem_ass:new_event()
                             elem_ass:append("{\\rDefault\\alpha&H80}")
-                            elem_ass:pos(tx - tooltip_width / 2 - pad_h, ty - fs - pad_v)
+                            elem_ass:pos(tx - tooltip_width / 2 - pad_h, ty - tooltip_fs - pad_v)
                             elem_ass:an(7)
                             elem_ass:append(osc_styles.tooltip_seek)
                             elem_ass:draw_start()
-                            elem_ass:round_rect_cw(0, 0, tooltip_width + 2 * pad_h, fs + 2 * pad_v, 8)
+                            elem_ass:round_rect_cw(0, 0, tooltip_width + 2 * pad_h, tooltip_fs + 2 * pad_v, tooltip_radius)
                             elem_ass:draw_stop()
                         end
 
