@@ -224,18 +224,16 @@ Useful when adjusting font size or type, this will help you change the affected 
 
 | Option                      | Value | Description                                                            |
 | --------------------------- | ----- | ---------------------------------------------------------------------- |
-| title_height                | 96    | title height position above seekbar                                    |
-| title_with_chapter_height   | 108   | title height position if a chapter title is below it                   |
-| chapter_title_height        | 91    | chapter title height position above seekbar                            |
-| time_codes_height           | 35    | time codes height position                                             |
-| time_codes_centered_height  | 57    | time codes height position with portrait window                        |
+| title_offset                | 24    | title vertical offset relative to seekbar                              |
+| title_with_chapter_offset   | 4     | title vertical offset if a chapter title is below it                   |
+| chapter_title_offset        | 20    | chapter title vertical offset relative to seekbar                      |
+| time_codes_offset           | 0     | time codes vertical offset relative to seekbar                         |
+| time_codes_centered_offset  | 13    | time codes vertical offset with portrait window                        |
 | tooltip_height_offset       | 2     | tooltip height position offset                                         |
 | portrait_window_trigger     | 1000  | portrait window width trigger to move some elements                    |
 | hide_volume_bar_trigger     | 1150  | hide volume bar trigger window width                                   |
-| notitle_osc_h_offset        | 25    | osc height offset if title above seekbar is disabled                   |
-| nochapter_osc_h_offset      | 10    | osc height offset if chapter title is disabled or doesn't exist        |
 | seek_hover_tooltip_h_offset | 5     | seek hover timecodes tooltip height position offset                    |
-| osc_height                  | 132   | osc height without offsets                                             |
+| osc_height                  | 70    | osc height                                                             |
 
 ### Mouse Commands (User Options)
 

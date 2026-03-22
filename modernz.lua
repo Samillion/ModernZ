@@ -203,18 +203,16 @@ local user_opts = {
 
     -- Elements Position
     -- Useful when adjusting font size or type
-    title_height = 96,                     -- title height position above seekbar
-    title_with_chapter_height = 108,       -- title height position if a chapter title is below it
-    chapter_title_height = 91,             -- chapter title height position above seekbar
-    time_codes_height = 35,                -- time codes height position
-    time_codes_centered_height = 57,       -- time codes height position with portrait window
+    title_offset = 24,                     -- title vertical offset relative to seekbar
+    title_with_chapter_offset = 4,       -- title vertical offset if a chapter title is below it
+    chapter_title_offset = 20,             -- chapter title vertical offset relative to seekbar
+    time_codes_offset = 0,                -- time codes vertical offset relative to seekbar
+    time_codes_centered_offset = 13,       -- time codes vertical offset with portrait window
     tooltip_height_offset = 2,             -- tooltip height position offset
     portrait_window_trigger = 1000,        -- portrait window width trigger to move some elements
     hide_volume_bar_trigger = 1150,        -- hide volume bar trigger window width
-    notitle_osc_h_offset = 25,             -- osc height offset if title above seekbar is disabled
-    nochapter_osc_h_offset = 10,           -- osc height offset if chapter title is disabled or doesn't exist
     seek_hover_tooltip_h_offset = 5,       -- seek hover timecodes tooltip height position offset
-    osc_height = 132,                      -- osc height without offsets
+    osc_height = 70,                      -- osc height
 
     -- Mouse commands
     -- customize the button function based on mouse action
@@ -1993,9 +1991,9 @@ layouts["modern"] = function ()
     local chapter_index = user_opts.show_chapter_title and mp.get_property_number("chapter", -1) >= 0
 
     local chapter_h = (no_chapter or not chapter_index) and 0 or user_opts.chapter_title_font_size
-    local chapter_offset = (no_chapter or not chapter_index) and 0 or 20
+    local chapter_offset = (no_chapter or not chapter_index) and 0 or user_opts.chapter_title_offset
     local title_h = no_title and 0 or user_opts.title_font_size
-    local title_offset = no_title and 0 or 24
+    local title_offset = no_title and 0 or user_opts.title_offset
 
     local osc_geo = {
         w = osc_param.playresx,
@@ -2076,7 +2074,7 @@ layouts["modern"] = function ()
     local outeroffset = (chapter_skip_buttons and 0 or 100) + (jump_buttons and 0 or 100)
 
 	local chapter_title_y = user_opts.osc_height + chapter_offset
-	local title_y = (no_chapter or not chapter_index) and (user_opts.osc_height + title_offset) or (chapter_title_y + chapter_h + 4)
+	local title_y = (no_chapter or not chapter_index) and (user_opts.osc_height + title_offset) or (chapter_title_y + chapter_h + user_opts.title_with_chapter_offset)
 
     -- OSC title
     geo = {x = 25, y = refY - title_y, an = 1, w = osc_geo.w - 50 - (loop_button and 45 or 0) - (speed_button and 45 or 0), h = user_opts.title_font_size}
@@ -2190,7 +2188,7 @@ layouts["modern"] = function ()
         - (audio_track and 0 or 100)
     )
     lo = add_layout("time_codes")
-    lo.geometry = {x = (narrow_win and refX or time_codes_x), y = refY - (narrow_win and (user_opts.osc_height - 13) or (user_opts.osc_height / 2)), an = (narrow_win and 5 or 4), w = time_codes_width, h = user_opts.time_font_size}
+    lo.geometry = {x = (narrow_win and refX or time_codes_x), y = refY - (narrow_win and (user_opts.osc_height - user_opts.time_codes_centered_offset) or user_opts.time_codes_offset + (user_opts.osc_height / 2)), an = (narrow_win and 5 or 4), w = time_codes_width, h = user_opts.time_font_size}
     lo.style = osc_styles.time
 
     -- Fullscreen/Info/Pin/Screenshot/Loop/Speed
@@ -2234,9 +2232,9 @@ layouts["modern-compact"] = function ()
         not user_opts.show_chapter_title
 
     local chapter_h = (no_chapter or not chapter_index) and 0 or user_opts.chapter_title_font_size
-    local chapter_offset = (no_chapter or not chapter_index) and 0 or 20
+    local chapter_offset = (no_chapter or not chapter_index) and 0 or user_opts.chapter_title_offset
     local title_h = no_title and 0 or user_opts.title_font_size
-    local title_offset = no_title and 0 or 24
+    local title_offset = no_title and 0 or user_opts.title_offset
 
     local osc_geo = {
         w = osc_param.playresx,
@@ -2302,7 +2300,7 @@ layouts["modern-compact"] = function ()
     local time_codes_width = get_time_codes_width()
 
 	local chapter_title_y = user_opts.osc_height + chapter_offset
-	local title_y = (no_chapter or not chapter_index) and (user_opts.osc_height + title_offset) or (chapter_title_y + chapter_h + 4)
+	local title_y = (no_chapter or not chapter_index) and (user_opts.osc_height + title_offset) or (chapter_title_y + chapter_h + user_opts.title_with_chapter_offset)
 
     -- OSC title
     local title_w = (chapter_index and (osc_geo.w - 50) or (osc_geo.w - 50 - time_codes_width))
@@ -2322,7 +2320,7 @@ layouts["modern-compact"] = function ()
     end
     -- Time codes
     lo = add_layout("time_codes")
-    lo.geometry = {x = osc_geo.w - 25, y = refY - (user_opts.osc_height + 26), an = 6, w = time_codes_width, h = user_opts.time_font_size}
+    lo.geometry = {x = osc_geo.w - 25, y = refY - (user_opts.osc_height + user_opts.time_codes_offset + 26), an = 6, w = time_codes_width, h = user_opts.time_font_size}
     lo.style = osc_styles.time
 
     -- Left side buttons
