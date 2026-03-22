@@ -1498,7 +1498,7 @@ local function render_elements(master_ass, osc_vis, wc_vis)
                             if chapter_text and osd_w and r_w > 0 then
                                 local titleY = ty - tooltip_fs - 2 * pad_v - 5
                                 elem_ass:new_event()
-                                elem_ass:append("{\\rDefault\\alpha&H80}")
+                                elem_ass:append("{\\rDefault\\alpha&H80&}")
                                 elem_ass:pos(tx - chapter_width / 2 - pad_h, titleY - tooltip_fs - pad_v)
                                 elem_ass:an(7)
                                 elem_ass:append(osc_styles.tooltip_seek)
@@ -1553,7 +1553,7 @@ local function render_elements(master_ass, osc_vis, wc_vis)
                                 if chapter_text then
                                     local chapterY = thumbY * r_h - thumbPad * r_h - pad_v - 5
                                     elem_ass:new_event()
-                                    elem_ass:append("{\\rDefault\\alpha&H80}")
+                                    elem_ass:append("{\\rDefault\\alpha&H80&}")
                                     elem_ass:pos(tx - chapter_width / 2 - pad_h, chapterY - tooltip_fs - pad_v)
                                     elem_ass:an(7)
                                     elem_ass:append(osc_styles.tooltip_seek)
@@ -1573,7 +1573,7 @@ local function render_elements(master_ass, osc_vis, wc_vis)
                         -- tooltip label background box
                         if element.name == "seekbar" then
                             elem_ass:new_event()
-                            elem_ass:append("{\\rDefault\\alpha&H80}")
+                            elem_ass:append("{\\rDefault\\alpha&H80&}")
                             elem_ass:pos(tx - tooltip_width / 2 - pad_h, ty - tooltip_fs - pad_v)
                             elem_ass:an(7)
                             elem_ass:append(osc_styles.tooltip_seek)
