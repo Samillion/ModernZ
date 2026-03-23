@@ -2001,7 +2001,7 @@ layouts["modern"] = function ()
     }
 
     -- update bottom margin
-    osc_param.video_margins.b = math.max(user_opts.osc_height, user_opts.fade_alpha) / osc_param.playresy
+    osc_param.video_margins.b = math.max(osc_geo.h, user_opts.fade_alpha) / osc_param.playresy
 
     -- origin of the controllers, left/bottom corner
     local posX = 0
