@@ -119,6 +119,9 @@ local user_opts = {
     speed_button_click = 1,                -- speed change amount per click
     speed_button_scroll = 0.25,            -- speed change amount on scroll
 
+    show_clock = true,                     -- show "Ends at" time next to speed indicator
+    clock_font_size = 16,                  -- font size of the "Ends at" display
+
     loop_in_pause = true,                  -- enable loop with mouse actions on pause button
 
     buttons_always_active = "none",        -- force buttons to always be active. can add: playlist_prev, playlist_next
@@ -520,6 +523,7 @@ local function set_osc_styles()
         tooltip = "{\\blur1\\bord0.5\\1c&HFFFFFF&\\3c&H0&\\fs" .. user_opts.tooltip_font_size .. "\\fn" .. user_opts.font .. "}",
         tooltip_seek = "{\\blur0\\bord0\\1c&H" .. osc_color_convert(user_opts.osc_color) .. "&}",
         speed = "{\\blur0\\bord0\\1c&H" .. osc_color_convert(user_opts.side_buttons_color) .. "&\\3c&H0&\\fs" .. user_opts.speed_font_size .. "\\fn" .. user_opts.font .. "}",
+        clock = "{\\blur0\\bord0\\1c&H" .. osc_color_convert(user_opts.side_buttons_color) .. "&\\3c&H0&\\fs" .. user_opts.clock_font_size .. "\\fn" .. user_opts.font .. "}",
         volumebar_bg = "{\\blur0\\bord0\\1c&H999999&}",
         volumebar_fg = "{\\blur1\\bord1\\1c&H" .. osc_color_convert(user_opts.side_buttons_color) .. "&}",
         control_1 = "{\\blur0\\bord0\\1c&H" .. osc_color_convert(user_opts.playpause_color) .. "&\\3c&HFFFFFF&\\fs" .. playpause_size .. "\\fn" .. icons.iconfont .. "}",
@@ -591,6 +595,7 @@ local state = {
     playtime_hour_force_init = false,       -- used to force request_init() once
     playing_and_seeking = false,
     persistent_progress_toggle = user_opts.persistentprogress,
+    clock_show_current = false,
     user_subpos = mp.get_property_number("sub-pos") or 100,
     osc_adjusted_subpos = nil,
     downloaded_once = false,
@@ -2189,6 +2194,7 @@ layouts["modern"] = function ()
     lo.style = osc_styles.time
 
     -- Fullscreen/Info/Pin/Screenshot/Loop/Speed
+    local clock_width = math.max(100, estimate_text_width("Ends at 00:00 PM", osc_styles.clock) + 10)
     local end_x = osc_geo.w - 37
     local function right_side_button(name, min_w, style, w)
         lo = add_layout(name)
@@ -2204,7 +2210,6 @@ layouts["modern"] = function ()
     if screenshot_button then right_side_button("screenshot", 600) end
     if loop_button then right_side_button("file_loop", 600) end
     if shuffle_button then right_side_button("shuffle", 600) end
-    if speed_button then right_side_button("speed", 600, osc_styles.speed, 42) end
     if download_button then right_side_button("download", 400) end
 
     -- cache info
@@ -2212,6 +2217,14 @@ layouts["modern"] = function ()
         right_side_button("cache_info", 600, osc_styles.cache, user_opts.cache_info_speed and 70 or 45)
         lo.geometry.x  = lo.geometry.x + 7
         lo.geometry.an = 6
+    end
+
+    if speed_button then right_side_button("speed", 600, osc_styles.speed, 42) end
+    if speed_button and user_opts.show_clock then
+        lo = add_layout("clock")
+        lo.geometry = {x = end_x + 3, y = refY - 35, an = 6, w = clock_width, h = 24}
+        lo.style = osc_styles.clock
+        lo.visible = (osc_param.playresx >= 600 - outeroffset)
     end
 end
 
@@ -2372,6 +2385,7 @@ layouts["modern-compact"] = function ()
     end
 
     -- Right side buttons
+    local clock_width = math.max(100, estimate_text_width("Ends at 00:00 PM", osc_styles.clock) + 10)
     local end_x = osc_geo.w - 37
     local function compact_right_side_button(name, vis_cond, style, w)
         elements[name].visible = vis_cond
@@ -2389,13 +2403,23 @@ layouts["modern-compact"] = function ()
     compact_right_side_button("audio_track", user_opts.audio_tracks_button and state.audio_track_count > 0 and osc_geo.w >= 750)
     compact_right_side_button("playlist", user_opts.playlist_button and osc_geo.w >= 550)
     compact_right_side_button("download", state.is_URL and user_opts.download_button and osc_geo.w >= 450)
-    compact_right_side_button("speed", user_opts.speed_button and osc_geo.w >= 300, osc_styles.speed, 42)
 
     elements.cache_info.visible = user_opts.cache_info and osc_geo.w >= 500
     if elements.cache_info.visible then
         lo = add_layout("cache_info")
         lo.geometry = {x = end_x + 7, y = refY - 35, an = 6, w = (user_opts.cache_info_speed and 70 or 45), h = 24}
         lo.style = osc_styles.time
+        end_x = end_x - 55
+    end
+
+    compact_right_side_button("speed", user_opts.speed_button and osc_geo.w >= 300, osc_styles.speed, 42)
+    if user_opts.speed_button and user_opts.show_clock and osc_geo.w >= 300 then
+        elements.clock.visible = true
+        lo = add_layout("clock")
+        lo.geometry = {x = refX, y = refY - 35, an = 5, w = clock_width, h = 24}
+        lo.style = osc_styles.clock
+    else
+        elements.clock.visible = false
     end
 end
 
@@ -3015,6 +3039,29 @@ local function osc_init()
     ne.eventresponder["wheel_down_press"] = function() adjust_speed(-user_opts.speed_button_scroll) end
 
     visible_min_width = visible_min_width + (user_opts.speed_button and 100 or 0)
+
+    --clock (ends at time)
+    ne = new_element("clock", "button")
+    ne.content = function()
+        if state.clock_show_current then
+            return os.date("%I:%M %p")
+        end
+
+        local remaining = mp.get_property_number("playtime-remaining", 0)
+        if remaining and remaining > 0 then
+            local end_time = os.time() + remaining
+            return "Ends at " .. os.date("%I:%M %p", end_time)
+        else
+            return os.date("%I:%M %p")
+        end
+    end
+    ne.visible = (osc_param.playresx >= visible_min_width)
+    ne.eventresponder["mbtn_left_up"] = function()
+        state.clock_show_current = not state.clock_show_current
+        request_tick()
+    end
+
+    visible_min_width = visible_min_width + (user_opts.show_clock and 100 or 0)
 
     --download
     ne = new_element("download", "button")
