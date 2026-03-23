@@ -660,8 +660,9 @@ local function set_time_styles(timecurrent_changed, timems_changed)
 end
 
 local function observe_cached(property, callback)
+    local key = property:gsub("-", "_")
     mp.observe_property(property, "native", function (_, value)
-        state[property:gsub("-", "_")] = value
+        state[key] = value
         callback()
     end)
 end
