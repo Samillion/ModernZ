@@ -291,7 +291,7 @@ Below is an example of an auto-profile in `mpv.conf` you can use to set any of M
     profile-desc=Apply ModernZ options on pin or fullscreen
     profile-cond=ontop == true or fullscreen
     profile-restore=copy-equal
-    script-opts-append=modernz-persistentprogress=yes
+    script-opts-append=modernz-persistent_progress=yes
     script-opts-append=modernz-seekbarfg_color=#FF0000
     script-opts-append=modernz-info_button=no
     #...etc
