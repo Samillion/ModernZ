@@ -192,7 +192,7 @@ local user_opts = {
 
     persistent_progress = false,           -- always show a small progress line at the bottom of the screen
     persistent_progress_height = 17,       -- height of the persistent progress bar
-    persistentbuffer = false,              -- show buffer status on web videos in the persistent progress line
+    persistent_buffer = false,             -- show cached buffer status in the persistent progress line
 
     -- Miscellaneous settings
     visibility = "auto",                   -- only used at init to set visibility_mode(...)
@@ -1709,7 +1709,7 @@ local function render_persistent_progress(master_ass)
         -- draw pos marker
         draw_seekbar_progress(element, elem_ass)
 
-        if user_opts.persistentbuffer then
+        if user_opts.persistent_buffer then
             draw_seekbar_ranges(element, elem_ass, nil, nil)
         end
 
@@ -3184,7 +3184,7 @@ local function osc_init()
     end
     ne.slider.tooltipF = function() return "" end
     ne.slider.seekRangesF = function()
-        if user_opts.persistentbuffer then
+        if user_opts.persistent_buffer then
             return build_cache_seek_ranges()
         end
         return nil
