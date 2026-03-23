@@ -189,24 +189,24 @@ So, to control the raise amount of subtitles, adjust your `osc_height` and `fade
 
 ### Progress bar settings
 
-| Option                   | Value    | Description                                                             |
-| ------------------------ | -------- | ----------------------------------------------------------------------- |
-| seek_handle_size         | 0.8      | size ratio of the seekbar handle (range: 0 ~ 1)                         |
-| seekrange                | yes      | show seek range overlay                                                 |
-| seekrangealpha           | 150      | transparency of the seek range                                          |
-| livemarkers              | yes      | update chapter markers on the seekbar when duration changes             |
-| seekbarkeyframes         | no       | use keyframes when dragging the seekbar                                 |
-| slider_rounded_corners   | yes      | rounded corners seekbar slider                                          |
-| nibbles_top              | yes      | top chapter nibbles above seekbar                                       |
-| nibbles_bottom           | yes      | bottom chapter nibbles below seekbar                                    |
-| nibbles_style            | triangle | chapter nibble style. `triangle`, `bar` or `single-bar`                 |
-| nibble_color             | #FB8C00  | color of chapter nibbles on the seekbar                                 |
-| nibble_current_color     | #FFFFFF  | color of the current chapter nibble on the seekbar                      |
-| automatickeyframemode    | yes      | automatically set keyframes for the seekbar based on video length       |
-| automatickeyframelimit   | 600      | videos longer than this (in seconds) will have keyframes on the seekbar |
-| persistentprogress       | no       | always show a small progress line at the bottom of the screen           |
-| persistentprogressheight | 17       | height of the persistent progress bar                                   |
-| persistentbuffer         | no       | show buffer status on web videos in the persistent progress line        |
+| Option                     | Value    | Description                                                             |
+| -------------------------- | -------- | ----------------------------------------------------------------------- |
+| seek_handle_size           | 0.8      | size ratio of the seekbar handle (range: 0 ~ 1)                         |
+| seekrange                  | yes      | show seek range overlay                                                 |
+| seekrangealpha             | 150      | transparency of the seek range                                          |
+| livemarkers                | yes      | update chapter markers on the seekbar when duration changes             |
+| seekbarkeyframes           | no       | use keyframes when dragging the seekbar                                 |
+| slider_rounded_corners     | yes      | rounded corners seekbar slider                                          |
+| nibbles_top                | yes      | top chapter nibbles above seekbar                                       |
+| nibbles_bottom             | yes      | bottom chapter nibbles below seekbar                                    |
+| nibbles_style              | triangle | chapter nibble style. `triangle`, `bar` or `single-bar`                 |
+| nibble_color               | #FB8C00  | color of chapter nibbles on the seekbar                                 |
+| nibble_current_color       | #FFFFFF  | color of the current chapter nibble on the seekbar                      |
+| automatickeyframemode      | yes      | automatically set keyframes for the seekbar based on video length       |
+| automatickeyframelimit     | 600      | videos longer than this (in seconds) will have keyframes on the seekbar |
+| persistent_progress        | no       | always show a small progress line at the bottom of the screen           |
+| persistent_progress_height | 17       | height of the persistent progress bar                                   |
+| persistent_buffer          | no       | show cached buffer status in the persistent progress line               |
 
 ### Miscellaneous settings
 
@@ -291,7 +291,7 @@ Below is an example of an auto-profile in `mpv.conf` you can use to set any of M
     profile-desc=Apply ModernZ options on pin or fullscreen
     profile-cond=ontop == true or fullscreen
     profile-restore=copy-equal
-    script-opts-append=modernz-persistentprogress=yes
+    script-opts-append=modernz-persistent_progress=yes
     script-opts-append=modernz-seekbarfg_color=#FF0000
     script-opts-append=modernz-info_button=no
     #...etc
