@@ -206,7 +206,7 @@ So, to control the raise amount of subtitles, adjust your `osc_height` and `fade
 | automatickeyframelimit     | 600      | videos longer than this (in seconds) will have keyframes on the seekbar |
 | persistent_progress        | no       | always show a small progress line at the bottom of the screen           |
 | persistent_progress_height | 17       | height of the persistent progress bar                                   |
-| persistentbuffer           | no       | show buffer status on web videos in the persistent progress line        |
+| persistent_buffer          | no       | show cached buffer status in the persistent progress line               |
 
 ### Miscellaneous settings
 
