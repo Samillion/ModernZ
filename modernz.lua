@@ -3236,17 +3236,11 @@ local function osc_init()
         window_controls()
     end
 
+    -- cache persistent seekbar element
+    state.persistent_seekbar_element = elements["persistent_seekbar"]
+
     --do something with the elements
     prepare_elements()
-
-    -- cache persistent seekbar element
-    state.persistent_seekbar_element = nil
-    for _, elem in ipairs(elements) do
-        if elem.name == "persistent_seekbar" then
-            state.persistent_seekbar_element = elem
-            break
-        end
-    end
 
     update_margins()
 end
