@@ -1993,11 +1993,18 @@ layouts["modern"] = function ()
     local chapter_h = (no_chapter or not chapter_index) and 0 or user_opts.chapter_title_font_size
     local chapter_offset = (no_chapter or not chapter_index) and 0 or user_opts.chapter_title_offset
     local title_h = no_title and 0 or user_opts.title_font_size
-    local title_offset = no_title and 0 or user_opts.title_offset
+    local title_offset = (no_chapter or not chapter_index) and user_opts.title_offset or user_opts.title_with_chapter_offset
+    title_offset = no_title and 0 or title_offset
+    local title_and_chapter_h_with_offset = chapter_h + chapter_offset + title_h + title_offset
+
+    if title_and_chapter_h_with_offset == 0 then
+        -- add some top padding if both title and chapter aren't displayed
+        title_and_chapter_h_with_offset = user_opts.osc_height * 0.2
+     end
 
     local osc_geo = {
         w = osc_param.playresx,
-        h = user_opts.osc_height + chapter_h + chapter_offset + title_h + title_offset
+        h = user_opts.osc_height + title_and_chapter_h_with_offset
     }
 
     -- update bottom margin
