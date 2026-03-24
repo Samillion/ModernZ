@@ -165,9 +165,10 @@ local user_opts = {
 
     -- Button hover effects
     hover_effect = "size,glow,color",      -- active button hover effects: "glow", "size", "color"; can use multiple separated by commas
-    hover_button_size = 115,               -- relative size of a hovered button if "size" effect is active
+    button_hover_size = 115,               -- relative size of a hovered button if "size" effect is active
     button_glow_amount = 5,                -- glow intensity when "glow" hover effect is active
-    hover_effect_for_sliders = true,       -- apply size hover effect to slider handles
+    slider_hover_effect = true,            -- apply size effect only when hovering slider handles
+    slider_hover_size = 130,               -- relative size of a hovered slider handle if "slider_hover_effect" is used
 
     -- Tooltips and hints
     tooltips_for_disabled_elements = true, -- enable tooltips for disabled buttons and elements
@@ -526,7 +527,7 @@ local function set_osc_styles()
         control_2 = "{\\blur0\\bord0\\1c&H" .. osc_color_convert(user_opts.middle_buttons_color) .. "&\\3c&HFFFFFF&\\fs" .. midbuttons_size .. "\\fn" .. icons.iconfont .. "}",
         control_3 = "{\\blur0\\bord0\\1c&H" .. osc_color_convert(user_opts.side_buttons_color) .. "&\\3c&HFFFFFF&\\fs" .. sidebuttons_size .. "\\fn" .. icons.iconfont .. "}",
         element_down = "{\\1c&H" .. osc_color_convert(user_opts.held_element_color) .. "&}",
-        element_hover = "{" .. (contains(user_opts.hover_effect, "color") and "\\1c&H" .. osc_color_convert(user_opts.hover_effect_color) .. "&" or "") .."\\2c&HFFFFFF&" .. (contains(user_opts.hover_effect, "size") and string.format("\\fscx%s\\fscy%s", user_opts.hover_button_size, user_opts.hover_button_size) or "") .. "}",
+        element_hover = "{" .. (contains(user_opts.hover_effect, "color") and "\\1c&H" .. osc_color_convert(user_opts.hover_effect_color) .. "&" or "") .."\\2c&HFFFFFF&" .. (contains(user_opts.hover_effect, "size") and string.format("\\fscx%s\\fscy%s", user_opts.button_hover_size, user_opts.button_hover_size) or "") .. "}",
     }
     -- cache hover_effect flags
     hover_effect_size  = contains(user_opts.hover_effect, "size")
@@ -1205,15 +1206,13 @@ local function draw_seekbar_handle(element, elem_ass, override_alpha)
 
     if display_handle then
         -- Apply size hover_effect only if hovering over the handle
-        if handle_hovered and user_opts.hover_effect_for_sliders then
-            if hover_effect_size then
-                rh = rh * (user_opts.hover_button_size / 100)
-            end
+        if handle_hovered and user_opts.slider_hover_effect then
+                rh = rh * (user_opts.slider_hover_size / 100)
         end
 
         ass_draw_cir_cw(elem_ass, xp, elem_geo.h / 2, rh)
 
-        if user_opts.hover_effect_for_sliders then
+        if user_opts.slider_hover_effect then
             elem_ass:draw_stop()
             elem_ass:merge(element.style_ass)
             ass_append_alpha(elem_ass, element.layout.alpha, override_alpha or 0)
@@ -1919,7 +1918,7 @@ local function window_controls()
     -- Window controls
     if user_opts.window_controls then
         local size_hover = hover_effect_size and
-            string.format("\\fscx%s\\fscy%s", user_opts.hover_button_size, user_opts.hover_button_size) or ""
+            string.format("\\fscx%s\\fscy%s", user_opts.button_hover_size, user_opts.button_hover_size) or ""
         local function wc_hoverstyle(color)
             return "{\\c&H" .. osc_color_convert(color) .. "&" .. size_hover .. "}"
         end
