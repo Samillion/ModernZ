@@ -1624,7 +1624,7 @@ local function render_elements(master_ass, osc_vis, wc_vis)
             local hoverstyle = button_lo.hoverstyle
             if hovered and (hover_effect_size or hover_effect_color) then
                 -- remove font scale tags for these elements, it looks out of place
-                if element.name == "title" or element.name == "time_codes" or element.name == "chapter_title" or element.name == "cache_info" then
+                if element.name == "title" or element.name == "time_codes" or element.name == "chapter_title" or element.name == "cache_info" or element.name == "speed" then
                     hoverstyle = hoverstyle:gsub("\\fscx%d+\\fscy%d+", "")
                 end
                 elem_ass:append(hoverstyle .. buttontext)
