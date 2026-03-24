@@ -1257,8 +1257,8 @@ local function draw_seekbar_ranges(element, elem_ass, xp, rh, override_alpha)
         local pend = math.min(elem_geo.w, get_slider_ele_pos_for(element, range["end"]) + slider_lo.gap)
 
         -- round edge only when cache range reaches start/end
-        local r_left  = pstart < element.slider.min.ele_pos and radius or 0
-        local r_right = pend   > element.slider.max.ele_pos and radius or 0
+        local r_left = pstart < element.slider.min.ele_pos and radius or 0
+        local r_right = pend > element.slider.max.ele_pos and radius or 0
 
         if handle and (pstart < xp + rh and pend > xp - rh) then
             -- range overlaps the handle, split it around the handle
