@@ -1191,6 +1191,15 @@ local function get_chapter(possec)
     end
 end
 
+-- draws a bar segment with explicit per-side radius
+local function draw_bar_segment(ass, x0, y0, x1, y1, r_left, r_right)
+    if r_left == 0 and r_right == 0 then
+        ass:rect_cw(x0, y0, x1, y1)
+    else
+        ass:round_rect_cw(x0, y0, x1, y1, r_left, r_right)
+    end
+end
+
 -- Draws a handle on the seekbar according to user_opts
 -- Returns handle position and radius
 local function draw_seekbar_handle(element, elem_ass, override_alpha)
@@ -1248,21 +1257,19 @@ local function draw_seekbar_ranges(element, elem_ass, xp, rh, override_alpha)
         local pend = math.min(elem_geo.w, get_slider_ele_pos_for(element, range["end"]) + slider_lo.gap)
 
         if handle and (pstart < xp + rh and pend > xp - rh) then
+            -- range overlaps the handle, split it around the handle
             if pstart < xp - rh then
-                if radius > 0 then
-                    elem_ass:round_rect_cw(pstart, slider_lo.gap, xp - rh, elem_geo.h - slider_lo.gap, radius)
-                else
-                    elem_ass:rect_cw(pstart, slider_lo.gap, xp - rh, elem_geo.h - slider_lo.gap)
-                end
+                -- left sub-segment: left edge (round), cut right edge (flat)
+                draw_bar_segment(elem_ass, pstart, slider_lo.gap, xp - rh, elem_geo.h - slider_lo.gap, radius, 0)
             end
-            pstart = xp + rh
-        end
-
-        if pend > pstart then
-            if radius > 0 then
-                elem_ass:round_rect_cw(pstart, slider_lo.gap, pend, elem_geo.h - slider_lo.gap, radius)
-            else
-                elem_ass:rect_cw(pstart, slider_lo.gap, pend, elem_geo.h - slider_lo.gap)
+            if xp + rh < pend then
+                -- right sub-segment: cut left edge (flat), right edge (round)
+                draw_bar_segment(elem_ass, xp + rh, slider_lo.gap, pend, elem_geo.h - slider_lo.gap, 0, radius)
+            end
+        else
+            -- range does not intersect the handle; round both edges
+            if pend > pstart then
+                draw_bar_segment(elem_ass, pstart, slider_lo.gap, pend, elem_geo.h - slider_lo.gap, radius, radius)
             end
         end
     end
