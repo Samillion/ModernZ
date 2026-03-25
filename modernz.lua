@@ -1247,22 +1247,23 @@ local function draw_seekbar_ranges(element, elem_ass, xp, rh, override_alpha)
         local pstart = math.max(0, get_slider_ele_pos_for(element, range["start"]) - slider_lo.gap)
         local pend = math.min(elem_geo.w, get_slider_ele_pos_for(element, range["end"]) + slider_lo.gap)
 
-        if handle and (pstart < xp + rh and pend > xp - rh) then
-            if pstart < xp - rh then
-                if radius > 0 then
-                    elem_ass:round_rect_cw(pstart, slider_lo.gap, xp - rh, elem_geo.h - slider_lo.gap, radius)
-                else
-                    elem_ass:rect_cw(pstart, slider_lo.gap, xp - rh, elem_geo.h - slider_lo.gap)
-                end
-            end
-            pstart = xp + rh
-        end
+        -- round edge only when cache range reaches start/end
+        local r_left = pstart < element.slider.min.ele_pos and radius or 0
+        local r_right = pend > element.slider.max.ele_pos and radius or 0
 
-        if pend > pstart then
-            if radius > 0 then
-                elem_ass:round_rect_cw(pstart, slider_lo.gap, pend, elem_geo.h - slider_lo.gap, radius)
-            else
-                elem_ass:rect_cw(pstart, slider_lo.gap, pend, elem_geo.h - slider_lo.gap)
+        if handle and (pstart < xp + rh and pend > xp - rh) then
+            -- range overlaps the handle, split it around the handle
+            if pstart < xp - rh then
+                -- left sub-segment: edge rounding on left, flat on handle cut
+                elem_ass:round_rect_cw(pstart, slider_lo.gap, xp - rh, elem_geo.h - slider_lo.gap, r_left, 0)
+            end
+            if xp + rh < pend then
+                -- right sub-segment: flat on handle cut, edge rounding on right
+                elem_ass:round_rect_cw(xp + rh, slider_lo.gap, pend, elem_geo.h - slider_lo.gap, 0, r_right)
+            end
+        else
+            if pend > pstart then
+                elem_ass:round_rect_cw(pstart, slider_lo.gap, pend, elem_geo.h - slider_lo.gap, r_left, r_right)
             end
         end
     end
