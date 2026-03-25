@@ -1191,15 +1191,6 @@ local function get_chapter(possec)
     end
 end
 
--- draws a bar segment with explicit per-side radius
-local function draw_bar_segment(ass, x0, y0, x1, y1, r_left, r_right)
-    if r_left == 0 and r_right == 0 then
-        ass:rect_cw(x0, y0, x1, y1)
-    else
-        ass:round_rect_cw(x0, y0, x1, y1, r_left, r_right)
-    end
-end
-
 -- Draws a handle on the seekbar according to user_opts
 -- Returns handle position and radius
 local function draw_seekbar_handle(element, elem_ass, override_alpha)
@@ -1264,15 +1255,15 @@ local function draw_seekbar_ranges(element, elem_ass, xp, rh, override_alpha)
             -- range overlaps the handle, split it around the handle
             if pstart < xp - rh then
                 -- left sub-segment: edge rounding on left, flat on handle cut
-                draw_bar_segment(elem_ass, pstart, slider_lo.gap, xp - rh, elem_geo.h - slider_lo.gap, r_left, 0)
+                elem_ass:round_rect_cw(pstart, slider_lo.gap, xp - rh, elem_geo.h - slider_lo.gap, r_left, 0)
             end
             if xp + rh < pend then
                 -- right sub-segment: flat on handle cut, edge rounding on right
-                draw_bar_segment(elem_ass, xp + rh, slider_lo.gap, pend, elem_geo.h - slider_lo.gap, 0, r_right)
+                elem_ass:round_rect_cw(xp + rh, slider_lo.gap, pend, elem_geo.h - slider_lo.gap, 0, r_right)
             end
         else
             if pend > pstart then
-                draw_bar_segment(elem_ass, pstart, slider_lo.gap, pend, elem_geo.h - slider_lo.gap, r_left, r_right)
+                elem_ass:round_rect_cw(pstart, slider_lo.gap, pend, elem_geo.h - slider_lo.gap, r_left, r_right)
             end
         end
     end
