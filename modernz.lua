@@ -231,10 +231,10 @@ local user_opts = {
     -- volume mouse actions
     vol_ctrl_mbtn_left_command = "no-osd cycle mute",
     vol_ctrl_mbtn_right_command = "script-binding select/select-audio-device",
-    vol_ctrl_wheel_down_command = "osd-msg add volume -5",
-    vol_ctrl_wheel_up_command = "osd-msg add volume 5",
-    volumebar_wheel_down_command = "osd-msg add volume -5",
-    volumebar_wheel_up_command = "osd-msg add volume 5",
+    vol_ctrl_wheel_down_command = "no-osd set mute no; no-osd add volume -5",
+    vol_ctrl_wheel_up_command = "no-osd set mute no; no-osd add volume 5",
+    volumebar_wheel_down_command = "no-osd set mute no; osd-msg add volume -5",
+    volumebar_wheel_up_command = "no-osd set mute no; osd-msg add volume 5",
 
     -- audio button mouse actions
     audio_track_mbtn_left_command = "script-binding select/select-aid",
@@ -2888,6 +2888,7 @@ local function osc_init()
     end
     ne.eventresponder["mbtn_left_down"] = function (element)
         local pos = get_slider_value(element)
+        mp.set_property_bool("mute", false)
         mp.commandv("set", "volume", set_volume(pos))
     end
     ne.eventresponder["reset"] = function (element) element.state.lastseek = nil end
