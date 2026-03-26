@@ -151,8 +151,8 @@ local user_opts = {
     playpause_color = "#FFFFFF",           -- color of the play/pause button
     held_element_color = "#999999",        -- color of the element when held down (pressed)
     hover_effect_color = "#FB8C00",        -- color of a hovered button when hover_effect includes "color"
-    thumbnail_border_color = "#111111",    -- color of the border for thumbnails (with thumbfast)
-    thumbnail_border_outline = "#404040",  -- color of the border outline for thumbnails
+    thumbnail_box_color = "#111111",       -- color of the background for thumbnail box
+    thumbnail_box_outline = "#404040",     -- color of the border outline for thumbnail box
 
     fade_alpha = 130,                      -- alpha of the OSC background (0 to disable)
     fade_blur_strength = 100,              -- blur strength for the OSC alpha fade. caution: high values can take a lot of CPU time to render
@@ -160,8 +160,8 @@ local user_opts = {
     window_fade_alpha = 100,               -- alpha of the window title bar (0 to disable)
     window_fade_blur_strength = 100,       -- blur strength for the window title bar. caution: high values can take a lot of CPU time to render
     window_fade_transparency_strength = 0, -- use with "window_fade_blur_strength=0" to create a transparency box
-    thumbnail_border = 3,                  -- width of the thumbnail border (for thumbfast)
-    thumbnail_border_radius = 3,           -- rounded corner radius for thumbnail border (0 to disable)
+    thumbnail_box_padding = 4.5,           -- thumbnail box padding around the image
+    thumbnail_box_radius = 4,              -- round corner radius for thumbnail box border (0 to disable)
 
     -- Button hover effects
     hover_effect = "size,glow,color",      -- active button hover effects: "glow", "size", "color"; can use multiple separated by commas
@@ -515,7 +515,7 @@ local function set_osc_styles()
         chapter_title = "{\\blur0\\bord0\\1c&H" .. osc_color_convert(user_opts.chapter_title_color) .. "&\\3c&H0&\\fs" .. user_opts.chapter_title_font_size .. "\\fn" .. user_opts.font .. "}",
         seekbar_bg = "{\\blur0\\bord0\\1c&H" .. osc_color_convert(user_opts.seekbarbg_color) .. "&}",
         seekbar_fg = "{\\blur1\\bord1\\1c&H" .. osc_color_convert(user_opts.seekbarfg_color) .. "&}",
-        thumbnail = "{\\blur0\\bord1\\1c&H" .. osc_color_convert(user_opts.thumbnail_border_color) .. "&\\3c&H" .. osc_color_convert(user_opts.thumbnail_border_outline) .. "&}",
+        thumbnail = "{\\blur0\\bord1\\1c&H" .. osc_color_convert(user_opts.thumbnail_box_color) .. "&\\3c&H" .. osc_color_convert(user_opts.thumbnail_box_outline) .. "&}",
         time = "{\\blur0\\bord0\\1c&H" .. osc_color_convert(user_opts.time_color) .. "&\\3c&H0&\\fs" .. user_opts.time_font_size .. "\\fn" .. user_opts.font .. "}",
         cache = "{\\blur0\\bord0\\1c&H" .. osc_color_convert(user_opts.cache_info_color) .. "&\\3c&H0&\\fs" .. user_opts.cache_info_font_size .. "\\fn" .. user_opts.font .. "}",
         tooltip = "{\\blur1\\bord0.5\\1c&HFFFFFF&\\3c&H0&\\fs" .. user_opts.tooltip_font_size .. "\\fn" .. user_opts.font .. "}",
@@ -1463,7 +1463,7 @@ local function render_elements(master_ass, osc_vis, wc_vis)
                         local tooltip_fs = user_opts.tooltip_font_size
                         local pad_h, pad_v = 2, 3 -- horizontal and vertical padding for seekbar tooltip box
                         local tooltip_radius = (tooltip_fs + 2 * pad_v) / 2 -- seekbar tooltips; pill shape radius
-                        local thumbnail_radius = user_opts.thumbnail_border_radius > 0 and user_opts.thumbnail_border_radius or 0
+                        local thumbnail_radius = user_opts.thumbnail_box_radius > 0 and user_opts.thumbnail_box_radius or 0
 
                         local chapter_text = nil
                         local chapter_width = 0
@@ -1520,7 +1520,7 @@ local function render_elements(master_ass, osc_vis, wc_vis)
                                 local hover_sec = 0
                                 local hover_dur = mp.get_property_number("duration")
                                 if hover_dur then hover_sec = hover_dur * sliderpos / 100 end
-                                local thumbPad = user_opts.thumbnail_border
+                                local thumbPad = user_opts.thumbnail_box_padding
                                 local thumbMarginX = 18 / r_w
                                 local thumbMarginY = user_opts.tooltip_font_size + thumbPad + 5 + 2 / r_h
 
@@ -3995,10 +3995,10 @@ local function validate_user_opts()
         user_opts.osc_color, user_opts.seekbarfg_color, user_opts.seekbarbg_color,
         user_opts.title_color, user_opts.time_color, user_opts.side_buttons_color,
         user_opts.middle_buttons_color, user_opts.playpause_color, user_opts.window_title_color,
-        user_opts.window_controls_color, user_opts.held_element_color, user_opts.thumbnail_border_color,
+        user_opts.window_controls_color, user_opts.held_element_color, user_opts.thumbnail_box_color,
         user_opts.chapter_title_color, user_opts.seekbar_cache_color, user_opts.hover_effect_color,
         user_opts.windowcontrols_close_hover, user_opts.windowcontrols_max_hover, user_opts.windowcontrols_min_hover,
-        user_opts.cache_info_color, user_opts.thumbnail_border_outline,
+        user_opts.cache_info_color, user_opts.thumbnail_box_outline,
         user_opts.nibble_color, user_opts.nibble_current_color,
     }
 
