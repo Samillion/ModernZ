@@ -154,7 +154,7 @@ local user_opts = {
     thumbnail_box_color = "#111111",       -- color of the background for thumbnail box
     thumbnail_box_outline = "#404040",     -- color of the border outline for thumbnail box
 
-    osc_fade_height = 130,                 -- height of the OSC background (0 to disable)
+    osc_fade_height = 100,                 -- height of the OSC background (0 to disable)
     fade_blur_strength = 100,              -- blur strength for the OSC alpha fade. caution: high values can take a lot of CPU time to render
     fade_transparency_strength = 0,        -- use with "fade_blur_strength=0" to create a transparency box
     window_fade_height = 100,              -- height of the window title bar (0 to disable)
