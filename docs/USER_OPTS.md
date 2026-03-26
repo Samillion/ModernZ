@@ -114,6 +114,7 @@ So, to control the raise amount of subtitles, adjust your `osc_height` and `fade
 | track_nextprev_buttons     | yes           | show next/previous playlist track buttons                                                                          |
 | volume_control             | yes           | show mute button and volume slider                                                                                 |
 | volume_control_type        | linear        | volume scale type: `"linear"` or `"logarithmic"`                                                                   |
+| volumebar_unmute_on_click  | yes           | unmute audio when adjusting volume slider with left click                                                          |
 | playlist_button            | yes           | show playlist button: Left-click for simple playlist, Right-click for interactive playlist                         |
 | hide_empty_playlist_button | no            | hide playlist button when no playlist exists                                                                       |
 | gray_empty_playlist_button | no            | gray out the playlist button when no playlist exists                                                               |

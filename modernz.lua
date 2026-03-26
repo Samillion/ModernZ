@@ -101,6 +101,7 @@ local user_opts = {
 
     volume_control = true,                 -- show mute button and volume slider
     volume_control_type = "linear",        -- volume scale type: "linear" or "logarithmic"
+    volumebar_unmute_on_click = true,      -- unmute audio when adjusting volume slider with left click
     playlist_button = true,                -- show playlist button
     hide_empty_playlist_button = false,    -- hide playlist button when no playlist exists
     gray_empty_playlist_button = false,    -- gray out the playlist button when no playlist exists
@@ -2888,7 +2889,9 @@ local function osc_init()
     end
     ne.eventresponder["mbtn_left_down"] = function (element)
         local pos = get_slider_value(element)
-        mp.set_property_bool("mute", false)
+        if user_opts.volumebar_unmute_on_click then
+            mp.set_property_bool("mute", false)
+        end
         mp.commandv("set", "volume", set_volume(pos))
     end
     ne.eventresponder["reset"] = function (element) element.state.lastseek = nil end
