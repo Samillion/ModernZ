@@ -168,8 +168,8 @@ So, to control the raise amount of subtitles, adjust your `osc_height` and `fade
 | window_fade_alpha                 | 100       | alpha of the window title bar (0 to disable)                                                      |
 | window_fade_blur_strength         | 100       | blur strength for the window title bar. caution: high values can take a lot of CPU time to render |
 | window_fade_transparency_strength | 0         | use with "window_fade_blur_strength=0" to create a transparency box                               |
-| thumbnail_border                  | 3         | width of the thumbnail border (for thumbfast)                                                     |
-| thumbnail_border_radius           | 3         | rounded corner radius for thumbnail border (0 to disable)                                         |
+| thumbnail_box_padding             | 4.5       | thumbnail box padding around the image                                                            |
+| thumbnail_border_radius           | 4         | rounded corner radius for thumbnail border (0 to disable)                                         |
 
 ### Button hover effects
 
