@@ -160,8 +160,8 @@ So, to control the raise amount of subtitles, adjust your `osc_height` and `fade
 | playpause_color                   | `#FFFFFF` | color of the play/pause button                                                                    |
 | held_element_color                | `#999999` | color of the element when held down (pressed)                                                     |
 | hover_effect_color                | `#FB8C00` | color of a hovered button when `hover_effect` includes `"color"`                                  |
-| thumbnail_border_color            | `#111111` | color of the border for thumbnails (with thumbfast)                                               |
-| thumbnail_border_outline          | `#404040` | color of the border outline for thumbnails                                                        |
+| thumbnail_box_color               | `#111111` | color of the background for thumbnail box                                                         |
+| thumbnail_box_outline             | `#404040` | color of the border outline for thumbnail box                                                     |
 | fade_alpha                        | 130       | alpha of the OSC background box (0 to disable)                                                    |
 | fade_blur_strength                | 100       | blur strength for the OSC alpha fade. caution: high values can take a lot of CPU time to render   |
 | fade_transparency_strength        | 0         | use with "fade_blur_strength=0" to create a transparency box                                      |
@@ -169,7 +169,7 @@ So, to control the raise amount of subtitles, adjust your `osc_height` and `fade
 | window_fade_blur_strength         | 100       | blur strength for the window title bar. caution: high values can take a lot of CPU time to render |
 | window_fade_transparency_strength | 0         | use with "window_fade_blur_strength=0" to create a transparency box                               |
 | thumbnail_box_padding             | 4.5       | thumbnail box padding around the image                                                            |
-| thumbnail_border_radius           | 4         | rounded corner radius for thumbnail border (0 to disable)                                         |
+| thumbnail_box_radius              | 4         | round corner radius for thumbnail box border (0 to disable)                                       |
 
 ### Button hover effects
 
