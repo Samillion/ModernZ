@@ -1463,6 +1463,7 @@ local function render_elements(master_ass, osc_vis, wc_vis)
                         local tooltip_fs = user_opts.tooltip_font_size
                         local pad_h, pad_v = 2, 3 -- horizontal and vertical padding for seekbar tooltip box
                         local tooltip_radius = (tooltip_fs + 2 * pad_v) / 2 -- seekbar tooltips; pill shape radius
+                        local thumbnail_radius = user_opts.thumbnail_border_radius > 0 and user_opts.thumbnail_border_radius or 0
 
                         local chapter_text = nil
                         local chapter_width = 0
@@ -1536,11 +1537,7 @@ local function render_elements(master_ass, osc_vis, wc_vis)
                                     elem_ass:an(7)
                                     elem_ass:append(osc_styles.thumbnail)
                                     elem_ass:draw_start()
-                                    if user_opts.thumbnail_border_radius and user_opts.thumbnail_border_radius > 0 then
-                                        elem_ass:round_rect_cw(-thumbPad * r_w, -thumbPad * r_h, (thumbfast.width + thumbPad) * r_w, (thumbfast.height + thumbPad) * r_h, user_opts.thumbnail_border_radius)
-                                    else
-                                        elem_ass:rect_cw(-thumbPad * r_w, -thumbPad * r_h, (thumbfast.width + thumbPad) * r_w, (thumbfast.height + thumbPad) * r_h)
-                                    end
+                                    elem_ass:round_rect_cw(-thumbPad * r_w, -thumbPad * r_h, (thumbfast.width + thumbPad) * r_w, (thumbfast.height + thumbPad) * r_h, thumbnail_radius)
                                     elem_ass:draw_stop()
 
                                     -- force tooltip to be centered on the thumb, even at far left/right of screen
