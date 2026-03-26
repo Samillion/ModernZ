@@ -160,8 +160,8 @@ local user_opts = {
     window_fade_alpha = 100,               -- alpha of the window title bar (0 to disable)
     window_fade_blur_strength = 100,       -- blur strength for the window title bar. caution: high values can take a lot of CPU time to render
     window_fade_transparency_strength = 0, -- use with "window_fade_blur_strength=0" to create a transparency box
-    thumbnail_border = 3,                  -- width of the thumbnail border (for thumbfast)
-    thumbnail_border_radius = 3,           -- rounded corner radius for thumbnail border (0 to disable)
+    thumbnail_box_padding = 4.5,           -- thumbnail box padding around the image
+    thumbnail_border_radius = 4,           -- rounded corner radius for thumbnail border (0 to disable)
 
     -- Button hover effects
     hover_effect = "size,glow,color",      -- active button hover effects: "glow", "size", "color"; can use multiple separated by commas
@@ -1520,7 +1520,7 @@ local function render_elements(master_ass, osc_vis, wc_vis)
                                 local hover_sec = 0
                                 local hover_dur = mp.get_property_number("duration")
                                 if hover_dur then hover_sec = hover_dur * sliderpos / 100 end
-                                local thumbPad = user_opts.thumbnail_border
+                                local thumbPad = user_opts.thumbnail_box_padding
                                 local thumbMarginX = 18 / r_w
                                 local thumbMarginY = user_opts.tooltip_font_size + thumbPad + 5 + 2 / r_h
 
