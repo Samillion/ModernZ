@@ -568,6 +568,8 @@ local state = {
     idle_active = false,
     audio_track_count = 0,
     sub_track_count = 0,
+    playlist_count = 0,
+    playlist_pos = 0,
     enabled = true,
     input_enabled = true,
     showhide_enabled = false,
@@ -2067,7 +2069,7 @@ layouts["modern"] = function ()
     local shuffle_button = user_opts.shuffle_button
     local speed_button = user_opts.speed_button
     local download_button = user_opts.download_button and state.is_URL
-    local playlist_button = user_opts.playlist_button and (not user_opts.hide_empty_playlist_button or mp.get_property_number("playlist-count", 0) > 1)
+    local playlist_button = user_opts.playlist_button and (not user_opts.hide_empty_playlist_button or state.playlist_count > 1)
 
     local offset = jump_buttons and 60 or 0
     local outeroffset = (chapter_skip_buttons and 0 or 100) + (jump_buttons and 0 or 100)
@@ -2312,8 +2314,8 @@ layouts["modern-compact"] = function ()
     lo.style = osc_styles.control_2
     start_x = start_x + 55
 
-    local pl_count = mp.get_property_number("playlist-count", 0)
-    local pl_pos = mp.get_property_number("playlist-pos", 0) + 1
+    local pl_count = state.playlist_count
+    local pl_pos = state.playlist_pos + 1
 
     if pl_count > 1 and pl_pos > 1 and user_opts.track_nextprev_buttons and osc_geo.w >= 500 then
         lo = add_layout("playlist_prev")
@@ -2431,11 +2433,11 @@ layouts["modern-image"] = function ()
     local refX = osc_w / 2
     local refY = posY
 
-    local track_nextprev_buttons = user_opts.track_nextprev_buttons
+    local track_nextprev_buttons = user_opts.track_nextprev_buttons and state.playlist_count > 1
     local fullscreen_button = user_opts.fullscreen_button
     local info_button = user_opts.info_button
     local ontop_button = user_opts.ontop_button
-    local playlist_button = user_opts.playlist_button and (not user_opts.hide_empty_playlist_button or mp.get_property_number("playlist-count", 0) > 1)
+    local playlist_button = user_opts.playlist_button and (not user_opts.hide_empty_playlist_button or state.playlist_count > 1)
     local zoom_control = user_opts.zoom_control
 
     -- Playlist
@@ -2631,9 +2633,9 @@ local function osc_init()
     elements = {}
 
     -- some often needed stuff
-    local pl_count = mp.get_property_number("playlist-count", 0)
+    local pl_count = state.playlist_count
     local have_pl = pl_count > 1
-    local pl_pos = mp.get_property_number("playlist-pos", 0) + 1
+    local pl_pos = state.playlist_pos + 1
     local have_ch = mp.get_property_number("chapters", 0) > 0
     local loop = mp.get_property("loop-playlist", "no")
 
@@ -3721,8 +3723,8 @@ mp.register_event("file-loaded", function()
 end)
 mp.register_event("start-file", request_init)
 mp.observe_property("track-list", "native", update_tracklist)
-mp.observe_property("playlist-count", "native", request_init)
-mp.observe_property("playlist-pos", "native", request_init)
+observe_cached("playlist-count", request_init)
+observe_cached("playlist-pos", request_init)
 observe_cached("chapter-list", function ()
     state.chapter_list = state.chapter_list or {}
     table.sort(state.chapter_list, function(a, b) return a.time < b.time end)
