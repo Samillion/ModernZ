@@ -584,6 +584,11 @@ local state = {
     chapter_list = {},                      -- sorted by time
     visibility_modes = {},                  -- visibility_modes to cycle through
     mute = false,
+    pause = false,
+    eof_reached = false,
+    volume = 0,
+    ontop = false,
+    speed = 1,
     file_loop = false,
     playlist_loop = false,
     shuffled = false,
@@ -2677,7 +2682,7 @@ local function osc_init()
     local pl_count = state.playlist_count
     local have_pl = pl_count > 1
     local pl_pos = state.playlist_pos + 1
-    local have_ch = mp.get_property_number("chapters", 0) > 0
+    local have_ch = #state.chapter_list > 0
     local loop = mp.get_property("loop-playlist", "no")
 
     local nojumpoffset = user_opts.jump_buttons and 0 or 100
@@ -2763,16 +2768,16 @@ local function osc_init()
     --play_pause
     ne = new_element("play_pause", "button")
     ne.content = function ()
-        if mp.get_property_bool("eof-reached") then
+        if state.eof_reached then
             return icons.replay
-        elseif mp.get_property_bool("pause") and not state.playing_and_seeking then
+        elseif state.pause and not state.playing_and_seeking then
             return icons.play
         else
             return icons.pause
         end
     end
     ne.eventresponder["mbtn_left_up"] = function ()
-        if mp.get_property_bool("eof-reached") then
+        if state.eof_reached then
             mp.commandv("seek", 0, "absolute-percent")
             mp.commandv("set", "pause", "no")
         else
@@ -2879,7 +2884,7 @@ local function osc_init()
     ne.off = state.audio_track_count == 0
     ne.visible = (osc_param.playresx >= 900 - vol_visible_offset - outeroffset) and user_opts.volume_control
     ne.content = function ()
-        local volume = mp.get_property_number("volume", 0)
+        local volume = state.volume or 0
         if state.mute then
             return icons.volume_mute
         else
@@ -2893,7 +2898,7 @@ local function osc_init()
         end
     end
     ne.tooltipF = function ()
-        local volume = mp.get_property_number("volume", 0)
+        local volume = state.volume or 0
         -- show only one decimal, if decimals exist
         volume = volume % 1 == 0 and string.format("%.0f", volume) or string.format("%.1f", volume)
         return state.mute and (volume .. " (" .. locale.muted .. ")") or volume
@@ -2910,9 +2915,9 @@ local function osc_init()
     ne.slider.markerF = function () return {} end
     ne.slider.seekRangesF = function() return nil end
     ne.slider.posF = function ()
-        local volume = mp.get_property_number("volume")
+        local volume = state.volume
         if user_opts.volume_control_type == "logarithmic" then
-            return math.sqrt(volume * 100)
+            return volume and math.sqrt(volume * 100) or 0
         else
             return volume
         end
@@ -2996,8 +3001,8 @@ local function osc_init()
 
     --ontop
     ne = new_element("ontop", "button")
-    ne.content = function () return not mp.get_property_bool("ontop") and icons.ontop_on or icons.ontop_off end
-    ne.tooltipF = function () return user_opts.tooltip_hints and (not mp.get_property_bool("ontop") and locale.ontop or locale.ontop_disable) or "" end
+    ne.content = function () return not state.ontop and icons.ontop_on or icons.ontop_off end
+    ne.tooltipF = function () return user_opts.tooltip_hints and (not state.ontop and locale.ontop or locale.ontop_disable) or "" end
     ne.visible = (osc_param.playresx >= visible_min_width)
     ne.eventresponder["mbtn_left_up"] = function ()
         mp.commandv("cycle", "ontop")
@@ -3040,14 +3045,14 @@ local function osc_init()
     --speed
     ne = new_element("speed", "button")
     ne.content = function()
-        local speed = mp.get_property_number("speed", 1)
+        local speed = state.speed or 1
         return string.format(speed % 1 == 0 and "%.1f×" or "%g×", speed)
     end
     ne.visible = (osc_param.playresx >= visible_min_width)
     ne.tooltipF = user_opts.tooltip_hints and locale.speed_control or ""
 
     local function adjust_speed(delta)
-        local new_speed = mp.get_property_number("speed", 1) + delta
+        local new_speed = (state.speed or 1) + delta
         mp.commandv("set", "speed", math.max(0.25, math.min(100, new_speed)))
     end
 
@@ -3131,7 +3136,7 @@ local function osc_init()
         end
     end
     ne.slider.posF = function ()
-        if mp.get_property_bool("eof-reached") then return 100 end
+        if state.eof_reached then return 100 end
         return mp.get_property_number("percent-pos")
     end
     ne.slider.tooltipF = function (pos)
@@ -3150,7 +3155,7 @@ local function osc_init()
         -- sent when the user is done seeking, so we need to throw away
         -- identical seeks
         state.playing_and_seeking = true
-        if not mp.get_property_bool("pause") and user_opts.mouse_seek_pause then
+        if not state.pause and user_opts.mouse_seek_pause then
             mp.commandv("cycle", "pause")
         end
         local seekto = get_slider_value(element)
@@ -3166,13 +3171,13 @@ local function osc_init()
     end
     ne.eventresponder["mbtn_left_down"] = function (element)
         element.state.mbtnleft = true
-        element.state.was_paused = mp.get_property_bool("pause")
+        element.state.was_paused = state.pause
         state.playing_and_seeking = false  -- clear state
         mp.commandv("seek", get_slider_value(element), "absolute-percent+exact")
     end
     ne.eventresponder["shift+mbtn_left_down"] = function (element)
         element.state.mbtnleft = true
-        element.state.was_paused = mp.get_property_bool("pause")
+        element.state.was_paused = state.pause
         state.playing_and_seeking = false
         mp.commandv("seek", get_slider_value(element), "absolute-percent")
     end
@@ -3222,7 +3227,7 @@ local function osc_init()
     ne.enabled = mp.get_property("percent-pos") ~= nil
     ne.slider.markerF = function () return {} end
     ne.slider.posF = function ()
-        if mp.get_property_bool("eof-reached") then return 100 end
+        if state.eof_reached then return 100 end
         return mp.get_property_number("percent-pos")
     end
     ne.slider.tooltipF = function() return "" end
@@ -3723,8 +3728,7 @@ local function on_duration() request_init() end
 
 local duration_watched = false
 local function update_duration_watch()
-    local want_watch = user_opts.livemarkers and
-                       (mp.get_property_number("chapters", 0) or 0) > 0
+    local want_watch = user_opts.livemarkers and #state.chapter_list > 0
 
     if want_watch ~= duration_watched then
         if want_watch then
@@ -3811,11 +3815,11 @@ mp.observe_property("osd-dimensions", "native", function()
 end)
 mp.observe_property("osd-scale-by-window", "native", request_init_resize)
 mp.observe_property("touch-pos", "native", handle_touch)
-mp.observe_property("volume", "number", request_tick)
-mp.observe_property("mute", "bool", function(_, val)
-    state.mute = val
-    request_tick()
-end)
+observe_cached("volume", request_tick)
+observe_cached("mute", request_tick)
+observe_cached("eof-reached", request_tick)
+observe_cached("ontop", request_tick)
+observe_cached("speed", request_tick)
 mp.observe_property("paused-for-cache", "bool", function(_, val) state.buffering = val end)
 -- ensure compatibility with auto loop scripts
 mp.observe_property("loop-file", "bool", function(_, val)
@@ -3944,6 +3948,7 @@ local function idlescreen_visibility(mode, no_osd)
 end
 
 mp.observe_property("pause", "bool", function(_, enabled)
+    state.pause = (enabled == true)
     request_tick()
     if user_opts.showonpause and user_opts.visibility ~= "never" then
         state.enabled = enabled
