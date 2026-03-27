@@ -154,10 +154,10 @@ local user_opts = {
     thumbnail_box_color = "#111111",       -- color of the background for thumbnail box
     thumbnail_box_outline = "#404040",     -- color of the border outline for thumbnail box
 
-    fade_alpha = 130,                      -- alpha of the OSC background (0 to disable)
+    osc_fade_height = 100,                 -- height of the OSC background (0 to disable)
     fade_blur_strength = 100,              -- blur strength for the OSC alpha fade. caution: high values can take a lot of CPU time to render
     fade_transparency_strength = 0,        -- use with "fade_blur_strength=0" to create a transparency box
-    window_fade_alpha = 100,               -- alpha of the window title bar (0 to disable)
+    window_fade_height = 100,              -- height of the window title bar (0 to disable)
     window_fade_blur_strength = 100,       -- blur strength for the window title bar. caution: high values can take a lot of CPU time to render
     window_fade_transparency_strength = 0, -- use with "window_fade_blur_strength=0" to create a transparency box
     thumbnail_box_padding = 4.5,           -- thumbnail box padding around the image
@@ -203,18 +203,16 @@ local user_opts = {
 
     -- Elements Position
     -- Useful when adjusting font size or type
-    title_height = 96,                     -- title height position above seekbar
-    title_with_chapter_height = 108,       -- title height position if a chapter title is below it
-    chapter_title_height = 91,             -- chapter title height position above seekbar
-    time_codes_height = 35,                -- time codes height position
-    time_codes_centered_height = 57,       -- time codes height position with portrait window
+    title_offset = 24,                     -- title vertical offset relative to seekbar
+    title_with_chapter_offset = 4,       -- title vertical offset if a chapter title is below it
+    chapter_title_offset = 20,             -- chapter title vertical offset relative to seekbar
+    time_codes_offset = 0,                -- time codes vertical offset relative to seekbar
+    time_codes_centered_offset = 13,       -- time codes vertical offset with portrait window
     tooltip_height_offset = 2,             -- tooltip height position offset
     portrait_window_trigger = 1000,        -- portrait window width trigger to move some elements
     hide_volume_bar_trigger = 1150,        -- hide volume bar trigger window width
-    notitle_osc_h_offset = 25,             -- osc height offset if title above seekbar is disabled
-    nochapter_osc_h_offset = 10,           -- osc height offset if chapter title is disabled or doesn't exist
     seek_hover_tooltip_h_offset = 5,       -- seek hover timecodes tooltip height position offset
-    osc_height = 132,                      -- osc height without offsets
+    osc_height = 70,                      -- osc height
 
     -- Mouse commands
     -- customize the button function based on mouse action
@@ -507,8 +505,8 @@ local function set_osc_styles()
     local midbuttons_size = user_opts.midbuttons_size
     local sidebuttons_size = user_opts.sidebuttons_size
     osc_styles = {
-        osc_fade_bg = "{\\blur" .. user_opts.fade_blur_strength .. "\\bord" .. user_opts.fade_alpha .. "\\1c&H0&\\3c&H" .. osc_color_convert(user_opts.osc_color) .. "&}",
-        window_fade_bg = "{\\blur" .. user_opts.window_fade_blur_strength .. "\\bord" .. user_opts.window_fade_alpha .. "\\1c&H0&\\3c&H" .. osc_color_convert(user_opts.osc_color) .. "&}",
+        osc_fade_bg = "{\\blur" .. user_opts.fade_blur_strength .. "\\bord" .. user_opts.osc_fade_height .. "\\1c&H0&\\3c&H" .. osc_color_convert(user_opts.osc_color) .. "&}",
+        window_fade_bg = "{\\blur" .. user_opts.window_fade_blur_strength .. "\\bord" .. user_opts.window_fade_height .. "\\1c&H0&\\3c&H" .. osc_color_convert(user_opts.osc_color) .. "&}",
         window_control = "{\\blur0\\bord0\\1c&H" .. osc_color_convert(user_opts.window_controls_color) .. "&\\3c&H0&\\fs25\\fn" .. icons.iconfont .. "}",
         window_title = "{\\blur1\\bord0.5\\1c&H" .. osc_color_convert(user_opts.window_title_color) .. "&\\3c&H0&\\fs".. user_opts.window_title_font_size .."\\q2\\fn" .. user_opts.font .. "}",
         title = "{\\blur1\\bord0.5\\1c&H" .. osc_color_convert(user_opts.title_color) .. "&\\3c&H0&\\fs".. user_opts.title_font_size .."\\q2\\fn" .. user_opts.font .. "}",
@@ -1991,15 +1989,26 @@ layouts["modern"] = function ()
         not user_opts.show_chapter_title
 
     local chapter_index = user_opts.show_chapter_title and mp.get_property_number("chapter", -1) >= 0
-    local osc_height_offset = (no_title and user_opts.notitle_osc_h_offset or 0) + ((no_chapter or not chapter_index) and user_opts.nochapter_osc_h_offset or 0)
+
+    local chapter_h = (no_chapter or not chapter_index) and 0 or user_opts.chapter_title_font_size
+    local chapter_offset = (no_chapter or not chapter_index) and 0 or user_opts.chapter_title_offset
+    local title_h = no_title and 0 or user_opts.title_font_size
+    local title_offset = (no_chapter or not chapter_index) and user_opts.title_offset or user_opts.title_with_chapter_offset
+    title_offset = no_title and 0 or title_offset
+    local title_and_chapter_h_with_offset = chapter_h + chapter_offset + title_h + title_offset
+
+    if title_and_chapter_h_with_offset == 0 then
+        -- add some top padding if both title and chapter aren't displayed
+        title_and_chapter_h_with_offset = user_opts.osc_height * 0.2
+     end
 
     local osc_geo = {
         w = osc_param.playresx,
-        h = user_opts.osc_height - osc_height_offset
+        h = user_opts.osc_height + title_and_chapter_h_with_offset
     }
 
     -- update bottom margin
-    osc_param.video_margins.b = math.max(user_opts.osc_height, user_opts.fade_alpha) / osc_param.playresy
+    osc_param.video_margins.b = math.max(osc_geo.h, user_opts.osc_fade_height) / osc_param.playresy
 
     -- origin of the controllers, left/bottom corner
     local posX = 0
@@ -2029,7 +2038,7 @@ layouts["modern"] = function ()
     new_element("seekbarbg", "box")
     lo = add_layout("seekbarbg")
     local seekbar_bg_h = 4
-    lo.geometry = {x = refX, y = refY - 72, an = 5, w = osc_geo.w - 30, h = seekbar_bg_h}
+    lo.geometry = {x = refX, y = refY - user_opts.osc_height, an = 5, w = osc_geo.w - 30, h = seekbar_bg_h}
     lo.layer = 15
     lo.style = osc_styles.seekbar_bg
     lo.box.radius = user_opts.slider_rounded_corners and 2 or 0
@@ -2038,7 +2047,7 @@ layouts["modern"] = function ()
 
     lo = add_layout("seekbar")
     local seekbar_h = 18
-    lo.geometry = {x = refX, y = refY - 72, an = 5, w = osc_geo.w - 30, h = seekbar_h}
+    lo.geometry = {x = refX, y = refY - user_opts.osc_height, an = 5, w = osc_geo.w - 30, h = seekbar_h}
     lo.layer = 51
     lo.style = osc_styles.seekbar_fg
     lo.slider.gap = (seekbar_h - seekbar_bg_h) / 2.0
@@ -2071,8 +2080,11 @@ layouts["modern"] = function ()
     local offset = jump_buttons and 60 or 0
     local outeroffset = (chapter_skip_buttons and 0 or 100) + (jump_buttons and 0 or 100)
 
+	local chapter_title_y = user_opts.osc_height + chapter_offset
+	local title_y = (no_chapter or not chapter_index) and (user_opts.osc_height + title_offset) or (chapter_title_y + chapter_h + user_opts.title_with_chapter_offset)
+
     -- OSC title
-    geo = {x = 25, y = refY - (chapter_index and user_opts.title_with_chapter_height or user_opts.title_height), an = 1, w = osc_geo.w - 50 - (loop_button and 45 or 0) - (speed_button and 45 or 0), h = user_opts.title_font_size}
+    geo = {x = 25, y = refY - title_y, an = 1, w = osc_geo.w - 50 - (loop_button and 45 or 0) - (speed_button and 45 or 0), h = user_opts.title_font_size}
     lo = add_layout("title")
     lo.geometry = geo
     lo.style = string.format("%s{\\clip(0,%f,%f,%f)}", osc_styles.title, geo.y - geo.h, geo.x + geo.w, geo.y + geo.h)
@@ -2081,55 +2093,55 @@ layouts["modern"] = function ()
     -- Chapter title (above seekbar)
     if user_opts.show_chapter_title then
         lo = add_layout("chapter_title")
-        lo.geometry = {x = 26, y = refY - user_opts.chapter_title_height, an = 1, w = osc_geo.w / 2, h = user_opts.chapter_title_font_size}
+        lo.geometry = {x = 26, y = refY - chapter_title_y, an = 1, w = osc_geo.w / 2, h = user_opts.chapter_title_font_size}
         lo.style = string.format("%s{\\clip(0,%f,%f,%f)}", osc_styles.chapter_title, geo.y - geo.h, geo.x + geo.w, geo.y + geo.h)
     end
 
     -- buttons
     if track_nextprev_buttons then
         lo = add_layout("playlist_prev")
-        lo.geometry = {x = refX - (60 + (chapter_skip_buttons and 60 or 0)) - offset, y = refY - 35, an = 5, w = 30, h = 24}
+        lo.geometry = {x = refX - (60 + (chapter_skip_buttons and 60 or 0)) - offset, y = refY - (user_opts.osc_height / 2), an = 5, w = 30, h = 24}
         lo.style = osc_styles.control_2
     end
 
     if chapter_skip_buttons then
         lo = add_layout("chapter_prev")
-        lo.geometry = {x = refX - 60 - offset, y = refY - 35, an = 5, w = 30, h = 24}
+        lo.geometry = {x = refX - 60 - offset, y = refY - (user_opts.osc_height / 2), an = 5, w = 30, h = 24}
         lo.style = osc_styles.control_2
     end
 
     if jump_buttons then
         lo = add_layout("jump_backward")
-        lo.geometry = {x = refX - 60, y = refY - 35, an = 5, w = 30, h = 24}
+        lo.geometry = {x = refX - 60, y = refY - (user_opts.osc_height / 2), an = 5, w = 30, h = 24}
         lo.style = osc_styles.control_2
     end
 
     lo = add_layout("play_pause")
-    lo.geometry = {x = refX, y = refY - 35, an = 5, w = 45, h = 28}
+    lo.geometry = {x = refX, y = refY - (user_opts.osc_height / 2), an = 5, w = 45, h = 28}
     lo.style = osc_styles.control_1
 
     if jump_buttons then
         lo = add_layout("jump_forward")
-        lo.geometry = {x = refX + 60, y = refY - 35, an = 5, w = 30, h = 24}
+        lo.geometry = {x = refX + 60, y = refY - (user_opts.osc_height / 2), an = 5, w = 30, h = 24}
         lo.style = osc_styles.control_2
     end
 
     if chapter_skip_buttons then
         lo = add_layout("chapter_next")
-        lo.geometry = {x = refX + 60 + offset, y = refY - 35, an = 5, w = 30, h = 24}
+        lo.geometry = {x = refX + 60 + offset, y = refY - (user_opts.osc_height / 2), an = 5, w = 30, h = 24}
         lo.style = osc_styles.control_2
     end
 
     if track_nextprev_buttons then
         lo = add_layout("playlist_next")
-        lo.geometry = {x = refX + (60 + (chapter_skip_buttons and 60 or 0)) + offset, y = refY - 35, an = 5, w = 30, h = 24}
+        lo.geometry = {x = refX + (60 + (chapter_skip_buttons and 60 or 0)) + offset, y = refY - (user_opts.osc_height / 2), an = 5, w = 30, h = 24}
         lo.style = osc_styles.control_2
     end
 
     local start_x = 37
     local function left_side_button(name, min_w)
         lo = add_layout(name)
-        lo.geometry = {x = start_x, y = refY - 35, an = 5, w = 24, h = 24}
+        lo.geometry = {x = start_x, y = refY - (user_opts.osc_height / 2), an = 5, w = 24, h = 24}
         lo.style = osc_styles.control_3
         lo.visible = (osc_param.playresx >= min_w - outeroffset)
         start_x = start_x + 45
@@ -2153,14 +2165,14 @@ layouts["modern"] = function ()
         lo = new_element("volumebarbg", "box")
         lo.visible = (osc_param.playresx >= 1150 - outeroffset) and user_opts.volume_control
         lo = add_layout("volumebarbg")
-        lo.geometry = {x = start_x, y = refY - 35, an = 4, w = 55, h = 4}
+        lo.geometry = {x = start_x, y = refY - (user_opts.osc_height / 2), an = 4, w = 55, h = 4}
         lo.layer = 15
         lo.alpha[1] = 128
         lo.style = user_opts.volumebar_match_seek_color and osc_styles.seekbar_bg or osc_styles.volumebar_bg
         lo.box.radius = user_opts.slider_rounded_corners and 2 or 0
 
         lo = add_layout("volumebar")
-        lo.geometry = {x = start_x, y = refY - 35, an = 4, w = 55, h = 10}
+        lo.geometry = {x = start_x, y = refY - (user_opts.osc_height / 2), an = 4, w = 55, h = 10}
         lo.style = user_opts.volumebar_match_seek_color and osc_styles.seekbar_fg or osc_styles.volumebar_fg
         lo.slider.gap = 3
         lo.slider.radius = user_opts.slider_rounded_corners and 2 or 0
@@ -2174,6 +2186,7 @@ layouts["modern"] = function ()
         - (auto_hide_volbar and 67 or 0) -- window width with audio track and elements
         - (audio_track and not user_opts.volume_control and 115 or 0) -- audio track with no elements
         - (not audio_track and 12 or 0) -- remove extra padding
+    local time_codes_y = user_opts.time_codes_offset + (user_opts.osc_height / 2)
     local time_codes_width = get_time_codes_width()
     local narrow_win = osc_param.playresx < (
         user_opts.portrait_window_trigger
@@ -2182,15 +2195,20 @@ layouts["modern"] = function ()
         - (subtitle_track and 0 or 100)
         - (audio_track and 0 or 100)
     )
+    if narrow_win then
+        time_codes_y = user_opts.time_codes_offset + user_opts.osc_height
+        -- align time_codes with either chapter or title (if chapter is hidden)
+        time_codes_y = (no_chapter or not chapter_index) and (time_codes_y + user_opts.title_offset) or (time_codes_y + user_opts.chapter_title_offset)
+    end
     lo = add_layout("time_codes")
-    lo.geometry = {x = (narrow_win and refX or time_codes_x), y = refY - (narrow_win and user_opts.time_codes_centered_height or user_opts.time_codes_height), an = (narrow_win and 5 or 4), w = time_codes_width, h = user_opts.time_font_size}
+    lo.geometry = {x = (narrow_win and (osc_geo.w - 25) or time_codes_x), y = refY - time_codes_y, an = (narrow_win and 3 or 4), w = time_codes_width, h = user_opts.time_font_size}
     lo.style = osc_styles.time
 
     -- Fullscreen/Info/Pin/Screenshot/Loop/Speed
     local end_x = osc_geo.w - 37
     local function right_side_button(name, min_w, style, w)
         lo = add_layout(name)
-        lo.geometry = {x = end_x, y = refY - 35, an = 5, w = (w or 24), h = 24}
+        lo.geometry = {x = end_x, y = refY - (user_opts.osc_height / 2), an = 5, w = (w or 24), h = 24}
         lo.style = style or osc_styles.control_3
         lo.visible = (osc_param.playresx >= min_w - outeroffset)
         end_x = end_x - 45
@@ -2215,17 +2233,36 @@ end
 
 layouts["modern-compact"] = function ()
     local chapter_index = mp.get_property_number("chapter", -1) >= 0
-    local osc_height_offset =
-        ((user_opts.title_mbtn_left_command == "" and user_opts.title_mbtn_right_command == "") and 25 or 0) +
-        (((user_opts.chapter_title_mbtn_left_command == "" and user_opts.chapter_title_mbtn_right_command == "") or not chapter_index) and 10 or 0)
+
+    local no_title =
+        ((user_opts.title_mbtn_left_command == "" or user_opts.title_mbtn_left_command == "ignore") and
+        (user_opts.title_mbtn_right_command == "" or user_opts.title_mbtn_right_command == "ignore")) or
+        not user_opts.show_title
+
+    local no_chapter =
+        ((user_opts.chapter_title_mbtn_left_command == "" or user_opts.chapter_title_mbtn_left_command == "ignore") and
+        (user_opts.chapter_title_mbtn_right_command == "" or user_opts.chapter_title_mbtn_right_command == "ignore")) or
+        not user_opts.show_chapter_title
+
+    local chapter_h = (no_chapter or not chapter_index) and 0 or user_opts.chapter_title_font_size
+    local chapter_offset = (no_chapter or not chapter_index) and 0 or user_opts.chapter_title_offset
+    local title_h = no_title and 0 or user_opts.title_font_size
+    local title_offset = (no_chapter or not chapter_index) and user_opts.title_offset or user_opts.title_with_chapter_offset
+    title_offset = no_title and 0 or title_offset
+    local title_and_chapter_h_with_offset = chapter_h + chapter_offset + title_h + title_offset
+
+    if title_and_chapter_h_with_offset == 0 then
+        -- add some top padding if both title and chapter aren't displayed
+        title_and_chapter_h_with_offset = user_opts.osc_height * 0.2
+     end
 
     local osc_geo = {
         w = osc_param.playresx,
-        h = 145 - osc_height_offset
+        h = user_opts.osc_height + title_and_chapter_h_with_offset
     }
 
     -- update bottom margin
-    osc_param.video_margins.b = math.max(osc_geo.h, user_opts.fade_alpha) / osc_param.playresy
+    osc_param.video_margins.b = math.max(osc_geo.h, user_opts.osc_fade_height) / osc_param.playresy
 
     -- origin of the controllers, left/bottom corner
     local posX = 0
@@ -2255,7 +2292,7 @@ layouts["modern-compact"] = function ()
     new_element("seekbarbg", "box")
     lo = add_layout("seekbarbg")
     local seekbar_bg_h = 4
-    lo.geometry = {x = refX, y = refY - 72, an = 5, w = osc_geo.w - 30, h = seekbar_bg_h}
+    lo.geometry = {x = refX, y = refY - user_opts.osc_height, an = 5, w = osc_geo.w - 30, h = seekbar_bg_h}
     lo.layer = 15
     lo.style = osc_styles.seekbar_bg
     lo.box.radius = user_opts.slider_rounded_corners and 2 or 0
@@ -2264,7 +2301,7 @@ layouts["modern-compact"] = function ()
 
     lo = add_layout("seekbar")
     local seekbar_h = 18
-    lo.geometry = {x = refX, y = refY - 72, an = 5, w = osc_geo.w - 30, h = seekbar_h}
+    lo.geometry = {x = refX, y = refY - user_opts.osc_height, an = 5, w = osc_geo.w - 30, h = seekbar_h}
     lo.layer = 51
     lo.style = osc_styles.seekbar_fg
     lo.slider.gap = (seekbar_h - seekbar_bg_h) / 2.0
@@ -2282,10 +2319,13 @@ layouts["modern-compact"] = function ()
     -- Time codes width calculation
     local time_codes_width = get_time_codes_width()
 
+	local chapter_title_y = user_opts.osc_height + chapter_offset
+	local title_y = (no_chapter or not chapter_index) and (user_opts.osc_height + title_offset) or (chapter_title_y + chapter_h + user_opts.title_with_chapter_offset)
+
     -- OSC title
-    local title_w = (chapter_index and (osc_geo.w - 50) or (osc_geo.w - 50 - time_codes_width))
+    local title_w = (no_chapter or not chapter_index) and (osc_geo.w - 50 - time_codes_width - 10) or (osc_geo.w - 50)
     if title_w < 0 then title_w = 0 end
-    geo = {x = 25, y = refY - (chapter_index and user_opts.title_with_chapter_height or user_opts.title_height), an = 1, w = title_w, h = user_opts.title_font_size}
+    geo = {x = 25, y = refY - title_y, an = 1, w = title_w, h = user_opts.title_font_size}
     lo = add_layout("title")
     lo.geometry = geo
     lo.style = string.format("%s{\\clip(%f,%f,%f,%f)}", osc_styles.title, geo.x, geo.y - geo.h, geo.x + geo.w, geo.y + geo.h)
@@ -2293,21 +2333,25 @@ layouts["modern-compact"] = function ()
 
     -- Chapter title (above seekbar)
     if user_opts.show_chapter_title then
-        local chapter_geo = {x = 25, y = refY - user_opts.chapter_title_height, an = 1, w = osc_geo.w / 2, h = user_opts.chapter_title_font_size}
+        local chapter_geo = {x = 25, y = refY - chapter_title_y, an = 1, w = osc_geo.w / 2, h = user_opts.chapter_title_font_size}
         lo = add_layout("chapter_title")
         lo.geometry = chapter_geo
         lo.style = string.format("%s{\\clip(%f,%f,%f,%f)}", osc_styles.chapter_title, chapter_geo.x, chapter_geo.y - chapter_geo.h, chapter_geo.x + chapter_geo.w, chapter_geo.y + chapter_geo.h)
     end
+
     -- Time codes
+    local time_codes_y = user_opts.time_codes_offset + user_opts.osc_height
+    -- align time_codes with either chapter or title (if chapter is hidden)
+    time_codes_y = (no_chapter or not chapter_index) and (time_codes_y + user_opts.title_offset) or (time_codes_y + user_opts.chapter_title_offset)
     lo = add_layout("time_codes")
-    lo.geometry = {x = osc_geo.w - 25, y = refY - 96, an = 6, w = time_codes_width, h = user_opts.time_font_size}
+    lo.geometry = {x = osc_geo.w - 25, y = refY - time_codes_y, an = 3, w = time_codes_width, h = user_opts.time_font_size}
     lo.style = osc_styles.time
 
     -- Left side buttons
     local start_x = 37
 
     lo = add_layout("play_pause")
-    lo.geometry = {x = start_x, y = refY - 35, an = 5, w = 24, h = 24}
+    lo.geometry = {x = start_x, y = refY - (user_opts.osc_height / 2), an = 5, w = 24, h = 24}
     lo.style = osc_styles.control_2
     start_x = start_x + 55
 
@@ -2316,35 +2360,35 @@ layouts["modern-compact"] = function ()
 
     if pl_count > 1 and pl_pos > 1 and user_opts.track_nextprev_buttons and osc_geo.w >= 500 then
         lo = add_layout("playlist_prev")
-        lo.geometry = {x = start_x, y = refY - 35, an = 5, w = 24, h = 24}
+        lo.geometry = {x = start_x, y = refY - (user_opts.osc_height / 2), an = 5, w = 24, h = 24}
         lo.style = osc_styles.control_2
         start_x = start_x + 55
     end
 
     if pl_count > 1 and pl_pos < pl_count and user_opts.track_nextprev_buttons and osc_geo.w >= 350 then
         lo = add_layout("playlist_next")
-        lo.geometry = {x = start_x, y = refY - 35, an = 5, w = 24, h = 24}
+        lo.geometry = {x = start_x, y = refY - (user_opts.osc_height / 2), an = 5, w = 24, h = 24}
         lo.style = osc_styles.control_2
         start_x = start_x + 55
     end
 
    if user_opts.jump_buttons and osc_geo.w >= 600 then
         lo = add_layout("jump_backward")
-        lo.geometry = {x = start_x, y = refY - 35, an = 5, w = 30, h = 24}
+        lo.geometry = {x = start_x, y = refY - (user_opts.osc_height / 2), an = 5, w = 30, h = 24}
         lo.style = osc_styles.control_2
         start_x = start_x + 55
     end
 
     if user_opts.jump_buttons and osc_geo.w >= 450 then
         lo = add_layout("jump_forward")
-        lo.geometry = {x = start_x, y = refY - 35, an = 5, w = 30, h = 24}
+        lo.geometry = {x = start_x, y = refY - (user_opts.osc_height / 2), an = 5, w = 30, h = 24}
         lo.style = osc_styles.control_2
         start_x = start_x + 55
     end
 
     if state.audio_track_count > 0 and user_opts.volume_control then
         lo = add_layout("vol_ctrl")
-        lo.geometry = {x = start_x, y = refY - 35, an = 5, w = 24, h = 24}
+        lo.geometry = {x = start_x, y = refY - (user_opts.osc_height / 2), an = 5, w = 24, h = 24}
         lo.style = osc_styles.control_2
         start_x = start_x + 20
 
@@ -2353,14 +2397,14 @@ layouts["modern-compact"] = function ()
         elements.volumebarbg.visible = elements.volumebar.visible
         if elements.volumebar.visible then
             lo = add_layout("volumebarbg")
-            lo.geometry = {x = start_x, y = refY - 35, an = 4, w = 55, h = 4}
+            lo.geometry = {x = start_x, y = refY - (user_opts.osc_height / 2), an = 4, w = 55, h = 4}
             lo.layer = 15
             lo.alpha[1] = 128
             lo.style = user_opts.volumebar_match_seek_color and osc_styles.seekbar_bg or osc_styles.volumebar_bg
             lo.box.radius = user_opts.slider_rounded_corners and 2 or 0
 
             lo = add_layout("volumebar")
-            lo.geometry = {x = start_x, y = refY - 35, an = 4, w = 55, h = 10}
+            lo.geometry = {x = start_x, y = refY - (user_opts.osc_height / 2), an = 4, w = 55, h = 10}
             lo.style = user_opts.volumebar_match_seek_color and osc_styles.seekbar_fg or osc_styles.volumebar_fg
             lo.slider.gap = 3
             lo.slider.radius = user_opts.slider_rounded_corners and 2 or 0
@@ -2375,7 +2419,7 @@ layouts["modern-compact"] = function ()
         elements[name].visible = vis_cond
         if vis_cond then
             lo = add_layout(name)
-            lo.geometry = {x = end_x, y = refY - 35, an = 5, w = (w or 24), h = 24}
+            lo.geometry = {x = end_x, y = refY - (user_opts.osc_height / 2), an = 5, w = (w or 24), h = 24}
             lo.style = style or osc_styles.control_2
             end_x = end_x - 55
         end
@@ -2392,7 +2436,7 @@ layouts["modern-compact"] = function ()
     elements.cache_info.visible = user_opts.cache_info and osc_geo.w >= 500
     if elements.cache_info.visible then
         lo = add_layout("cache_info")
-        lo.geometry = {x = end_x + 7, y = refY - 35, an = 6, w = (user_opts.cache_info_speed and 70 or 45), h = 24}
+        lo.geometry = {x = end_x + 7, y = refY - (user_opts.osc_height / 2), an = 6, w = (user_opts.cache_info_speed and 70 or 45), h = 24}
         lo.style = osc_styles.time
     end
 end
@@ -2404,7 +2448,7 @@ layouts["modern-image"] = function ()
     }
 
     -- update bottom margin
-    osc_param.video_margins.b = math.max(50, user_opts.fade_alpha) / osc_param.playresy
+    osc_param.video_margins.b = math.max(50, user_opts.osc_fade_height) / osc_param.playresy
 
     -- origin of the controllers, left/bottom corner
     local posX = 0
@@ -2440,73 +2484,73 @@ layouts["modern-image"] = function ()
     -- Playlist
     if playlist_button then
         lo = add_layout("playlist")
-        lo.geometry = {x = 25, y = refY - 30, an = 5, w = 24, h = 24}
+        lo.geometry = {x = 25, y = refY - (user_opts.osc_height / 2), an = 5, w = 24, h = 24}
         lo.style = osc_styles.control_3
         lo.visible = osc_param.playresx >= 250
     end
 
     if track_nextprev_buttons then
         lo = add_layout("playlist_prev")
-        lo.geometry = {x = 55 - (playlist_button and 0 or 25), y = refY - 30 , an = 5, w = 24, h = 24}
+        lo.geometry = {x = 55 - (playlist_button and 0 or 25), y = refY - (user_opts.osc_height / 2) , an = 5, w = 24, h = 24}
         lo.style = osc_styles.control_2
 
         lo = add_layout("playlist_next")
-        lo.geometry = {x = 85 - (playlist_button and 0 or 25), y = refY - 30 , an = 5, w = 24, h = 24}
+        lo.geometry = {x = 85 - (playlist_button and 0 or 25), y = refY - (user_opts.osc_height / 2) , an = 5, w = 24, h = 24}
         lo.style = osc_styles.control_2
     end
 
     if zoom_control then
         -- zoom control
         lo = add_layout("zoom_out_icon")
-        lo.geometry = {x = 130 - (playlist_button and 0 or 25) - (track_nextprev_buttons and 0 or 70), y = refY - 30 , an = 5, w = 30, h = 24}
+        lo.geometry = {x = 130 - (playlist_button and 0 or 25) - (track_nextprev_buttons and 0 or 70), y = refY - (user_opts.osc_height / 2) , an = 5, w = 30, h = 24}
         lo.style = osc_styles.control_2
 
         lo = new_element("zoom_control_bg", "box")
         lo.visible = osc_param.playresx >= 400 and user_opts.zoom_control
         lo = add_layout("zoom_control_bg")
-        lo.geometry = {x = 145 - (playlist_button and 0 or 25) - (track_nextprev_buttons and 0 or 70), y = refY - 30, an = 4, w = 80, h = 4}
+        lo.geometry = {x = 145 - (playlist_button and 0 or 25) - (track_nextprev_buttons and 0 or 70), y = refY - (user_opts.osc_height / 2), an = 4, w = 80, h = 4}
         lo.layer = 15
         lo.alpha[1] = 128
         lo.style = osc_styles.volumebar_bg
         lo.box.radius = user_opts.slider_rounded_corners and 2 or 0
 
         lo = add_layout("zoom_control")
-        lo.geometry = {x = 145 - (playlist_button and 0 or 25) - (track_nextprev_buttons and 0 or 70), y = refY - 30, an = 4, w = 80, h = 10}
+        lo.geometry = {x = 145 - (playlist_button and 0 or 25) - (track_nextprev_buttons and 0 or 70), y = refY - (user_opts.osc_height / 2), an = 4, w = 80, h = 10}
         lo.style = osc_styles.volumebar_fg
         lo.slider.radius = user_opts.slider_rounded_corners and 2 or 0
         lo.slider.gap = 3
         lo.slider.tooltip_an = 2
 
         lo = add_layout("zoom_in_icon")
-        lo.geometry = {x = 240 - (playlist_button and 0 or 25) - (track_nextprev_buttons and 0 or 70), y = refY - 30 , an = 5, w = 30, h = 24}
+        lo.geometry = {x = 240 - (playlist_button and 0 or 25) - (track_nextprev_buttons and 0 or 70), y = refY - (user_opts.osc_height / 2) , an = 5, w = 30, h = 24}
         lo.style = osc_styles.control_2
     end
 
     -- Fullscreen/Info/Pin/Download
     if fullscreen_button then
         lo = add_layout("fullscreen")
-        lo.geometry = {x = osc_geo.w - 37, y = refY - 30, an = 5, w = 24, h = 24}
+        lo.geometry = {x = osc_geo.w - 37, y = refY - (user_opts.osc_height / 2), an = 5, w = 24, h = 24}
         lo.style = osc_styles.control_3
         lo.visible = (osc_param.playresx >= 250)
     end
 
     if info_button then
         lo = add_layout("info")
-        lo.geometry = {x = osc_geo.w - 82 + (fullscreen_button and 0 or 45), y = refY - 30, an = 5, w = 24, h = 24}
+        lo.geometry = {x = osc_geo.w - 82 + (fullscreen_button and 0 or 45), y = refY - (user_opts.osc_height / 2), an = 5, w = 24, h = 24}
         lo.style = osc_styles.control_3
         lo.visible = (osc_param.playresx >= 300)
     end
 
     if ontop_button then
         lo = add_layout("ontop")
-        lo.geometry = {x = osc_geo.w - 127 + (info_button and 0 or 45) + (fullscreen_button and 0 or 45), y = refY - 30, an = 5, w = 24, h = 24}
+        lo.geometry = {x = osc_geo.w - 127 + (info_button and 0 or 45) + (fullscreen_button and 0 or 45), y = refY - (user_opts.osc_height / 2), an = 5, w = 24, h = 24}
         lo.style = osc_styles.control_3
         lo.visible = (osc_param.playresx >= 500)
     end
 
     if user_opts.download_button then
         lo = add_layout("download")
-        lo.geometry = {x = osc_geo.w - 172 + (ontop_button and 0 or 45) + (info_button and 0 or 45) + (fullscreen_button and 0 or 45), y = refY - 30, an = 5, w = 24, h = 24}
+        lo.geometry = {x = osc_geo.w - 172 + (ontop_button and 0 or 45) + (info_button and 0 or 45) + (fullscreen_button and 0 or 45), y = refY - (user_opts.osc_height / 2), an = 5, w = 24, h = 24}
         lo.style = osc_styles.control_3
         lo.visible = (osc_param.playresx >= 400)
     end
