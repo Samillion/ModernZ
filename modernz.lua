@@ -2186,6 +2186,7 @@ layouts["modern"] = function ()
         - (auto_hide_volbar and 67 or 0) -- window width with audio track and elements
         - (audio_track and not user_opts.volume_control and 115 or 0) -- audio track with no elements
         - (not audio_track and 12 or 0) -- remove extra padding
+    local time_codes_y = user_opts.time_codes_offset + (user_opts.osc_height / 2)
     local time_codes_width = get_time_codes_width()
     local narrow_win = osc_param.playresx < (
         user_opts.portrait_window_trigger
@@ -2194,8 +2195,13 @@ layouts["modern"] = function ()
         - (subtitle_track and 0 or 100)
         - (audio_track and 0 or 100)
     )
+    if narrow_win then
+        time_codes_y = user_opts.time_codes_offset + user_opts.osc_height
+        -- align time_codes with either chapter or title (if chapter is hidden)
+        time_codes_y = (no_chapter or not chapter_index) and (time_codes_y + user_opts.title_offset) or (time_codes_y + user_opts.chapter_title_offset)
+    end
     lo = add_layout("time_codes")
-    lo.geometry = {x = (narrow_win and refX or time_codes_x), y = refY - (narrow_win and (user_opts.osc_height - user_opts.time_codes_centered_offset) or user_opts.time_codes_offset + (user_opts.osc_height / 2)), an = (narrow_win and 5 or 4), w = time_codes_width, h = user_opts.time_font_size}
+    lo.geometry = {x = (narrow_win and (osc_geo.w - 25) or time_codes_x), y = refY - time_codes_y, an = (narrow_win and 3 or 4), w = time_codes_width, h = user_opts.time_font_size}
     lo.style = osc_styles.time
 
     -- Fullscreen/Info/Pin/Screenshot/Loop/Speed
@@ -2317,7 +2323,7 @@ layouts["modern-compact"] = function ()
 	local title_y = (no_chapter or not chapter_index) and (user_opts.osc_height + title_offset) or (chapter_title_y + chapter_h + user_opts.title_with_chapter_offset)
 
     -- OSC title
-    local title_w = (chapter_index and (osc_geo.w - 50) or (osc_geo.w - 50 - time_codes_width))
+    local title_w = (no_chapter or not chapter_index) and (osc_geo.w - 50 - time_codes_width - 10) or (osc_geo.w - 50)
     if title_w < 0 then title_w = 0 end
     geo = {x = 25, y = refY - title_y, an = 1, w = title_w, h = user_opts.title_font_size}
     lo = add_layout("title")
@@ -2332,9 +2338,13 @@ layouts["modern-compact"] = function ()
         lo.geometry = chapter_geo
         lo.style = string.format("%s{\\clip(%f,%f,%f,%f)}", osc_styles.chapter_title, chapter_geo.x, chapter_geo.y - chapter_geo.h, chapter_geo.x + chapter_geo.w, chapter_geo.y + chapter_geo.h)
     end
+
     -- Time codes
+    local time_codes_y = user_opts.time_codes_offset + user_opts.osc_height
+    -- align time_codes with either chapter or title (if chapter is hidden)
+    time_codes_y = (no_chapter or not chapter_index) and (time_codes_y + user_opts.title_offset) or (time_codes_y + user_opts.chapter_title_offset)
     lo = add_layout("time_codes")
-    lo.geometry = {x = osc_geo.w - 25, y = refY - (user_opts.osc_height + user_opts.time_codes_offset + 26), an = 6, w = time_codes_width, h = user_opts.time_font_size}
+    lo.geometry = {x = osc_geo.w - 25, y = refY - time_codes_y, an = 3, w = time_codes_width, h = user_opts.time_font_size}
     lo.style = osc_styles.time
 
     -- Left side buttons
