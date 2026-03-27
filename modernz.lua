@@ -2791,7 +2791,7 @@ local function osc_init()
 
     --playlist
     ne = new_element("playlist", "button")
-    ne.enabled = have_pl or not user_opts.gray_empty_playlist_button
+    ne.enabled = have_pl or not user_opts.hide_empty_playlist_button
     ne.off = not have_pl and user_opts.gray_empty_playlist_button
     ne.visible = (osc_param.playresx >= (state.is_image and 250 or visible_min_width) - outeroffset)
     ne.content = icons.playlist
