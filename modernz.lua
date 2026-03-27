@@ -3947,12 +3947,11 @@ local function idlescreen_visibility(mode, no_osd)
     request_tick()
 end
 
-mp.observe_property("pause", "bool", function(_, enabled)
-    state.pause = (enabled == true)
+observe_cached("pause", function()
     request_tick()
     if user_opts.showonpause and user_opts.visibility ~= "never" then
-        state.enabled = enabled
-        if enabled then
+        state.enabled = state.pause
+        if state.pause then
             if user_opts.keeponpause then
                 if user_opts.zones_hover_mode == "independent" then
                     show_osc()
