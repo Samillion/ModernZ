@@ -120,8 +120,6 @@ local user_opts = {
     speed_button_click = 1,                -- speed change amount per click
     speed_button_scroll = 0.25,            -- speed change amount on scroll
 
-    loop_in_pause = true,                  -- enable loop with mouse actions on pause button
-
     buttons_always_active = "none",        -- force buttons to always be active. can add: playlist_prev, playlist_next
 
     playpause_size = 28,                   -- icon size for the play/pause button
@@ -2776,18 +2774,14 @@ local function osc_init()
         end
     end
     ne.eventresponder["mbtn_right_down"] = function ()
-        if user_opts.loop_in_pause then
-            mp.command("show-text '" .. (state.file_loop and locale.file_loop_disable or locale.file_loop_enable) .. "'")
-            state.file_loop = not state.file_loop
-            mp.set_property_native("loop-file", state.file_loop)
-        end
+        mp.command("show-text '" .. (state.file_loop and locale.file_loop_disable or locale.file_loop_enable) .. "'")
+        state.file_loop = not state.file_loop
+        mp.set_property_native("loop-file", state.file_loop)
     end
     ne.eventresponder["shift+mbtn_left_down"] = function ()
-        if user_opts.loop_in_pause then
-            mp.command("show-text '" .. (state.playlist_loop and locale.playlist_loop_disable or locale.playlist_loop_enable) .. "'")
-            state.playlist_loop = not state.playlist_loop
-            mp.set_property_native("loop-playlist", (state.playlist_loop and "inf" or "no"))
-        end
+        mp.command("show-text '" .. (state.playlist_loop and locale.playlist_loop_disable or locale.playlist_loop_enable) .. "'")
+        state.playlist_loop = not state.playlist_loop
+        mp.set_property_native("loop-playlist", (state.playlist_loop and "inf" or "no"))
     end
 
     local jump_amount = user_opts.jump_amount
