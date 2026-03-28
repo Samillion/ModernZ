@@ -256,6 +256,9 @@ Customize the button function based on mouse actions.
 |                               | sub_track_mbtn_right_command     | `cycle sub`                                  |
 |                               | sub_track_wheel_down_command     | `cycle sub`                                  |
 |                               | sub_track_wheel_up_command       | `cycle sub down`                             |
+| Play/Pause button             | play_pause_mbtn_left_command     | `cycle pause`                                |
+|                               | play_pause_mbtn_mid_command      | `cycle-values loop-playlist inf no`          |
+|                               | play_pause_mbtn_right_command    | `cycle-values loop-file inf no`              |
 | Chapter skip buttons          | chapter_prev_mbtn_left_command   | `add chapter -1`                             |
 |                               | chapter_prev_mbtn_mid_command    | `show-text ${chapter-list} 3000`             |
 |                               | chapter_prev_mbtn_right_command  | `script-binding select/select-chapter`       |
