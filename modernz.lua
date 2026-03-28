@@ -279,10 +279,6 @@ local user_opts = {
 
     -- screenshot button mouse actions
     screenshot_mbtn_left_command = "osd-msg screenshot video",
-
-    -- DEPRECATED options
-    raise_subtitles = false,               -- DEPRECATED: use sub_margins and dynamic_margins instead
-    raise_subtitle_amount = false,         -- DEPRECATED: use sub_margins and dynamic_margins instead
 }
 
 local osc_param = {                  -- calculated by osc_init()
@@ -4072,8 +4068,12 @@ local function validate_user_opts()
         user_opts.showonpause = true
     end
 
-    if user_opts.raise_subtitles or user_opts.raise_subtitle_amount then
-        msg.warn("raise_subtitles / raise_subtitle_amount are deprecated. Use sub_margins=yes and dynamic_margins=yes.")
+    local watch_later = "," .. ((mp.get_property("options/watch-later-options") or ""):gsub("%s+", "")) .. ","
+    if user_opts.sub_margins and watch_later:find(",sub-pos,", 1, true) then
+        msg.warn("sub_margins: add watch-later-options-remove=sub-pos to mpv.conf")
+    end
+    if user_opts.osd_margins and watch_later:find(",osd-margin-y,", 1, true) then
+        msg.warn("osd_margins: add watch-later-options-remove=osd-margin-y to mpv.conf")
     end
 end
 
