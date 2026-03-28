@@ -153,10 +153,10 @@ local user_opts = {
     thumbnail_box_color = "#111111",       -- color of the background for thumbnail box
     thumbnail_box_outline = "#404040",     -- color of the border outline for thumbnail box
 
-    osc_fade_height = 100,                 -- height of the OSC background (0 to disable)
+    osc_fade_strength = 100,               -- strength of the OSC background fade (0 to disable)
     fade_blur_strength = 100,              -- blur strength for the OSC alpha fade. caution: high values can take a lot of CPU time to render
     fade_transparency_strength = 0,        -- use with "fade_blur_strength=0" to create a transparency box
-    window_fade_height = 100,              -- height of the window title bar (0 to disable)
+    window_fade_strength = 100,            -- strength of the window title bar fade (0 to disable)
     window_fade_blur_strength = 100,       -- blur strength for the window title bar. caution: high values can take a lot of CPU time to render
     window_fade_transparency_strength = 0, -- use with "window_fade_blur_strength=0" to create a transparency box
     thumbnail_box_padding = 4.5,           -- thumbnail box padding around the image
@@ -501,8 +501,8 @@ local function set_osc_styles()
     local midbuttons_size = user_opts.midbuttons_size
     local sidebuttons_size = user_opts.sidebuttons_size
     osc_styles = {
-        osc_fade_bg = "{\\blur" .. user_opts.fade_blur_strength .. "\\bord" .. user_opts.osc_fade_height .. "\\1c&H0&\\3c&H" .. osc_color_convert(user_opts.osc_color) .. "&}",
-        window_fade_bg = "{\\blur" .. user_opts.window_fade_blur_strength .. "\\bord" .. user_opts.window_fade_height .. "\\1c&H0&\\3c&H" .. osc_color_convert(user_opts.osc_color) .. "&}",
+        osc_fade_bg = "{\\blur" .. user_opts.fade_blur_strength .. "\\bord" .. user_opts.osc_fade_strength .. "\\1c&H0&\\3c&H" .. osc_color_convert(user_opts.osc_color) .. "&}",
+        window_fade_bg = "{\\blur" .. user_opts.window_fade_blur_strength .. "\\bord" .. user_opts.window_fade_strength .. "\\1c&H0&\\3c&H" .. osc_color_convert(user_opts.osc_color) .. "&}",
         window_control = "{\\blur0\\bord0\\1c&H" .. osc_color_convert(user_opts.window_controls_color) .. "&\\3c&H0&\\fs25\\fn" .. icons.iconfont .. "}",
         window_title = "{\\blur1\\bord0.5\\1c&H" .. osc_color_convert(user_opts.window_title_color) .. "&\\3c&H0&\\fs".. user_opts.window_title_font_size .."\\q2\\fn" .. user_opts.font .. "}",
         title = "{\\blur1\\bord0.5\\1c&H" .. osc_color_convert(user_opts.title_color) .. "&\\3c&H0&\\fs".. user_opts.title_font_size .."\\q2\\fn" .. user_opts.font .. "}",
@@ -942,7 +942,7 @@ local function update_margins()
     local margins = {
         l = 0,
         r = 0,
-        t = (use_margins and top_vis)    and osc_param.video_margins.t or 0,
+        t = (use_margins and top_vis) and osc_param.video_margins.t or 0,
         b = (use_margins and bottom_vis) and osc_param.video_margins.b or 0,
     }
 
@@ -2006,7 +2006,7 @@ layouts["modern"] = function ()
     }
 
     -- update bottom margin
-    osc_param.video_margins.b = math.max(osc_geo.h, user_opts.osc_fade_height) / osc_param.playresy
+    osc_param.video_margins.b = osc_geo.h / osc_param.playresy
 
     -- origin of the controllers, left/bottom corner
     local posX = 0
@@ -2260,7 +2260,7 @@ layouts["modern-compact"] = function ()
     }
 
     -- update bottom margin
-    osc_param.video_margins.b = math.max(osc_geo.h, user_opts.osc_fade_height) / osc_param.playresy
+    osc_param.video_margins.b = osc_geo.h / osc_param.playresy
 
     -- origin of the controllers, left/bottom corner
     local posX = 0
@@ -2446,7 +2446,7 @@ layouts["modern-image"] = function ()
     }
 
     -- update bottom margin
-    osc_param.video_margins.b = math.max(50, user_opts.osc_fade_height) / osc_param.playresy
+    osc_param.video_margins.b = osc_geo.h / osc_param.playresy
 
     -- origin of the controllers, left/bottom corner
     local posX = 0
