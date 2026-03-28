@@ -3142,7 +3142,7 @@ local function osc_init()
         -- sent when the user is done seeking, so we need to throw away
         -- identical seeks
         state.playing_and_seeking = true
-        if not state.pause and user_opts.mouse_seek_pause then
+        if not mp.get_property_bool("pause") and user_opts.mouse_seek_pause then
             mp.commandv("cycle", "pause")
         end
         local seekto = get_slider_value(element)
