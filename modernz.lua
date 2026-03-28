@@ -3142,7 +3142,7 @@ local function osc_init()
         -- sent when the user is done seeking, so we need to throw away
         -- identical seeks
         state.playing_and_seeking = true
-        if not state.pause and user_opts.mouse_seek_pause then
+        if not mp.get_property_bool("pause") and user_opts.mouse_seek_pause then
             mp.commandv("cycle", "pause")
         end
         local seekto = get_slider_value(element)
@@ -3158,13 +3158,13 @@ local function osc_init()
     end
     ne.eventresponder["mbtn_left_down"] = function (element)
         element.state.mbtnleft = true
-        element.state.was_paused = state.pause
+        element.state.was_paused = mp.get_property_bool("pause")
         state.playing_and_seeking = false  -- clear state
         mp.commandv("seek", get_slider_value(element), "absolute-percent+exact")
     end
     ne.eventresponder["shift+mbtn_left_down"] = function (element)
         element.state.mbtnleft = true
-        element.state.was_paused = state.pause
+        element.state.was_paused = mp.get_property_bool("pause")
         state.playing_and_seeking = false
         mp.commandv("seek", get_slider_value(element), "absolute-percent")
     end
@@ -3934,11 +3934,12 @@ local function idlescreen_visibility(mode, no_osd)
     request_tick()
 end
 
-observe_cached("pause", function()
+mp.observe_property("pause", "bool", function(_, enabled)
+    state.pause = (enabled == true)
     request_tick()
     if user_opts.showonpause and user_opts.visibility ~= "never" then
-        state.enabled = state.pause
-        if state.pause then
+        state.enabled = enabled
+        if enabled then
             if user_opts.keeponpause then
                 if user_opts.zones_hover_mode == "independent" then
                     show_osc()
