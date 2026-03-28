@@ -12,21 +12,21 @@ Create `modernz.conf` in your mpv script-opts directory:
 
 ### Language and display
 
-| Option                    | Value           | Description                                                                                                                    |
-| ------------------------- | --------------- | ------------------------------------------------------------------------------------------------------------------------------ |
-| language                  | en              | set language (for available options, see: [Translations](https://github.com/Samillion/ModernZ/blob/main/docs/TRANSLATIONS.md)) |
-| layout                    | modern          | set layout: `"modern"` or `"modern-compact"`                                                                                   |
-| icon_theme                | fluent          | set icon theme. accepts `fluent` or `material`                                                                                 |
-| icon_style                | mixed           | "mixed", "filled", "outline"                                                                                                   |
-| font                      | mpv-osd-symbols | font for the OSC (default: mpv-osd-symbols or the one set in mpv.conf)                                                         |
-| idlescreen                | yes             | show mpv logo when idle                                                                                                        |
-| window_top_bar            | auto            | show OSC window top bar: `"auto"`, `"yes"`, or `"no"` (borderless/fullscreen)                                                  |
-| showwindowed              | yes             | show OSC when windowed                                                                                                         |
-| showfullscreen            | yes             | show OSC when fullscreen                                                                                                       |
-| showonselect              | no              | show OSC when a select menu is open                                                                                            |
-| showonpause               | yes             | show OSC when paused                                                                                                           |
-| keeponpause               | no              | disable OSC hide timeout when paused                                                                                           |
-| greenandgrumpy            | no              | disable Santa hat in December                                                                                                  |
+| Option         | Value           | Description                                                                                                                    |
+| -------------- | --------------- | ------------------------------------------------------------------------------------------------------------------------------ |
+| language       | en              | set language (for available options, see: [Translations](https://github.com/Samillion/ModernZ/blob/main/docs/TRANSLATIONS.md)) |
+| layout         | modern          | set layout: `"modern"` or `"modern-compact"`                                                                                   |
+| icon_theme     | fluent          | set icon theme. accepts `fluent` or `material`                                                                                 |
+| icon_style     | mixed           | "mixed", "filled", "outline"                                                                                                   |
+| font           | mpv-osd-symbols | font for the OSC (default: mpv-osd-symbols or the one set in mpv.conf)                                                         |
+| idlescreen     | yes             | show mpv logo when idle                                                                                                        |
+| window_top_bar | auto            | show OSC window top bar: `"auto"`, `"yes"`, or `"no"` (borderless/fullscreen)                                                  |
+| showwindowed   | yes             | show OSC when windowed                                                                                                         |
+| showfullscreen | yes             | show OSC when fullscreen                                                                                                       |
+| showonselect   | no              | show OSC when a select menu is open                                                                                            |
+| showonpause    | yes             | show OSC when paused                                                                                                           |
+| keeponpause    | no              | disable OSC hide timeout when paused                                                                                           |
+| greenandgrumpy | no              | disable Santa hat in December                                                                                                  |
 
 ### OSC behaviour and scaling
 
@@ -71,12 +71,12 @@ Create `modernz.conf` in your mpv script-opts directory:
 
 ### Title bar settings
 
-| Option                    | Value            | Description                                                               |
-| ------------------------- | ---------------- | ------------------------------------------------------------------------- |
-| show_window_title         | no               | show window title in borderless/fullscreen mode                           |
-| window_title              | `${media-title}` | same as title but for window_top_bar                                      |
-| window_title_font_size    | 26               | window title font size                                                    |
-| window_controls           | yes              | show window controls (close, minimize, maximize) in borderless/fullscreen |
+| Option                 | Value            | Description                                                               |
+| ---------------------- | ---------------- | ------------------------------------------------------------------------- |
+| show_window_title      | no               | show window title in borderless/fullscreen mode                           |
+| window_title           | `${media-title}` | same as title but for window_top_bar                                      |
+| window_title_font_size | 26               | window title font size                                                    |
+| window_controls        | yes              | show window controls (close, minimize, maximize) in borderless/fullscreen |
 
 ### Subtitle and OSD display settings
 
@@ -169,14 +169,14 @@ watch-later-options-remove=osd-margin-y
 
 ### Button hover settings
 
-| Option                   | Value           | Description                                                                                      |
-| ------------------------ | --------------- | ------------------------------------------------------------------------------------------------ |
-| hover_effect             | size,glow,color | active button hover effects: `"glow"`, `"size"`, `"color"`; can use multiple separated by commas |
-| button_hover_size        | 115             | relative size of a hovered button if "size" effect is active                                     |
-| button_glow_amount       | 5               | glow intensity when `"glow"` hover effect is active                                              |
-| slider_hover_effect      | yes             | apply size effect only when hovering slider handles                                              |
-| slider_hover_size        | 130             | relative size of a hovered slider handle if "slider_hover_effect" is used                        |
-| tooltip_hints            | yes             | enable tooltips for most buttons. seek and volume tooltips are always enabled                    |
+| Option              | Value           | Description                                                                                               |
+| ------------------- | --------------- | --------------------------------------------------------------------------------------------------------- |
+| hover_effect        | size,glow,color | active button hover effects: `"glow"`, `"size"`, `"color"`, `"box"`; can use multiple separated by commas |
+| button_hover_size   | 115             | relative size of a hovered button if "size" effect is active                                              |
+| button_glow_amount  | 5               | glow intensity when `"glow"` hover effect is active                                                       |
+| slider_hover_effect | yes             | apply size effect only when hovering slider handles                                                       |
+| slider_hover_size   | 130             | relative size of a hovered slider handle if "slider_hover_effect" is used                                 |
+| tooltip_hints       | yes             | enable tooltips for most buttons. seek and volume tooltips are always enabled                             |
 
 ### Progress bar settings
 
@@ -212,18 +212,18 @@ watch-later-options-remove=osd-margin-y
 
 Useful when adjusting font size or type, this will help you change the affected elements position
 
-| Option                      | Value | Description                                                            |
-| --------------------------- | ----- | ---------------------------------------------------------------------- |
-| title_offset                | 24    | title vertical offset relative to seekbar                              |
-| title_with_chapter_offset   | 4     | title vertical offset if a chapter title is below it                   |
-| chapter_title_offset        | 20    | chapter title vertical offset relative to seekbar                      |
-| time_codes_offset           | 0     | time codes vertical offset relative to seekbar                         |
-| time_codes_centered_offset  | 13    | time codes vertical offset with portrait window                        |
-| tooltip_height_offset       | 2     | tooltip height position offset                                         |
-| portrait_window_trigger     | 1000  | portrait window width trigger to move some elements                    |
-| hide_volume_bar_trigger     | 1150  | hide volume bar trigger window width                                   |
-| seek_hover_tooltip_h_offset | 5     | seek hover timecodes tooltip height position offset                    |
-| osc_height                  | 70    | osc height                                                             |
+| Option                      | Value | Description                                          |
+| --------------------------- | ----- | ---------------------------------------------------- |
+| title_offset                | 24    | title vertical offset relative to seekbar            |
+| title_with_chapter_offset   | 4     | title vertical offset if a chapter title is below it |
+| chapter_title_offset        | 20    | chapter title vertical offset relative to seekbar    |
+| time_codes_offset           | 0     | time codes vertical offset relative to seekbar       |
+| time_codes_centered_offset  | 13    | time codes vertical offset with portrait window      |
+| tooltip_height_offset       | 2     | tooltip height position offset                       |
+| portrait_window_trigger     | 1000  | portrait window width trigger to move some elements  |
+| hide_volume_bar_trigger     | 1150  | hide volume bar trigger window width                 |
+| seek_hover_tooltip_h_offset | 5     | seek hover timecodes tooltip height position offset  |
+| osc_height                  | 70    | osc height                                           |
 
 ### Mouse Commands (User Options)
 
