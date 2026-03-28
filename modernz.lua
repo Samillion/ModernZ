@@ -2090,6 +2090,7 @@ layouts["modern"] = function ()
         lo = add_layout("chapter_title")
         lo.geometry = {x = 26, y = refY - chapter_title_y, an = 1, w = osc_geo.w / 2, h = user_opts.chapter_title_font_size}
         lo.style = string.format("%s{\\clip(0,%f,%f,%f)}", osc_styles.chapter_title, geo.y - geo.h, geo.x + geo.w, geo.y + geo.h)
+        lo.alpha[3] = 0
     end
 
     -- buttons
@@ -2332,6 +2333,7 @@ layouts["modern-compact"] = function ()
         lo = add_layout("chapter_title")
         lo.geometry = chapter_geo
         lo.style = string.format("%s{\\clip(%f,%f,%f,%f)}", osc_styles.chapter_title, chapter_geo.x, chapter_geo.y - chapter_geo.h, chapter_geo.x + chapter_geo.w, chapter_geo.y + chapter_geo.h)
+        lo.alpha[3] = 0
     end
 
     -- Time codes
