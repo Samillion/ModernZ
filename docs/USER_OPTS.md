@@ -87,9 +87,9 @@ watch-later-options-remove=sub-pos
 watch-later-options-remove=osd-margin-y
 ```
 
-If `sub_margins` is enabled, the subtitles are raised above the OSC when it's visible. Measured by both `osc_height` and `fade_alpha`, specifically whichever of them is highest.
+If `sub_margins` is enabled, the subtitles are raised above the OSC when it's visible. Measured by both `osc_height` and `osc_fade_height`, specifically whichever of them is highest.
 
-So, to control the raise amount of subtitles, adjust your `osc_height` and `fade_alpha` options in `modernz.conf` to change the OSC boundary.
+So, to control the raise amount of subtitles, adjust your `osc_height` and `osc_fade_height` options in `modernz.conf` to change the OSC boundary.
 
 | Option          | Value | Description                                    |
 | --------------- | ----- | ---------------------------------------------- |
@@ -161,18 +161,18 @@ So, to control the raise amount of subtitles, adjust your `osc_height` and `fade
 | playpause_color                   | `#FFFFFF` | color of the play/pause button                                                                    |
 | held_element_color                | `#999999` | color of the element when held down (pressed)                                                     |
 | hover_effect_color                | `#FB8C00` | color of a hovered button when `hover_effect` includes `"color"`                                  |
-| thumbnail_border_color            | `#111111` | color of the border for thumbnails (with thumbfast)                                               |
-| thumbnail_border_outline          | `#404040` | color of the border outline for thumbnails                                                        |
-| fade_alpha                        | 130       | alpha of the OSC background box (0 to disable)                                                    |
+| thumbnail_box_color               | `#111111` | color of the background for thumbnail box                                                         |
+| thumbnail_box_outline             | `#404040` | color of the border outline for thumbnail box                                                     |
+| osc_fade_height                   | 100       | height of the OSC background (0 to disable)                                                       |
 | fade_blur_strength                | 100       | blur strength for the OSC alpha fade. caution: high values can take a lot of CPU time to render   |
 | fade_transparency_strength        | 0         | use with "fade_blur_strength=0" to create a transparency box                                      |
-| window_fade_alpha                 | 100       | alpha of the window title bar (0 to disable)                                                      |
+| window_fade_height                | 100       | height of the window title bar (0 to disable)                                                     |
 | window_fade_blur_strength         | 100       | blur strength for the window title bar. caution: high values can take a lot of CPU time to render |
 | window_fade_transparency_strength | 0         | use with "window_fade_blur_strength=0" to create a transparency box                               |
-| thumbnail_border                  | 3         | width of the thumbnail border (for thumbfast)                                                     |
-| thumbnail_border_radius           | 3         | rounded corner radius for thumbnail border (0 to disable)                                         |
+| thumbnail_box_padding             | 4.5       | thumbnail box padding around the image                                                            |
+| thumbnail_box_radius              | 4         | round corner radius for thumbnail box border (0 to disable)                                       |
 
-### Button hover effects
+### Button hover settings
 
 | Option                   | Value           | Description                                                                                      |
 | ------------------------ | --------------- | ------------------------------------------------------------------------------------------------ |
@@ -181,13 +181,7 @@ So, to control the raise amount of subtitles, adjust your `osc_height` and `fade
 | button_glow_amount       | 5               | glow intensity when `"glow"` hover effect is active                                              |
 | slider_hover_effect      | yes             | apply size effect only when hovering slider handles                                              |
 | slider_hover_size        | 130             | relative size of a hovered slider handle if "slider_hover_effect" is used                        |
-
-### Tooltips and hints
-
-| Option                         | Value | Description                                                              |
-| ------------------------------ | ----- | ------------------------------------------------------------------------ |
-| tooltips_for_disabled_elements | yes   | enable tooltips for disabled buttons and elements                        |
-| tooltip_hints                  | yes   | enable text hints for info, loop, shuffle, ontop, and screenshot buttons |
+| tooltip_hints            | yes             | enable tooltips for most buttons. seek and volume tooltips are always enabled                    |
 
 ### Progress bar settings
 
@@ -225,18 +219,16 @@ Useful when adjusting font size or type, this will help you change the affected 
 
 | Option                      | Value | Description                                                            |
 | --------------------------- | ----- | ---------------------------------------------------------------------- |
-| title_height                | 96    | title height position above seekbar                                    |
-| title_with_chapter_height   | 108   | title height position if a chapter title is below it                   |
-| chapter_title_height        | 91    | chapter title height position above seekbar                            |
-| time_codes_height           | 35    | time codes height position                                             |
-| time_codes_centered_height  | 57    | time codes height position with portrait window                        |
+| title_offset                | 24    | title vertical offset relative to seekbar                              |
+| title_with_chapter_offset   | 4     | title vertical offset if a chapter title is below it                   |
+| chapter_title_offset        | 20    | chapter title vertical offset relative to seekbar                      |
+| time_codes_offset           | 0     | time codes vertical offset relative to seekbar                         |
+| time_codes_centered_offset  | 13    | time codes vertical offset with portrait window                        |
 | tooltip_height_offset       | 2     | tooltip height position offset                                         |
 | portrait_window_trigger     | 1000  | portrait window width trigger to move some elements                    |
 | hide_volume_bar_trigger     | 1150  | hide volume bar trigger window width                                   |
-| notitle_osc_h_offset        | 25    | osc height offset if title above seekbar is disabled                   |
-| nochapter_osc_h_offset      | 10    | osc height offset if chapter title is disabled or doesn't exist        |
 | seek_hover_tooltip_h_offset | 5     | seek hover timecodes tooltip height position offset                    |
-| osc_height                  | 132   | osc height without offsets                                             |
+| osc_height                  | 70    | osc height                                                             |
 
 ### Mouse Commands (User Options)
 
