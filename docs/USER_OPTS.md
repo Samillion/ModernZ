@@ -171,7 +171,7 @@ So, to control the raise amount of subtitles, adjust your `osc_height` and `osc_
 | thumbnail_box_padding             | 4.5       | thumbnail box padding around the image                                                            |
 | thumbnail_box_radius              | 4         | round corner radius for thumbnail box border (0 to disable)                                       |
 
-### Button hover effects
+### Button hover settings
 
 | Option                   | Value           | Description                                                                                      |
 | ------------------------ | --------------- | ------------------------------------------------------------------------------------------------ |
@@ -180,13 +180,7 @@ So, to control the raise amount of subtitles, adjust your `osc_height` and `osc_
 | button_glow_amount       | 5               | glow intensity when `"glow"` hover effect is active                                              |
 | slider_hover_effect      | yes             | apply size effect only when hovering slider handles                                              |
 | slider_hover_size        | 130             | relative size of a hovered slider handle if "slider_hover_effect" is used                        |
-
-### Tooltips and hints
-
-| Option                         | Value | Description                                                              |
-| ------------------------------ | ----- | ------------------------------------------------------------------------ |
-| tooltips_for_disabled_elements | yes   | enable tooltips for disabled buttons and elements                        |
-| tooltip_hints                  | yes   | enable text hints for info, loop, shuffle, ontop, and screenshot buttons |
+| tooltip_hints            | yes             | enable tooltips for most buttons. seek and volume tooltips are always enabled                    |
 
 ### Progress bar settings
 
