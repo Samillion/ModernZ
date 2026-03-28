@@ -4068,7 +4068,7 @@ local function validate_user_opts()
         user_opts.showonpause = true
     end
 
-    local watch_later = "," .. (mp.get_property("options/watch-later-options") or "") .. ","
+    local watch_later = "," .. ((mp.get_property("options/watch-later-options") or ""):gsub("%s+", "")) .. ","
     if user_opts.sub_margins and watch_later:find(",sub-pos,", 1, true) then
         msg.warn("sub_margins: add watch-later-options-remove=sub-pos to mpv.conf")
     end
