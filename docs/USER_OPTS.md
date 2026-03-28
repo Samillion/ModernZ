@@ -87,10 +87,6 @@ watch-later-options-remove=sub-pos
 watch-later-options-remove=osd-margin-y
 ```
 
-If `sub_margins` is enabled, the subtitles are raised above the OSC when it's visible. Measured by both `osc_height` and `osc_fade_height`, specifically whichever of them is highest.
-
-So, to control the raise amount of subtitles, adjust your `osc_height` and `osc_fade_height` options in `modernz.conf` to change the OSC boundary.
-
 | Option          | Value | Description                                    |
 | --------------- | ----- | ---------------------------------------------- |
 | sub_margins     | yes   | raise subtitles above the OSC when shown       |
@@ -162,10 +158,10 @@ So, to control the raise amount of subtitles, adjust your `osc_height` and `osc_
 | hover_effect_color                | `#FB8C00` | color of a hovered button when `hover_effect` includes `"color"`                                  |
 | thumbnail_box_color               | `#111111` | color of the background for thumbnail box                                                         |
 | thumbnail_box_outline             | `#404040` | color of the border outline for thumbnail box                                                     |
-| osc_fade_height                   | 100       | height of the OSC background (0 to disable)                                                       |
+| osc_fade_strength                 | 100       | strength of the OSC background fade (0 to disable)                                                |
 | fade_blur_strength                | 100       | blur strength for the OSC alpha fade. caution: high values can take a lot of CPU time to render   |
 | fade_transparency_strength        | 0         | use with "fade_blur_strength=0" to create a transparency box                                      |
-| window_fade_height                | 100       | height of the window title bar (0 to disable)                                                     |
+| window_fade_strength              | 100       | strength of the window title bar fade (0 to disable)                                              |
 | window_fade_blur_strength         | 100       | blur strength for the window title bar. caution: high values can take a lot of CPU time to render |
 | window_fade_transparency_strength | 0         | use with "window_fade_blur_strength=0" to create a transparency box                               |
 | thumbnail_box_padding             | 4.5       | thumbnail box padding around the image                                                            |
