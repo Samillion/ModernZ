@@ -127,7 +127,6 @@ So, to control the raise amount of subtitles, adjust your `osc_height` and `osc_
 | speed_button               | yes           | show speed control button                                                                                          |
 | speed_button_click         | 1             | speed change amount per click                                                                                      |
 | speed_button_scroll        | 0.25          | speed change amount on scroll                                                                                      |
-| loop_in_pause              | yes           | enable loop with mouse actions on pause button                                                                     |
 | buttons_always_active      | none          | force buttons to always be active. can add: `playlist_prev`, `playlist_next`                                       |
 | info_button                | yes           | show `info (stats)` button                                                                                         |
 | fullscreen_button          | yes           | show `fullscreen toggle` button                                                                                    |
