@@ -244,6 +244,10 @@ local user_opts = {
     sub_track_wheel_down_command = "cycle sub",
     sub_track_wheel_up_command = "cycle sub down",
 
+    -- play/pause button mouse actions
+    play_pause_mbtn_mid_command = "cycle-values loop-playlist inf no",
+    play_pause_mbtn_right_command = "cycle-values loop-file inf no",
+
     -- chapter skip buttons mouse actions
     chapter_prev_mbtn_left_command = "add chapter -1",
     chapter_prev_mbtn_mid_command = "show-text ${chapter-list} 3000",
@@ -2722,15 +2726,11 @@ local function osc_init()
     ne.visible = mp.get_property_number("chapter", -1) >= 0
     ne.content = function()
         local chapter_index = mp.get_property_number("chapter", -1)
-        if user_opts.chapter_fmt == "no" or chapter_index < 0 then
-            return ""
-        end
+        if user_opts.chapter_fmt == "no" or chapter_index < 0 then return "" end
 
         local chapters = state.chapter_list
         local chapter_data = chapters[chapter_index + 1]
-        local chapter_title = chapter_data and chapter_data.title ~= "" and chapter_data.title
-            or string.format("%s: %d/%d", locale.chapter, chapter_index + 1, #chapters)
-
+        local chapter_title = chapter_data and chapter_data.title ~= "" and chapter_data.title or string.format("%s: %d/%d", locale.chapter, chapter_index + 1, #chapters)
         chapter_title = mp.command_native({"escape-ass", chapter_title})
 
         return string.format(user_opts.chapter_fmt, chapter_title)
@@ -2756,15 +2756,7 @@ local function osc_init()
     --play control buttons
     --play_pause
     ne = new_element("play_pause", "button")
-    ne.content = function ()
-        if state.eof_reached then
-            return icons.replay
-        elseif state.pause and not state.playing_and_seeking then
-            return icons.play
-        else
-            return icons.pause
-        end
-    end
+    ne.content = function () return state.eof_reached and icons.replay or (state.pause and not state.playing_and_seeking and icons.play) or icons.pause end
     ne.eventresponder["mbtn_left_up"] = function ()
         if state.eof_reached then
             mp.commandv("seek", 0, "absolute-percent")
@@ -2773,16 +2765,7 @@ local function osc_init()
             mp.commandv("cycle", "pause")
         end
     end
-    ne.eventresponder["mbtn_right_down"] = function ()
-        mp.command("show-text '" .. (state.file_loop and locale.file_loop_disable or locale.file_loop_enable) .. "'")
-        state.file_loop = not state.file_loop
-        mp.set_property_native("loop-file", state.file_loop)
-    end
-    ne.eventresponder["shift+mbtn_left_down"] = function ()
-        mp.command("show-text '" .. (state.playlist_loop and locale.playlist_loop_disable or locale.playlist_loop_enable) .. "'")
-        state.playlist_loop = not state.playlist_loop
-        mp.set_property_native("loop-playlist", (state.playlist_loop and "inf" or "no"))
-    end
+    bind_buttons("play_pause")
 
     local jump_amount = user_opts.jump_amount
     local jump_more_amount = user_opts.jump_more_amount
@@ -2820,7 +2803,6 @@ local function osc_init()
     ne.content = icons.forward
     ne.enabled = have_ch -- disables button when no chapters available.
     bind_buttons("chapter_next", true)
-
     local visible_min_width = 550 - outeroffset
 
     --playlist
@@ -2842,7 +2824,7 @@ local function osc_init()
     ne.content = icons.audio
     ne.tooltipF = function ()
         local prop = mp.get_property("current-tracks/audio/title") or mp.get_property("current-tracks/audio/lang") or locale.na
-        return (user_opts.tooltip_hints and (locale.audio .. " " .. mp.get_property_number("aid", "-") .. "/" .. state.audio_track_count .. " [" .. prop .. "]") or "")
+        return (user_opts.tooltip_hints and (locale.audio .. " [" .. mp.get_property_number("aid", "-") .. "/" .. state.audio_track_count .. "] [" .. prop .. "]") or "")
     end
     ne.nothingavailable = locale.no_audio
     bind_buttons("audio_track")
@@ -2856,7 +2838,7 @@ local function osc_init()
     ne.content = icons.subtitle
     ne.tooltipF = function ()
         local prop = mp.get_property("current-tracks/sub/title") or mp.get_property("current-tracks/sub/lang") or locale.na
-        return (user_opts.tooltip_hints and (locale.subtitle .. " " .. mp.get_property_number("sid", "-") .. "/" .. state.sub_track_count .. " [" .. prop .. "]") or "")
+        return (user_opts.tooltip_hints and (locale.subtitle .. " [" .. mp.get_property_number("sid", "-") .. "/" .. state.sub_track_count .. "] [" .. prop .. "]") or "")
     end
     ne.nothingavailable = locale.no_subs
     bind_buttons("sub_track")
@@ -2870,17 +2852,7 @@ local function osc_init()
     ne.visible = (osc_param.playresx >= 900 - vol_visible_offset - outeroffset) and user_opts.volume_control
     ne.content = function ()
         local volume = state.volume or 0
-        if state.mute then
-            return icons.volume_mute
-        else
-            if volume >= 75 then
-                return icons.volume_high
-            elseif volume >= 25 then
-                return icons.volume_low
-            else
-                return icons.volume_quiet
-            end
-        end
+        return state.mute and icons.volume_mute or (volume >= 75 and icons.volume_high) or (volume >= 25 and icons.volume_low) or icons.volume_quiet
     end
     ne.tooltipF = function ()
         local volume = state.volume or 0
@@ -2900,17 +2872,12 @@ local function osc_init()
     ne.slider.markerF = function () return {} end
     ne.slider.seekRangesF = function() return nil end
     ne.slider.posF = function ()
-        local volume = state.volume
-        if user_opts.volume_control_type == "logarithmic" then
-            return volume and math.sqrt(volume * 100) or 0
-        else
-            return volume
-        end
+        if user_opts.volume_control_type ~= "logarithmic" then return state.volume end
+        return state.volume and math.sqrt(state.volume * 100) or 0
     end
     ne.slider.tooltipF = function(pos)
         if state.audio_track_count <= 0 then return end
-        local volume = set_volume(pos)
-        return volume
+        return set_volume(pos)
     end
     ne.eventresponder["mouse_move"] = function (element)
         local pos = get_slider_value(element)
@@ -3129,25 +3096,18 @@ local function osc_init()
     end
     ne.slider.tooltipF = function (pos)
         local duration = mp.get_property_number("duration")
-        if duration ~= nil and pos ~= nil then
-            return format_time(duration * (pos / 100))
-        else
-            return ""
-        end
+        if duration ~= nil and pos ~= nil then return format_time(duration * (pos / 100)) end
+        return ""
     end
     ne.slider.seekRangesF = build_cache_seek_ranges
     ne.eventresponder["mouse_move"] = function (element)
         if not element.state.mbtnleft then return end -- allow drag for mbtnleft only!
-        -- mouse move events may pile up during seeking and may still get
-        -- sent when the user is done seeking, so we need to throw away
-        -- identical seeks
         state.playing_and_seeking = true
         if not mp.get_property_bool("pause") and user_opts.mouse_seek_pause then
             mp.commandv("cycle", "pause")
         end
         local seekto = get_slider_value(element)
-        if element.state.lastseek == nil or
-          element.state.lastseek ~= seekto then
+        if element.state.lastseek == nil or element.state.lastseek ~= seekto then
             local flags = "absolute-percent"
             if not user_opts.seekbarkeyframes then
                 flags = flags .. "+exact"
@@ -3219,9 +3179,7 @@ local function osc_init()
     end
     ne.slider.tooltipF = function() return "" end
     ne.slider.seekRangesF = function()
-        if user_opts.persistent_buffer then
-            return build_cache_seek_ranges()
-        end
+        if user_opts.persistent_buffer then return build_cache_seek_ranges() end
         return nil
     end
 
