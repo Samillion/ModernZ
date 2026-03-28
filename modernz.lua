@@ -163,16 +163,13 @@ local user_opts = {
     thumbnail_box_padding = 4.5,           -- thumbnail box padding around the image
     thumbnail_box_radius = 4,              -- round corner radius for thumbnail box border (0 to disable)
 
-    -- Button hover effects
+    -- Button hover settings
     hover_effect = "size,glow,color",      -- active button hover effects: "glow", "size", "color"; can use multiple separated by commas
     button_hover_size = 115,               -- relative size of a hovered button if "size" effect is active
     button_glow_amount = 5,                -- glow intensity when "glow" hover effect is active
     slider_hover_effect = true,            -- apply size effect only when hovering slider handles
     slider_hover_size = 130,               -- relative size of a hovered slider handle if "slider_hover_effect" is used
-
-    -- Tooltips and hints
-    tooltips_for_disabled_elements = true, -- enable tooltips for disabled buttons and elements
-    tooltip_hints = true,                  -- enable text hints for info, loop, ontop, and screenshot buttons
+    tooltip_hints = true,                  -- enable tooltips for most buttons. seek and volume tooltips are always enabled
 
     -- Progress bar settings
     seek_handle_size = 0.8,                -- size ratio of the seek handle (range: 0 ~ 1)
@@ -1636,7 +1633,7 @@ local function render_elements(master_ass, osc_vis, wc_vis)
             end
 
             -- add tooltip for button elements
-            if element.tooltipF ~= nil and (user_opts.tooltips_for_disabled_elements or element.enabled) then
+            if element.tooltipF ~= nil and element.enabled then
                 if mouse_hit(element) then
                     local tooltiplabel
 
@@ -2078,8 +2075,8 @@ layouts["modern"] = function ()
     local offset = jump_buttons and 60 or 0
     local outeroffset = (chapter_skip_buttons and 0 or 100) + (jump_buttons and 0 or 100)
 
-	local chapter_title_y = user_opts.osc_height + chapter_offset
-	local title_y = (no_chapter or not chapter_index) and (user_opts.osc_height + title_offset) or (chapter_title_y + chapter_h + user_opts.title_with_chapter_offset)
+    local chapter_title_y = user_opts.osc_height + chapter_offset
+    local title_y = (no_chapter or not chapter_index) and (user_opts.osc_height + title_offset) or (chapter_title_y + chapter_h + user_opts.title_with_chapter_offset)
 
     -- OSC title
     geo = {x = 25, y = refY - title_y, an = 1, w = osc_geo.w - 50 - (loop_button and 45 or 0) - (speed_button and 45 or 0), h = user_opts.title_font_size}
@@ -2317,8 +2314,8 @@ layouts["modern-compact"] = function ()
     -- Time codes width calculation
     local time_codes_width = get_time_codes_width()
 
-	local chapter_title_y = user_opts.osc_height + chapter_offset
-	local title_y = (no_chapter or not chapter_index) and (user_opts.osc_height + title_offset) or (chapter_title_y + chapter_h + user_opts.title_with_chapter_offset)
+    local chapter_title_y = user_opts.osc_height + chapter_offset
+    local title_y = (no_chapter or not chapter_index) and (user_opts.osc_height + title_offset) or (chapter_title_y + chapter_h + user_opts.title_with_chapter_offset)
 
     -- OSC title
     local title_w = (no_chapter or not chapter_index) and (osc_geo.w - 50 - time_codes_width - 10) or (osc_geo.w - 50)
