@@ -42,7 +42,7 @@ reset-on-next-file=video-zoom,panscan,video-unscaled,video-rotate,video-align-x,
     image-display-duration=inf
     title=${media-title} [${?width:${width}x${height}}]
     input-commands=enable-section image allow-hide-cursor
-    script-opts-append=modernz-osc_fade_height=50
+    script-opts-append=modernz-osc_fade_strength=50
     script-opts-append=modernz-show_window_title=yes
     script-opts-append=modernz-bottomhover_zone=50
     script-opts-append=modernz-window_title=${media-title} [${?width:${width}x${height}}]
