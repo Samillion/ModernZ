@@ -6,17 +6,18 @@ body:
   attributes:
       label: "mpv Information"
       placeholder: |
-          mpv v0.39.0-300-g42ff6f92 Copyright © 2000-2024 mpv/MPlayer/mplayer2 projects
-           built on Nov  3 2024 00:06:03
-          libplacebo version: v7.349.0 (v7.349.0-19-g118d810-dirty)
-          FFmpeg version: N-117698-gc325f9c61
-          FFmpeg library versions:
-             libavcodec      61.23.100
-             libavdevice     61.4.100
-             libavfilter     10.6.101
-             libavformat     61.9.100
-             libavutil       59.46.100
-             libswscale      8.9.101
+        mpv v0.41.0-374-gf42480d0c Copyright © 2000-2026 mpv/MPlayer/mplayer2 projects
+         built on Mar 24 2026 00:05:32
+        libplacebo version: v7.362.0 (v7.360.0-11-g33b5dfa-dirty)
+        FFmpeg version: N-123592-g7516bf24d
+        FFmpeg library versions:
+           libavcodec      62.29.101
+           libavdevice     62.4.100
+           libavfilter     11.15.101
+           libavformat     62.13.101
+           libavutil       60.29.100
+           libswresample   6.4.100
+           libswscale      9.7.100
       description: |
           Provide the output of `mpv --version`.
       render: bash
@@ -24,7 +25,7 @@ body:
       required: false
 - type: textarea
   attributes:
-      label: "Reproduction Steps"
+      label: "Details & Reproduction Steps"
       description: >
           Try to reproduce your issue with `--no-config` and mpv's stock osc first. If it is reproducible
           even then, try to find out which option or script causes your issue.
@@ -33,18 +34,6 @@ body:
           Describe the reproduction steps as precise as possible. It's very likely that
           the bug you experience wasn't reproduced by the developer because the workflow
           differs from your own.
-  validations:
-      required: true
-- type: textarea
-  attributes:
-      label: "Expected Behavior"
-      placeholder: "What were you expecting?"
-  validations:
-      required: true
-- type: textarea
-  attributes:
-      label: "Actual Behavior"
-      placeholder: "What happened instead?"
   validations:
       required: true
 - type: textarea
