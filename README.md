@@ -1,28 +1,24 @@
 <h1 align="center">ModernZ - A Sleek Alternative OSC for mpv</h1>
 
-A sleek and modern OSC for [mpv](https://mpv.io/), this project is a fork of ModernX designed to enhance functionality by adding more features, all while preserving the core standards of mpv's OSC.
+A sleek and modern OSC for [mpv](https://mpv.io/). This project is a fork of ModernX that enhances functionality by adding more features while preserving the core standards of mpv's OSC.
 
 <img width="1715" height="966" alt="ModernZ" src="https://github.com/user-attachments/assets/60108e23-01b4-4928-a2cf-9b5de73364dc" />
 
 <p align="center">
-    <a href="#installation"><strong>Installation »</strong></a>
-  <br>
-  <a href="#configuration">Configuration</a>
-  ·
-  <a href="#controls">Controls</a>
-  ·
-  <a href="#translations">OSC Language</a>
-  ·
+  <a href="#installation"><strong>Installation »</strong></a><br>
+  <a href="#configuration">Configuration</a> ·
+  <a href="#controls">Controls</a> ·
+  <a href="#translations">OSC Language</a> ·
   <a href="#extras">Extra Scripts</a>
 </p>
 
 ## Features
 
-- 🎨 Modern, customizable interface with multiple layouts, themes and icon styles [[options](#configuration)]
+- 🎨 Modern, customizable interface with multiple layouts, themes, and icon styles [[options](#configuration)]
 - 🖱️ Independent hover zone for top bar (window controls) and bottom bar (OSC)
 - 📷 Image Viewer mode with zoom controls [[details](/docs/IMAGE_VIEWER.md)]
-- 🎛️ Buttons: download, playlist, speed control, screenshot, pin, loop, cache and more. [[details](/docs/CONTROLS.md)]
-- 📄 Interactive menus for playlist, subtitles, chapters, audio tracks and audio devices
+- 🎛️ Buttons: download, playlist, speed control, screenshot, pin, loop, cache, and more. [[details](/docs/CONTROLS.md)]
+- 📄 Interactive menus for playlist, subtitles, chapters, audio tracks, and audio devices
 - 🌐 Multi-language support with JSON [locale](#translations) integration
 - ⌨️ Configurable controls [[details](#controls)]
 - 🖼️ Video thumbnail previews with [thumbfast](https://github.com/po5/thumbfast)
@@ -32,7 +28,7 @@ A sleek and modern OSC for [mpv](https://mpv.io/), this project is a fork of Mod
 </a>
 
 ## Customization
-Choose the layout design that suits your preference, between `modern` and `modern-compact` by using the `layout` option in your `modernz.conf`.
+Choose the layout that suits your preference (`modern` or `modern-compact`) using the `layout` option in your `modernz.conf`.
 
 ### Layouts
 
@@ -64,7 +60,7 @@ Choose the layout design that suits your preference, between `modern` and `moder
 
 ### Themes
 
-You can also change the icon theme to `fluent` or `material` to match your preferred style by using the `icon_theme` option in your `modernz.conf`
+You can also change the icon theme to `fluent` or `material` to match your preferred style by using the `icon_theme` option in your `modernz.conf`.
 
 <table>
     <thead>
@@ -94,7 +90,7 @@ You can also change the icon theme to `fluent` or `material` to match your prefe
 
 ### Theme Styles
 
-Both `fluent` and `material` themes have different styles as well. By using the `icon_style` option, you can choose `mixed`, `filled` or `outline`.
+Both `fluent` and `material` themes have different styles as well. By using the `icon_style` option, you can choose `mixed`, `filled`, or `outline`.
 
 <table>
     <thead>
@@ -168,7 +164,7 @@ Not a fan of white buttons and text? You have complete control to customize colo
     </tbody>
 </table>
 
-See the [Color Customization](docs/USER_OPTS.md#colors-and-style) section in the configuration guide for details on how to customize colors and buttons.
+See the [Color Customization](/docs/USER_OPTS.md#colors-and-style) section in the configuration guide for details on how to customize colors and buttons.
 
 ## Installation
 
@@ -237,7 +233,7 @@ For a full list of options, [check out the detailed list here](docs/USER_OPTS.md
 - Middle click/Shift+Left click: Alternative action
 
 > [!NOTE]
-> Middle clicking performs the same function as `Shift+left mouse button`, allowing for one handed use
+> Middle clicking performs the same function as `Shift+left mouse button`, allowing for one-handed use
 
 For a full list of interactions, check out the [Button Interactions Guide](docs/CONTROLS.md).
 
@@ -263,11 +259,11 @@ Grab the [modernz-locale.json](/extras/locale/modernz-locale.json) file from thi
 
 2. **Add the locales to mpv**
 
-Copy the downloaded `modernz-locale.json` file to your mpv's `/script-opts` folder.
+Copy the downloaded `modernz-locale.json` file to your mpv `/script-opts` folder.
 
 3. **Choose your language**
 
-4. Adjust or add the `language` option in `modernz.conf` file
+Adjust or add the `language` option in your `modernz.conf` to your preferred language.
 
 ```EditorConfig
 # Example configuration in modernz.conf
@@ -281,10 +277,10 @@ For a complete list of available languages, contribution guidelines, and in-dept
 
 ## Extras
 
-The following scripts are ones I wrote and maintain, feel free to use them if they're useful to you.
+The following scripts are maintained by me. Feel free to use them if they're useful to you.
 
 - [Pause-Indicator-Lite](/extras/pause-indicator-lite) - A simple script that displays an indicator on pause
-- [PiP-Lite](/extras/pip-lite) - Add a PiP mode (Picture-in-Picture) to ModernZ pin button and when `ontop` is enabled
+- [PiP-Lite](/extras/pip-lite) - Add a PiP mode (Picture-in-Picture) via the ModernZ pin button or when `ontop` is enabled
 - [ytdlAutoFormat](https://github.com/Samillion/mpv-ytdlautoformat) - A simple mpv script to automatically change `ytdl-format` (yt-dlp) for specified domains
 - [BoxtoWide](https://github.com/Samillion/mpv-boxtowide) - A simple mpv script to change the aspect-ratio of video files/streams to a specific target ratio automatically
 
@@ -311,7 +307,7 @@ For even more useful scripts, check out the [mpv User Scripts Wiki](https://gith
 
 In essence, to maintain and revive the `modern-osc` origin.
 
-Having said that, ModernZ still uses parts of the old code, and every previous and current fork author and contributor deserve credit (including mpv's stock osc), that is why they're mentioned in detail.
+Having said that, ModernZ still uses parts of the old code, and every previous and current fork author and contributor deserves credit (including mpv's stock osc), which is why they are mentioned in detail.
 
 #### Credits:
 
