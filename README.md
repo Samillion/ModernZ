@@ -179,9 +179,9 @@ See the [Color Customization](docs/USER_OPTS.md#colors-and-style) section in the
 
 2. **Copy Files**
 
-   - Place [`modernz.lua`](/modernz.lua) in your mpv `scripts` directory
-   - Place [`modernz-icons.ttf`](/modernz-icons.ttf) in your mpv `fonts` directory
-   - (OPTIONAL) Place [`modernz-locale.json`](/extras/locale/modernz-locale.json) in your mpv `script-opts` directory
+   - Place `modernz.lua` in your mpv `scripts` directory
+   - Place `modernz-icons.ttf` in your mpv `fonts` directory
+   - (OPTIONAL) Place `modernz-locale.json` in your mpv `script-opts` directory
    - (OPTIONAL) Place `thumbfast.lua` in your mpv `scripts` directory
 
 3. **Locations**
@@ -210,7 +210,7 @@ macOS:   ~/Library/Application Support/mpv/
 
 - Place `modernz.conf` in the `/script-opts` folder to customize settings
 
-   - Download [modernz.conf](./modernz.conf) with all default options
+   - Download `modernz.conf` with all default options
 
 - Alternatively, you can create a short configuration of the options you want changed only:
 
