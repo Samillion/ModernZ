@@ -884,7 +884,7 @@ local function draw_tooltip(ass, tx, ty, width, style, label, alpha)
     local ph, pv = 5, 3
     -- draw tooltip box
     ass:new_event()
-    ass:append("{\\rDefault\\alpha&H80&}")
+    ass:append("{\\rDefault\\alpha&H66&}")
     ass:pos(tx - width / 2 - ph, ty - fs - pv)
     ass:an(7)
     ass:append(osc_styles.tooltip_box)
@@ -1504,7 +1504,7 @@ local function render_elements(master_ass, osc_vis, wc_vis)
                             if chapter_text and osd_w and r_w > 0 then
                                 local titleY = ty - tooltip_fs - 2 * pad_v - 5
                                 elem_ass:new_event()
-                                elem_ass:append("{\\rDefault\\alpha&H80&}")
+                                elem_ass:append("{\\rDefault\\alpha&H66&}")
                                 elem_ass:pos(tx - chapter_width / 2 - pad_h, titleY - tooltip_fs - pad_v)
                                 elem_ass:an(7)
                                 elem_ass:append(osc_styles.tooltip_box)
@@ -1555,7 +1555,7 @@ local function render_elements(master_ass, osc_vis, wc_vis)
                                 if chapter_text then
                                     local chapterY = thumbY * r_h - thumbPad * r_h - pad_v - 5
                                     elem_ass:new_event()
-                                    elem_ass:append("{\\rDefault\\alpha&H80&}")
+                                    elem_ass:append("{\\rDefault\\alpha&H66&}")
                                     elem_ass:pos(tx - chapter_width / 2 - pad_h, chapterY - tooltip_fs - pad_v)
                                     elem_ass:an(7)
                                     elem_ass:append(osc_styles.tooltip_box)
@@ -2018,7 +2018,7 @@ layouts["modern"] = function ()
     lo = add_layout("seekbar")
     local seekbar_h = 18
     lo.geometry = {x = refX, y = refY - user_opts.osc_height, an = 5, w = osc_geo.w - 30, h = seekbar_h}
-    lo.layer = 51
+    lo.layer = 49
     lo.style = osc_styles.seekbar_fg
     lo.slider.gap = (seekbar_h - seekbar_bg_h) / 2.0
     lo.slider.radius = user_opts.slider_rounded_corners and 2 or 0
@@ -2057,6 +2057,7 @@ layouts["modern"] = function ()
     geo = {x = 25, y = refY - title_y, an = 1, w = osc_geo.w - 50 - (loop_button and 45 or 0) - (speed_button and 45 or 0), h = user_opts.title_font_size}
     lo = add_layout("title")
     lo.geometry = geo
+    lo.layer = 48
     lo.alpha[3] = 0
     lo.style = string.format("%s{\\clip(0,%f,%f,%f)}", osc_styles.title, geo.y - geo.h, geo.x + geo.w, geo.y + geo.h)
 
@@ -2064,6 +2065,7 @@ layouts["modern"] = function ()
     if user_opts.show_chapter_title then
         lo = add_layout("chapter_title")
         lo.geometry = {x = 26, y = refY - chapter_title_y, an = 1, w = osc_geo.w / 2, h = user_opts.chapter_title_font_size}
+        lo.layer = 48
         lo.alpha[3] = 0
         lo.style = string.format("%s{\\clip(0,%f,%f,%f)}", osc_styles.chapter_title, geo.y - geo.h, geo.x + geo.w, geo.y + geo.h)
     end
@@ -2275,7 +2277,7 @@ layouts["modern-compact"] = function ()
     lo = add_layout("seekbar")
     local seekbar_h = 18
     lo.geometry = {x = refX, y = refY - user_opts.osc_height, an = 5, w = osc_geo.w - 30, h = seekbar_h}
-    lo.layer = 51
+    lo.layer = 49
     lo.style = osc_styles.seekbar_fg
     lo.slider.gap = (seekbar_h - seekbar_bg_h) / 2.0
     lo.slider.radius = user_opts.slider_rounded_corners and 2 or 0
@@ -2301,6 +2303,7 @@ layouts["modern-compact"] = function ()
     geo = {x = 25, y = refY - title_y, an = 1, w = title_w, h = user_opts.title_font_size}
     lo = add_layout("title")
     lo.geometry = geo
+    lo.layer = 48
     lo.alpha[3] = 0
     lo.style = string.format("%s{\\clip(%f,%f,%f,%f)}", osc_styles.title, geo.x, geo.y - geo.h, geo.x + geo.w, geo.y + geo.h)
 
@@ -2309,6 +2312,7 @@ layouts["modern-compact"] = function ()
         local chapter_geo = {x = 25, y = refY - chapter_title_y, an = 1, w = osc_geo.w / 2, h = user_opts.chapter_title_font_size}
         lo = add_layout("chapter_title")
         lo.geometry = chapter_geo
+        lo.layer = 48
         lo.alpha[3] = 0
         lo.style = string.format("%s{\\clip(%f,%f,%f,%f)}", osc_styles.chapter_title, chapter_geo.x, chapter_geo.y - chapter_geo.h, chapter_geo.x + chapter_geo.w, chapter_geo.y + chapter_geo.h)
     end
