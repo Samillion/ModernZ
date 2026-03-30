@@ -2179,6 +2179,7 @@ layouts["modern"] = function ()
     end
     lo = add_layout("time_codes")
     lo.geometry = {x = (narrow_win and (osc_geo.w - 25) or time_codes_x), y = refY - time_codes_y, an = (narrow_win and 3 or 4), w = time_codes_width, h = user_opts.time_font_size}
+    lo.layer = 48
     lo.alpha[3] = 0
     lo.style = osc_styles.time
 
@@ -2327,6 +2328,7 @@ layouts["modern-compact"] = function ()
     time_codes_y = (no_chapter or not chapter_index) and (time_codes_y + user_opts.title_offset) or (time_codes_y + user_opts.chapter_title_offset)
     lo = add_layout("time_codes")
     lo.geometry = {x = osc_geo.w - 25, y = refY - time_codes_y, an = 3, w = time_codes_width, h = user_opts.time_font_size}
+    lo.layer = 48
     lo.alpha[3] = 0
     lo.style = osc_styles.time
 
