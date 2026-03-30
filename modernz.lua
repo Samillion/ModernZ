@@ -884,7 +884,7 @@ local function draw_tooltip(ass, tx, ty, width, style, label, alpha)
     local ph, pv = 5, 3
     -- draw tooltip box
     ass:new_event()
-    ass:append("{\\rDefault\\alpha&H66&}")
+    ass:append("{\\rDefault\\alpha&H4D&}")
     ass:pos(tx - width / 2 - ph, ty - fs - pv)
     ass:an(7)
     ass:append(osc_styles.tooltip_box)
@@ -1453,8 +1453,10 @@ local function render_elements(master_ass, osc_vis, wc_vis)
                         local an = slider_lo.tooltip_an
                         local ty
                         if an == 2 then
-                            local ref_el = (element.name == "volumebar" and state.seekbar_element) or element
-                            ty = ref_el.hitbox.y1 - user_opts.tooltip_height_offset
+                            local seekbar = state.seekbar_element
+                            local ref_el = (element.name == "volumebar" and seekbar and seekbar.hitbox) and seekbar or element
+                            local image_mode_offset = (ref_el == element) and 10 or 0
+                            ty = ref_el.hitbox.y1 - user_opts.tooltip_height_offset - image_mode_offset
                         else
                             ty = element.hitbox.y1 + elem_geo.h / 2 - user_opts.tooltip_height_offset
                         end
@@ -1504,7 +1506,7 @@ local function render_elements(master_ass, osc_vis, wc_vis)
                             if chapter_text and osd_w and r_w > 0 then
                                 local titleY = ty - tooltip_fs - 2 * pad_v - 5
                                 elem_ass:new_event()
-                                elem_ass:append("{\\rDefault\\alpha&H66&}")
+                                elem_ass:append("{\\rDefault\\alpha&H4D&}")
                                 elem_ass:pos(tx - chapter_width / 2 - pad_h, titleY - tooltip_fs - pad_v)
                                 elem_ass:an(7)
                                 elem_ass:append(osc_styles.tooltip_box)
@@ -1555,7 +1557,7 @@ local function render_elements(master_ass, osc_vis, wc_vis)
                                 if chapter_text then
                                     local chapterY = thumbY * r_h - thumbPad * r_h - pad_v - 5
                                     elem_ass:new_event()
-                                    elem_ass:append("{\\rDefault\\alpha&H66&}")
+                                    elem_ass:append("{\\rDefault\\alpha&H4D&}")
                                     elem_ass:pos(tx - chapter_width / 2 - pad_h, chapterY - tooltip_fs - pad_v)
                                     elem_ass:an(7)
                                     elem_ass:append(osc_styles.tooltip_box)
@@ -1639,7 +1641,9 @@ local function render_elements(master_ass, osc_vis, wc_vis)
                     end
 
                     local tx = (element.hitbox.x1 + element.hitbox.x2) / 2
-                    local ty = state.seekbar_element.hitbox.y1 - user_opts.tooltip_height_offset
+                    local seekbar_ref = (state.seekbar_element and state.seekbar_element.hitbox) and state.seekbar_element or element
+                    local image_mode_offset = (seekbar_ref == element) and 10 or 0
+                    local ty = seekbar_ref.hitbox.y1 - user_opts.tooltip_height_offset - image_mode_offset
 
                     local osd_w = mp.get_property_number("osd-width")
                     local r_w = get_virt_scale_factor()
@@ -1662,7 +1666,7 @@ end
 
 local function render_persistent_progress(master_ass)
     local element = state.persistent_seekbar_element
-    if not element then return end
+    if not element or not element.layout then return end
     local style_ass = assdraw.ass_new()
     style_ass:merge(element.style_ass)
     if state.animation or not state.osc_visible then
