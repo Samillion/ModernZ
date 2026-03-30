@@ -1467,8 +1467,7 @@ local function render_elements(master_ass, osc_vis, wc_vis)
 
                         local tooltip_width = estimate_text_width(tooltiplabel, slider_lo.tooltip_style)
                         local tooltip_fs = user_opts.tooltip_font_size
-                        local pad_h, pad_v = 5, 3 -- horizontal and vertical padding for seekbar tooltip box
-                        local tooltip_radius = (tooltip_fs + 2 * pad_v) / 2 -- seekbar tooltips; pill shape radius
+                        local pad_v = 3 -- vertical padding for chapter title Y offset
                         local thumbnail_radius = user_opts.thumbnail_box_radius > 0 and user_opts.thumbnail_box_radius or 0
 
                         local chapter_text = nil
@@ -1505,20 +1504,7 @@ local function render_elements(master_ass, osc_vis, wc_vis)
                         if thumbfast.disabled then
                             if chapter_text and osd_w and r_w > 0 then
                                 local titleY = ty - tooltip_fs - 2 * pad_v - 5
-                                elem_ass:new_event()
-                                elem_ass:append("{\\rDefault\\alpha&H4D&}")
-                                elem_ass:pos(tx - chapter_width / 2 - pad_h, titleY - tooltip_fs - pad_v)
-                                elem_ass:an(7)
-                                elem_ass:append(osc_styles.tooltip_box)
-                                elem_ass:draw_start()
-                                elem_ass:round_rect_cw(0, 0, chapter_width + 2 * pad_h, tooltip_fs + 2 * pad_v, tooltip_radius)
-                                elem_ass:draw_stop()
-                                elem_ass:new_event()
-                                elem_ass:pos(tx, titleY)
-                                elem_ass:an(2)
-                                elem_ass:append(slider_lo.tooltip_style)
-                                ass_append_alpha(elem_ass, slider_lo.alpha, 0)
-                                elem_ass:append(chapter_text)
+                                draw_tooltip(elem_ass, tx, titleY, chapter_width, slider_lo.tooltip_style, chapter_text, slider_lo.alpha)
                             end
                         -- thumbfast
                         elseif element.thumbnailable and not thumbfast.disabled then
@@ -1556,20 +1542,7 @@ local function render_elements(master_ass, osc_vis, wc_vis)
                                 an = 2
                                 if chapter_text then
                                     local chapterY = thumbY * r_h - thumbPad * r_h - pad_v - 5
-                                    elem_ass:new_event()
-                                    elem_ass:append("{\\rDefault\\alpha&H4D&}")
-                                    elem_ass:pos(tx - chapter_width / 2 - pad_h, chapterY - tooltip_fs - pad_v)
-                                    elem_ass:an(7)
-                                    elem_ass:append(osc_styles.tooltip_box)
-                                    elem_ass:draw_start()
-                                    elem_ass:round_rect_cw(0, 0, chapter_width + 2 * pad_h, tooltip_fs + 2 * pad_v, tooltip_radius)
-                                    elem_ass:draw_stop()
-                                    elem_ass:new_event()
-                                    elem_ass:pos(tx, chapterY)
-                                    elem_ass:an(an)
-                                    elem_ass:append(slider_lo.tooltip_style)
-                                    ass_append_alpha(elem_ass, slider_lo.alpha, 0)
-                                    elem_ass:append(chapter_text)
+                                    draw_tooltip(elem_ass, tx, chapterY, chapter_width, slider_lo.tooltip_style, chapter_text, slider_lo.alpha)
                                 end
                             end
                         end
