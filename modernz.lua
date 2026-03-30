@@ -200,15 +200,13 @@ local user_opts = {
     -- Elements Position
     -- Useful when adjusting font size or type
     title_offset = 24,                     -- title vertical offset relative to seekbar
-    title_with_chapter_offset = 4,       -- title vertical offset if a chapter title is below it
+    title_with_chapter_offset = 4,         -- title vertical offset if a chapter title is below it
     chapter_title_offset = 20,             -- chapter title vertical offset relative to seekbar
-    time_codes_offset = 0,                -- time codes vertical offset relative to seekbar
-    time_codes_centered_offset = 13,       -- time codes vertical offset with portrait window
-    tooltip_height_offset = 2,             -- tooltip height position offset
+    time_codes_offset = 0,                 -- time codes vertical offset relative to seekbar
+    tooltip_height_offset = 5,             -- tooltip height position offset
     portrait_window_trigger = 1000,        -- portrait window width trigger to move some elements
     hide_volume_bar_trigger = 1150,        -- hide volume bar trigger window width
-    seek_hover_tooltip_h_offset = 5,       -- seek hover timecodes tooltip height position offset
-    osc_height = 70,                      -- osc height
+    osc_height = 70,                       -- osc height
 
     -- Mouse commands
     -- customize the button function based on mouse action
@@ -593,6 +591,7 @@ local state = {
     playtime_hour_force_init = false,       -- used to force request_init() once
     playing_and_seeking = false,
     persistent_seekbar_element = nil,
+    seekbar_element = nil,
     persistent_progress_toggle = user_opts.persistent_progress,
     user_subpos = mp.get_property_number("sub-pos") or 100,
     osc_adjusted_subpos = nil,
@@ -877,6 +876,26 @@ local function ass_append_alpha(ass, alpha, modifier, inverse, anim_override)
 
     ass:append(string.format("{\\1a&H%X&\\2a&H%X&\\3a&H%X&\\4a&H%X&}",
                ar[1], ar[2], ar[3], ar[4]))
+end
+
+-- draw a pill-shaped tooltip background box and label
+local function draw_tooltip(ass, tx, ty, width, style, label, alpha)
+    local fs = user_opts.tooltip_font_size
+    local ph, pv = 5, 3
+    ass:new_event()
+    ass:append("{\\rDefault\\alpha&H80&}")
+    ass:pos(tx - width / 2 - ph, ty - fs - pv)
+    ass:an(7)
+    ass:append(osc_styles.tooltip_box)
+    ass:draw_start()
+    ass:round_rect_cw(0, 0, width + 2 * ph, fs + 2 * pv, (fs + 2 * pv) / 2)
+    ass:draw_stop()
+    ass:new_event()
+    ass:pos(tx, ty)
+    ass:an(2)
+    ass:append(style)
+    if alpha then ass_append_alpha(ass, alpha, 0) end
+    ass:append(label)
 end
 
 local function ass_draw_cir_cw(ass, x, y, r)
@@ -1431,9 +1450,10 @@ local function render_elements(master_ass, osc_vis, wc_vis)
                         local an = slider_lo.tooltip_an
                         local ty
                         if an == 2 then
-                            ty = element.hitbox.y1 - user_opts.seek_hover_tooltip_h_offset
+                            local ref_el = (element.name == "volumebar" and state.seekbar_element) or element
+                            ty = ref_el.hitbox.y1 - user_opts.tooltip_height_offset
                         else
-                            ty = element.hitbox.y1 + elem_geo.h / 2 - user_opts.seek_hover_tooltip_h_offset
+                            ty = element.hitbox.y1 + elem_geo.h / 2 - user_opts.tooltip_height_offset
                         end
 
                         local tx = get_virt_mouse_pos()
@@ -1442,7 +1462,7 @@ local function render_elements(master_ass, osc_vis, wc_vis)
 
                         local tooltip_width = estimate_text_width(tooltiplabel, slider_lo.tooltip_style)
                         local tooltip_fs = user_opts.tooltip_font_size
-                        local pad_h, pad_v = 2, 3 -- horizontal and vertical padding for seekbar tooltip box
+                        local pad_h, pad_v = 5, 3 -- horizontal and vertical padding for seekbar tooltip box
                         local tooltip_radius = (tooltip_fs + 2 * pad_v) / 2 -- seekbar tooltips; pill shape radius
                         local thumbnail_radius = user_opts.thumbnail_box_radius > 0 and user_opts.thumbnail_box_radius or 0
 
@@ -1549,25 +1569,7 @@ local function render_elements(master_ass, osc_vis, wc_vis)
                             end
                         end
 
-                        -- tooltip label background box
-                        if element.name == "seekbar" then
-                            elem_ass:new_event()
-                            elem_ass:append("{\\rDefault\\alpha&H80&}")
-                            elem_ass:pos(tx - tooltip_width / 2 - pad_h, ty - tooltip_fs - pad_v)
-                            elem_ass:an(7)
-                            elem_ass:append(osc_styles.tooltip_box)
-                            elem_ass:draw_start()
-                            elem_ass:round_rect_cw(0, 0, tooltip_width + 2 * pad_h, tooltip_fs + 2 * pad_v, tooltip_radius)
-                            elem_ass:draw_stop()
-                        end
-
-                        -- tooltip label
-                        elem_ass:new_event()
-                        elem_ass:pos(tx, ty)
-                        elem_ass:an(an)
-                        elem_ass:append(slider_lo.tooltip_style)
-                        ass_append_alpha(elem_ass, slider_lo.alpha, 0)
-                        elem_ass:append(tooltiplabel)
+                        draw_tooltip(elem_ass, tx, ty, tooltip_width, slider_lo.tooltip_style, tooltiplabel, slider_lo.alpha)
                     elseif element.thumbnailable and thumbfast.available then
                         mp.commandv("script-message-to", "thumbfast", "clear")
                     end
@@ -1633,34 +1635,18 @@ local function render_elements(master_ass, osc_vis, wc_vis)
                         tooltiplabel = element.nothingavailable
                     end
 
-                    local an = 2
-                    local ty = element.hitbox.y1 - user_opts.tooltip_height_offset
                     local tx = (element.hitbox.x1 + element.hitbox.x2) / 2
-
-                    if ty < osc_param.playresy / 2 then
-                        ty = element.hitbox.y2 - user_opts.tooltip_height_offset
-                        an = 8
-                    end
+                    local ty = state.seekbar_element.hitbox.y1 - user_opts.tooltip_height_offset
 
                     local osd_w = mp.get_property_number("osd-width")
                     local r_w = get_virt_scale_factor()
+                    local tooltip_width = estimate_text_width(tooltiplabel, element.tooltip_style)
                     if osd_w and r_w > 0 then
-                        local tooltip_width = estimate_text_width(tooltiplabel, element.tooltip_style)
                         local margin = 10 * r_w
-                        local half_width = tooltip_width / 2
-
-                        local min_x = margin + half_width
-                        local max_x = osc_param.playresx - margin - half_width
-
-                        tx = math.min(max_x, math.max(min_x, tx))
+                        tx = math.min(osc_param.playresx - margin - tooltip_width / 2, math.max(margin + tooltip_width / 2, tx))
                     end
 
-                    elem_ass:new_event()
-                    elem_ass:append("{\\rDefault}")
-                    elem_ass:pos(tx, ty)
-                    elem_ass:an(an)
-                    elem_ass:append(element.tooltip_style)
-                    elem_ass:append(bidi.fsi .. tooltiplabel .. bidi.pdi)
+                    draw_tooltip(elem_ass, tx, ty, tooltip_width, element.tooltip_style, bidi.fsi .. tooltiplabel .. bidi.pdi)
                 end
             end
         end
@@ -3220,6 +3206,7 @@ local function osc_init()
 
     -- cache persistent seekbar element
     state.persistent_seekbar_element = elements["persistent_seekbar"]
+    state.seekbar_element = elements["seekbar"]
 
     --do something with the elements
     prepare_elements()
