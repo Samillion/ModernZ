@@ -221,7 +221,7 @@ Useful when adjusting font size or type, this will help you change the affected 
 | tooltip_height_offset       | 5     | tooltip height position offset                                         |
 | portrait_window_trigger     | 1000  | portrait window width trigger to move some elements                    |
 | hide_volume_bar_trigger     | 1150  | hide volume bar trigger window width                                   |
-| osc_height                  | 70    | osc height                                                             |
+| osc_height                  | 60    | osc height                                                             |
 
 ### Mouse Commands (User Options)
 

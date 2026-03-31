@@ -206,7 +206,7 @@ local user_opts = {
     tooltip_height_offset = 5,             -- tooltip height position offset
     portrait_window_trigger = 1000,        -- portrait window width trigger to move some elements
     hide_volume_bar_trigger = 1150,        -- hide volume bar trigger window width
-    osc_height = 70,                       -- osc height
+    osc_height = 60,                       -- osc height
 
     -- Mouse commands
     -- customize the button function based on mouse action
@@ -1456,7 +1456,7 @@ local function render_elements(master_ass, osc_vis, wc_vis)
                             local seekbar = state.seekbar_element
                             local ref_el = (element.name == "volumebar" and seekbar and seekbar.hitbox) and seekbar or element
                             local image_mode_offset = (ref_el == element) and 10 or 0
-                            ty = ref_el.hitbox.y1 - user_opts.tooltip_height_offset - image_mode_offset
+                            ty = ref_el.hitbox.y1 + elem_geo.h / 2 - user_opts.tooltip_height_offset - image_mode_offset
                         else
                             ty = element.hitbox.y1 + elem_geo.h / 2 - user_opts.tooltip_height_offset
                         end
