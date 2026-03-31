@@ -2865,7 +2865,7 @@ local function osc_init()
         local volume = state.volume or 0
         -- show only one decimal, if decimals exist
         volume = volume % 1 == 0 and string.format("%.0f", volume) or string.format("%.1f", volume)
-        return locale.volume .. ": " .. (state.mute and (volume .. " (" .. locale.muted .. ")") or volume)
+        return locale.volume .. ": " .. volume .. (state.mute and " (" .. locale.muted .. ")" or "")
     end
     bind_buttons("vol_ctrl")
 
