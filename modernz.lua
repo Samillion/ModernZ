@@ -20,7 +20,7 @@ mp.set_property("osc", "no")
 -- do not touch, change them in modernz.conf
 local user_opts = {
     -- Language and display
-    language = "en",                       -- set language (for available options, see: https://github.com/Samillion/ModernZ/blob/main/docs/TRANSLATIONS.md)
+    language = "default",                  -- set language (for available options, see: https://github.com/Samillion/ModernZ/blob/main/docs/TRANSLATIONS.md)
     layout = "modern",                     -- set layout: "modern" or "modern-compact"
     icon_theme = "fluent",                 -- set icon theme. accepts "fluent" or "material"
     icon_style = "mixed",                  -- "mixed", "filled", "outline"
@@ -364,7 +364,7 @@ end
 
 --- localization
 local language = {
-    ["en"] = {
+    ["default"] = {
         lang_direction = "LTR",
         idle = "Drop files or URLs here to play",
         na = "Not available",
@@ -373,10 +373,13 @@ local language = {
         subtitle = "Subtitle",
         no_subs = "No subtitles",
         no_audio = "No audio tracks",
+        volume = "Volume",
         muted = "Muted",
         playlist = "Playlist",
         no_playlist = "Playlist empty",
         chapter = "Chapter",
+        fullscreen = "Fullscreen",
+        fullscreen_exit = "Exit fullscreen",
         ontop = "Pin window",
         ontop_disable = "Unpin window",
         file_loop_enable = "Loop file on",
@@ -438,7 +441,7 @@ if external then
             language[lang] = strings
 
             -- fill in missing locales with English defaults
-            for key, value in pairs(language["en"]) do
+            for key, value in pairs(language["default"]) do
                 if strings[key] == nil then
                     strings[key] = value or ""  -- fallback to empty string if key is missing
                 end
@@ -451,7 +454,7 @@ end
 
 local locale
 local function set_osc_locale()
-    locale = language[user_opts.language] or language["en"]
+    locale = language[user_opts.language] or language["default"]
 end
 
 local function contains(list, item)
@@ -2862,7 +2865,7 @@ local function osc_init()
         local volume = state.volume or 0
         -- show only one decimal, if decimals exist
         volume = volume % 1 == 0 and string.format("%.0f", volume) or string.format("%.1f", volume)
-        return state.mute and (volume .. " (" .. locale.muted .. ")") or volume
+        return locale.volume .. ": " .. volume .. (state.mute and " (" .. locale.muted .. ")" or "")
     end
     bind_buttons("vol_ctrl")
 
@@ -2946,6 +2949,7 @@ local function osc_init()
     --fullscreen
     ne = new_element("fullscreen", "button")
     ne.content = function () return state.fullscreen and icons.fullscreen_exit or icons.fullscreen end
+    ne.tooltipF = user_opts.tooltip_hints and (state.fullscreen and locale.fullscreen_exit or locale.fullscreen) or ""
     ne.visible = (osc_param.playresx >= visible_min_width)
     bind_buttons("fullscreen")
     visible_min_width = visible_min_width + (user_opts.fullscreen_button and 100 or 0)
@@ -3974,9 +3978,9 @@ local function validate_user_opts()
 
     if not language[user_opts.language] then
        msg.warn("language '" .. user_opts.language .. "' not found. Ignoring.")
-       user_opts.language = "en"
-       if not language["en"] then
-          msg.warn("ERROR: can't find the default 'en' language or the one set by user_opts.")
+       user_opts.language = "default"
+       if not language["default"] then
+          msg.warn("ERROR: can't find the default language or the one set by user_opts.")
        end
     end
 

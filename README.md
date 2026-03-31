@@ -222,7 +222,7 @@ icon_theme=fluent
 icon_style=outline
 ```
 
-For a full list of options, [check out the detailed list here](docs/USER_OPTS.md).
+For a full list of options, [check out the detailed list here](/docs/USER_OPTS.md).
 
 ## Controls
 
@@ -235,7 +235,7 @@ For a full list of options, [check out the detailed list here](docs/USER_OPTS.md
 > [!NOTE]
 > Middle clicking performs the same function as `Shift+left mouse button`, allowing for one-handed use
 
-For a full list of interactions, check out the [Button Interactions Guide](docs/CONTROLS.md).
+For a full list of interactions, check out the [Button Interactions Guide](/docs/CONTROLS.md).
 
 ### Keybinds
 
@@ -273,7 +273,7 @@ language=zh
 
 **Need More Info?**
 
-For a complete list of available languages, contribution guidelines, and in-depth translation documentation, head over to the [TRANSLATIONS.md](docs/TRANSLATIONS.md).
+For a complete list of available languages, contribution guidelines, and in-depth translation documentation, head over to the [TRANSLATIONS.md](/docs/TRANSLATIONS.md).
 
 ## Extras
 
@@ -295,7 +295,7 @@ For even more useful scripts, check out the [mpv User Scripts Wiki](https://gith
 
 **Why fork yet again?**
 
-- Add extensive feature support, including [color customization](docs/USER_OPTS.md#colors-and-style), advanced [options](docs/USER_OPTS.md), and [locale integration](docs/TRANSLATIONS.md)
+- Add extensive feature support, including [color customization](/docs/USER_OPTS.md#colors-and-style), advanced [options](/docs/USER_OPTS.md), and [locale integration](/docs/TRANSLATIONS.md)
 - Integrate mpv's `console` and `select` functionality to OSC
   - An approach that later inspired adoption in mpv’s stock OSC ([#1](https://github.com/mpv-player/mpv/pull/15016), [#2](https://github.com/mpv-player/mpv/pull/15031))
 - Introduce a dedicated layout optimized for image viewing. [details](/docs/IMAGE_VIEWER.md)
