@@ -44,8 +44,6 @@ reset-on-next-file=video-zoom,panscan,video-unscaled,video-rotate,video-align-x,
     input-commands=enable-section image allow-hide-cursor
     script-opts-append=modernz-osc_fade_strength=50
     script-opts-append=modernz-show_window_title=yes
-    script-opts-append=modernz-bottomhover_zone=50
-    script-opts-append=modernz-window_title=${media-title} [${?width:${width}x${height}}]
 ```
 
 In your `input.conf`, add: (adjust keybinds to what suits you)
