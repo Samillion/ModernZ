@@ -1,6 +1,6 @@
 ## Interactive Menus
 
-https://github.com/user-attachments/assets/455c9eff-d8c7-4aed-bda3-1896b64ac667
+https://github.com/user-attachments/assets/a12be7c5-9d14-41f7-8b04-bc63d79c4213
 
 ModernZ integrates mpv’s built-in [`console.lua`](https://github.com/mpv-player/mpv/blob/master/player/lua/console.lua) and [`select.lua`](https://github.com/mpv-player/mpv/blob/master/player/lua/select.lua) scripts, available in mpv starting from **v0.39+**.
 

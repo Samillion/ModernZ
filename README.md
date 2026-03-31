@@ -2,7 +2,7 @@
 
 A sleek and modern OSC for [mpv](https://mpv.io/). This project is a fork of ModernX that enhances functionality by adding more features while preserving the core standards of mpv's OSC.
 
-<img width="1715" height="966" alt="ModernZ" src="https://github.com/user-attachments/assets/60108e23-01b4-4928-a2cf-9b5de73364dc" />
+<img width="1715" height="966" alt="ModernZ" src="https://github.com/user-attachments/assets/a2c8081e-2909-4bd1-872d-c59c48e76302" />
 
 <p align="center">
   <a href="#installation"><strong>Installation »</strong></a><br>
@@ -40,7 +40,7 @@ Choose the layout that suits your preference (`modern` or `modern-compact`) usin
     </thead>
     <tbody>
         <tr>
-            <td><img width="1717" height="120" alt="fluent_mixed_modernz" src="https://github.com/user-attachments/assets/b1e1a865-d8b2-4ca6-aeff-fe36e30ed138" /></td>
+            <td><img width="1715" height="120" alt="modernz_modern_layout" src="https://github.com/user-attachments/assets/97791b5b-e7c8-47bc-8805-a286052762f6" /></td>
         </tr>
     </tbody>
 </table>
@@ -53,7 +53,7 @@ Choose the layout that suits your preference (`modern` or `modern-compact`) usin
     </thead>
     <tbody>
         <tr>
-            <td><img width="1717" height="150" alt="modern-compact_mixed_fluent" src="https://github.com/user-attachments/assets/98c082a7-877c-4d52-bbcb-3dd2621ac055" /></td>
+            <td><img width="1715" height="150" alt="modernz_compact_layout" src="https://github.com/user-attachments/assets/b88f7823-b328-427e-8720-c2d4ab2c496a" /></td>
         </tr>
     </tbody>
 </table>
@@ -70,7 +70,7 @@ You can also change the icon theme to `fluent` or `material` to match your prefe
     </thead>
     <tbody>
         <tr>
-            <td><img width="1717" height="120" alt="fluent_mixed_modernz" src="https://github.com/user-attachments/assets/b1e1a865-d8b2-4ca6-aeff-fe36e30ed138" /></td>
+            <td><img width="1715" height="120" alt="modernz_fluent_theme" src="https://github.com/user-attachments/assets/9c0172db-f959-4c95-a31f-aab55290f5ec" /></td>
         </tr>
     </tbody>
 </table>
@@ -83,7 +83,7 @@ You can also change the icon theme to `fluent` or `material` to match your prefe
     </thead>
     <tbody>
         <tr>
-            <td><img width="1717" height="120" alt="material_mixed_modernz" src="https://github.com/user-attachments/assets/ed4056c6-a672-47a0-b356-cde3d7186079" /></td>
+            <td><img width="1715" height="120" alt="modernz_material_theme" src="https://github.com/user-attachments/assets/cc532cd8-32aa-4dba-93eb-5f8f599ea654" /></td>
         </tr>
     </tbody>
 </table>
@@ -105,15 +105,15 @@ Both `fluent` and `material` themes have different styles as well. By using the 
     <tbody>
         <tr>
             <td><code>mixed</code></td>
-            <td><img width="1717" height="120" alt="fluent_mixed_modernz" src="https://github.com/user-attachments/assets/b1e1a865-d8b2-4ca6-aeff-fe36e30ed138" /></td>
+            <td><img width="1715" height="120" alt="modernz_fluent_mixed" src="https://github.com/user-attachments/assets/58774224-1fd2-4939-8263-b14bba551be0" /></td>
         </tr>
         <tr>
             <td><code>filled</code></td>
-            <td><img width="1717" height="120" alt="fluent_filled_modernz" src="https://github.com/user-attachments/assets/d91ee69d-29b2-43b6-9959-f84d8d8a06eb" /></td>
+            <td><img width="1715" height="120" alt="modernz_fluent_filled" src="https://github.com/user-attachments/assets/c0beee55-b6c8-4bef-a192-0b529c1ecea9" /></td>
         </tr>
         <tr>
             <td><code>outline</code></td>
-            <td><img width="1717" height="120" alt="fluent_outline_modernz" src="https://github.com/user-attachments/assets/f3a0572a-a8eb-47d9-83a3-807165fb88d0" /></td>
+            <td><img width="1715" height="120" alt="modernz_fluent_outline" src="https://github.com/user-attachments/assets/5c6af748-1f4e-46e6-b6b9-470954e93ef8" /></td>
         </tr>
     </tbody>
 </table>
@@ -131,15 +131,15 @@ Both `fluent` and `material` themes have different styles as well. By using the 
     <tbody>
         <tr>
             <td><code>mixed</code></td>
-            <td><img width="1717" height="120" alt="material_mixed_modernz" src="https://github.com/user-attachments/assets/ed4056c6-a672-47a0-b356-cde3d7186079" /></td>
+            <td><img width="1715" height="120" alt="modernz_material_mixed" src="https://github.com/user-attachments/assets/2518a9f6-8a07-499c-912d-a527535d6ff1" /></td>
         </tr>
         <tr>
             <td><code>filled</code></td>
-            <td><img width="1717" height="120" alt="material_filled_modernz" src="https://github.com/user-attachments/assets/39fbd0e7-88c7-49cf-b7f2-bed9a95bd9a8" /></td>
+            <td><img width="1715" height="120" alt="modernz_material_filled" src="https://github.com/user-attachments/assets/c14f94f3-0564-4ef8-b46a-6e1edb75556c" /></td>
         </tr>
         <tr>
             <td><code>outline</code></td>
-            <td><img width="1717" height="120" alt="material_outline_modernz" src="https://github.com/user-attachments/assets/baf38eaf-c481-4822-8a90-8c0720fbcb42" /></td>
+            <td><img width="1715" height="120" alt="modernz_material_outline" src="https://github.com/user-attachments/assets/d1e12ff2-a4bb-4956-9049-821fe243ad93" /></td>
         </tr>
     </tbody>
 </table>
@@ -156,10 +156,10 @@ Not a fan of white buttons and text? You have complete control to customize colo
     </thead>
     <tbody>
         <tr>
-            <td><img width="1717" height="108" alt="modernz_colors_top" src="https://github.com/user-attachments/assets/5367e5c6-4c2e-4eb9-9ff8-44496629945e" /></td>
+            <td><img width="1715" height="108" alt="modernz_colors_top" src="https://github.com/user-attachments/assets/b4f97def-df93-40ed-aa8e-d432e25c3230" /></td>
         </tr>
         <tr>
-            <td><img width="1717" height="190" alt="modernz_colors_bottom" src="https://github.com/user-attachments/assets/1f82250a-58af-4097-9ad6-f6e5d784d16b" /></td>
+            <td><img width="1715" height="188" alt="modernz_colors_bottom" src="https://github.com/user-attachments/assets/4a40bb0b-7d4a-429c-add4-43a9c8aa511b" /></td>
         </tr>
     </tbody>
 </table>

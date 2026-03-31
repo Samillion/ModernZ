@@ -2,7 +2,7 @@
 
 A minimal layout is automatically applied when viewing images while using ModernZ osc, which also features zoom controls.
 
-![image_mode_modernz](https://github.com/user-attachments/assets/49a860e9-298d-4af3-9303-6747e0fccc26)
+![image_mode_modernz](https://github.com/user-attachments/assets/f9e999bc-6b6b-43d8-893c-d361f86db59f)
 
 ## Zoom Controls
 

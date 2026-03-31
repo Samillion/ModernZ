@@ -1,5 +1,6 @@
 # ModernZ Controls Guide
-<img width="1717" height="120" alt="modernz_buttons" src="https://github.com/user-attachments/assets/81a983f6-6300-4c3f-9ebd-876bca86cc5e" />
+
+<img width="1717" height="108" alt="modernz-buttons" src="https://github.com/user-attachments/assets/8b310e93-eefe-4362-a5d1-993fb5d42fb3" />
 
 ## Button Interactions
 
