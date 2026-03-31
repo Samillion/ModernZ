@@ -276,7 +276,7 @@ mp.observe_property("pause", "bool", function(_, paused)
         }, "pause-indicator", "force")
 
         if options.keybind_mode == "always" or (options.keybind_mode == "onpause" and paused) then
-            if not eof then mp.enable_key_bindings("pause-indicator") end
+            if not eof then mp.enable_key_bindings("pause-indicator", "allow-vo-dragging+allow-hide-cursor") end
         else
             mp.disable_key_bindings("pause-indicator")
         end
