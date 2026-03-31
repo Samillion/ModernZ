@@ -33,19 +33,22 @@ To get started with translations:
 
 ## Available Languages
 
-ModernZ currently includes translations for the following languages: (in alphabetical order)
+ModernZ currently includes translations for the following languages: 
 
-- Arabic (ar)
-- Danish (dk)
-- English (en)
-- French (fr)
-- German (de)
-- Icelandic (is)
-- Japanese (jp)
-- Polish (pl)
-- Russian (ru)
-- Spanish (es)
-- Simplified Chinese (zh)
+- Default (`default`)
+- Arabic (`ar`)
+- Danish (`dk`)
+- English (`en`)
+  - English (`en`) is the same as Default (`default`)
+  - Can be customized in `modernz-locale.json`
+- French (`fr`)
+- German (`de`)
+- Icelandic (`is`)
+- Japanese (`jp`)
+- Polish (`pl`)
+- Russian (`ru`)
+- Spanish (`es`)
+- Simplified Chinese (`zh`)
 
 ---
 
@@ -93,7 +96,7 @@ ModernZ currently includes translations for the following languages: (in alphabe
         "downloading": "Downloading",
         "downloaded": "Already downloaded",
         "menu": "Menu"
-    }
+    },
 }
 ```
 
