@@ -169,14 +169,14 @@ watch-later-options-remove=osd-margin-y
 
 ### Button hover settings
 
-| Option                   | Value           | Description                                                                                      |
-| ------------------------ | --------------- | ------------------------------------------------------------------------------------------------ |
-| hover_effect             | size,glow,color | active button hover effects: `"glow"`, `"size"`, `"color"`; can use multiple separated by commas |
-| button_hover_size        | 115             | relative size of a hovered button if "size" effect is active                                     |
-| button_glow_amount       | 5               | glow intensity when `"glow"` hover effect is active                                              |
-| slider_hover_effect      | yes             | apply size effect only when hovering slider handles                                              |
-| slider_hover_size        | 130             | relative size of a hovered slider handle if "slider_hover_effect" is used                        |
-| tooltip_hints            | yes             | enable tooltips for most buttons. seek and volume tooltips are always enabled                    |
+| Option              | Value               | Description                                                                                               |
+| ------------------- | ------------------- | --------------------------------------------------------------------------------------------------------- |
+| hover_effect        | size,glow,color,box | active button hover effects: `"glow"`, `"size"`, `"color"`, `"box"`; can use multiple separated by commas |
+| button_hover_size   | 115                 | relative size of a hovered button if "size" effect is active                                              |
+| button_glow_amount  | 5                   | glow intensity when `"glow"` hover effect is active                                                       |
+| slider_hover_effect | yes                 | apply size effect only when hovering slider handles                                                       |
+| slider_hover_size   | 130                 | relative size of a hovered slider handle if "slider_hover_effect" is used                                 |
+| tooltip_hints       | yes                 | enable tooltips for most buttons. seek and volume tooltips are always enabled                             |
 
 ### Progress bar settings
 
@@ -218,12 +218,10 @@ Useful when adjusting font size or type, this will help you change the affected 
 | title_with_chapter_offset   | 4     | title vertical offset if a chapter title is below it                   |
 | chapter_title_offset        | 20    | chapter title vertical offset relative to seekbar                      |
 | time_codes_offset           | 0     | time codes vertical offset relative to seekbar                         |
-| time_codes_centered_offset  | 13    | time codes vertical offset with portrait window                        |
-| tooltip_height_offset       | 2     | tooltip height position offset                                         |
+| tooltip_height_offset       | 5     | tooltip height position offset                                         |
 | portrait_window_trigger     | 1000  | portrait window width trigger to move some elements                    |
 | hide_volume_bar_trigger     | 1150  | hide volume bar trigger window width                                   |
-| seek_hover_tooltip_h_offset | 5     | seek hover timecodes tooltip height position offset                    |
-| osc_height                  | 70    | osc height                                                             |
+| osc_height                  | 60    | osc height                                                             |
 
 ### Mouse Commands (User Options)
 
