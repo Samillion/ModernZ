@@ -2433,7 +2433,7 @@ layouts["modern-compact"] = function ()
         lo = add_layout("cache_info")
         lo.geometry = {x = end_x + 7, y = refY - (user_opts.osc_height / 2), an = 6, w = (user_opts.cache_info_speed and 70 or 45), h = 24}
         lo.alpha[3] = 0
-        lo.style = osc_styles.time
+        lo.style = osc_styles.cache
     end
 end
 
@@ -2969,7 +2969,7 @@ local function osc_init()
     ne.visible = (osc_param.playresx >= visible_min_width)
     ne.eventresponder["mbtn_left_up"] = function ()
         mp.commandv("cycle", "ontop")
-        mp.command("show-text '" .. (mp.get_property_bool("ontop") and locale.ontop or locale.ontop_disable) .. "'")
+        mp.commandv("show-text", mp.get_property_bool("ontop") and locale.ontop or locale.ontop_disable)
     end
     visible_min_width = visible_min_width + (user_opts.ontop_button and 100 or 0)
 
@@ -2987,7 +2987,7 @@ local function osc_init()
     ne.visible = (osc_param.playresx >= visible_min_width)
     ne.tooltipF = function() return user_opts.tooltip_hints and (state.file_loop and locale.file_loop_enable or locale.file_loop_disable) or "" end
     ne.eventresponder["mbtn_left_up"] = function ()
-        mp.command("show-text '" .. (state.file_loop and locale.file_loop_disable or locale.file_loop_enable) .. "'")
+        mp.commandv("show-text", state.file_loop and locale.file_loop_disable or locale.file_loop_enable)
         state.file_loop = not state.file_loop
         mp.set_property_native("loop-file", state.file_loop)
     end
@@ -2999,7 +2999,7 @@ local function osc_init()
     ne.visible = (osc_param.playresx >= visible_min_width)
     ne.tooltipF = function() return user_opts.tooltip_hints and (state.shuffled and locale.shuffle or locale.unshuffle) or "" end
     ne.eventresponder["mbtn_left_up"] = function()
-        mp.command("show-text '" .. (state.shuffled and locale.unshuffle or locale.shuffle) .. "'")
+        mp.commandv("show-text", state.shuffled and locale.unshuffle or locale.shuffle)
         state.shuffled = not state.shuffled
         mp.command("playlist-" .. (state.shuffled and "shuffle" or "unshuffle"))
     end
@@ -3078,7 +3078,7 @@ local function osc_init()
         local cache_info_speed = string.format("%8s %4s/s", (number or 0), (unit or "B"))
         return user_opts.cache_info_speed and cache_info .. "\\N" .. cache_info_speed or cache_info
     end
-    ne.tooltipF = (user_opts.tooltip_hints and cache_enabled()) and locale.cache or ""
+    ne.tooltipF = function() return (user_opts.tooltip_hints and cache_enabled()) and locale.cache or "" end
     ne.eventresponder["mbtn_left_up"] = function() mp.command("script-binding stats/display-page-3") end
 
     --seekbar
@@ -3937,7 +3937,7 @@ mp.register_script_message("osc-visibility", visibility_mode)
 mp.register_script_message("osc-show", show_osc)
 mp.register_script_message("osc-hide", function()
     if user_opts.visibility == "auto" then
-        osc_visible(false)
+        hide_osc()
     end
 end)
 mp.add_key_binding(nil, "visibility", function() visibility_mode("cycle") end)

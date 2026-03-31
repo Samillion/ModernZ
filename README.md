@@ -242,10 +242,11 @@ For a full list of interactions, check out the [Button Interactions Guide](/docs
 ModernZ doesn't set keybinds by default to avoid interfering with your current setup. You can add keybinds in `input.conf` if you prefer:
 
 ```
+v   script-binding modernz/visibility                # Cycle visibility modes
+V   script-message-to modernz osc-visibility cycle   # Set a visibility mode (cycle, auto, always, never)
 w   script-binding modernz/progress-toggle           # Toggle progress bar
 x   script-message-to modernz osc-show               # Show OSC
-y   script-message-to modernz osc-visibility cycle   # Set a visibility mode (cycle, auto, always, never)
-Y   script-binding modernz/visibility                # Cycle visibility modes
+y   script-message-to modernz osc-hide               # Hide OSC
 z   script-message-to modernz osc-idlescreen         # Toggle idle screen
 ```
 
