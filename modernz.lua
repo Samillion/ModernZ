@@ -527,7 +527,7 @@ local function set_osc_styles()
         control_3 = "{\\blur0\\bord0\\1c&H" .. osc_color_convert(user_opts.side_buttons_color) .. "&\\3c&HFFFFFF&\\fs" .. sidebuttons_size .. "\\fn" .. icons.iconfont .. "}",
         element_down = "{\\1c&H" .. osc_color_convert(user_opts.held_element_color) .. "&}",
         element_hover = "{" .. (hover_effect_color and "\\1c&H" .. osc_color_convert(user_opts.hover_effect_color) .. "&" or "") .."\\2c&HFFFFFF&" .. (hover_effect_size and string.format("\\fscx%s\\fscy%s", user_opts.button_hover_size, user_opts.button_hover_size) or "") .. "}",
-        hover_bg = "{\\blur0\\bord0\\1c&H" .. osc_color_convert(user_opts.hover_effect_color) .. "&}"
+        hover_bg = "{\\blur0\\bord0\\1c&H" .. osc_color_convert(user_opts.hover_effect_color) .. "&}",
     }
 end
 
@@ -2484,11 +2484,11 @@ layouts["modern-image"] = function ()
 
     if track_nextprev_buttons then
         lo = add_layout("playlist_prev")
-        lo.geometry = {x = 55 - (playlist_button and 0 or 25), y = refY - (user_opts.osc_height / 2) , an = 5, w = 24, h = 24}
+        lo.geometry = {x = 60 - (playlist_button and 0 or 25), y = refY - (user_opts.osc_height / 2) , an = 5, w = 24, h = 24}
         lo.style = osc_styles.control_2
 
         lo = add_layout("playlist_next")
-        lo.geometry = {x = 85 - (playlist_button and 0 or 25), y = refY - (user_opts.osc_height / 2) , an = 5, w = 24, h = 24}
+        lo.geometry = {x = 90 - (playlist_button and 0 or 25), y = refY - (user_opts.osc_height / 2) , an = 5, w = 24, h = 24}
         lo.style = osc_styles.control_2
     end
 
@@ -2501,21 +2501,21 @@ layouts["modern-image"] = function ()
         lo = new_element("zoom_control_bg", "box")
         lo.visible = osc_param.playresx >= 400 and user_opts.zoom_control
         lo = add_layout("zoom_control_bg")
-        lo.geometry = {x = 145 - (playlist_button and 0 or 25) - (track_nextprev_buttons and 0 or 70), y = refY - (user_opts.osc_height / 2), an = 4, w = 80, h = 4}
+        lo.geometry = {x = 155 - (playlist_button and 0 or 25) - (track_nextprev_buttons and 0 or 70), y = refY - (user_opts.osc_height / 2), an = 4, w = 80, h = 4}
         lo.layer = 15
         lo.alpha[1] = 128
         lo.style = osc_styles.volumebar_bg
         lo.box.radius = user_opts.slider_rounded_corners and 2 or 0
 
         lo = add_layout("zoom_control")
-        lo.geometry = {x = 145 - (playlist_button and 0 or 25) - (track_nextprev_buttons and 0 or 70), y = refY - (user_opts.osc_height / 2), an = 4, w = 80, h = 10}
+        lo.geometry = {x = 155 - (playlist_button and 0 or 25) - (track_nextprev_buttons and 0 or 70), y = refY - (user_opts.osc_height / 2), an = 4, w = 80, h = 10}
         lo.style = osc_styles.volumebar_fg
         lo.slider.radius = user_opts.slider_rounded_corners and 2 or 0
         lo.slider.gap = 3
         lo.slider.tooltip_an = 2
 
         lo = add_layout("zoom_in_icon")
-        lo.geometry = {x = 240 - (playlist_button and 0 or 25) - (track_nextprev_buttons and 0 or 70), y = refY - (user_opts.osc_height / 2) , an = 5, w = 30, h = 24}
+        lo.geometry = {x = 260 - (playlist_button and 0 or 25) - (track_nextprev_buttons and 0 or 70), y = refY - (user_opts.osc_height / 2) , an = 5, w = 30, h = 24}
         lo.style = osc_styles.control_2
     end
 
