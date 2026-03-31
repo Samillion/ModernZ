@@ -583,6 +583,7 @@ local state = {
     temp_visibility_mode = nil,             -- store temporary visibility mode state
     pause_osc_locked = false,               -- lock bottom bar from hiding while paused (keeponpause + independent mode)
     chapter_list = {},                      -- sorted by time
+    chapter = -1,                           -- current chapter index
     visibility_modes = {},                  -- visibility_modes to cycle through
     mute = false,
     pause = false,
@@ -1301,7 +1302,7 @@ local function draw_seekbar_nibbles(element, elem_ass)
         return
     end
 
-    local current_chapter = mp.get_property_number("chapter", -1)
+    local current_chapter = state.chapter or -1
 
     -- draw a single nibble at position s
     local function draw_nibble(ass, s)
@@ -1758,11 +1759,11 @@ end
 local function download_done(success, result, error)
     if success then
         local download_path = mp.command_native({"expand-path", user_opts.download_path})
-        mp.command("show-text 'Download saved to " .. download_path .. "'")
+        mp.commandv("show-text", "Download saved to " .. download_path)
         state.downloaded_once = true
         msg.info("Download completed")
     else
-        mp.command("show-text 'Download failed - " .. (error or "Unknown error") .. "'")
+        mp.commandv("show-text", "Download failed - " .. (error or "Unknown error"))
         msg.info("Download failed")
     end
     state.downloading = false
@@ -1972,7 +1973,7 @@ layouts["modern"] = function ()
         (user_opts.chapter_title_mbtn_right_command == "" or user_opts.chapter_title_mbtn_right_command == "ignore")) or
         not user_opts.show_chapter_title
 
-    local chapter_index = user_opts.show_chapter_title and mp.get_property_number("chapter", -1) >= 0
+    local chapter_index = user_opts.show_chapter_title and (state.chapter or -1) >= 0
 
     local chapter_h = (no_chapter or not chapter_index) and 0 or user_opts.chapter_title_font_size
     local chapter_offset = (no_chapter or not chapter_index) and 0 or user_opts.chapter_title_offset
@@ -2222,7 +2223,7 @@ layouts["modern"] = function ()
 end
 
 layouts["modern-compact"] = function ()
-    local chapter_index = mp.get_property_number("chapter", -1) >= 0
+    local chapter_index = (state.chapter or -1) >= 0
 
     local no_title =
         ((user_opts.title_mbtn_left_command == "" or user_opts.title_mbtn_left_command == "ignore") and
@@ -2730,9 +2731,9 @@ local function osc_init()
 
     -- Chapter title (above seekbar)
     ne = new_element("chapter_title", "button")
-    ne.visible = mp.get_property_number("chapter", -1) >= 0
+    ne.visible = (state.chapter or -1) >= 0
     ne.content = function()
-        local chapter_index = mp.get_property_number("chapter", -1)
+        local chapter_index = state.chapter or -1
         if user_opts.chapter_fmt == "no" or chapter_index < 0 then return "" end
 
         local chapters = state.chapter_list
@@ -3764,6 +3765,7 @@ observe_cached("mute", request_tick)
 observe_cached("eof-reached", request_tick)
 observe_cached("ontop", request_tick)
 observe_cached("speed", request_tick)
+observe_cached("chapter", request_tick)
 mp.observe_property("paused-for-cache", "bool", function(_, val) state.buffering = val end)
 -- ensure compatibility with auto loop scripts
 mp.observe_property("loop-file", "bool", function(_, val)
