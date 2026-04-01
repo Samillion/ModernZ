@@ -564,6 +564,7 @@ local state = {
     hide_timer = nil,
     demuxer_cache_state = nil,
     idle_active = false,
+    saved_hover_mode_idle = nil,            -- saved zones_hover_mode when idle overrides it to "independent"
     audio_track_count = 0,
     sub_track_count = 0,
     playlist_count = 0,
@@ -3747,7 +3748,22 @@ end)
 observe_cached("border", request_init_resize)
 observe_cached("title-bar", request_init_resize)
 observe_cached("window-maximized", request_init_resize)
-observe_cached("idle-active", request_tick)
+observe_cached("idle-active", function()
+    if state.idle_active then
+        -- idle: apply override
+        if user_opts.zones_hover_mode ~= "independent" then
+            state.saved_hover_mode_idle = user_opts.zones_hover_mode
+            user_opts.zones_hover_mode = "independent"
+        end
+    else
+        -- not idle: restore hover mode
+        if state.saved_hover_mode_idle then
+            user_opts.zones_hover_mode = state.saved_hover_mode_idle
+            state.saved_hover_mode_idle = nil
+        end
+    end
+    request_tick()
+end)
 mp.observe_property("user-data/mpv/console/open", "bool", function(_, val)
     if val and user_opts.visibility == "auto" and not user_opts.showonselect then
         osc_visible(false)
@@ -4046,6 +4062,11 @@ opt.read_options(user_opts, "modernz", function(changed)
     set_time_styles(changed.timecurrent, changed.timems)
     if changed.tick_delay or changed.tick_delay_follow_display_fps then
         set_tick_delay("display_fps", mp.get_property_number("display_fps"))
+    end
+    -- save new value to restore on idle exit
+    if changed.zones_hover_mode and state.saved_hover_mode_idle then
+        state.saved_hover_mode_idle = user_opts.zones_hover_mode
+        user_opts.zones_hover_mode = "independent"
     end
     request_tick()
     visibility_mode(user_opts.visibility, true)
