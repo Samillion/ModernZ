@@ -889,14 +889,17 @@ end
 local function draw_tooltip(ass, tx, ty, width, style, label, alpha)
     local fs = user_opts.tooltip_font_size
     local ph, pv = 5, 3
+    local box_h = fs + 2 * pv
+    local min_w = box_h + 2 * ph
+    local box_w = math.max(width + 2 * ph, min_w)
     -- draw tooltip box
     ass:new_event()
     ass:append("{\\rDefault\\alpha&H4D&}")
-    ass:pos(tx - width / 2 - ph, ty - fs - pv)
+    ass:pos(tx - box_w / 2, ty - fs - pv)
     ass:an(7)
     ass:append(osc_styles.tooltip_box)
     ass:draw_start()
-    ass:round_rect_cw(0, 0, width + 2 * ph, fs + 2 * pv, (fs + 2 * pv) / 2)
+    ass:round_rect_cw(0, 0, box_w, box_h, box_h / 2)
     ass:draw_stop()
     -- add tooltip
     ass:new_event()
@@ -1494,7 +1497,8 @@ local function render_elements(master_ass, osc_vis, wc_vis)
                             local seekbar = state.seekbar_element
                             local ref_el = (element.name == "volumebar" and seekbar and seekbar.hitbox) and seekbar or element
                             local image_mode_offset = (ref_el == element) and 10 or 0
-                            ty = ref_el.hitbox.y1 + elem_geo.h / 2 - user_opts.tooltip_height_offset - image_mode_offset
+                            local anchor_offset = (ref_el == element) and (elem_geo.h / 2) or 0
+                            ty = ref_el.hitbox.y1 + anchor_offset - user_opts.tooltip_height_offset - image_mode_offset
                         else
                             ty = element.hitbox.y1 + elem_geo.h / 2 - user_opts.tooltip_height_offset
                         end
