@@ -889,14 +889,17 @@ end
 local function draw_tooltip(ass, tx, ty, width, style, label, alpha)
     local fs = user_opts.tooltip_font_size
     local ph, pv = 5, 3
+    local box_h = fs + 2 * pv
+    local min_w = box_h + 2 * ph
+    local box_w = math.max(width + 2 * ph, min_w)
     -- draw tooltip box
     ass:new_event()
     ass:append("{\\rDefault\\alpha&H4D&}")
-    ass:pos(tx - width / 2 - ph, ty - fs - pv)
+    ass:pos(tx - box_w / 2, ty - fs - pv)
     ass:an(7)
     ass:append(osc_styles.tooltip_box)
     ass:draw_start()
-    ass:round_rect_cw(0, 0, width + 2 * ph, fs + 2 * pv, (fs + 2 * pv) / 2)
+    ass:round_rect_cw(0, 0, box_w, box_h, box_h / 2)
     ass:draw_stop()
     -- add tooltip
     ass:new_event()
