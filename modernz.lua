@@ -1410,7 +1410,7 @@ local function render_elements(master_ass, osc_vis, wc_vis)
             end
             if mouse_hit(element) then
                 -- mouse down styling
-                if element.styledown then style_ass:append(osc_styles.element_down) end
+                if element.styledown then style_ass:append(element.hover_color and ("{\\1c&H" .. osc_color_convert(element.hover_color) .. "&}") or osc_styles.element_down) end
                 if element.softrepeat and state.mouse_down_counter >= 15 and state.mouse_down_counter % 5 == 0 then
                     element.eventresponder[state.active_event_source.."_down"](element)
                 end
