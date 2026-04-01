@@ -365,7 +365,6 @@ end
 --- localization
 local language = {
     ["default"] = {
-        lang_direction = "LTR",
         idle = "Drop files or URLs here to play",
         na = "Not available",
         video = "Video",
@@ -432,22 +431,30 @@ local function get_locale_from_json(path)
     return json_table
 end
 
--- load external locales if available
-local external = get_locale_from_json("~~/script-opts/modernz-locale.json")
+-- load external locales only when default language is not used
+local locale_file_loaded = false
+local function load_locale_file()
+    if user_opts.language == "default" or locale_file_loaded then return end
+    locale_file_loaded = true
 
-if external then
-    for lang, strings in pairs(external) do
-        if type(strings) == "table" then
-            language[lang] = strings
+    local external = get_locale_from_json("~~/script-opts/modernz-locale.json")
+    if external then
+        for lang, strings in pairs(external) do
+            if lang == "default" then
+                -- "default" is reserved
+                mp.msg.warn("Locale JSON: 'default' is a reserved language key and cannot be overridden. Skipping.")
+            elseif type(strings) == "table" then
+                language[lang] = strings
 
-            -- fill in missing locales with English defaults
-            for key, value in pairs(language["default"]) do
-                if strings[key] == nil then
-                    strings[key] = value or ""  -- fallback to empty string if key is missing
+                -- fill in any missing keys with the built-in defaults
+                for key, value in pairs(language["default"]) do
+                    if strings[key] == nil then
+                        strings[key] = value
+                    end
                 end
+            else
+                mp.msg.warn("Locale data for language '" .. lang .. "' is not in the correct format.")
             end
-        else
-            mp.msg.warn("Locale data for language " .. lang .. " is not in the correct format.")
         end
     end
 end
@@ -487,10 +494,7 @@ local is_december = os.date("*t").month == 12
 local UNICODE_MINUS = string.char(0xe2, 0x88, 0x92)  -- UTF-8 for U+2212 MINUS SIGN
 
 -- hover_effect flags
-local hover_effect_size  = false
-local hover_effect_color = false
-local hover_effect_glow  = false
-local hover_effect_box   = false
+local hover_effect = { size = false, color = false, glow = false, box = false }
 
 local function osc_color_convert(color)
     return color:sub(6,7) .. color:sub(4,5) ..  color:sub(2,3)
@@ -503,10 +507,10 @@ local function set_osc_styles()
     local midbuttons_size = user_opts.midbuttons_size
     local sidebuttons_size = user_opts.sidebuttons_size
 
-    hover_effect_size  = contains(user_opts.hover_effect, "size")
-    hover_effect_color = contains(user_opts.hover_effect, "color")
-    hover_effect_glow  = contains(user_opts.hover_effect, "glow")
-    hover_effect_box   = contains(user_opts.hover_effect, "box")
+    hover_effect.size  = contains(user_opts.hover_effect, "size")
+    hover_effect.color = contains(user_opts.hover_effect, "color")
+    hover_effect.glow  = contains(user_opts.hover_effect, "glow")
+    hover_effect.box   = contains(user_opts.hover_effect, "box")
 
     osc_styles = {
         osc_fade_bg = "{\\blur" .. user_opts.fade_blur_strength .. "\\bord" .. user_opts.osc_fade_strength .. "\\1c&H0&\\3c&H" .. osc_color_convert(user_opts.osc_color) .. "&}",
@@ -529,7 +533,7 @@ local function set_osc_styles()
         control_2 = "{\\blur0\\bord0\\1c&H" .. osc_color_convert(user_opts.middle_buttons_color) .. "&\\3c&HFFFFFF&\\fs" .. midbuttons_size .. "\\fn" .. icons.iconfont .. "}",
         control_3 = "{\\blur0\\bord0\\1c&H" .. osc_color_convert(user_opts.side_buttons_color) .. "&\\3c&HFFFFFF&\\fs" .. sidebuttons_size .. "\\fn" .. icons.iconfont .. "}",
         element_down = "{\\1c&H" .. osc_color_convert(user_opts.held_element_color) .. "&}",
-        element_hover = "{" .. (hover_effect_color and "\\1c&H" .. osc_color_convert(user_opts.hover_effect_color) .. "&" or "") .."\\2c&HFFFFFF&" .. (hover_effect_size and string.format("\\fscx%s\\fscy%s", user_opts.button_hover_size, user_opts.button_hover_size) or "") .. "}",
+        element_hover = "{" .. (hover_effect.color and "\\1c&H" .. osc_color_convert(user_opts.hover_effect_color) .. "&" or "") .."\\2c&HFFFFFF&" .. (hover_effect.size and string.format("\\fscx%s\\fscy%s", user_opts.button_hover_size, user_opts.button_hover_size) or "") .. "}",
         hover_bg = "{\\blur0\\bord0\\1c&H" .. osc_color_convert(user_opts.hover_effect_color) .. "&}",
     }
 end
@@ -1424,7 +1428,7 @@ local function render_elements(master_ass, osc_vis, wc_vis)
         local elem_ass = assdraw.ass_new()
 
         -- Hover background box
-        if element.type == "button" and hover_effect_box
+        if element.type == "button" and hover_effect.box
             and element.name ~= "title"
             and element.name ~= "chapter_title"
             and element.name ~= "time_codes"
@@ -1621,7 +1625,7 @@ local function render_elements(master_ass, osc_vis, wc_vis)
             local is_clickable = element.eventresponder and (element.eventresponder["mbtn_left_down"] ~= nil or element.eventresponder["mbtn_left_up"] ~= nil)
             local hovered = mouse_hit(element) and is_clickable and element.enabled and state.mouse_down_counter == 0
             local hoverstyle = button_lo.hoverstyle
-            if hovered and (hover_effect_size or hover_effect_color) then
+            if hovered and (hover_effect.size or hover_effect.color) then
                 -- remove font scale tags for these elements, it looks out of place
                 if element.name == "title" or element.name == "time_codes" or element.name == "chapter_title" or element.name == "cache_info" or element.name == "speed" then
                     hoverstyle = hoverstyle:gsub("\\fscx%d+\\fscy%d+", "")
@@ -1632,7 +1636,7 @@ local function render_elements(master_ass, osc_vis, wc_vis)
             end
 
             -- apply blur effect if "glow" is in hover effects
-            if hovered and hover_effect_glow then
+            if hovered and hover_effect.glow then
                 local shadow_ass = assdraw.ass_new()
                 shadow_ass:merge(style_ass)
                 shadow_ass:append("{\\blur" .. user_opts.button_glow_amount .. "}" .. hoverstyle .. buttontext)
@@ -1903,7 +1907,7 @@ local function window_controls()
 
     -- Window controls
     if user_opts.window_controls then
-        local size_hover = hover_effect_size and
+        local size_hover = hover_effect.size and
             string.format("\\fscx%s\\fscy%s", user_opts.button_hover_size, user_opts.button_hover_size) or ""
         local function wc_hoverstyle(color)
             return "{\\c&H" .. osc_color_convert(color) .. "&" .. size_hover .. "}"
@@ -4038,8 +4042,9 @@ end
 
 -- read options from config and command-line
 opt.read_options(user_opts, "modernz", function(changed)
+    if changed.language then load_locale_file() end
     validate_user_opts()
-    set_osc_locale()
+    if changed.language then set_osc_locale() end
     set_icon_theme()
     set_osc_styles()
     set_time_styles(changed.timecurrent, changed.timems)
@@ -4052,6 +4057,7 @@ opt.read_options(user_opts, "modernz", function(changed)
     request_init()
 end)
 
+load_locale_file()
 validate_user_opts()
 set_osc_locale()
 set_icon_theme()
