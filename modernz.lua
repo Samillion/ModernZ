@@ -1494,7 +1494,8 @@ local function render_elements(master_ass, osc_vis, wc_vis)
                             local seekbar = state.seekbar_element
                             local ref_el = (element.name == "volumebar" and seekbar and seekbar.hitbox) and seekbar or element
                             local image_mode_offset = (ref_el == element) and 10 or 0
-                            ty = ref_el.hitbox.y1 + elem_geo.h / 2 - user_opts.tooltip_height_offset - image_mode_offset
+                            local anchor_offset = (ref_el == element) and (elem_geo.h / 2) or 0
+                            ty = ref_el.hitbox.y1 + anchor_offset - user_opts.tooltip_height_offset - image_mode_offset
                         else
                             ty = element.hitbox.y1 + elem_geo.h / 2 - user_opts.tooltip_height_offset
                         end
