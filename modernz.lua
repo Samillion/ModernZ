@@ -40,7 +40,7 @@ local user_opts = {
     fadeduration = 200,                    -- fade-out duration (in ms), set to 0 for no fade
     fadein = false,                        -- whether to enable fade-in effect
     minmousemove = 0,                      -- minimum mouse movement (in pixels) required to show OSC
-    deadzonesize = 0.5,                    -- size of the deadzone (0.0 = whole screen, 1.0 = no deadzone)
+    deadzonesize = 0.75,                   -- size of the deadzone (0.0 = whole screen, 1.0 = no deadzone)
     osc_on_seek = true,                    -- show OSC when seeking
     osc_on_start = "both",                 -- show OSC on start of every file ("no", "bottom", "top", "both")
     mouse_seek_pause = true,               -- pause video while seeking with mouse move (on button hold)
