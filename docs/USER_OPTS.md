@@ -53,7 +53,7 @@ Create `modernz.conf` in your mpv script-opts directory:
 | Option                  | Value            | Description                                                                      |
 | ----------------------- | ---------------- | -------------------------------------------------------------------------------- |
 | show_title              | yes              | show title in the OSC (above seekbar)                                            |
-| title                   | `${media-title}` | title above seekbar format: `"${media-title}"` or `"${filename}"`                |
+| title                   | `${media-title}` | title above seekbar: `"${media-title}"` or `"${filename}"`                       |
 | title_font_size         | 24               | font size of the title text (above seekbar)                                      |
 | chapter_title_font_size | 14               | chapter title font size                                                          |
 | show_chapter_title      | yes              | show chapter title (above seekbar)                                               |
@@ -74,7 +74,6 @@ Create `modernz.conf` in your mpv script-opts directory:
 | Option                    | Value            | Description                                                               |
 | ------------------------- | ---------------- | ------------------------------------------------------------------------- |
 | show_window_title         | no               | show window title in borderless/fullscreen mode                           |
-| window_title              | `${media-title}` | same as title but for window_top_bar                                      |
 | window_title_font_size    | 26               | window title font size                                                    |
 | window_controls           | yes              | show window controls (close, minimize, maximize) in borderless/fullscreen |
 
