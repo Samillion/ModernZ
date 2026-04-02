@@ -3452,7 +3452,7 @@ local function render()
         state.initREQ = false
 
         -- store initial mouse position
-        if state.last_mouseX == nil and mouseX ~= -1 then
+        if (state.last_mouseX == nil or state.last_mouseY == nil) and not (mouseX == nil or mouseY == nil or mouseX == -1 or mouseY == -1) then
             state.last_mouseX, state.last_mouseY = mouseX, mouseY
         end
     end
