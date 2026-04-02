@@ -55,7 +55,7 @@ local user_opts = {
 
     -- Elements display
     show_title = true,                     -- show title in the OSC (above seekbar)
-    title = "${media-title}",              -- title above seekbar format: "${media-title}" or "${filename}"
+    title = "${media-title}",              -- title above seekbar: "${media-title}" or "${filename}"
     title_font_size = 24,                  -- title font size (above seekbar)
     chapter_title_font_size = 14,          -- chapter title font size
 
@@ -77,7 +77,6 @@ local user_opts = {
 
     -- Title bar settings
     show_window_title = false,             -- show window title in borderless/fullscreen mode
-    window_title = "${media-title}",       -- same as title but for window_top_bar
     window_title_font_size = 26,           -- window title font size
     window_controls = true,                -- show window controls (close, minimize, maximize) in borderless/fullscreen
 
@@ -494,7 +493,7 @@ local is_december = os.date("*t").month == 12
 local UNICODE_MINUS = string.char(0xe2, 0x88, 0x92)  -- UTF-8 for U+2212 MINUS SIGN
 
 -- hover_effect flags
-local hover_effect = { size = false, color = false, glow = false, box = false }
+local hover_effects = { size = false, color = false, glow = false, box = false }
 
 local function osc_color_convert(color)
     return color:sub(6,7) .. color:sub(4,5) ..  color:sub(2,3)
@@ -507,10 +506,10 @@ local function set_osc_styles()
     local midbuttons_size = user_opts.midbuttons_size
     local sidebuttons_size = user_opts.sidebuttons_size
 
-    hover_effect.size  = contains(user_opts.hover_effect, "size")
-    hover_effect.color = contains(user_opts.hover_effect, "color")
-    hover_effect.glow  = contains(user_opts.hover_effect, "glow")
-    hover_effect.box   = contains(user_opts.hover_effect, "box")
+    hover_effects.size  = contains(user_opts.hover_effect, "size")
+    hover_effects.color = contains(user_opts.hover_effect, "color")
+    hover_effects.glow  = contains(user_opts.hover_effect, "glow")
+    hover_effects.box   = contains(user_opts.hover_effect, "box")
 
     osc_styles = {
         osc_fade_bg = "{\\blur" .. user_opts.fade_blur_strength .. "\\bord" .. user_opts.osc_fade_strength .. "\\1c&H0&\\3c&H" .. osc_color_convert(user_opts.osc_color) .. "&}",
@@ -533,7 +532,7 @@ local function set_osc_styles()
         control_2 = "{\\blur0\\bord0\\1c&H" .. osc_color_convert(user_opts.middle_buttons_color) .. "&\\3c&HFFFFFF&\\fs" .. midbuttons_size .. "\\fn" .. icons.iconfont .. "}",
         control_3 = "{\\blur0\\bord0\\1c&H" .. osc_color_convert(user_opts.side_buttons_color) .. "&\\3c&HFFFFFF&\\fs" .. sidebuttons_size .. "\\fn" .. icons.iconfont .. "}",
         element_down = "{\\1c&H" .. osc_color_convert(user_opts.held_element_color) .. "&}",
-        element_hover = "{" .. (hover_effect.color and "\\1c&H" .. osc_color_convert(user_opts.hover_effect_color) .. "&" or "") .."\\2c&HFFFFFF&" .. (hover_effect.size and string.format("\\fscx%s\\fscy%s", user_opts.button_hover_size, user_opts.button_hover_size) or "") .. "}",
+        element_hover = "{" .. (hover_effects.color and "\\1c&H" .. osc_color_convert(user_opts.hover_effect_color) .. "&" or "") .."\\2c&HFFFFFF&" .. (hover_effects.size and string.format("\\fscx%s\\fscy%s", user_opts.button_hover_size, user_opts.button_hover_size) or "") .. "}",
         hover_bg = "{\\blur0\\bord0\\1c&H" .. osc_color_convert(user_opts.hover_effect_color) .. "&}",
     }
 end
@@ -569,6 +568,7 @@ local state = {
     hide_timer = nil,
     demuxer_cache_state = nil,
     idle_active = false,
+    saved_hover_mode_idle = nil,            -- saved zones_hover_mode when idle overrides it to "independent"
     audio_track_count = 0,
     sub_track_count = 0,
     playlist_count = 0,
@@ -582,6 +582,7 @@ local state = {
     border = true,
     window_maximized = false,
     osd = mp.create_osd_overlay("ass-events"),
+    logo_osd = mp.create_osd_overlay("ass-events"),
     buffering = false,
     new_file_flag = false,                  -- flag to detect new file starts
     temp_visibility_mode = nil,             -- store temporary visibility mode state
@@ -650,17 +651,17 @@ local function kill_animation(anitype_key, anistart_key, animation_key)
     state[animation_key] = nil
 end
 
-local function set_osd(res_x, res_y, text, z)
-    if state.osd.res_x == res_x and
-       state.osd.res_y == res_y and
-       state.osd.data == text then
+local function set_osd(osd, res_x, res_y, text, z)
+    if osd.res_x == res_x and
+       osd.res_y == res_y and
+       osd.data == text then
         return
     end
-    state.osd.res_x = res_x
-    state.osd.res_y = res_y
-    state.osd.data = text
-    state.osd.z = z
-    state.osd:update()
+    osd.res_x = res_x
+    osd.res_y = res_y
+    osd.data = text
+    osd.z = z
+    osd:update()
 end
 
 local function set_time_styles(timecurrent_changed, timems_changed)
@@ -889,7 +890,7 @@ local function ass_append_alpha(ass, alpha, modifier, inverse, anim_override)
                ar[1], ar[2], ar[3], ar[4]))
 end
 
--- draw a pill-shaped tooltip background box and label
+-- draw tooltip background box and label
 local function draw_tooltip(ass, tx, ty, width, style, label, alpha)
     local fs = user_opts.tooltip_font_size
     local ph, pv = 5, 3
@@ -1049,10 +1050,10 @@ local function request_init_resize()
     state.tick_timer:resume()
 end
 
-local function render_wipe()
+local function render_wipe(osd)
     msg.trace("render_wipe()")
-    state.osd.data = "" -- allows set_osd to immediately update on enable
-    state.osd:remove()
+    osd.data = "" -- allows set_osd to immediately update on enable
+    osd:remove()
 end
 
 local function show_bar(label, showtime_key, visible_key, anitype_key, set_visible)
@@ -1079,7 +1080,7 @@ local function hide_bar(label, visible_key, anitype_key, set_visible)
         -- typically hide happens at render() from tick(), but now tick() is
         -- no-op and won't render again to remove the osc, so do that manually.
         state[visible_key] = false
-        render_wipe()
+        render_wipe(state.osd)
     elseif user_opts.fadeduration > 0 then
         if state[visible_key] then
             state[anitype_key] = "out"
@@ -1428,7 +1429,7 @@ local function render_elements(master_ass, osc_vis, wc_vis)
         local elem_ass = assdraw.ass_new()
 
         -- Hover background box
-        if element.type == "button" and hover_effect.box
+        if element.type == "button" and hover_effects.box
             and element.name ~= "title"
             and element.name ~= "chapter_title"
             and element.name ~= "time_codes"
@@ -1625,7 +1626,7 @@ local function render_elements(master_ass, osc_vis, wc_vis)
             local is_clickable = element.eventresponder and (element.eventresponder["mbtn_left_down"] ~= nil or element.eventresponder["mbtn_left_up"] ~= nil)
             local hovered = mouse_hit(element) and is_clickable and element.enabled and state.mouse_down_counter == 0
             local hoverstyle = button_lo.hoverstyle
-            if hovered and (hover_effect.size or hover_effect.color) then
+            if hovered and (hover_effects.size or hover_effects.color) then
                 -- remove font scale tags for these elements, it looks out of place
                 if element.name == "title" or element.name == "time_codes" or element.name == "chapter_title" or element.name == "cache_info" or element.name == "speed" then
                     hoverstyle = hoverstyle:gsub("\\fscx%d+\\fscy%d+", "")
@@ -1636,7 +1637,7 @@ local function render_elements(master_ass, osc_vis, wc_vis)
             end
 
             -- apply blur effect if "glow" is in hover effects
-            if hovered and hover_effect.glow then
+            if hovered and hover_effects.glow then
                 local shadow_ass = assdraw.ass_new()
                 shadow_ass:merge(style_ass)
                 shadow_ass:append("{\\blur" .. user_opts.button_glow_amount .. "}" .. hoverstyle .. buttontext)
@@ -1907,7 +1908,7 @@ local function window_controls()
 
     -- Window controls
     if user_opts.window_controls then
-        local size_hover = hover_effect.size and
+        local size_hover = hover_effects.size and
             string.format("\\fscx%s\\fscy%s", user_opts.button_hover_size, user_opts.button_hover_size) or ""
         local function wc_hoverstyle(color)
             return "{\\c&H" .. osc_color_convert(color) .. "&" .. size_hover .. "}"
@@ -2722,7 +2723,7 @@ local function osc_init()
     -- Window Title
     ne = new_element("windowtitle", "button")
     ne.content = function ()
-        local title = mp.command_native({"expand-text", user_opts.window_title}) or ""
+        local title = mp.command_native({"expand-text", mp.get_property("title")})
         title = title:gsub("\n", " ")
         return title ~= "" and mp.command_native({"escape-ass", title}) or "mpv"
     end
@@ -3592,7 +3593,7 @@ local function render()
     end
 
     -- submit
-    set_osd(osc_param.playresy * osc_param.display_aspect, osc_param.playresy, ass.text, 1000)
+    set_osd(state.osd, osc_param.playresy * osc_param.display_aspect, osc_param.playresy, ass.text, 1000)
 end
 
 -- called by mpv on every frame
@@ -3605,61 +3606,66 @@ tick = function()
     if not state.enabled then return end
 
     if state.idle_active then
-        -- render idle message
         msg.trace("idle message")
-        local _, _, display_aspect = mp.get_osd_size()
-        if display_aspect == 0 then
-            return
-        end
-        local display_h = 360
-        local display_w = display_h * display_aspect
-        -- logo is rendered at 2^(6-1) = 32 times resolution with size 1800x1800
-        local icon_x, icon_y = (display_w - 1800 / 32) / 2, 140
-        local line_prefix = ("{\\rDefault\\an7\\1a&H00&\\bord0\\shad0\\pos(%f,%f)}"):format(icon_x, icon_y)
-
-        local ass = assdraw.ass_new()
-        -- mpv logo
         if user_opts.idlescreen then
+            local _, _, display_aspect = mp.get_osd_size()
+            if display_aspect == 0 then return end
+            local display_h = 360
+            local display_w = display_h * display_aspect
+            -- logo is rendered at 2^(6-1) = 32 times resolution with size 1800x1800
+            local icon_x, icon_y = (display_w - 1800 / 32) / 2, 140
+            local line_prefix = ("{\\rDefault\\an7\\1a&H00&\\bord0\\shad0\\pos(%f,%f)}"):format(icon_x, icon_y)
+
+            local ass = assdraw.ass_new()
+            -- mpv logo
             for _, line in ipairs(logo_lines) do
                 ass:new_event()
                 ass:append(line_prefix .. line)
             end
-        end
 
-        -- Santa hat
-        if is_december and user_opts.idlescreen and not user_opts.greenandgrumpy then
-            for _, line in ipairs(santa_hat_lines) do
-                ass:new_event()
-                ass:append(line_prefix .. line)
+            -- Santa hat
+            if is_december and not user_opts.greenandgrumpy then
+                for _, line in ipairs(santa_hat_lines) do
+                    ass:new_event()
+                    ass:append(line_prefix .. line)
+                end
             end
-        end
 
-        if user_opts.idlescreen then
             ass:new_event()
             ass:pos(display_w / 2, icon_y + 65)
             ass:an(8)
             ass:append("{\\fs24\\1c&HFFFFFF&}" .. locale.idle)
+            set_osd(state.logo_osd, display_w, display_h, ass.text, -1000)
         end
-        set_osd(display_w, display_h, ass.text, -1000)
 
-        if state.showhide_enabled then
-            mp.disable_key_bindings("showhide")
-            mp.disable_key_bindings("showhide_wc")
-            state.showhide_enabled = false
+        if state.osc_visible then
+            osc_visible(false)
+        end
+
+        if window_controls_enabled() then
+            render()
+        else
+            render_wipe(state.osd)
+            if state.showhide_enabled then
+                mp.disable_key_bindings("showhide")
+                mp.disable_key_bindings("showhide_wc")
+                state.showhide_enabled = false
+            end
         end
     elseif (state.fullscreen and user_opts.showfullscreen) or (not state.fullscreen and user_opts.showwindowed) then
-        -- render the OSC
+        render_wipe(state.logo_osd)
         render()
     else
         -- Flush OSD
-        render_wipe()
+        render_wipe(state.osd)
+        render_wipe(state.logo_osd)
     end
 
     state.tick_last_time = mp.get_time()
 
-    local function tick_animation(anitype_key, anistart_key, animation_key)
+    local function tick_animation(anitype_key, anistart_key, animation_key, allow_idle)
         if state[anitype_key] ~= nil then
-            if not state.idle_active and
+            if (allow_idle or not state.idle_active) and
                (not state[anistart_key] or
                 mp.get_time() < 1 + state[anistart_key] + user_opts.fadeduration / 1000)
             then
@@ -3670,7 +3676,7 @@ tick = function()
         end
     end
     tick_animation("anitype",    "anistart",    "animation")
-    tick_animation("wc_anitype", "wc_anistart", "wc_animation")
+    tick_animation("wc_anitype", "wc_anistart", "wc_animation", window_controls_enabled())
 end
 
 -- duration is observed for the sole purpose of updating chapter markers
@@ -3750,7 +3756,22 @@ end)
 observe_cached("border", request_init_resize)
 observe_cached("title-bar", request_init_resize)
 observe_cached("window-maximized", request_init_resize)
-observe_cached("idle-active", request_tick)
+observe_cached("idle-active", function()
+    if state.idle_active then
+        -- idle: apply override
+        if user_opts.zones_hover_mode ~= "independent" then
+            state.saved_hover_mode_idle = user_opts.zones_hover_mode
+            user_opts.zones_hover_mode = "independent"
+        end
+    else
+        -- not idle: restore hover mode
+        if state.saved_hover_mode_idle then
+            user_opts.zones_hover_mode = state.saved_hover_mode_idle
+            state.saved_hover_mode_idle = nil
+        end
+    end
+    request_tick()
+end)
 mp.observe_property("user-data/mpv/console/open", "bool", function(_, val)
     if val and user_opts.visibility == "auto" and not user_opts.showonselect then
         osc_visible(false)
@@ -4050,6 +4071,11 @@ opt.read_options(user_opts, "modernz", function(changed)
     set_time_styles(changed.timecurrent, changed.timems)
     if changed.tick_delay or changed.tick_delay_follow_display_fps then
         set_tick_delay("display_fps", mp.get_property_number("display_fps"))
+    end
+    -- save new value to restore on idle exit
+    if changed.zones_hover_mode and state.saved_hover_mode_idle then
+        state.saved_hover_mode_idle = user_opts.zones_hover_mode
+        user_opts.zones_hover_mode = "independent"
     end
     request_tick()
     visibility_mode(user_opts.visibility, true)
