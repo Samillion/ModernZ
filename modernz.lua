@@ -2287,7 +2287,7 @@ layouts["modern-compact"] = function ()
     -- Controller Background
     local lo, geo
 
-    setup_bg_elements(posX, posY, osc_w, 50, 0)
+    setup_bg_elements(posX, posY, osc_w, user_opts.fade_transparency_strength, user_opts.window_fade_transparency_strength)
 
     -- Alignment
     local refX = osc_w / 2
