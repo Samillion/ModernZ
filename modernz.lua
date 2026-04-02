@@ -564,7 +564,6 @@ local state = {
     hide_timer = nil,
     demuxer_cache_state = nil,
     idle_active = false,
-    saved_hover_mode_idle = nil,            -- saved zones_hover_mode when idle overrides it to "independent"
     audio_track_count = 0,
     sub_track_count = 0,
     playlist_count = 0,
@@ -3286,7 +3285,7 @@ local function mouse_leave()
         if not state.pause_osc_locked then
             hide_osc()
         end
-        if user_opts.zones_hover_mode == "independent" then
+        if user_opts.zones_hover_mode == "independent" and not state.idle_active then
             hide_wc()
         end
     end
@@ -3511,7 +3510,7 @@ local function render()
 
     --mouse input area
     local wc_vis
-    if user_opts.zones_hover_mode == "independent" then
+    if user_opts.zones_hover_mode == "independent" or state.idle_active then
         wc_vis = state.wc_visible
     else
         wc_vis = state.osc_visible
@@ -3571,7 +3570,9 @@ local function render()
 
     if state.hide_timer then state.hide_timer.timeout = math.huge end
     run_autohide("showtime",    hide_osc, osc_areas)
-    run_autohide("wc_showtime", hide_wc,  wc_areas)
+    if not state.idle_active then
+        run_autohide("wc_showtime", hide_wc,  wc_areas)
+    end
 
     -- actual rendering
     local ass = assdraw.ass_new()
@@ -3635,6 +3636,11 @@ tick = function()
         end
 
         if window_controls_enabled() then
+            -- ensure window controls are visible during idle for all modes
+            -- use show_wc() so wc_showtime is set and autohide doesn't immediately fire
+            if not state.wc_visible then
+                show_wc()
+            end
             render()
         else
             render_wipe(state.osd)
@@ -3748,22 +3754,7 @@ end)
 observe_cached("border", request_init_resize)
 observe_cached("title-bar", request_init_resize)
 observe_cached("window-maximized", request_init_resize)
-observe_cached("idle-active", function()
-    if state.idle_active then
-        -- idle: apply override
-        if user_opts.zones_hover_mode ~= "independent" then
-            state.saved_hover_mode_idle = user_opts.zones_hover_mode
-            user_opts.zones_hover_mode = "independent"
-        end
-    else
-        -- not idle: restore hover mode
-        if state.saved_hover_mode_idle then
-            user_opts.zones_hover_mode = state.saved_hover_mode_idle
-            state.saved_hover_mode_idle = nil
-        end
-    end
-    request_tick()
-end)
+observe_cached("idle-active", request_tick)
 mp.observe_property("user-data/mpv/console/open", "bool", function(_, val)
     if val and user_opts.visibility == "auto" and not user_opts.showonselect then
         osc_visible(false)
@@ -4062,11 +4053,6 @@ opt.read_options(user_opts, "modernz", function(changed)
     set_time_styles(changed.timecurrent, changed.timems)
     if changed.tick_delay or changed.tick_delay_follow_display_fps then
         set_tick_delay("display_fps", mp.get_property_number("display_fps"))
-    end
-    -- save new value to restore on idle exit
-    if changed.zones_hover_mode and state.saved_hover_mode_idle then
-        state.saved_hover_mode_idle = user_opts.zones_hover_mode
-        user_opts.zones_hover_mode = "independent"
     end
     request_tick()
     visibility_mode(user_opts.visibility, true)
