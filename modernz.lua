@@ -40,12 +40,9 @@ local user_opts = {
     fadeduration = 200,                    -- fade-out duration (in ms), set to 0 for no fade
     fadein = false,                        -- whether to enable fade-in effect
     minmousemove = 0,                      -- minimum mouse movement (in pixels) required to show OSC
-    zones_hover_mode = "always",           -- mode for showing OSC/WC on mouse move: "always", "zones", "independent"
-    bottomhover_zone = 130,                -- height of the bottom hover zone (in pixels)
-    tophover_zone = 130,                   -- height of the top hover zone (in pixels)
+    deadzonesize = 0.75,                   -- size of the deadzone (0.0 = whole screen, 1.0 = no deadzone)
     osc_on_seek = true,                    -- show OSC when seeking
     osc_on_start = "both",                 -- show OSC on start of every file ("no", "bottom", "top", "both")
-    osc_keep_with_cursor = true,           -- keep OSC visible if mouse cursor is within OSC boundaries
     mouse_seek_pause = true,               -- pause video while seeking with mouse move (on button hold)
     force_seek_tooltip = false,            -- force show seekbar tooltip on mouse drag, even if not hovering seekbar
 
@@ -55,7 +52,7 @@ local user_opts = {
 
     -- Elements display
     show_title = true,                     -- show title in the OSC (above seekbar)
-    title = "${media-title}",              -- title above seekbar format: "${media-title}" or "${filename}"
+    title = "${media-title}",              -- title above seekbar: "${media-title}" or "${filename}"
     title_font_size = 24,                  -- title font size (above seekbar)
     chapter_title_font_size = 14,          -- chapter title font size
 
@@ -77,7 +74,6 @@ local user_opts = {
 
     -- Title bar settings
     show_window_title = false,             -- show window title in borderless/fullscreen mode
-    window_title = "${media-title}",       -- same as title but for window_top_bar
     window_title_font_size = 26,           -- window title font size
     window_controls = true,                -- show window controls (close, minimize, maximize) in borderless/fullscreen
 
@@ -494,7 +490,7 @@ local is_december = os.date("*t").month == 12
 local UNICODE_MINUS = string.char(0xe2, 0x88, 0x92)  -- UTF-8 for U+2212 MINUS SIGN
 
 -- hover_effect flags
-local hover_effect = { size = false, color = false, glow = false, box = false }
+local hover_effects = { size = false, color = false, glow = false, box = false }
 
 local function osc_color_convert(color)
     return color:sub(6,7) .. color:sub(4,5) ..  color:sub(2,3)
@@ -507,10 +503,10 @@ local function set_osc_styles()
     local midbuttons_size = user_opts.midbuttons_size
     local sidebuttons_size = user_opts.sidebuttons_size
 
-    hover_effect.size  = contains(user_opts.hover_effect, "size")
-    hover_effect.color = contains(user_opts.hover_effect, "color")
-    hover_effect.glow  = contains(user_opts.hover_effect, "glow")
-    hover_effect.box   = contains(user_opts.hover_effect, "box")
+    hover_effects.size  = contains(user_opts.hover_effect, "size")
+    hover_effects.color = contains(user_opts.hover_effect, "color")
+    hover_effects.glow  = contains(user_opts.hover_effect, "glow")
+    hover_effects.box   = contains(user_opts.hover_effect, "box")
 
     osc_styles = {
         osc_fade_bg = "{\\blur" .. user_opts.fade_blur_strength .. "\\bord" .. user_opts.osc_fade_strength .. "\\1c&H0&\\3c&H" .. osc_color_convert(user_opts.osc_color) .. "&}",
@@ -533,7 +529,7 @@ local function set_osc_styles()
         control_2 = "{\\blur0\\bord0\\1c&H" .. osc_color_convert(user_opts.middle_buttons_color) .. "&\\3c&HFFFFFF&\\fs" .. midbuttons_size .. "\\fn" .. icons.iconfont .. "}",
         control_3 = "{\\blur0\\bord0\\1c&H" .. osc_color_convert(user_opts.side_buttons_color) .. "&\\3c&HFFFFFF&\\fs" .. sidebuttons_size .. "\\fn" .. icons.iconfont .. "}",
         element_down = "{\\1c&H" .. osc_color_convert(user_opts.held_element_color) .. "&}",
-        element_hover = "{" .. (hover_effect.color and "\\1c&H" .. osc_color_convert(user_opts.hover_effect_color) .. "&" or "") .."\\2c&HFFFFFF&" .. (hover_effect.size and string.format("\\fscx%s\\fscy%s", user_opts.button_hover_size, user_opts.button_hover_size) or "") .. "}",
+        element_hover = "{" .. (hover_effects.color and "\\1c&H" .. osc_color_convert(user_opts.hover_effect_color) .. "&" or "") .."\\2c&HFFFFFF&" .. (hover_effects.size and string.format("\\fscx%s\\fscy%s", user_opts.button_hover_size, user_opts.button_hover_size) or "") .. "}",
         hover_bg = "{\\blur0\\bord0\\1c&H" .. osc_color_convert(user_opts.hover_effect_color) .. "&}",
     }
 end
@@ -582,10 +578,9 @@ local state = {
     border = true,
     window_maximized = false,
     osd = mp.create_osd_overlay("ass-events"),
+    logo_osd = mp.create_osd_overlay("ass-events"),
     buffering = false,
     new_file_flag = false,                  -- flag to detect new file starts
-    temp_visibility_mode = nil,             -- store temporary visibility mode state
-    pause_osc_locked = false,               -- lock bottom bar from hiding while paused (keeponpause + independent mode)
     chapter_list = {},                      -- sorted by time
     chapter = -1,                           -- current chapter index
     visibility_modes = {},                  -- visibility_modes to cycle through
@@ -650,17 +645,15 @@ local function kill_animation(anitype_key, anistart_key, animation_key)
     state[animation_key] = nil
 end
 
-local function set_osd(res_x, res_y, text, z)
-    if state.osd.res_x == res_x and
-       state.osd.res_y == res_y and
-       state.osd.data == text then
+local function set_osd(osd, res_x, res_y, text, z)
+    if osd.res_x == res_x and osd.res_y == res_y and osd.data == text then
         return
     end
-    state.osd.res_x = res_x
-    state.osd.res_y = res_y
-    state.osd.data = text
-    state.osd.z = z
-    state.osd:update()
+    osd.res_x = res_x
+    osd.res_y = res_y
+    osd.data = text
+    osd.z = z
+    osd:update()
 end
 
 local function set_time_styles(timecurrent_changed, timems_changed)
@@ -719,6 +712,12 @@ local function scale_value(x0, x1, y0, y1, val)
     local m = (y1 - y0) / (x1 - x0)
     local b = y0 - (m * x0)
     return (m * val) + b
+end
+
+-- returns the position of an object on a one-dimensional axis,
+-- from 0..1 (object to the "left") to 1..0 (object to the "right"), taking margin into account.
+local function get_align(align, frame, obj, margin)
+    return (frame / 2) + (((frame / 2) - margin - (obj / 2)) * align)
 end
 
 local tooltip_osd = mp.create_osd_overlay and mp.create_osd_overlay("ass-events") or nil
@@ -889,7 +888,7 @@ local function ass_append_alpha(ass, alpha, modifier, inverse, anim_override)
                ar[1], ar[2], ar[3], ar[4]))
 end
 
--- draw a pill-shaped tooltip background box and label
+-- draw tooltip background box and label
 local function draw_tooltip(ass, tx, ty, width, style, label, alpha)
     local fs = user_opts.tooltip_font_size
     local ph, pv = 5, 3
@@ -1049,10 +1048,10 @@ local function request_init_resize()
     state.tick_timer:resume()
 end
 
-local function render_wipe()
+local function render_wipe(osd)
     msg.trace("render_wipe()")
-    state.osd.data = "" -- allows set_osd to immediately update on enable
-    state.osd:remove()
+    osd.data = "" -- allows set_osd to immediately update on enable
+    osd:remove()
 end
 
 local function show_bar(label, showtime_key, visible_key, anitype_key, set_visible)
@@ -1079,7 +1078,7 @@ local function hide_bar(label, visible_key, anitype_key, set_visible)
         -- typically hide happens at render() from tick(), but now tick() is
         -- no-op and won't render again to remove the osc, so do that manually.
         state[visible_key] = false
-        render_wipe()
+        render_wipe(state.osd)
     elseif user_opts.fadeduration > 0 then
         if state[visible_key] then
             state[anitype_key] = "out"
@@ -1399,10 +1398,10 @@ local function render_elements(master_ass, osc_vis, wc_vis)
         local is_top = element.layout.group == "top"
         if (is_top and not wc_vis) or (not is_top and not osc_vis) then return end
 
-        -- use wc animation for top group in independent mode
+        -- use wc animation for top group elements
         -- use 0 to block fallback to state.animation when wc has no active animation
         local anim_override = nil
-        if user_opts.zones_hover_mode == "independent" and is_top then
+        if is_top then
             anim_override = state.wc_animation or 0
         end
 
@@ -1428,7 +1427,7 @@ local function render_elements(master_ass, osc_vis, wc_vis)
         local elem_ass = assdraw.ass_new()
 
         -- Hover background box
-        if element.type == "button" and hover_effect.box
+        if element.type == "button" and hover_effects.box
             and element.name ~= "title"
             and element.name ~= "chapter_title"
             and element.name ~= "time_codes"
@@ -1625,7 +1624,7 @@ local function render_elements(master_ass, osc_vis, wc_vis)
             local is_clickable = element.eventresponder and (element.eventresponder["mbtn_left_down"] ~= nil or element.eventresponder["mbtn_left_up"] ~= nil)
             local hovered = mouse_hit(element) and is_clickable and element.enabled and state.mouse_down_counter == 0
             local hoverstyle = button_lo.hoverstyle
-            if hovered and (hover_effect.size or hover_effect.color) then
+            if hovered and (hover_effects.size or hover_effects.color) then
                 -- remove font scale tags for these elements, it looks out of place
                 if element.name == "title" or element.name == "time_codes" or element.name == "chapter_title" or element.name == "cache_info" or element.name == "speed" then
                     hoverstyle = hoverstyle:gsub("\\fscx%d+\\fscy%d+", "")
@@ -1636,7 +1635,7 @@ local function render_elements(master_ass, osc_vis, wc_vis)
             end
 
             -- apply blur effect if "glow" is in hover effects
-            if hovered and hover_effect.glow then
+            if hovered and hover_effects.glow then
                 local shadow_ass = assdraw.ass_new()
                 shadow_ass:merge(style_ass)
                 shadow_ass:append("{\\blur" .. user_opts.button_glow_amount .. "}" .. hoverstyle .. buttontext)
@@ -1907,7 +1906,7 @@ local function window_controls()
 
     -- Window controls
     if user_opts.window_controls then
-        local size_hover = hover_effect.size and
+        local size_hover = hover_effects.size and
             string.format("\\fscx%s\\fscy%s", user_opts.button_hover_size, user_opts.button_hover_size) or ""
         local function wc_hoverstyle(color)
             return "{\\c&H" .. osc_color_convert(color) .. "&" .. size_hover .. "}"
@@ -1927,6 +1926,11 @@ local function window_controls()
 
         add_area("window-controls", get_hitbox_coords(controlbox_left, wc_geo.y, wc_geo.an, controlbox_w, wc_geo.h))
     end
+
+    -- deadzone below window controls
+    local sh_area_y0 = 0
+    local sh_area_y1 = wc_geo.y + get_align(1 - (2 * user_opts.deadzonesize), osc_param.playresy - wc_geo.y, 0, 0)
+    add_area("showhide_wc", wc_geo.x, sh_area_y0, wc_geo.w, sh_area_y1)
 
     -- Window Title
     if user_opts.show_window_title then
@@ -2013,7 +2017,8 @@ layouts["modern"] = function ()
     add_area("input", get_hitbox_coords(posX, posY, 1, osc_geo.w, osc_geo.h))
 
     -- area for show/hide
-    add_area("showhide", 0, 0, osc_param.playresx, osc_param.playresy)
+    local osc_top = posY - osc_geo.h
+    add_area("showhide", 0, get_align(-1 + (2 * user_opts.deadzonesize), osc_top, 0, 0), osc_param.playresx, osc_param.playresy)
 
     -- fetch values
     local osc_w = osc_geo.w
@@ -2273,7 +2278,8 @@ layouts["modern-compact"] = function ()
     add_area("input", get_hitbox_coords(posX, posY, 1, osc_geo.w, osc_geo.h))
 
     -- area for show/hide
-    add_area("showhide", 0, 0, osc_param.playresx, osc_param.playresy)
+    local osc_top = posY - osc_geo.h
+    add_area("showhide", 0, get_align(-1 + (2 * user_opts.deadzonesize), osc_top, 0, 0), osc_param.playresx, osc_param.playresy)
 
     -- fetch values
     local osc_w = osc_geo.w
@@ -2281,7 +2287,7 @@ layouts["modern-compact"] = function ()
     -- Controller Background
     local lo, geo
 
-    setup_bg_elements(posX, posY, osc_w, 50, 0)
+    setup_bg_elements(posX, posY, osc_w, user_opts.fade_transparency_strength, user_opts.window_fade_transparency_strength)
 
     -- Alignment
     local refX = osc_w / 2
@@ -2465,7 +2471,8 @@ layouts["modern-image"] = function ()
     add_area("input", get_hitbox_coords(posX, posY, 1, osc_geo.w, osc_geo.h))
 
     -- area for show/hide
-    add_area("showhide", 0, 0, osc_param.playresx, osc_param.playresy)
+    local osc_top = posY - osc_geo.h
+    add_area("showhide", 0, get_align(-1 + (2 * user_opts.deadzonesize), osc_top, 0, 0), osc_param.playresx, osc_param.playresy)
 
     -- fetch values
     local osc_w = osc_geo.w
@@ -2722,7 +2729,7 @@ local function osc_init()
     -- Window Title
     ne = new_element("windowtitle", "button")
     ne.content = function ()
-        local title = mp.command_native({"expand-text", user_opts.window_title}) or ""
+        local title = mp.command_native({"expand-text", mp.get_property("title")})
         title = title:gsub("\n", " ")
         return title ~= "" and mp.command_native({"escape-ass", title}) or "mpv"
     end
@@ -3265,11 +3272,8 @@ local function hide_wc()
 end
 
 local function show_osc()
+    if state.idle_active then return end
     show_bar("osc", "showtime", "osc_visible", "anitype", osc_visible)
-
-    if user_opts.zones_hover_mode == "always" then
-        show_wc()
-    end
 end
 
 local function hide_osc()
@@ -3282,20 +3286,12 @@ local function hide_osc()
         reset_margins()
     end
     hide_bar("osc", "osc_visible", "anitype", osc_visible)
-    -- couple wc with osc when not independent
-    if user_opts.zones_hover_mode ~= "independent" then
-        hide_wc()
-    end
 end
 
 local function mouse_leave()
     if get_hidetimeout() >= 0 and get_touchtimeout() <= 0 then
-        if not state.pause_osc_locked then
-            hide_osc()
-        end
-        if user_opts.zones_hover_mode == "independent" then
-            hide_wc()
-        end
+        hide_osc()
+        hide_wc()
     end
     -- reset mouse position
     state.last_mouseX, state.last_mouseY = nil, nil
@@ -3320,15 +3316,8 @@ end
 --
 local function reset_timeout()
     local now = mp.get_time()
-    if user_opts.zones_hover_mode == "independent" then
-        if mouse_in_area({"window-controls", "window-controls-title"}) then
-            state.wc_showtime = now
-        else
-            state.showtime = now
-        end
-    else
-        state.showtime = now
-    end
+    state.showtime = now
+    state.wc_showtime = now
 end
 
 local function element_has_action(element, action)
@@ -3380,35 +3369,26 @@ local function process_event(source, what)
         state.mouse_in_window = true
 
         local mouseX, mouseY = get_virt_mouse_pos()
-        -- init last pos on first mouse_move for comparison below to be valid
-        if state.last_mouseX == nil then
-            state.last_mouseX, state.last_mouseY = mouseX, mouseY
-        end
-
         if user_opts.minmousemove == 0 or
-            math.abs(mouseX - state.last_mouseX) >= user_opts.minmousemove or
-            math.abs(mouseY - state.last_mouseY) >= user_opts.minmousemove then
-                state.last_mouseX, state.last_mouseY = mouseX, mouseY
-                local mode = user_opts.zones_hover_mode
-                if mode == "always" then
-                    show_osc()
-                else
-                    local top_hover = window_controls_enabled() and (user_opts.show_window_title or user_opts.window_controls)
-                    local in_bottom = mouseY > osc_param.playresy - user_opts.bottomhover_zone
-                    local in_top = mouseY < user_opts.tophover_zone and top_hover
-
-                    if mode == "independent" then
-                        if in_bottom then show_osc() end
-                        if in_top then show_wc() end
-                    else -- "zones"
-                        if in_bottom or in_top then
-                            show_osc()
-                        else
-                            state.touchtime = nil
-                        end
-                    end
+            ((state.last_mouseX ~= nil and state.last_mouseY ~= nil) and
+                (math.abs(mouseX - state.last_mouseX) >= user_opts.minmousemove or
+                 math.abs(mouseY - state.last_mouseY) >= user_opts.minmousemove)) then
+            if window_controls_enabled() then
+                if mouse_in_area("showhide_wc") then
+                    show_wc()
+                elseif user_opts.visibility ~= "always" then
+                    hide_wc()
                 end
+                if mouse_in_area("showhide") then
+                    show_osc()
+                elseif user_opts.visibility ~= "always" then
+                    hide_osc()
+                end
+            else
+                show_osc()
+            end
         end
+        state.last_mouseX, state.last_mouseY = mouseX, mouseY
 
         local n = state.active_element
         if element_has_action(elements[n], action) then
@@ -3436,7 +3416,7 @@ local function enable_osc(enable)
         do_enable_keybindings()
     else
         hide_osc() -- acts immediately when state.enabled == false
-        if user_opts.zones_hover_mode == "independent" then hide_wc() end
+        hide_wc()
         if state.showhide_enabled then
             mp.disable_key_bindings("showhide")
             mp.disable_key_bindings("showhide_wc")
@@ -3472,7 +3452,7 @@ local function render()
         state.initREQ = false
 
         -- store initial mouse position
-        if state.last_mouseX == nil and mouseX ~= -1 then
+        if (state.last_mouseX == nil or state.last_mouseY == nil) and not (mouseX == nil or mouseY == nil or mouseX == -1 or mouseY == -1) then
             state.last_mouseX, state.last_mouseY = mouseX, mouseY
         end
     end
@@ -3517,13 +3497,6 @@ local function render()
     do_enable_keybindings()
 
     --mouse input area
-    local wc_vis
-    if user_opts.zones_hover_mode == "independent" then
-        wc_vis = state.wc_visible
-    else
-        wc_vis = state.osc_visible
-    end
-
     local function update_input_area(area_name, visible, enabled_key, enable_fn)
         local areas = osc_param.areas[area_name]
         if not areas then return end
@@ -3541,20 +3514,16 @@ local function render()
     end
 
     update_input_area("input", state.osc_visible, "input_enabled", function() mp.enable_key_bindings("input") end)
-    update_input_area("window-controls", wc_vis, "windowcontrols_buttons", function() mp.enable_key_bindings("window-controls") end)
-    update_input_area("window-controls-title", wc_vis, "windowcontrols_title", function() mp.enable_key_bindings("window-controls-title", "allow-vo-dragging") end)
+    update_input_area("window-controls", state.wc_visible, "windowcontrols_buttons", function() mp.enable_key_bindings("window-controls") end)
+    update_input_area("window-controls-title", state.wc_visible, "windowcontrols_title", function() mp.enable_key_bindings("window-controls-title", "allow-vo-dragging") end)
 
     -- autohide
     local function run_autohide(showtime_key, hide_fn, input_areas)
         local hide_timeout = get_hidetimeout()
         if state[showtime_key] == nil or hide_timeout < 0 then return end
-        -- keeponpause + independent mode: bottom bar is locked, top bar hides normally
-        if state.pause_osc_locked and showtime_key == "showtime" then return end
         local timeout = state[showtime_key] + (hide_timeout / 1000) - now
         if timeout <= 0 and get_touchtimeout() <= 0 then
-            -- area elements should affect the specific area only. (ie: seekbar drag shouldn't affect top bar)
-            local element_blocks_hide = state.active_element ~= nil and mouse_in_area(input_areas)
-            if not element_blocks_hide and (not mouse_in_area(input_areas) or not user_opts.osc_keep_with_cursor) then
+            if state.active_element == nil and not mouse_in_area(input_areas) then
                 hide_fn()
             end
         else
@@ -3571,10 +3540,6 @@ local function render()
 
     local osc_areas = {"input"}
     local wc_areas  = {"window-controls", "window-controls-title"}
-    if user_opts.zones_hover_mode ~= "independent" then
-        osc_areas = {"input", "window-controls", "window-controls-title"}
-        wc_areas  = osc_areas
-    end
 
     if state.hide_timer then state.hide_timer.timeout = math.huge end
     run_autohide("showtime",    hide_osc, osc_areas)
@@ -3583,8 +3548,8 @@ local function render()
     -- actual rendering
     local ass = assdraw.ass_new()
 
-    if state.osc_visible or wc_vis then
-        render_elements(ass, state.osc_visible, wc_vis)
+    if state.osc_visible or state.wc_visible then
+        render_elements(ass, state.osc_visible, state.wc_visible)
     end
 
     if user_opts.persistent_progress or state.persistent_progress_toggle then
@@ -3592,7 +3557,7 @@ local function render()
     end
 
     -- submit
-    set_osd(osc_param.playresy * osc_param.display_aspect, osc_param.playresy, ass.text, 1000)
+    set_osd(state.osd, osc_param.playresy * osc_param.display_aspect, osc_param.playresy, ass.text, 1000)
 end
 
 -- called by mpv on every frame
@@ -3605,61 +3570,66 @@ tick = function()
     if not state.enabled then return end
 
     if state.idle_active then
-        -- render idle message
         msg.trace("idle message")
-        local _, _, display_aspect = mp.get_osd_size()
-        if display_aspect == 0 then
-            return
-        end
-        local display_h = 360
-        local display_w = display_h * display_aspect
-        -- logo is rendered at 2^(6-1) = 32 times resolution with size 1800x1800
-        local icon_x, icon_y = (display_w - 1800 / 32) / 2, 140
-        local line_prefix = ("{\\rDefault\\an7\\1a&H00&\\bord0\\shad0\\pos(%f,%f)}"):format(icon_x, icon_y)
-
-        local ass = assdraw.ass_new()
-        -- mpv logo
         if user_opts.idlescreen then
+            local _, _, display_aspect = mp.get_osd_size()
+            if display_aspect == 0 then return end
+            local display_h = 360
+            local display_w = display_h * display_aspect
+            -- logo is rendered at 2^(6-1) = 32 times resolution with size 1800x1800
+            local icon_x, icon_y = (display_w - 1800 / 32) / 2, 140
+            local line_prefix = ("{\\rDefault\\an7\\1a&H00&\\bord0\\shad0\\pos(%f,%f)}"):format(icon_x, icon_y)
+
+            local ass = assdraw.ass_new()
+            -- mpv logo
             for _, line in ipairs(logo_lines) do
                 ass:new_event()
                 ass:append(line_prefix .. line)
             end
-        end
 
-        -- Santa hat
-        if is_december and user_opts.idlescreen and not user_opts.greenandgrumpy then
-            for _, line in ipairs(santa_hat_lines) do
-                ass:new_event()
-                ass:append(line_prefix .. line)
+            -- Santa hat
+            if is_december and not user_opts.greenandgrumpy then
+                for _, line in ipairs(santa_hat_lines) do
+                    ass:new_event()
+                    ass:append(line_prefix .. line)
+                end
             end
-        end
 
-        if user_opts.idlescreen then
             ass:new_event()
             ass:pos(display_w / 2, icon_y + 65)
             ass:an(8)
             ass:append("{\\fs24\\1c&HFFFFFF&}" .. locale.idle)
+            set_osd(state.logo_osd, display_w, display_h, ass.text, -1000)
         end
-        set_osd(display_w, display_h, ass.text, -1000)
 
-        if state.showhide_enabled then
-            mp.disable_key_bindings("showhide")
-            mp.disable_key_bindings("showhide_wc")
-            state.showhide_enabled = false
+        if state.osc_visible then
+            osc_visible(false)
+        end
+
+        if window_controls_enabled() then
+            render()
+        else
+            render_wipe(state.osd)
+            if state.showhide_enabled then
+                mp.disable_key_bindings("showhide")
+                mp.disable_key_bindings("showhide_wc")
+                state.showhide_enabled = false
+            end
         end
     elseif (state.fullscreen and user_opts.showfullscreen) or (not state.fullscreen and user_opts.showwindowed) then
-        -- render the OSC
+        render_wipe(state.logo_osd)
         render()
     else
         -- Flush OSD
-        render_wipe()
+        render_wipe(state.osd)
+        render_wipe(state.logo_osd)
     end
 
     state.tick_last_time = mp.get_time()
 
-    local function tick_animation(anitype_key, anistart_key, animation_key)
+    local function tick_animation(anitype_key, anistart_key, animation_key, allow_idle)
         if state[anitype_key] ~= nil then
-            if not state.idle_active and
+            if (allow_idle or not state.idle_active) and
                (not state[anistart_key] or
                 mp.get_time() < 1 + state[anistart_key] + user_opts.fadeduration / 1000)
             then
@@ -3670,7 +3640,7 @@ tick = function()
         end
     end
     tick_animation("anitype",    "anistart",    "animation")
-    tick_animation("wc_anitype", "wc_anistart", "wc_animation")
+    tick_animation("wc_anitype", "wc_anistart", "wc_animation", window_controls_enabled())
 end
 
 -- duration is observed for the sole purpose of updating chapter markers
@@ -3753,6 +3723,10 @@ observe_cached("window-maximized", request_init_resize)
 observe_cached("idle-active", request_tick)
 mp.observe_property("user-data/mpv/console/open", "bool", function(_, val)
     if val and user_opts.visibility == "auto" and not user_opts.showonselect then
+        -- clear pending thumbnail 
+        if thumbfast.width ~= 0 and thumbfast.height ~= 0 then
+            mp.commandv("script-message-to", "thumbfast", "clear")
+        end
         osc_visible(false)
         wc_visible(false)
     end
@@ -3828,10 +3802,10 @@ local function always_on(val)
     if state.enabled then
         if val then
             show_osc()
-            if user_opts.zones_hover_mode == "independent" then show_wc() end
+            show_wc()
         else
             hide_osc()
-            if user_opts.zones_hover_mode == "independent" then hide_wc() end
+            hide_wc()
         end
     end
 end
@@ -3908,37 +3882,27 @@ mp.observe_property("pause", "bool", function(_, enabled)
         state.enabled = enabled
         if enabled then
             if user_opts.keeponpause then
-                if user_opts.zones_hover_mode == "independent" then
-                    show_osc()
-                    state.pause_osc_locked = true
-                else
-                    -- save mode and set visibility to "always" temporarily
-                    if not state.temp_visibility_mode and user_opts.visibility ~= "always" then
-                        state.temp_visibility_mode = user_opts.visibility
-                    end
-                    visibility_mode("always", true)
+                -- save mode and set visibility to "always" temporarily
+                if not state.keeponpause_restore and user_opts.visibility ~= "always" then
+                    state.keeponpause_restore = user_opts.visibility
                 end
+                visibility_mode("always", true)
             else
                 show_osc()
             end
         else
-            -- unlock bottom bar
-            if state.pause_osc_locked then
-                state.pause_osc_locked = false
-            end
-            -- restore mode if it was changed temporarily
-            if state.temp_visibility_mode then
-                visibility_mode(state.temp_visibility_mode, true)
-                state.temp_visibility_mode = nil
+            -- restore mode if it was changed by keeponpause
+            if state.keeponpause_restore then
+                visibility_mode(state.keeponpause_restore, true)
+                state.keeponpause_restore = nil
             else
                 -- respect "always" mode on unpause
                 visibility_mode(user_opts.visibility, true)
             end
-            -- reset timer so it gets a fresh hidetimeout on unpause
-            if state.osc_visible then state.showtime = mp.get_time() end
-            if user_opts.zones_hover_mode == "independent" and state.wc_visible then
-                state.wc_showtime = mp.get_time()
-            end
+            -- reset timers so both bars get a fresh hidetimeout on unpause
+            local now = mp.get_time()
+            if state.osc_visible then state.showtime = now end
+            if state.wc_visible then state.wc_showtime = now end
         end
     end
 end)
@@ -3948,6 +3912,7 @@ mp.register_script_message("osc-show", show_osc)
 mp.register_script_message("osc-hide", function()
     if user_opts.visibility == "auto" then
         hide_osc()
+        hide_wc()
     end
 end)
 mp.add_key_binding(nil, "visibility", function() visibility_mode("cycle") end)
@@ -4018,12 +3983,6 @@ local function validate_user_opts()
         else
             table.insert(state.visibility_modes, str)
         end
-    end
-
-    local valid_zone_modes = {always = true, zones = true, independent = true}
-    if not valid_zone_modes[user_opts.zones_hover_mode] then
-        msg.warn("Unknown zones_hover_mode '" .. user_opts.zones_hover_mode .. "'. Defaulting to 'always'.")
-        user_opts.zones_hover_mode = "always"
     end
 
     if user_opts.keeponpause and not user_opts.showonpause then

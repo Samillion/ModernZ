@@ -29,7 +29,7 @@ Below is a list that explains the OSC buttons function depending on how you inte
 ### Time Codes
 
 | Action            | Function                                       |
-| ----------------- | --------------------------------------------   |
+| ----------------- | ---------------------------------------------- |
 | Left mouse click  | Display remaining time instead of current time |
 | Right mouse click | Display time in milliseconds                   |
 
@@ -92,6 +92,12 @@ Below is a list that explains the OSC buttons function depending on how you inte
 | Right mouse click | Show audio device select menu |
 | Scroll wheel      | Change volume up/down         |
 
+### Statistics
+
+| Action            | Function                           |
+| ----------------- | ---------------------------------- |
+| Left mouse click  | Display statistics of current file |
+
 ### Screenshot
 
 | Action           | Function          |
@@ -100,23 +106,23 @@ Below is a list that explains the OSC buttons function depending on how you inte
 
 ### Pin
 
-| Action            | Function                               |
-| ----------------- | -------------------------------------- |
-| Left mouse click  | Toggle stay-on-top                     |
+| Action            | Function                                                      |
+| ----------------- | ------------------------------------------------------------- |
+| Left mouse click  | Toggle [`ontop`](https://mpv.io/manual/master/#options-ontop) |
 
 ### Loop
 
-| Action            | Function             |
-| ----------------- | -------------------- |
-| Left mouse click  | Toggle loop on/off   |
+| Action            | Function                        |
+| ----------------- | ------------------------------- |
+| Left mouse click  | Toggle current file loop on/off |
 
 ### Shuffle
 
-| Action            | Function                     |
-| ----------------- | ---------------------------- |
-| Left mouse click  | Shuffle/Unshuffle playlist   |
+| Action            | Function                       |
+| ----------------- | ------------------------------ |
+| Left mouse click  | Toggle playlist shuffle on/off |
 
-### Speed Control
+### Speed
 
 | Action                 | Function                                  |
 | ---------------------- | ----------------------------------------- |
@@ -130,12 +136,8 @@ Below is a list that explains the OSC buttons function depending on how you inte
 | ----------------- | ------------------------------------ |
 | Left mouse click  | Download the current video/image URL |
 
-## Keybinds
+### Cache
 
-| Function             | Input Command                                      | Description                                                              |
-| -------------------- | -------------------------------------------------- | ------------------------------------------------------------------------ |
-| Persistent Progress  | `w script-binding modernz/progress-toggle`         | Toggle persistent progress bar                                           |
-| Show OSC             | `x script-message-to modernz osc-show`             | Show OSC on command without needing to move mouse                        |
-| OSC Visibility       | `y script-message-to modernz osc-visibility cycle` | OSC visibility mode. Accepts `never`, `auto`, `always` and `cycle`       |
-| Cycle OSC Visibility | `Y script-binding modernz/visibility `             | Cycle OSC visibility modes                                               |
-| Logo on Idle         | `z script-message-to modernz osc-idlescreen cycle` | The visibility of the mpv logo on idle. Accepts `yes`, `no`, and `cycle` |
+| Action            | Function                                  |
+| ----------------- | ----------------------------------------- |
+| Left mouse click  | Display cache information of current file |

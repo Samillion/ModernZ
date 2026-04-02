@@ -30,30 +30,27 @@ Create `modernz.conf` in your mpv script-opts directory:
 
 ### OSC behaviour and scaling
 
-| Option               | Value  | Description                                                                     |
-| -------------------- | ------ | ------------------------------------------------------------------------------- |
-| hidetimeout          | 2000   | time (in ms) before OSC hides if no mouse movement                              |
-| fadeduration         | 200    | fade-out duration (in ms), set to `"0"` for no fade                             |
-| fadein               | no     | whether to enable fade-in effect                                                |
-| minmousemove         | 0      | minimum mouse movement (in pixels) required to show OSC                         |
-| zones_hover_mode     | always | mode for showing OSC/WC on mouse move: `always`, `zones`, `independent`         |
-| bottomhover_zone     | 130    | height of the bottom hover zone (in pixels)                                     |
-| tophover_zone        | 130    | height of the top hover zone (in pixels)                                        |
-| osc_on_seek          | yes    | show OSC when seeking                                                           |
-| osc_on_start         | both   | show OSC/window controls on start of every file (`no`, `bottom`, `top`, `both`) |
-| osc_keep_with_cursor | yes    | keep OSC visible if mouse cursor is within OSC boundaries                       |
-| mouse_seek_pause     | yes    | pause video while seeking with mouse move (on button hold)                      |
-| force_seek_tooltip   | no     | force show seekbar tooltip on mouse drag, even if not hovering seekbar          |
-| vidscale             | auto   | scale osc with the video. (set to `"no"` to disable)                            |
-| scalewindowed        | 1.0    | osc scale factor when windowed                                                  |
-| scalefullscreen      | 1.0    | osc scale factor when fullscreen                                                |
+| Option               | Value  | Description                                                                                                                                        |
+| -------------------- | ------ | -------------------------------------------------------------------------------------------------------------------------------------------------- |
+| hidetimeout          | 2000   | time (in ms) before OSC hides if no mouse movement                                                                                                 |
+| fadeduration         | 200    | fade-out duration (in ms), set to `"0"` for no fade                                                                                                |
+| fadein               | no     | whether to enable fade-in effect                                                                                                                   |
+| minmousemove         | 0      | minimum mouse movement (in pixels) required to show OSC                                                                                            |
+| deadzonesize         | 0.75   | controls how much of the window ignores mouse movement for showing the osc; `0.0` always shows on movement, `1.0` only shows when directly hovered |
+| osc_on_seek          | yes    | show OSC when seeking                                                                                                                              |
+| osc_on_start         | both   | show OSC/window controls on start of every file (`no`, `bottom`, `top`, `both`)                                                                    |
+| mouse_seek_pause     | yes    | pause video while seeking with mouse move (on button hold)                                                                                         |
+| force_seek_tooltip   | no     | force show seekbar tooltip on mouse drag, even if not hovering seekbar                                                                             |
+| vidscale             | auto   | scale osc with the video. (set to `"no"` to disable)                                                                                               |
+| scalewindowed        | 1.0    | osc scale factor when windowed                                                                                                                     |
+| scalefullscreen      | 1.0    | osc scale factor when fullscreen                                                                                                                   |
 
 ### Elements display
 
 | Option                  | Value            | Description                                                                      |
 | ----------------------- | ---------------- | -------------------------------------------------------------------------------- |
 | show_title              | yes              | show title in the OSC (above seekbar)                                            |
-| title                   | `${media-title}` | title above seekbar format: `"${media-title}"` or `"${filename}"`                |
+| title                   | `${media-title}` | title above seekbar: `"${media-title}"` or `"${filename}"`                |
 | title_font_size         | 24               | font size of the title text (above seekbar)                                      |
 | chapter_title_font_size | 14               | chapter title font size                                                          |
 | show_chapter_title      | yes              | show chapter title (above seekbar)                                               |
@@ -74,7 +71,6 @@ Create `modernz.conf` in your mpv script-opts directory:
 | Option                    | Value            | Description                                                               |
 | ------------------------- | ---------------- | ------------------------------------------------------------------------- |
 | show_window_title         | no               | show window title in borderless/fullscreen mode                           |
-| window_title              | `${media-title}` | same as title but for window_top_bar                                      |
 | window_title_font_size    | 26               | window title font size                                                    |
 | window_controls           | yes              | show window controls (close, minimize, maximize) in borderless/fullscreen |
 
