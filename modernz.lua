@@ -715,8 +715,7 @@ local function scale_value(x0, x1, y0, y1, val)
 end
 
 -- returns the position of an object on a one-dimensional axis,
--- from 0..1 (object to the "left") to 1..0 (object to the "right"),
--- taking margin into account.
+-- from 0..1 (object to the "left") to 1..0 (object to the "right"), taking margin into account.
 local function get_align(align, frame, obj, margin)
     return (frame / 2) + (((frame / 2) - margin - (obj / 2)) * align)
 end
@@ -1928,8 +1927,7 @@ local function window_controls()
         add_area("window-controls", get_hitbox_coords(controlbox_left, wc_geo.y, wc_geo.an, controlbox_w, wc_geo.h))
     end
 
-    -- showhide_wc: the area that triggers show/hide of window controls on mouse move.
-    -- extends downward from the top bar by a deadzone fraction of the remaining screen height.
+    -- deadzone below window controls
     local sh_area_y0 = 0
     local sh_area_y1 = wc_geo.y + get_align(1 - (2 * user_opts.deadzonesize), osc_param.playresy - wc_geo.y, 0, 0)
     add_area("showhide_wc", wc_geo.x, sh_area_y0, wc_geo.w, sh_area_y1)
@@ -2018,7 +2016,7 @@ layouts["modern"] = function ()
     -- area for active mouse input
     add_area("input", get_hitbox_coords(posX, posY, 1, osc_geo.w, osc_geo.h))
 
-    -- area for show/hide: deadzone shrinks the trigger area from the top
+    -- area for show/hide
     local osc_top = posY - osc_geo.h
     add_area("showhide", 0, get_align(-1 + (2 * user_opts.deadzonesize), osc_top, 0, 0), osc_param.playresx, osc_param.playresy)
 
@@ -2279,7 +2277,7 @@ layouts["modern-compact"] = function ()
     -- area for active mouse input
     add_area("input", get_hitbox_coords(posX, posY, 1, osc_geo.w, osc_geo.h))
 
-    -- area for show/hide: deadzone shrinks the trigger area from the top
+    -- area for show/hide
     local osc_top = posY - osc_geo.h
     add_area("showhide", 0, get_align(-1 + (2 * user_opts.deadzonesize), osc_top, 0, 0), osc_param.playresx, osc_param.playresy)
 
@@ -2472,7 +2470,7 @@ layouts["modern-image"] = function ()
     -- area for active mouse input
     add_area("input", get_hitbox_coords(posX, posY, 1, osc_geo.w, osc_geo.h))
 
-    -- area for show/hide: deadzone shrinks the trigger area from the top
+    -- area for show/hide
     local osc_top = posY - osc_geo.h
     add_area("showhide", 0, get_align(-1 + (2 * user_opts.deadzonesize), osc_top, 0, 0), osc_param.playresx, osc_param.playresy)
 
