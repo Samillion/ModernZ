@@ -3723,6 +3723,10 @@ observe_cached("window-maximized", request_init_resize)
 observe_cached("idle-active", request_tick)
 mp.observe_property("user-data/mpv/console/open", "bool", function(_, val)
     if val and user_opts.visibility == "auto" and not user_opts.showonselect then
+        -- clear pending thumbnail 
+        if thumbfast.width ~= 0 and thumbfast.height ~= 0 then
+            mp.commandv("script-message-to", "thumbfast", "clear")
+        end
         osc_visible(false)
         wc_visible(false)
     end
