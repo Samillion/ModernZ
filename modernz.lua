@@ -976,8 +976,7 @@ end
 
 local function update_margins()
     local use_margins = get_hidetimeout() < 0 or user_opts.dynamic_margins
-    local top_vis = state.wc_visible
-    local top_bar = (user_opts.show_window_title or user_opts.window_controls)
+    local top_vis = (user_opts.show_window_title or user_opts.window_controls) and state.wc_visible or false
     local bottom_vis = state.osc_visible
     local margins = {
         l = 0,
@@ -1012,7 +1011,7 @@ local function update_margins()
     if user_opts.osd_margins then
         local align = mp.get_property("osd-align-y")
         local osd_margin = 0
-        if align == "top" and top_vis and top_bar then
+        if align == "top" and top_vis then
             osd_margin = margins.t
         elseif align == "bottom" and bottom_vis then
             osd_margin = margins.b
@@ -1934,7 +1933,6 @@ local function window_controls()
         wc_button("maximize", second_geo, user_opts.windowcontrols_max_hover) -- Maximize: 🗖/🗗
         wc_button("minimize", first_geo, user_opts.windowcontrols_min_hover) -- Minimize: 🗕
     end
-    add_area("window-controls", get_hitbox_coords(controlbox_left, wc_geo.y, wc_geo.an, controlbox_w, wc_geo.h))
 
     -- deadzone below window controls
     local sh_area_y0 = 0
@@ -1949,9 +1947,14 @@ local function window_controls()
         lo.alpha[3] = 0
         lo.style = string.format("%s{\\clip(%f,%f,%f,%f)}", osc_styles.window_title, titlebox_left, wc_geo.y - wc_geo.h, titlebox_right, wc_geo.y + wc_geo.h)
     end
-    add_area("window-controls-title", titlebox_left, 0, titlebox_right, wc_geo.h)
-    -- top bar margins
-    osc_param.video_margins.t = wc_geo.h / osc_param.playresy
+
+    -- only add top areas and margin if one of the elements is enabled
+    if (user_opts.show_window_title or user_opts.window_controls) then
+        add_area("window-controls", get_hitbox_coords(controlbox_left, wc_geo.y, wc_geo.an, controlbox_w, wc_geo.h))
+        add_area("window-controls-title", titlebox_left, 0, titlebox_right, wc_geo.h)
+        -- top bar margins
+        osc_param.video_margins.t = wc_geo.h / osc_param.playresy
+    end
 end
 
 --
