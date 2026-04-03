@@ -491,15 +491,13 @@ local window_control_box_width = 150
 local is_december = os.date("*t").month == 12
 local UNICODE_MINUS = string.char(0xe2, 0x88, 0x92)  -- UTF-8 for U+2212 MINUS SIGN
 
--- hover_effect flags
-local hover_effects = { size = false, color = false, glow = false, box = false }
-
 local function osc_color_convert(color)
     return color:sub(6,7) .. color:sub(4,5) ..  color:sub(2,3)
 end
 
 local osc_styles
 local seekbar_height_style
+local hover_effects = { size = false, color = false, glow = false, box = false }
 
 local function set_osc_styles()
     local playpause_size = user_opts.playpause_size
@@ -550,11 +548,11 @@ local state = {
     showtime = nil,                         -- time of last invocation (last mouse move)
     touchtime = nil,                        -- time of last invocation (last touch event)
     touchpoints = {},                       -- current touch points
-    osc_visible = false,
+    osc_visible = false,                    -- osc visibility
     anistart = nil,                         -- time when the animation started
     anitype = nil,                          -- current type of animation
     animation = nil,                        -- current animation alpha
-    wc_visible = false,                     -- window controls visibility (independent mode)
+    wc_visible = false,                     -- window controls visibility
     wc_showtime = nil,
     wc_anitype = nil,
     wc_anistart = nil,
