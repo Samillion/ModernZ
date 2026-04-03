@@ -978,7 +978,8 @@ end
 
 local function update_margins()
     local use_margins = get_hidetimeout() < 0 or user_opts.dynamic_margins
-    local top_vis    = state.wc_visible
+    local top_vis = state.wc_visible
+    local top_bar = (user_opts.show_window_title or user_opts.window_controls)
     local bottom_vis = state.osc_visible
     local margins = {
         l = 0,
@@ -1013,7 +1014,7 @@ local function update_margins()
     if user_opts.osd_margins then
         local align = mp.get_property("osd-align-y")
         local osd_margin = 0
-        if align == "top" and top_vis then
+        if align == "top" and top_vis and top_bar then
             osd_margin = margins.t
         elseif align == "bottom" and bottom_vis then
             osd_margin = margins.b
@@ -1934,9 +1935,8 @@ local function window_controls()
         wc_button("close", third_geo, user_opts.windowcontrols_close_hover) -- Close: 🗙
         wc_button("maximize", second_geo, user_opts.windowcontrols_max_hover) -- Maximize: 🗖/🗗
         wc_button("minimize", first_geo, user_opts.windowcontrols_min_hover) -- Minimize: 🗕
-
-        add_area("window-controls", get_hitbox_coords(controlbox_left, wc_geo.y, wc_geo.an, controlbox_w, wc_geo.h))
     end
+    add_area("window-controls", get_hitbox_coords(controlbox_left, wc_geo.y, wc_geo.an, controlbox_w, wc_geo.h))
 
     -- deadzone below window controls
     local sh_area_y0 = 0
@@ -1950,9 +1950,8 @@ local function window_controls()
         lo.group = "top"
         lo.alpha[3] = 0
         lo.style = string.format("%s{\\clip(%f,%f,%f,%f)}", osc_styles.window_title, titlebox_left, wc_geo.y - wc_geo.h, titlebox_right, wc_geo.y + wc_geo.h)
-
-        add_area("window-controls-title", titlebox_left, 0, titlebox_right, wc_geo.h)
     end
+    add_area("window-controls-title", titlebox_left, 0, titlebox_right, wc_geo.h)
     -- top bar margins
     osc_param.video_margins.t = wc_geo.h / osc_param.playresy
 end
@@ -1972,8 +1971,7 @@ local function setup_bg_elements(posX, posY, osc_w, osc_alpha3, wc_alpha3)
     lo.layer = 10
     lo.alpha[3] = osc_alpha3
 
-    local top_titlebar = window_controls_enabled() and (user_opts.show_window_title or user_opts.window_controls)
-    if top_titlebar then
+    if window_controls_enabled() and (user_opts.show_window_title or user_opts.window_controls) then
         new_element("window_bar_alpha_bg", "box")
         lo = add_layout("window_bar_alpha_bg")
         lo.geometry = {x = posX, y = -100, an = 7, w = osc_w, h = -1}
