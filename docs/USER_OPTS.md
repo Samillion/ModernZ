@@ -33,6 +33,7 @@ Create `modernz.conf` in your mpv script-opts directory:
 | Option               | Value  | Description                                                                                                                                        |
 | -------------------- | ------ | -------------------------------------------------------------------------------------------------------------------------------------------------- |
 | hidetimeout          | 2000   | time (in ms) before OSC hides if no mouse movement                                                                                                 |
+| keep_with_cursor     | yes    | keep OSC visible while cursor hovers over bottom or top bar                                                                                        |
 | fadeduration         | 200    | fade-out duration (in ms), set to `"0"` for no fade                                                                                                |
 | fadein               | no     | whether to enable fade-in effect                                                                                                                   |
 | minmousemove         | 0      | minimum mouse movement (in pixels) required to show OSC                                                                                            |
@@ -179,6 +180,7 @@ watch-later-options-remove=osd-margin-y
 | Option                     | Value    | Description                                                             |
 | -------------------------- | -------- | ----------------------------------------------------------------------- |
 | seek_handle_size           | 0.8      | size ratio of the seekbar handle (range: 0 ~ 1)                         |
+| seekbar_height             | medium   | seekbar height preset: `small`, `medium`, `large`, `xlarge`             |
 | seekrange                  | yes      | show seek range overlay                                                 |
 | seekrangealpha             | 150      | transparency of the seek range                                          |
 | livemarkers                | yes      | update chapter markers on the seekbar when duration changes             |
