@@ -1934,11 +1934,6 @@ local function window_controls()
         wc_button("minimize", first_geo, user_opts.windowcontrols_min_hover) -- Minimize: 🗕
     end
 
-    -- deadzone below window controls
-    local sh_area_y0 = 0
-    local sh_area_y1 = wc_geo.y + get_align(1 - (2 * user_opts.deadzonesize), osc_param.playresy - wc_geo.y, 0, 0)
-    add_area("showhide_wc", wc_geo.x, sh_area_y0, wc_geo.w, sh_area_y1)
-
     -- Window Title
     if user_opts.show_window_title then
         lo = add_layout("windowtitle")
@@ -1950,6 +1945,10 @@ local function window_controls()
 
     -- only add top areas and margin if one of the elements is enabled
     if (user_opts.show_window_title or user_opts.window_controls) then
+        -- deadzone below window controls
+        local sh_area_y0 = 0
+        local sh_area_y1 = wc_geo.y + get_align(1 - (2 * user_opts.deadzonesize), osc_param.playresy - wc_geo.y, 0, 0)
+        add_area("showhide_wc", wc_geo.x, sh_area_y0, wc_geo.w, sh_area_y1)
         add_area("window-controls", get_hitbox_coords(controlbox_left, wc_geo.y, wc_geo.an, controlbox_w, wc_geo.h))
         add_area("window-controls-title", titlebox_left, 0, titlebox_right, wc_geo.h)
         -- top bar margins
