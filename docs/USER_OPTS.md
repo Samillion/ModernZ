@@ -155,6 +155,8 @@ watch-later-options-remove=osd-margin-y
 | hover_effect_color                | `#FB8C00` | color of a hovered button when `hover_effect` includes `"color"`                                  |
 | thumbnail_box_color               | `#111111` | color of the background for thumbnail box                                                         |
 | thumbnail_box_outline             | `#404040` | color of the border outline for thumbnail box                                                     |
+| nibble_color                      | `#FB8C00` | color of chapter nibbles on the seekbar                                                           |
+| nibble_current_color              | `#FFFFFF` | color of the current chapter nibble on the seekbar                                                |
 | osc_fade_strength                 | 100       | strength of the OSC background fade (0 to disable)                                                |
 | fade_blur_strength                | 100       | blur strength for the OSC alpha fade. caution: high values can take a lot of CPU time to render   |
 | fade_transparency_strength        | 0         | use with "fade_blur_strength=0" to create a transparency box                                      |
@@ -163,8 +165,6 @@ watch-later-options-remove=osd-margin-y
 | window_fade_transparency_strength | 0         | use with "window_fade_blur_strength=0" to create a transparency box                               |
 | thumbnail_box_padding             | 4.5       | thumbnail box padding around the image                                                            |
 | thumbnail_box_radius              | 4         | round corner radius for thumbnail box border (0 to disable)                                       |
-| nibble_color                      | `#FB8C00` | color of chapter nibbles on the seekbar                                                           |
-| nibble_current_color              | `#FFFFFF` | color of the current chapter nibble on the seekbar                                                |
 
 ### Button hover settings
 
