@@ -163,6 +163,8 @@ watch-later-options-remove=osd-margin-y
 | window_fade_transparency_strength | 0         | use with "window_fade_blur_strength=0" to create a transparency box                               |
 | thumbnail_box_padding             | 4.5       | thumbnail box padding around the image                                                            |
 | thumbnail_box_radius              | 4         | round corner radius for thumbnail box border (0 to disable)                                       |
+| nibble_color                      | `#FB8C00` | color of chapter nibbles on the seekbar                                                           |
+| nibble_current_color              | `#FFFFFF` | color of the current chapter nibble on the seekbar                                                |
 
 ### Button hover settings
 
@@ -186,11 +188,9 @@ watch-later-options-remove=osd-margin-y
 | livemarkers                | yes      | update chapter markers on the seekbar when duration changes             |
 | seekbarkeyframes           | no       | use keyframes when dragging the seekbar                                 |
 | slider_rounded_corners     | yes      | rounded corners seekbar slider                                          |
+| nibbles_style              | gap      | chapter nibble style: `gap`, `triangle`, `bar` or `single-bar`          |
 | nibbles_top                | yes      | top chapter nibbles above seekbar                                       |
 | nibbles_bottom             | yes      | bottom chapter nibbles below seekbar                                    |
-| nibbles_style              | triangle | chapter nibble style. `triangle`, `bar` or `single-bar`                 |
-| nibble_color               | #FB8C00  | color of chapter nibbles on the seekbar                                 |
-| nibble_current_color       | #FFFFFF  | color of the current chapter nibble on the seekbar                      |
 | automatickeyframemode      | yes      | automatically set keyframes for the seekbar based on video length       |
 | automatickeyframelimit     | 600      | videos longer than this (in seconds) will have keyframes on the seekbar |
 | persistent_progress        | no       | always show a small progress line at the bottom of the screen           |

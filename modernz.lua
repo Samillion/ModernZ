@@ -149,6 +149,8 @@ local user_opts = {
     hover_effect_color = "#FB8C00",        -- color of a hovered button when hover_effect includes "color"
     thumbnail_box_color = "#111111",       -- color of the background for thumbnail box
     thumbnail_box_outline = "#404040",     -- color of the border outline for thumbnail box
+    nibble_color = "#FB8C00",              -- color of chapter nibbles on the seekbar
+    nibble_current_color = "#FFFFFF",      -- color of the current chapter nibble on the seekbar
 
     osc_fade_strength = 100,               -- strength of the OSC background fade (0 to disable)
     fade_blur_strength = 100,              -- blur strength for the OSC alpha fade. caution: high values can take a lot of CPU time to render
@@ -176,11 +178,9 @@ local user_opts = {
     seekbarkeyframes = false,              -- use keyframes when dragging the seekbar
     slider_rounded_corners = true,         -- rounded corners seekbar slider
 
+    nibbles_style = "gap",                 -- chapter nibble style: "gap", "triangle", "bar", or "single-bar"
     nibbles_top = true,                    -- top chapter nibbles above seekbar
     nibbles_bottom = true,                 -- bottom chapter nibbles below seekbar
-    nibbles_style = "triangle",            -- chapter nibble style. "triangle", "bar", or "single-bar"
-    nibble_color = "#FB8C00",              -- color of chapter nibbles on the seekbar
-    nibble_current_color = "#FFFFFF",      -- color of the current chapter nibble on the seekbar
 
     automatickeyframemode = true,          -- automatically set keyframes for the seekbar based on video length
     automatickeyframelimit = 600,          -- videos longer than this (in seconds) will have keyframes on the seekbar
@@ -1260,9 +1260,46 @@ local function draw_seekbar_handle(element, elem_ass, override_alpha)
     return xp, 0
 end
 
+-- Collects and sorts pixel cut positions for gap-style chapter markers.
+-- Builds sorted pixel cut positions for chapter gaps (skipping the first chapter marker).
+-- Draws bar segments split around chapter gaps, stopping at x_max (bar_w for bg, xp for fg).
+local function draw_gap_segments(elem_ass, element, gap_half, x_max, slider_lo, elem_geo, radius)
+    gap_half = gap_half or 1.5
+    local cuts = {}
+    if element.slider.markerF then
+        for n, marker in ipairs(element.slider.markerF()) do
+            if n > 1 and marker >= element.slider.min.value and marker <= element.slider.max.value then
+                cuts[#cuts + 1] = get_slider_ele_pos_for(element, marker)
+            end
+        end
+        table.sort(cuts)
+    end
+    -- clamp x_max back to the nearest gap boundary if it falls inside a gap
+    for _, cut in ipairs(cuts) do
+        if x_max > cut - gap_half and x_max < cut + gap_half then
+            x_max = cut - gap_half
+            break
+        end
+    end
+    local seg_start = 0
+    for _, cut in ipairs(cuts) do
+        if cut >= x_max then break end
+        local seg_end = cut - gap_half
+        if seg_end > seg_start then
+            elem_ass:round_rect_cw(seg_start, slider_lo.gap, seg_end, elem_geo.h - slider_lo.gap,
+                (seg_start == 0) and radius or 0, 0)
+        end
+        seg_start = cut + gap_half
+    end
+    if x_max > seg_start then
+        elem_ass:round_rect_cw(seg_start, slider_lo.gap, x_max, elem_geo.h - slider_lo.gap,
+            (seg_start == 0) and radius or 0, (x_max == elem_geo.w) and radius or 0)
+    end
+end
+
 -- Draws seekbar ranges according to user_opts
 local function draw_seekbar_ranges(element, elem_ass, xp, rh, override_alpha)
-    local handle = xp and rh
+    local handle = xp and rh and rh > 0
     xp = xp or 0
     rh = rh or 0
     local slider_lo = element.layout.slider
@@ -1276,6 +1313,16 @@ local function draw_seekbar_ranges(element, elem_ass, xp, rh, override_alpha)
     elem_ass:merge(element.static_ass)
 
     local radius = slider_lo.radius or 0
+    local gap_half = 1.5
+    local cuts = {}
+    if slider_lo.nibbles_style == "gap" and element.name == "seekbar" and element.slider.markerF then
+        for n, marker in ipairs(element.slider.markerF()) do
+            if n > 1 and marker >= element.slider.min.value and marker <= element.slider.max.value then
+                cuts[#cuts + 1] = get_slider_ele_pos_for(element, marker)
+            end
+        end
+        table.sort(cuts)
+    end
 
     for _, range in pairs(seekRanges) do
         local pstart = math.max(0, get_slider_ele_pos_for(element, range["start"]) - slider_lo.gap)
@@ -1285,25 +1332,32 @@ local function draw_seekbar_ranges(element, elem_ass, xp, rh, override_alpha)
         local r_left = pstart < element.slider.min.ele_pos and radius or 0
         local r_right = pend > element.slider.max.ele_pos and radius or 0
 
-        if handle and (pstart < xp + rh and pend > xp - rh) then
-            -- range overlaps the handle, split it around the handle
-            if pstart < xp - rh then
-                -- left sub-segment: edge rounding on left, flat on handle cut
-                elem_ass:round_rect_cw(pstart, slider_lo.gap, xp - rh, elem_geo.h - slider_lo.gap, r_left, 0)
+        -- split around chapter gaps then around the handle
+        local seg_start = pstart
+        for _, cut in ipairs(cuts) do
+            local gap_l, gap_r = cut - gap_half, cut + gap_half
+            if gap_r > pstart and gap_l < pend then
+                local sl, sr = seg_start, math.min(gap_l, pend)
+                if handle and (sl < xp + rh and sr > xp - rh) then
+                    if sl < xp - rh then elem_ass:round_rect_cw(sl, slider_lo.gap, xp - rh, elem_geo.h - slider_lo.gap, sl == pstart and r_left or 0, 0) end
+                    if xp + rh < sr  then elem_ass:round_rect_cw(xp + rh, slider_lo.gap, sr, elem_geo.h - slider_lo.gap, 0, 0) end
+                elseif sr > sl then
+                    elem_ass:round_rect_cw(sl, slider_lo.gap, sr, elem_geo.h - slider_lo.gap, sl == pstart and r_left or 0, 0)
+                end
+                seg_start = math.max(gap_r, pstart)
             end
-            if xp + rh < pend then
-                -- right sub-segment: flat on handle cut, edge rounding on right
-                elem_ass:round_rect_cw(xp + rh, slider_lo.gap, pend, elem_geo.h - slider_lo.gap, 0, r_right)
-            end
+        end
+        local sl, sr = seg_start, pend
+        local rl = (sl == pstart) and r_left or 0
+        if handle and (sl < xp + rh and sr > xp - rh) then
+            if sl < xp - rh then elem_ass:round_rect_cw(sl, slider_lo.gap, xp - rh, elem_geo.h - slider_lo.gap, rl, 0) end
+            if xp + rh < sr  then elem_ass:round_rect_cw(xp + rh, slider_lo.gap, sr, elem_geo.h - slider_lo.gap, 0, r_right) end
         else
-            if pend > pstart then
-                elem_ass:round_rect_cw(pstart, slider_lo.gap, pend, elem_geo.h - slider_lo.gap, r_left, r_right)
-            end
+            if sr > sl then elem_ass:round_rect_cw(sl, slider_lo.gap, sr, elem_geo.h - slider_lo.gap, rl, r_right) end
         end
     end
 end
 
--- Draw chapter nibbles on the seekbar with per-chapter coloring
 local function draw_seekbar_nibbles(element, elem_ass)
     local slider_lo = element.layout.slider
     local elem_geo = element.layout.geometry
@@ -1312,11 +1366,21 @@ local function draw_seekbar_nibbles(element, elem_ass)
         return
     end
 
-    local markers = element.slider.markerF()
-    if #markers == 0 then
+    if slider_lo.nibbles_style == "gap" and element.name == "seekbar" then
+        local radius = slider_lo.radius > 0 and slider_lo.radius or 0
+        local bg_alpha = elements["seekbarbg"] and elements["seekbarbg"].layout.alpha[1] or 128
+        elem_ass:draw_stop()
+        elem_ass:merge(element.style_ass)
+        ass_append_alpha(elem_ass, element.layout.alpha, bg_alpha)
+        elem_ass:append("{\\blur0\\bord0\\1c&H" .. osc_color_convert(user_opts.seekbarbg_color) .. "&}")
+        elem_ass:merge(element.static_ass)
+        draw_gap_segments(elem_ass, element, 1.5, elem_geo.w, slider_lo, elem_geo, radius)
         return
     end
 
+    local markers = element.slider.markerF()
+
+    if #markers == 0 then return end
     local current_chapter = state.chapter or -1
 
     -- draw a single nibble at position s
@@ -1367,7 +1431,7 @@ local function draw_seekbar_nibbles(element, elem_ass)
     -- draw non-current chapter nibbles
     local has_non_current = false
     for n, marker in ipairs(markers) do
-        if (n - 1) ~= current_chapter and marker >= element.slider.min.value and marker <= element.slider.max.value then
+        if n > 1 and (n - 1) ~= current_chapter and marker >= element.slider.min.value and marker <= element.slider.max.value then
             if not has_non_current then
                 start_nibble_event(user_opts.nibble_color)
                 has_non_current = true
@@ -1377,7 +1441,7 @@ local function draw_seekbar_nibbles(element, elem_ass)
     end
 
     -- draw current chapter nibble on top
-    if current_chapter >= 0 and current_chapter < #markers then
+    if current_chapter > 0 and current_chapter < #markers then
         local marker = markers[current_chapter + 1]
         if marker >= element.slider.min.value and marker <= element.slider.max.value then
             start_nibble_event(user_opts.nibble_current_color)
@@ -1396,7 +1460,12 @@ local function draw_seekbar_progress(element, elem_ass)
     local slider_lo = element.layout.slider
     local elem_geo = element.layout.geometry
     local radius = slider_lo.radius > 0 and slider_lo.radius or 0
-    elem_ass:round_rect_cw(0, slider_lo.gap, xp, elem_geo.h - slider_lo.gap, radius)
+
+    if slider_lo.nibbles_style == "gap" and element.name == "seekbar" then
+        draw_gap_segments(elem_ass, element, 1.5, xp, slider_lo, elem_geo, radius)
+    else
+        elem_ass:round_rect_cw(0, slider_lo.gap, xp, elem_geo.h - slider_lo.gap, radius)
+    end
 end
 
 local function render_elements(master_ass, osc_vis, wc_vis)
@@ -2051,6 +2120,7 @@ layouts["modern"] = function ()
     lo.box.radius = user_opts.slider_rounded_corners and seekbar_height_style.radius or 0
     lo.alpha[1] = 128
     lo.alpha[3] = 128
+    elements["seekbarbg"].visible = user_opts.nibbles_style ~= "gap"
 
     lo = add_layout("seekbar")
     local seekbar_h = 18
@@ -2312,6 +2382,7 @@ layouts["modern-compact"] = function ()
     lo.box.radius = user_opts.slider_rounded_corners and seekbar_height_style.radius or 0
     lo.alpha[1] = 152
     lo.alpha[3] = 128
+    elements["seekbarbg"].visible = user_opts.nibbles_style ~= "gap"
 
     lo = add_layout("seekbar")
     local seekbar_h = 18
