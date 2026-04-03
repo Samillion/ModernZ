@@ -3963,12 +3963,6 @@ local function validate_user_opts()
           user_opts.volume_control_type = "linear"
     end
 
-    local valid_seekbar_heights = { small = true, medium = true, large = true, xlarge = true }
-    if not valid_seekbar_heights[user_opts.seekbar_height] then
-        msg.warn("seekbar_height cannot be '" .. user_opts.seekbar_height .. "'. Falling back to 'medium'.")
-        user_opts.seekbar_height = "medium"
-    end
-
     if not language[user_opts.language] then
        msg.warn("language '" .. user_opts.language .. "' not found. Ignoring.")
        user_opts.language = "default"
