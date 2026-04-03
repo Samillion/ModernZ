@@ -491,15 +491,13 @@ local window_control_box_width = 150
 local is_december = os.date("*t").month == 12
 local UNICODE_MINUS = string.char(0xe2, 0x88, 0x92)  -- UTF-8 for U+2212 MINUS SIGN
 
--- hover_effect flags
-local hover_effects = { size = false, color = false, glow = false, box = false }
-
 local function osc_color_convert(color)
     return color:sub(6,7) .. color:sub(4,5) ..  color:sub(2,3)
 end
 
 local osc_styles
 local seekbar_height_style
+local hover_effects = { size = false, color = false, glow = false, box = false }
 
 local function set_osc_styles()
     local playpause_size = user_opts.playpause_size
@@ -550,11 +548,11 @@ local state = {
     showtime = nil,                         -- time of last invocation (last mouse move)
     touchtime = nil,                        -- time of last invocation (last touch event)
     touchpoints = {},                       -- current touch points
-    osc_visible = false,
+    osc_visible = false,                    -- osc visibility
     anistart = nil,                         -- time when the animation started
     anitype = nil,                          -- current type of animation
     animation = nil,                        -- current animation alpha
-    wc_visible = false,                     -- window controls visibility (independent mode)
+    wc_visible = false,                     -- window controls visibility
     wc_showtime = nil,
     wc_anitype = nil,
     wc_anistart = nil,
@@ -978,7 +976,7 @@ end
 
 local function update_margins()
     local use_margins = get_hidetimeout() < 0 or user_opts.dynamic_margins
-    local top_vis    = state.wc_visible
+    local top_vis = state.wc_visible
     local bottom_vis = state.osc_visible
     local margins = {
         l = 0,
@@ -1934,14 +1932,7 @@ local function window_controls()
         wc_button("close", third_geo, user_opts.windowcontrols_close_hover) -- Close: 🗙
         wc_button("maximize", second_geo, user_opts.windowcontrols_max_hover) -- Maximize: 🗖/🗗
         wc_button("minimize", first_geo, user_opts.windowcontrols_min_hover) -- Minimize: 🗕
-
-        add_area("window-controls", get_hitbox_coords(controlbox_left, wc_geo.y, wc_geo.an, controlbox_w, wc_geo.h))
     end
-
-    -- deadzone below window controls
-    local sh_area_y0 = 0
-    local sh_area_y1 = wc_geo.y + get_align(1 - (2 * user_opts.deadzonesize), osc_param.playresy - wc_geo.y, 0, 0)
-    add_area("showhide_wc", wc_geo.x, sh_area_y0, wc_geo.w, sh_area_y1)
 
     -- Window Title
     if user_opts.show_window_title then
@@ -1950,11 +1941,19 @@ local function window_controls()
         lo.group = "top"
         lo.alpha[3] = 0
         lo.style = string.format("%s{\\clip(%f,%f,%f,%f)}", osc_styles.window_title, titlebox_left, wc_geo.y - wc_geo.h, titlebox_right, wc_geo.y + wc_geo.h)
-
-        add_area("window-controls-title", titlebox_left, 0, titlebox_right, wc_geo.h)
     end
-    -- top bar margins
-    osc_param.video_margins.t = wc_geo.h / osc_param.playresy
+
+    -- only add top areas and margin if one of the elements is enabled
+    if (user_opts.show_window_title or user_opts.window_controls) then
+        -- deadzone below window controls
+        local sh_area_y0 = 0
+        local sh_area_y1 = wc_geo.y + get_align(1 - (2 * user_opts.deadzonesize), osc_param.playresy - wc_geo.y, 0, 0)
+        add_area("showhide_wc", wc_geo.x, sh_area_y0, wc_geo.w, sh_area_y1)
+        add_area("window-controls", get_hitbox_coords(controlbox_left, wc_geo.y, wc_geo.an, controlbox_w, wc_geo.h))
+        add_area("window-controls-title", titlebox_left, 0, titlebox_right, wc_geo.h)
+        -- top bar margins
+        osc_param.video_margins.t = wc_geo.h / osc_param.playresy
+    end
 end
 
 --
@@ -1972,8 +1971,7 @@ local function setup_bg_elements(posX, posY, osc_w, osc_alpha3, wc_alpha3)
     lo.layer = 10
     lo.alpha[3] = osc_alpha3
 
-    local top_titlebar = window_controls_enabled() and (user_opts.show_window_title or user_opts.window_controls)
-    if top_titlebar then
+    if window_controls_enabled() and (user_opts.show_window_title or user_opts.window_controls) then
         new_element("window_bar_alpha_bg", "box")
         lo = add_layout("window_bar_alpha_bg")
         lo.geometry = {x = posX, y = -100, an = 7, w = osc_w, h = -1}
