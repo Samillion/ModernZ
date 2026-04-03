@@ -1241,8 +1241,8 @@ local function draw_seekbar_handle(element, elem_ass, override_alpha)
     local handle_hovered = mouse_hit_coords(element.hitbox.x1 + xp - rh, element.hitbox.y1 + elem_geo.h / 2 - rh, element.hitbox.x1 + xp + rh, element.hitbox.y1 + elem_geo.h / 2 + rh) and element.enabled
 
     if display_handle then
-        -- Apply size hover_effect only if hovering over the handle
-        if handle_hovered and user_opts.slider_hover_effect then
+        -- Apply size hover_effect when hovering over or dragging the handle
+        if (handle_hovered or element.state.mbtnleft) and user_opts.slider_hover_effect then
             rh = rh * (user_opts.slider_hover_size / 100)
         end
 
