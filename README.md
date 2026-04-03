@@ -144,6 +144,37 @@ Both `fluent` and `material` themes have different styles as well. By using the 
     </tbody>
 </table>
 
+### Seek Bar
+
+If you find the seek bar too thin or too thick, you can easily adjust its size using the `seekbar_height` option. Available values include `small`, `medium` (default), `large`, and `xlarge`.
+
+<table>
+    <tr>
+        <th><code>small</code></th>
+        <th><code>medium</code> (Default)</th>
+    </tr>
+    <tr>
+        <td>
+            <img width="500" height="110" alt="seekbar_small" src="https://github.com/user-attachments/assets/749e6ee9-8964-45bd-841e-8e14510b1805" />
+        </td>
+        <td>
+            <img width="500" height="110" alt="seekbar_medium" src="https://github.com/user-attachments/assets/6ed7aa8f-0f66-436c-bc71-04f5e38d89da" />
+        </td>
+    </tr>
+    <tr>
+        <th><code>large</code></th>
+        <th><code>xlarge</code></th>
+    </tr>
+    <tr>
+        <td>
+            <img width="500" height="110" alt="seekbar_large" src="https://github.com/user-attachments/assets/282ba6a8-d33a-4f10-a431-c90a6245883d" />
+        </td>
+        <td>
+            <img width="500" height="110" alt="seekbar_xlarge" src="https://github.com/user-attachments/assets/49b2cafb-ac82-47fa-b0fb-176fbc1942d5" />
+        </td>
+    </tr>
+</table>
+
 ### Colors
 
 Not a fan of white buttons and text? You have complete control to customize colors to perfectly reflect your style.
@@ -171,7 +202,7 @@ See the [Color Customization](/docs/USER_OPTS.md#colors-and-style) section in th
 1. **Disable Stock OSC**
 
    - Add `osc=no` in your `mpv.conf`
-   - (OPTIONAL) Add `title-bar=no` in your `mpv.conf` for a clean look without the native operating system top bar
+   - (OPTIONAL) Add `title-bar=no` in your `mpv.conf` for a clean look without the native window top bar
 
 2. **Copy Files**
 
@@ -206,7 +237,7 @@ macOS:   ~/Library/Application Support/mpv/
 
 - Place `modernz.conf` in the `/script-opts` folder to customize settings
 
-   - Download `modernz.conf` with all default options
+   - You could download `modernz.conf` with all the default options
 
 - Alternatively, you can create a short configuration of the options you want changed only:
 
@@ -242,12 +273,12 @@ For a full list of interactions, check out the [Button Interactions Guide](/docs
 ModernZ doesn't set keybinds by default to avoid interfering with your current setup. You can add keybinds in `input.conf` if you prefer:
 
 ```
-v   script-binding modernz/visibility                # Cycle visibility modes
-V   script-message-to modernz osc-visibility cycle   # Set a visibility mode (cycle, auto, always, never)
-w   script-binding modernz/progress-toggle           # Toggle progress bar
-x   script-message-to modernz osc-show               # Show OSC
-y   script-message-to modernz osc-hide               # Hide OSC
-z   script-message-to modernz osc-idlescreen         # Toggle idle screen
+v   script-binding modernz/visibility               # Cycle visibility modes
+V   script-message-to modernz osc-visibility cycle  # Set a visibility mode: cycle, auto, always, never
+w   script-binding modernz/progress-toggle          # Toggle progress bar
+x   script-message-to modernz osc-show              # Show OSC
+y   script-message-to modernz osc-hide              # Hide OSC
+z   script-message-to modernz osc-idlescreen        # Toggle idle screen
 ```
 
 ## Translations

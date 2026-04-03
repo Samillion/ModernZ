@@ -37,6 +37,7 @@ local user_opts = {
 
     -- OSC behaviour and scaling
     hidetimeout = 1500,                    -- time (in ms) before OSC hides if no mouse movement
+    keep_with_cursor = true,               -- keep OSC visible while cursor hovers over bottom or top bar
     fadeduration = 200,                    -- fade-out duration (in ms), set to 0 for no fade
     fadein = false,                        -- whether to enable fade-in effect
     minmousemove = 0,                      -- minimum mouse movement (in pixels) required to show OSC
@@ -168,6 +169,7 @@ local user_opts = {
 
     -- Progress bar settings
     seek_handle_size = 0.8,                -- size ratio of the seek handle (range: 0 ~ 1)
+    seekbar_height = "medium",             -- seekbar height preset: "small", "medium", "large", "xlarge"
     seekrange = true,                      -- show seek range overlay
     seekrangealpha = 150,                  -- transparency of the seek range
     livemarkers = true,                    -- update chapter markers on the seekbar when duration changes
@@ -497,6 +499,7 @@ local function osc_color_convert(color)
 end
 
 local osc_styles
+local seekbar_height_style
 
 local function set_osc_styles()
     local playpause_size = user_opts.playpause_size
@@ -507,6 +510,14 @@ local function set_osc_styles()
     hover_effects.color = contains(user_opts.hover_effect, "color")
     hover_effects.glow  = contains(user_opts.hover_effect, "glow")
     hover_effects.box   = contains(user_opts.hover_effect, "box")
+
+    local seekbar_presets = {
+        small  = { radius = 1, height = 2 },
+        medium = { radius = 2, height = 4 },
+        large  = { radius = 3, height = 6 },
+        xlarge = { radius = 4, height = 8 }
+    }
+    seekbar_height_style = seekbar_presets[user_opts.seekbar_height] or seekbar_presets.medium
 
     osc_styles = {
         osc_fade_bg = "{\\blur" .. user_opts.fade_blur_strength .. "\\bord" .. user_opts.osc_fade_strength .. "\\1c&H0&\\3c&H" .. osc_color_convert(user_opts.osc_color) .. "&}",
@@ -1312,7 +1323,7 @@ local function draw_seekbar_nibbles(element, elem_ass)
 
     -- draw a single nibble at position s
     local function draw_nibble(ass, s)
-        if slider_lo.gap > 5 then
+        if slider_lo.gap >= 5 then
             local bar_h = 3
             if slider_lo.nibbles_top then
                 if slider_lo.nibbles_style == "triangle" then
@@ -2035,11 +2046,11 @@ layouts["modern"] = function ()
     -- Seekbar
     new_element("seekbarbg", "box")
     lo = add_layout("seekbarbg")
-    local seekbar_bg_h = 4
+    local seekbar_bg_h = seekbar_height_style.height
     lo.geometry = {x = refX, y = refY - user_opts.osc_height, an = 5, w = osc_geo.w - 30, h = seekbar_bg_h}
     lo.layer = 15
     lo.style = osc_styles.seekbar_bg
-    lo.box.radius = user_opts.slider_rounded_corners and 2 or 0
+    lo.box.radius = user_opts.slider_rounded_corners and seekbar_height_style.radius or 0
     lo.alpha[1] = 128
     lo.alpha[3] = 128
 
@@ -2049,7 +2060,7 @@ layouts["modern"] = function ()
     lo.layer = 49
     lo.style = osc_styles.seekbar_fg
     lo.slider.gap = (seekbar_h - seekbar_bg_h) / 2.0
-    lo.slider.radius = user_opts.slider_rounded_corners and 2 or 0
+    lo.slider.radius = user_opts.slider_rounded_corners and seekbar_height_style.radius or 0
     lo.slider.tooltip_an = 2
 
     if user_opts.persistent_progress or state.persistent_progress_toggle then
@@ -2296,11 +2307,11 @@ layouts["modern-compact"] = function ()
     -- Seekbar
     new_element("seekbarbg", "box")
     lo = add_layout("seekbarbg")
-    local seekbar_bg_h = 4
+    local seekbar_bg_h = seekbar_height_style.height
     lo.geometry = {x = refX, y = refY - user_opts.osc_height, an = 5, w = osc_geo.w - 30, h = seekbar_bg_h}
     lo.layer = 15
     lo.style = osc_styles.seekbar_bg
-    lo.box.radius = user_opts.slider_rounded_corners and 2 or 0
+    lo.box.radius = user_opts.slider_rounded_corners and seekbar_height_style.radius or 0
     lo.alpha[1] = 152
     lo.alpha[3] = 128
 
@@ -2310,7 +2321,7 @@ layouts["modern-compact"] = function ()
     lo.layer = 49
     lo.style = osc_styles.seekbar_fg
     lo.slider.gap = (seekbar_h - seekbar_bg_h) / 2.0
-    lo.slider.radius = user_opts.slider_rounded_corners and 2 or 0
+    lo.slider.radius = user_opts.slider_rounded_corners and seekbar_height_style.radius or 0
     lo.slider.tooltip_an = 2
 
     if user_opts.persistent_progress or state.persistent_progress_toggle then
@@ -2900,7 +2911,8 @@ local function osc_init()
     end
     ne.slider.tooltipF = function(pos)
         if state.audio_track_count <= 0 then return end
-        return set_volume(pos)
+        local volume = set_volume(pos)
+        return locale.volume .. ": " .. volume .. (state.mute and " (" .. locale.muted .. ")" or "")
     end
     ne.eventresponder["mouse_move"] = function (element)
         local pos = get_slider_value(element)
@@ -3523,7 +3535,7 @@ local function render()
         if state[showtime_key] == nil or hide_timeout < 0 then return end
         local timeout = state[showtime_key] + (hide_timeout / 1000) - now
         if timeout <= 0 and get_touchtimeout() <= 0 then
-            if state.active_element == nil and not mouse_in_area(input_areas) then
+            if state.active_element == nil and (not user_opts.keep_with_cursor or not mouse_in_area(input_areas)) then
                 hide_fn()
             end
         else

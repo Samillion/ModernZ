@@ -36,10 +36,12 @@ To get started with translations:
 ModernZ currently includes translations for the following languages: 
 
 - Default (`default`)
+  - Internal and is not included in JSON locale file
+  - Used as a base and fallback for any missing phrases
 - Arabic (`ar`)
 - Danish (`dk`)
 - English (`en`)
-  - English (`en`) is the same as Default (`default`)
+  - Same as Default (`default`)
   - Can be customized in `modernz-locale.json`
 - French (`fr`)
 - German (`de`)
