@@ -200,10 +200,10 @@ local user_opts = {
 
     -- Elements Position
     -- Useful when adjusting font size or type
-    title_offset = 24,                     -- title vertical offset relative to seekbar
-    title_with_chapter_offset = 4,         -- title vertical offset if a chapter title is below it
-    chapter_title_offset = 20,             -- chapter title vertical offset relative to seekbar
-    chapter_above_title_offset = 4,        -- chapter offset when shown above title
+    title_offset = 15,                     -- title vertical offset relative to seekbar
+    title_with_chapter_offset = 2,         -- title vertical offset if a chapter title is below it
+    chapter_title_offset = 15,             -- chapter title vertical offset relative to seekbar
+    chapter_above_title_offset = 2,        -- chapter offset when shown above title
     time_codes_offset = 0,                 -- time codes vertical offset relative to seekbar
     tooltip_height_offset = 5,             -- tooltip height position offset
     portrait_window_trigger = 950,         -- portrait window width trigger to move some elements
