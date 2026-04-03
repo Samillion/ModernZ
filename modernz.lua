@@ -976,7 +976,7 @@ end
 
 local function update_margins()
     local use_margins = get_hidetimeout() < 0 or user_opts.dynamic_margins
-    local top_vis = (user_opts.show_window_title or user_opts.window_controls) and state.wc_visible or false
+    local top_vis = state.wc_visible
     local bottom_vis = state.osc_visible
     local margins = {
         l = 0,
