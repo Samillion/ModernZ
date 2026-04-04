@@ -1300,7 +1300,7 @@ local function draw_gap_segments(elem_ass, element, gap_half, x_max, slider_lo, 
 end
 
 -- Draws seekbar ranges according to user_opts
-local function draw_seekbar_ranges(element, elem_ass, xp, rh, override_alpha)
+local function draw_seekbar_ranges(element, elem_ass, xp, rh, override_alpha, inverse)
     local handle = xp and rh and rh > 0
     xp = xp or 0
     rh = rh or 0
@@ -1310,7 +1310,7 @@ local function draw_seekbar_ranges(element, elem_ass, xp, rh, override_alpha)
     if not seekRanges then return end
     elem_ass:draw_stop()
     elem_ass:merge(element.style_ass)
-    ass_append_alpha(elem_ass, element.layout.alpha, override_alpha or user_opts.seekrangealpha)
+    ass_append_alpha(elem_ass, element.layout.alpha, override_alpha or user_opts.seekrangealpha, inverse)
     elem_ass:append("{\\1c&H" .. osc_color_convert(user_opts.seekbar_cache_color) .. "&}")
     elem_ass:merge(element.static_ass)
 
@@ -1778,7 +1778,7 @@ local function render_persistent_progress(master_ass)
         draw_seekbar_progress(element, elem_ass)
 
         if user_opts.persistent_buffer then
-            draw_seekbar_ranges(element, elem_ass, nil, nil)
+            draw_seekbar_ranges(element, elem_ass, nil, nil, nil, true)
         end
 
         elem_ass:draw_stop()
