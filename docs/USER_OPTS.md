@@ -171,7 +171,7 @@ watch-later-options-remove=osd-margin-y
 | hover_effect          | size,glow,color,box | active button hover effects: `"glow"`, `"size"`, `"color"`, `"box"`; can use multiple separated by commas |
 | button_hover_size     | 115                 | relative size of a hovered button if "size" effect is active                                              |
 | button_held_size      | 100                 | relative size of a button when held/pressed. below 100 shrinks button when held down                      |
-| button_held_box_alpha | 0xCC                | alpha of the hover background box when a button is held down. default to 80%                              |
+| button_held_box_alpha | 18                  | alpha of the hover background box when a button is held down. default to 80%                              |
 | button_glow_amount    | 5                   | glow intensity when `"glow"` hover effect is active                                                       |
 | slider_hover_effect   | yes                 | apply size effect only when hovering slider handles                                                       |
 | slider_hover_size     | 130                 | relative size of a hovered slider handle if "slider_hover_effect" is used                                 |
