@@ -3205,13 +3205,19 @@ local function osc_init()
     ne.eventresponder["mbtn_left_down"] = function (element)
         element.state.mbtnleft = true
         element.state.was_paused = mp.get_property_bool("pause")
-        state.playing_and_seeking = false  -- clear state
+        state.playing_and_seeking = true
+        if not element.state.was_paused and user_opts.mouse_seek_pause then
+            mp.commandv("cycle", "pause")
+        end
         mp.commandv("seek", get_slider_value(element), "absolute-percent+exact")
     end
     ne.eventresponder["shift+mbtn_left_down"] = function (element)
         element.state.mbtnleft = true
         element.state.was_paused = mp.get_property_bool("pause")
-        state.playing_and_seeking = false
+        state.playing_and_seeking = true
+        if not element.state.was_paused and user_opts.mouse_seek_pause then
+            mp.commandv("cycle", "pause")
+        end
         mp.commandv("seek", get_slider_value(element), "absolute-percent")
     end
     ne.eventresponder["mbtn_left_up"] = function (element)
