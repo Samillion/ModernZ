@@ -161,9 +161,11 @@ local user_opts = {
     thumbnail_box_padding = 4.5,           -- thumbnail box padding around the image
     thumbnail_box_radius = 4,              -- round corner radius for thumbnail box border (0 to disable)
 
-    -- Button hover settings
+    -- Button interaction settings
     hover_effect = "size,glow,color,box",  -- active button hover effects: "glow", "size", "color", "box"; can use multiple separated by commas
     button_hover_size = 115,               -- relative size of a hovered button if "size" effect is active
+    button_held_size = 100,                -- relative size of a button when held/pressed. below 100 shrinks button when held down
+    button_held_box_alpha = 18,            -- alpha of the hover background box when a button is held down
     button_glow_amount = 5,                -- glow intensity when "glow" hover effect is active
     slider_hover_effect = true,            -- apply size effect only when hovering slider handles
     slider_hover_size = 130,               -- relative size of a hovered slider handle if "slider_hover_effect" is used
@@ -537,7 +539,7 @@ local function set_osc_styles()
         control_1 = "{\\blur0\\bord0\\1c&H" .. osc_color_convert(user_opts.playpause_color) .. "&\\3c&HFFFFFF&\\fs" .. playpause_size .. "\\fn" .. icons.iconfont .. "}",
         control_2 = "{\\blur0\\bord0\\1c&H" .. osc_color_convert(user_opts.middle_buttons_color) .. "&\\3c&HFFFFFF&\\fs" .. midbuttons_size .. "\\fn" .. icons.iconfont .. "}",
         control_3 = "{\\blur0\\bord0\\1c&H" .. osc_color_convert(user_opts.side_buttons_color) .. "&\\3c&HFFFFFF&\\fs" .. sidebuttons_size .. "\\fn" .. icons.iconfont .. "}",
-        element_down = "{\\1c&H" .. osc_color_convert(user_opts.held_element_color) .. "&}",
+        element_down = "{\\1c&H" .. osc_color_convert(user_opts.held_element_color) .. "&" .. string.format("\\fscx%s\\fscy%s", user_opts.button_held_size, user_opts.button_held_size) .. "}",
         element_hover = "{" .. (hover_effects.color and "\\1c&H" .. osc_color_convert(user_opts.hover_effect_color) .. "&" or "") .."\\2c&HFFFFFF&" .. (hover_effects.size and string.format("\\fscx%s\\fscy%s", user_opts.button_hover_size, user_opts.button_hover_size) or "") .. "}",
         hover_bg = "{\\blur0\\bord0\\1c&H" .. osc_color_convert(user_opts.hover_effect_color) .. "&}",
     }
@@ -1521,7 +1523,7 @@ local function render_elements(master_ass, osc_vis, wc_vis)
                 elem_ass:new_event()
                 elem_ass:pos(0, 0)
                 elem_ass:an(7)
-                local hover_base_alpha = element.hover_alpha or 0xE6
+                local hover_base_alpha = state.mouse_down_counter > 0 and (255 - math.floor(math.max(0, math.min(100, user_opts.button_held_box_alpha)) * 2.55)) or (element.hover_alpha or 0xE6)
                 ass_append_alpha(elem_ass, {[1] = hover_base_alpha, [2] = 255, [3] = 255, [4] = 255}, element.layout.alpha[1])
                 local hover_style = element.hover_color
                     and "{\\blur0\\bord0\\1c&H" .. osc_color_convert(element.hover_color) .. "&}"

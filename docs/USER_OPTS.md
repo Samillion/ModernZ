@@ -51,7 +51,7 @@ Create `modernz.conf` in your mpv script-opts directory:
 | Option                  | Value            | Description                                                                      |
 | ----------------------- | ---------------- | -------------------------------------------------------------------------------- |
 | show_title              | yes              | show title in the OSC (above seekbar)                                            |
-| title                   | `${media-title}` | title above seekbar: `"${media-title}"` or `"${filename}"`                |
+| title                   | `${media-title}` | title above seekbar: `"${media-title}"` or `"${filename}"`                       |
 | title_font_size         | 24               | font size of the title text (above seekbar)                                      |
 | chapter_title_font_size | 14               | chapter title font size                                                          |
 | show_chapter_title      | yes              | show chapter title (above seekbar)                                               |
@@ -166,16 +166,18 @@ watch-later-options-remove=osd-margin-y
 | thumbnail_box_padding             | 4.5       | thumbnail box padding around the image                                                            |
 | thumbnail_box_radius              | 4         | round corner radius for thumbnail box border (0 to disable)                                       |
 
-### Button hover settings
+### Button interaction settings
 
-| Option              | Value               | Description                                                                                               |
-| ------------------- | ------------------- | --------------------------------------------------------------------------------------------------------- |
-| hover_effect        | size,glow,color,box | active button hover effects: `"glow"`, `"size"`, `"color"`, `"box"`; can use multiple separated by commas |
-| button_hover_size   | 115                 | relative size of a hovered button if "size" effect is active                                              |
-| button_glow_amount  | 5                   | glow intensity when `"glow"` hover effect is active                                                       |
-| slider_hover_effect | yes                 | apply size effect only when hovering slider handles                                                       |
-| slider_hover_size   | 130                 | relative size of a hovered slider handle if "slider_hover_effect" is used                                 |
-| tooltip_hints       | yes                 | enable tooltips for most buttons. seek and volume tooltips are always enabled                             |
+| Option                | Value               | Description                                                                                               |
+| -------------------   | ------------------- | --------------------------------------------------------------------------------------------------------- |
+| hover_effect          | size,glow,color,box | active button hover effects: `"glow"`, `"size"`, `"color"`, `"box"`; can use multiple separated by commas |
+| button_hover_size     | 115                 | relative size of a hovered button if "size" effect is active                                              |
+| button_held_size      | 100                 | relative size of a button when held/pressed. below 100 shrinks button when held down                      |
+| button_held_box_alpha | 18                  | alpha of the hover background box when a button is held down                                              |
+| button_glow_amount    | 5                   | glow intensity when `"glow"` hover effect is active                                                       |
+| slider_hover_effect   | yes                 | apply size effect only when hovering slider handles                                                       |
+| slider_hover_size     | 130                 | relative size of a hovered slider handle if "slider_hover_effect" is used                                 |
+| tooltip_hints         | yes                 | enable tooltips for most buttons. seek and volume tooltips are always enabled                             |
 
 ### Progress bar settings
 
