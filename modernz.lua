@@ -2588,15 +2588,15 @@ layouts["modern-image"] = function ()
     if playlist_button then left_side_button("playlist", 25, 250, nil, osc_styles.control_3) end
 
     if track_nextprev_buttons then
-        left_side_button("playlist_prev", 60 - (playlist_button and 0 or 25), 350)
-        left_side_button("playlist_next", 90 - (playlist_button and 0 or 25), 350)
+        left_side_button("playlist_prev", 60 - (playlist_button and 0 or 25), 250)
+        left_side_button("playlist_next", 90 - (playlist_button and 0 or 25), 250)
     end
 
     if zoom_control then
-        local zoom_vis = osc_param.playresx >= 500
+        local zoom_vis = osc_param.playresx >= 300
         local zx = 130 - (playlist_button and 0 or 25) - (track_nextprev_buttons and 0 or 70)
 
-        left_side_button("zoom_out_icon", zx, 500, 30)
+        left_side_button("zoom_out_icon", zx, 300, 30)
 
         ne = new_element("zoom_control_bg", "box")
         ne.visible = zoom_vis
@@ -2615,12 +2615,12 @@ layouts["modern-image"] = function ()
         lo.slider.gap = 3
         lo.slider.tooltip_an = 2
 
-        left_side_button("zoom_in_icon", zx + 130, 500, 30)
+        left_side_button("zoom_in_icon", zx + 130, 300, 30)
     end
 
     -- right side
-    if fullscreen_button then right_side_button("fullscreen", 250) end
-    if info_button then right_side_button("info", 350) end
+    if fullscreen_button then right_side_button("fullscreen", 350) end
+    if info_button then right_side_button("info", 400) end
     if ontop_button then right_side_button("ontop", 450) end
     if user_opts.download_button then right_side_button("download", 500, state.is_URL) end
 end
