@@ -2161,10 +2161,12 @@ layouts["modern"] = function ()
 
     local chapter_title_y = user_opts.osc_height + chapter_offset
     local title_y = (no_chapter or not chapter_index) and (user_opts.osc_height + title_offset) or (chapter_title_y + chapter_h + user_opts.title_with_chapter_offset)
+    local time_codes_y = user_opts.time_codes_offset + (user_opts.osc_height / 2)
+    local time_codes_width = get_time_codes_width()
 
     -- OSC title
     elements["title"].visible = not no_title
-    geo = {x = 25, y = refY - title_y, an = 1, w = osc_geo.w - 150, h = user_opts.title_font_size}
+    geo = {x = 25, y = refY - title_y, an = 1, w = osc_geo.w - time_codes_width - 50, h = user_opts.title_font_size}
     lo = add_layout("title")
     lo.geometry = geo
     lo.layer = 48
@@ -2175,7 +2177,7 @@ layouts["modern"] = function ()
     if user_opts.show_chapter_title then
         elements["chapter_title"].visible = not no_chapter and chapter_index
         lo = add_layout("chapter_title")
-        lo.geometry = {x = 26, y = refY - chapter_title_y, an = 1, w = osc_geo.w / 2, h = user_opts.chapter_title_font_size}
+        lo.geometry = {x = 26, y = refY - chapter_title_y, an = 1, w = osc_geo.w - time_codes_width - 50, h = user_opts.chapter_title_font_size}
         lo.layer = 48
         lo.alpha[3] = 0
         lo.style = string.format("%s{\\clip(0,%f,%f,%f)}", osc_styles.chapter_title, geo.y - geo.h, geo.x + geo.w, geo.y + geo.h)
@@ -2276,8 +2278,6 @@ layouts["modern"] = function ()
         - (auto_hide_volbar and 67 or 0) -- window width with audio track and elements
         - (audio_track and not user_opts.volume_control and 115 or 0) -- audio track with no elements
         - (not audio_track and 12 or 0) -- remove extra padding
-    local time_codes_y = user_opts.time_codes_offset + (user_opts.osc_height / 2)
-    local time_codes_width = get_time_codes_width()
     local narrow_win = osc_param.playresx < (
         user_opts.portrait_window_trigger
         - outeroffset
@@ -2419,7 +2419,7 @@ layouts["modern-compact"] = function ()
     local title_y = (no_chapter or not chapter_index) and (user_opts.osc_height + title_offset) or (chapter_title_y + chapter_h + user_opts.title_with_chapter_offset)
 
     -- OSC title
-    local title_w = (no_chapter or not chapter_index) and (osc_geo.w - 50 - time_codes_width - 10) or (osc_geo.w - 50)
+    local title_w = (no_chapter or not chapter_index) and (osc_geo.w - 50 - time_codes_width - 50) or (osc_geo.w - 50)
     if title_w < 0 then title_w = 0 end
     geo = {x = 25, y = refY - title_y, an = 1, w = title_w, h = user_opts.title_font_size}
     lo = add_layout("title")
@@ -2430,12 +2430,12 @@ layouts["modern-compact"] = function ()
 
     -- Chapter title (above seekbar)
     if user_opts.show_chapter_title then
-        local chapter_geo = {x = 25, y = refY - chapter_title_y, an = 1, w = osc_geo.w / 2, h = user_opts.chapter_title_font_size}
+        geo = {x = 25, y = refY - chapter_title_y, an = 1, w = osc_geo.w - time_codes_width - 50, h = user_opts.chapter_title_font_size}
         lo = add_layout("chapter_title")
-        lo.geometry = chapter_geo
+        lo.geometry = geo
         lo.layer = 48
         lo.alpha[3] = 0
-        lo.style = string.format("%s{\\clip(%f,%f,%f,%f)}", osc_styles.chapter_title, chapter_geo.x, chapter_geo.y - chapter_geo.h, chapter_geo.x + chapter_geo.w, chapter_geo.y + chapter_geo.h)
+        lo.style = string.format("%s{\\clip(%f,%f,%f,%f)}", osc_styles.chapter_title, geo.x, geo.y - geo.h, geo.x + geo.w, geo.y + geo.h)
     end
 
     -- Time codes
