@@ -539,7 +539,7 @@ local function set_osc_styles()
         control_1 = "{\\blur0\\bord0\\1c&H" .. osc_color_convert(user_opts.playpause_color) .. "&\\3c&HFFFFFF&\\fs" .. playpause_size .. "\\fn" .. icons.iconfont .. "}",
         control_2 = "{\\blur0\\bord0\\1c&H" .. osc_color_convert(user_opts.middle_buttons_color) .. "&\\3c&HFFFFFF&\\fs" .. midbuttons_size .. "\\fn" .. icons.iconfont .. "}",
         control_3 = "{\\blur0\\bord0\\1c&H" .. osc_color_convert(user_opts.side_buttons_color) .. "&\\3c&HFFFFFF&\\fs" .. sidebuttons_size .. "\\fn" .. icons.iconfont .. "}",
-        element_down = "{\\1c&H" .. osc_color_convert(user_opts.held_element_color) .. "&" .. (string.format("\\fscx%s\\fscy%s", user_opts.button_held_size, user_opts.button_held_size) or "") .. "}",
+        element_down = "{\\1c&H" .. osc_color_convert(user_opts.held_element_color) .. "&" .. string.format("\\fscx%s\\fscy%s", user_opts.button_held_size, user_opts.button_held_size) .. "}",
         element_hover = "{" .. (hover_effects.color and "\\1c&H" .. osc_color_convert(user_opts.hover_effect_color) .. "&" or "") .."\\2c&HFFFFFF&" .. (hover_effects.size and string.format("\\fscx%s\\fscy%s", user_opts.button_hover_size, user_opts.button_hover_size) or "") .. "}",
         hover_bg = "{\\blur0\\bord0\\1c&H" .. osc_color_convert(user_opts.hover_effect_color) .. "&}",
     }
