@@ -2102,17 +2102,15 @@ layouts["modern"] = function ()
 
     -- fetch values
     local osc_w = osc_geo.w
-
-    -- Controller Background
     local lo, geo, ne
 
+    -- osc background
     setup_bg_elements(posX, posY, osc_w, user_opts.fade_transparency_strength, user_opts.window_fade_transparency_strength)
 
-    -- Alignment
     local refX = osc_w / 2
     local refY = posY
 
-    -- Seekbar
+    -- seekbar
     ne = new_element("seekbarbg", "box")
     ne.visible = user_opts.nibbles_style ~= "gap"
     lo = add_layout("seekbarbg")
@@ -2164,7 +2162,7 @@ layouts["modern"] = function ()
     local time_codes_y = user_opts.time_codes_offset + (user_opts.osc_height / 2)
     local time_codes_width = get_time_codes_width()
 
-    -- OSC title
+    -- osc title
     elements["title"].visible = not no_title
     geo = {x = 25, y = refY - title_y, an = 1, w = osc_geo.w - time_codes_width - 50, h = user_opts.title_font_size}
     lo = add_layout("title")
@@ -2173,7 +2171,7 @@ layouts["modern"] = function ()
     lo.alpha[3] = 0
     lo.style = string.format("%s{\\clip(0,%f,%f,%f)}", osc_styles.title, geo.y - geo.h, geo.x + geo.w, geo.y + geo.h)
 
-    -- Chapter title (above seekbar)
+    -- chapter title
     if user_opts.show_chapter_title then
         elements["chapter_title"].visible = not no_chapter and chapter_index
         lo = add_layout("chapter_title")
@@ -2237,21 +2235,16 @@ layouts["modern"] = function ()
         start_x = start_x + 45
     end
 
-    -- Playlist
     if playlist_button then left_side_button("playlist", 550) end
-
-    -- Audio
     if audio_track and user_opts.audio_tracks_button then left_side_button("audio_track", 650) end
-
-    -- Subtitle
     if subtitle_track and user_opts.subtitles_button then left_side_button("sub_track", 750) end
 
     if audio_track then
-        -- Volume
+        -- volume button
         left_side_button("vol_ctrl", 850)
         start_x = start_x - 25 -- vol_ctrl uses a narrower step (+20 not +45)
 
-        -- Volumebar
+        -- volume bar
         local vol_vis = (osc_param.playresx >= user_opts.hide_volume_bar_trigger - outeroffset) and user_opts.volume_control
         ne = new_element("volumebarbg", "box")
         ne.visible = vol_vis
@@ -2272,7 +2265,7 @@ layouts["modern"] = function ()
         start_x = start_x + 75
     end
 
-    -- Time codes
+    -- time codes
     local auto_hide_volbar = (audio_track and user_opts.volume_control) and osc_param.playresx < (user_opts.hide_volume_bar_trigger - outeroffset)
     local time_codes_x = start_x
         - (auto_hide_volbar and 67 or 0) -- window width with audio track and elements
@@ -2297,7 +2290,7 @@ layouts["modern"] = function ()
     lo.alpha[3] = 0
     lo.style = osc_styles.time
 
-    -- Fullscreen/Info/Pin/Screenshot/Loop/Speed
+    -- fullscreen - info - pin - screenshot - loop - shuffle - speed - download - cache
     local end_x = osc_geo.w - 37
     local function right_side_button(name, min_w, style, w)
         elements[name].visible = (osc_param.playresx >= min_w - outeroffset)
@@ -2316,7 +2309,6 @@ layouts["modern"] = function ()
     if speed_button then right_side_button("speed", 1150, osc_styles.speed, 42) end
     if download_button then right_side_button("download", 1150) end
 
-    -- cache info
     if user_opts.cache_info then
         right_side_button("cache_info", 1250, osc_styles.cache, user_opts.cache_info_speed and 70 or 45)
         lo.geometry.x  = lo.geometry.x + 7
@@ -2373,17 +2365,14 @@ layouts["modern-compact"] = function ()
 
     -- fetch values
     local osc_w = osc_geo.w
-
-    -- Controller Background
     local lo, geo
-
+    -- osc background
     setup_bg_elements(posX, posY, osc_w, user_opts.fade_transparency_strength, user_opts.window_fade_transparency_strength)
 
-    -- Alignment
     local refX = osc_w / 2
     local refY = posY
 
-    -- Seekbar
+    -- seekbar
     new_element("seekbarbg", "box")
     lo = add_layout("seekbarbg")
     local seekbar_bg_h = seekbar_height_style.height
@@ -2412,13 +2401,11 @@ layouts["modern-compact"] = function ()
         lo.slider.tooltip_an = 0
     end
 
-    -- Time codes width calculation
     local time_codes_width = get_time_codes_width()
-
     local chapter_title_y = user_opts.osc_height + chapter_offset
     local title_y = (no_chapter or not chapter_index) and (user_opts.osc_height + title_offset) or (chapter_title_y + chapter_h + user_opts.title_with_chapter_offset)
 
-    -- OSC title
+    -- osc title
     local title_w = (no_chapter or not chapter_index) and (osc_geo.w - 50 - time_codes_width - 50) or (osc_geo.w - 50)
     if title_w < 0 then title_w = 0 end
     geo = {x = 25, y = refY - title_y, an = 1, w = title_w, h = user_opts.title_font_size}
@@ -2428,7 +2415,7 @@ layouts["modern-compact"] = function ()
     lo.alpha[3] = 0
     lo.style = string.format("%s{\\clip(%f,%f,%f,%f)}", osc_styles.title, geo.x, geo.y - geo.h, geo.x + geo.w, geo.y + geo.h)
 
-    -- Chapter title (above seekbar)
+    -- chapter title
     if user_opts.show_chapter_title then
         geo = {x = 25, y = refY - chapter_title_y, an = 1, w = osc_geo.w - time_codes_width - 50, h = user_opts.chapter_title_font_size}
         lo = add_layout("chapter_title")
@@ -2438,7 +2425,7 @@ layouts["modern-compact"] = function ()
         lo.style = string.format("%s{\\clip(%f,%f,%f,%f)}", osc_styles.chapter_title, geo.x, geo.y - geo.h, geo.x + geo.w, geo.y + geo.h)
     end
 
-    -- Time codes
+    -- time codes
     local time_codes_y = user_opts.time_codes_offset + user_opts.osc_height
     -- align time_codes with either chapter or title (if chapter is hidden)
     time_codes_y = (no_chapter or not chapter_index) and (time_codes_y + user_opts.title_offset) or (time_codes_y + user_opts.chapter_title_offset)
@@ -2448,7 +2435,7 @@ layouts["modern-compact"] = function ()
     lo.alpha[3] = 0
     lo.style = osc_styles.time
 
-    -- Left side buttons
+    -- left side buttons
     local start_x = 37
 
     lo = add_layout("play_pause")
@@ -2514,7 +2501,7 @@ layouts["modern-compact"] = function ()
         end
     end
 
-    -- Right side buttons
+    -- right side buttons
     local end_x = osc_geo.w - 37
     local function compact_right_side_button(name, vis_cond, style, w)
         elements[name].visible = vis_cond
@@ -2567,13 +2554,10 @@ layouts["modern-image"] = function ()
 
     -- fetch values
     local osc_w = osc_geo.w
-
-    -- Controller Background
-    local lo
-
+    local lo, ne
+    -- osc background
     setup_bg_elements(posX, posY, osc_w, user_opts.fade_transparency_strength, user_opts.window_fade_transparency_strength)
 
-    -- Alignment
     local refX = osc_w / 2
     local refY = posY
 
@@ -2584,79 +2568,61 @@ layouts["modern-image"] = function ()
     local playlist_button = user_opts.playlist_button and (not user_opts.hide_empty_playlist_button or state.playlist_count > 1)
     local zoom_control = user_opts.zoom_control
 
-    -- Playlist
-    if playlist_button then
-        lo = add_layout("playlist")
-        lo.geometry = {x = 25, y = refY - (user_opts.osc_height / 2), an = 5, w = 24, h = 24}
-        lo.style = osc_styles.control_3
-        lo.visible = osc_param.playresx >= 250
+    local function left_side_button(name, x, min_w, w, style)
+        elements[name].visible = osc_param.playresx >= min_w
+        lo = add_layout(name)
+        lo.geometry = {x = x, y = refY - (user_opts.osc_height / 2), an = 5, w = w or 24, h = 24}
+        lo.style = style or osc_styles.control_2
     end
 
-    if track_nextprev_buttons then
-        lo = add_layout("playlist_prev")
-        lo.geometry = {x = 60 - (playlist_button and 0 or 25), y = refY - (user_opts.osc_height / 2) , an = 5, w = 24, h = 24}
-        lo.style = osc_styles.control_2
+    local end_x = osc_geo.w - 37
+    local function right_side_button(name, min_w, vis_extra)
+        elements[name].visible = (osc_param.playresx >= min_w) and (vis_extra == nil or vis_extra)
+        lo = add_layout(name)
+        lo.geometry = {x = end_x, y = refY - (user_opts.osc_height / 2), an = 5, w = 24, h = 24}
+        lo.style = osc_styles.control_3
+        end_x = end_x - 45
+    end
 
-        lo = add_layout("playlist_next")
-        lo.geometry = {x = 90 - (playlist_button and 0 or 25), y = refY - (user_opts.osc_height / 2) , an = 5, w = 24, h = 24}
-        lo.style = osc_styles.control_2
+    -- left side
+    if playlist_button then left_side_button("playlist", 25, 250, nil, osc_styles.control_3) end
+
+    if track_nextprev_buttons then
+        left_side_button("playlist_prev", 60 - (playlist_button and 0 or 25), 350)
+        left_side_button("playlist_next", 90 - (playlist_button and 0 or 25), 350)
     end
 
     if zoom_control then
-        -- zoom control
-        lo = add_layout("zoom_out_icon")
-        lo.geometry = {x = 130 - (playlist_button and 0 or 25) - (track_nextprev_buttons and 0 or 70), y = refY - (user_opts.osc_height / 2) , an = 5, w = 30, h = 24}
-        lo.style = osc_styles.control_2
+        local zoom_vis = osc_param.playresx >= 500
+        local zx = 130 - (playlist_button and 0 or 25) - (track_nextprev_buttons and 0 or 70)
 
-        lo = new_element("zoom_control_bg", "box")
-        lo.visible = osc_param.playresx >= 400 and user_opts.zoom_control
+        left_side_button("zoom_out_icon", zx, 500, 30)
+
+        ne = new_element("zoom_control_bg", "box")
+        ne.visible = zoom_vis
         lo = add_layout("zoom_control_bg")
-        lo.geometry = {x = 155 - (playlist_button and 0 or 25) - (track_nextprev_buttons and 0 or 70), y = refY - (user_opts.osc_height / 2), an = 4, w = 80, h = 4}
+        lo.geometry = {x = zx + 25, y = refY - (user_opts.osc_height / 2), an = 4, w = 80, h = 4}
         lo.layer = 15
         lo.alpha[1] = 128
         lo.style = osc_styles.volumebar_bg
         lo.box.radius = user_opts.slider_rounded_corners and 2 or 0
 
+        elements["zoom_control"].visible = zoom_vis
         lo = add_layout("zoom_control")
-        lo.geometry = {x = 155 - (playlist_button and 0 or 25) - (track_nextprev_buttons and 0 or 70), y = refY - (user_opts.osc_height / 2), an = 4, w = 80, h = 10}
+        lo.geometry = {x = zx + 25, y = refY - (user_opts.osc_height / 2), an = 4, w = 80, h = 10}
         lo.style = osc_styles.volumebar_fg
         lo.slider.radius = user_opts.slider_rounded_corners and 2 or 0
         lo.slider.gap = 3
         lo.slider.tooltip_an = 2
 
-        lo = add_layout("zoom_in_icon")
-        lo.geometry = {x = 260 - (playlist_button and 0 or 25) - (track_nextprev_buttons and 0 or 70), y = refY - (user_opts.osc_height / 2) , an = 5, w = 30, h = 24}
-        lo.style = osc_styles.control_2
+        left_side_button("zoom_in_icon", zx + 130, 500, 30)
     end
 
-    -- Fullscreen/Info/Pin/Download
-    if fullscreen_button then
-        lo = add_layout("fullscreen")
-        lo.geometry = {x = osc_geo.w - 37, y = refY - (user_opts.osc_height / 2), an = 5, w = 24, h = 24}
-        lo.style = osc_styles.control_3
-        lo.visible = (osc_param.playresx >= 250)
-    end
-
-    if info_button then
-        lo = add_layout("info")
-        lo.geometry = {x = osc_geo.w - 82 + (fullscreen_button and 0 or 45), y = refY - (user_opts.osc_height / 2), an = 5, w = 24, h = 24}
-        lo.style = osc_styles.control_3
-        lo.visible = (osc_param.playresx >= 300)
-    end
-
-    if ontop_button then
-        lo = add_layout("ontop")
-        lo.geometry = {x = osc_geo.w - 127 + (info_button and 0 or 45) + (fullscreen_button and 0 or 45), y = refY - (user_opts.osc_height / 2), an = 5, w = 24, h = 24}
-        lo.style = osc_styles.control_3
-        lo.visible = (osc_param.playresx >= 500)
-    end
-
-    if user_opts.download_button then
-        lo = add_layout("download")
-        lo.geometry = {x = osc_geo.w - 172 + (ontop_button and 0 or 45) + (info_button and 0 or 45) + (fullscreen_button and 0 or 45), y = refY - (user_opts.osc_height / 2), an = 5, w = 24, h = 24}
-        lo.style = osc_styles.control_3
-        lo.visible = (osc_param.playresx >= 400)
-    end
+    -- right side
+    if fullscreen_button then right_side_button("fullscreen", 250) end
+    if info_button then right_side_button("info", 350) end
+    if ontop_button then right_side_button("ontop", 450) end
+    if user_opts.download_button then right_side_button("download", 500, state.is_URL) end
 end
 
 local function set_bar_visible(visible_key, visible)
