@@ -2164,7 +2164,7 @@ layouts["modern"] = function ()
 
     -- OSC title
     elements["title"].visible = not no_title
-    geo = {x = 25, y = refY - title_y, an = 1, w = osc_geo.w - 50 - (loop_button and 45 or 0) - (speed_button and 45 or 0), h = user_opts.title_font_size}
+    geo = {x = 25, y = refY - title_y, an = 1, w = osc_geo.w - 150, h = user_opts.title_font_size}
     lo = add_layout("title")
     lo.geometry = geo
     lo.layer = 48
