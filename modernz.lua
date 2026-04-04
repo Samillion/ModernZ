@@ -805,10 +805,6 @@ local function get_hitbox_coords(x, y, an, w, h)
     return alignments[an]()
 end
 
-local function get_hitbox_coords_geo(geometry)
-    return get_hitbox_coords(geometry.x, geometry.y, geometry.an, geometry.w, geometry.h)
-end
-
 local function get_element_hitbox(element)
     return element.hitbox.x1, element.hitbox.y1, element.hitbox.x2, element.hitbox.y2
 end
@@ -1159,8 +1155,16 @@ local function prepare_elements()
 
         local elem_geo = element.layout.geometry
 
+        -- Calculate title and chapter hitbox
+        local hitbox_w = elem_geo.w
+
+        if (element.name == "title" or element.name == "chapter_title") and type(element.content) == "function" then
+            local width = estimate_text_width(element.content(), osc_styles[element.name])
+            if width > 0 then hitbox_w = math.min(width, hitbox_w) end
+        end
+
         -- Calculate the hitbox
-        local bX1, bY1, bX2, bY2 = get_hitbox_coords_geo(elem_geo)
+        local bX1, bY1, bX2, bY2 = get_hitbox_coords(elem_geo.x, elem_geo.y, elem_geo.an, hitbox_w, elem_geo.h)
         element.hitbox = {x1 = bX1, y1 = bY1, x2 = bX2, y2 = bY2}
 
         local style_ass = assdraw.ass_new()
@@ -3781,7 +3785,7 @@ observe_cached("window-maximized", request_init_resize)
 observe_cached("idle-active", request_tick)
 mp.observe_property("user-data/mpv/console/open", "bool", function(_, val)
     if val and user_opts.visibility == "auto" and not user_opts.showonselect then
-        -- clear pending thumbnail 
+        -- clear pending thumbnail
         if thumbfast.width ~= 0 and thumbfast.height ~= 0 then
             mp.commandv("script-message-to", "thumbfast", "clear")
         end
