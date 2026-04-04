@@ -219,7 +219,7 @@ Useful when adjusting font size or type, this will help you change the affected 
 | chapter_title_offset        | 20    | chapter title vertical offset relative to seekbar                      |
 | time_codes_offset           | 0     | time codes vertical offset relative to seekbar                         |
 | tooltip_height_offset       | 5     | tooltip height position offset                                         |
-| portrait_window_trigger     | 1000  | portrait window width trigger to move some elements                    |
+| portrait_window_trigger     | 950   | portrait window width trigger to move some elements                    |
 | hide_volume_bar_trigger     | 1150  | hide volume bar trigger window width                                   |
 | osc_height                  | 60    | osc height                                                             |
 
