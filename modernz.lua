@@ -1990,15 +1990,13 @@ local function window_controls()
 
     local lo
     local ontop_active = user_opts.ontop_button and user_opts.ontop_pin_to_top and mp.get_property_bool("ontop")
-    local controlbox_w = (user_opts.window_controls and window_control_box_width or 0) + (ontop_active and 50 or 0)
+    local controlbox_w = (user_opts.window_controls and window_control_box_width or 0)
     local controlbox_left = wc_geo.w - controlbox_w
-    local titlebox_left = wc_geo.x
-    local titlebox_right = wc_geo.w - controlbox_w
+    local titlebox_left = ontop_active and 50 or wc_geo.x
     local button_y = wc_geo.y - (wc_geo.h / 2)
-    local ontop_geo  = {x = controlbox_left + 25, y = button_y, an = 5, w = 49, h = wc_geo.h}
-    local first_geo  = {x = controlbox_left + (ontop_active and 75 or 25),  y = button_y, an = 5, w = 50, h = wc_geo.h}
-    local second_geo = {x = controlbox_left + (ontop_active and 125 or 75), y = button_y, an = 5, w = 49, h = wc_geo.h}
-    local third_geo  = {x = controlbox_left + (ontop_active and 175 or 125), y = button_y, an = 5, w = 50, h = wc_geo.h}
+    local first_geo  = {x = controlbox_left + 25,  y = button_y, an = 5, w = 50, h = wc_geo.h}
+    local second_geo = {x = controlbox_left + 75, y = button_y, an = 5, w = 49, h = wc_geo.h}
+    local third_geo  = {x = controlbox_left + 125, y = button_y, an = 5, w = 50, h = wc_geo.h}
 
     -- Window controls
     if user_opts.window_controls then
@@ -2027,7 +2025,7 @@ local function window_controls()
         elements["ontop"].hover_radius = 0
         elements["ontop"].hover_pad = 0
         lo = add_layout("ontop")
-        lo.geometry = ontop_geo
+        lo.geometry = {x = 25, y = button_y, an = 5, w = 50, h = wc_geo.h}
         lo.style = osc_styles.window_control
         lo.group = "top"
         lo.button.hoverstyle = osc_styles.element_hover
@@ -2040,20 +2038,20 @@ local function window_controls()
     -- Window Title
     if user_opts.show_window_title then
         lo = add_layout("windowtitle")
-        lo.geometry = {x = 20, y = button_y + 14, an = 1, w = osc_param.playresx - 50, h = wc_geo.h}
+        lo.geometry = {x = math.max(20, titlebox_left + 4), y = button_y + 14, an = 1, w = osc_param.playresx - 50, h = wc_geo.h}
         lo.group = "top"
         lo.alpha[3] = 0
-        lo.style = string.format("%s{\\clip(%f,%f,%f,%f)}", osc_styles.window_title, titlebox_left, wc_geo.y - wc_geo.h, titlebox_right, wc_geo.y + wc_geo.h)
+        lo.style = string.format("%s{\\clip(%f,%f,%f,%f)}", osc_styles.window_title, titlebox_left, wc_geo.y - wc_geo.h, controlbox_left, wc_geo.y + wc_geo.h)
     end
 
     -- only add top areas and margin if one of the elements is enabled
     if (user_opts.show_window_title or user_opts.window_controls or ontop_active) then
         -- deadzone below window controls
-        local sh_area_y0 = 0
         local sh_area_y1 = wc_geo.y + get_align(1 - (2 * user_opts.deadzonesize), osc_param.playresy - wc_geo.y, 0, 0)
-        add_area("showhide_wc", wc_geo.x, sh_area_y0, wc_geo.w, sh_area_y1)
+        add_area("showhide_wc", wc_geo.x, 0, wc_geo.w, sh_area_y1)
         add_area("window-controls", get_hitbox_coords(controlbox_left, wc_geo.y, wc_geo.an, controlbox_w, wc_geo.h))
-        add_area("window-controls-title", titlebox_left, 0, titlebox_right, wc_geo.h)
+        if ontop_active then add_area("window-controls-ontop", 0, 0, 50, wc_geo.h) end
+        add_area("window-controls-title", titlebox_left, 0, controlbox_left, wc_geo.h)
         -- top bar margins
         osc_param.video_margins.t = wc_geo.h / osc_param.playresy
     end
@@ -3585,6 +3583,7 @@ local function render()
     update_input_area("input", state.osc_visible, "input_enabled", function() mp.enable_key_bindings("input") end)
     update_input_area("window-controls", state.wc_visible, "windowcontrols_buttons", function() mp.enable_key_bindings("window-controls") end)
     update_input_area("window-controls-title", state.wc_visible, "windowcontrols_title", function() mp.enable_key_bindings("window-controls-title", "allow-vo-dragging") end)
+    update_input_area("window-controls-ontop", state.wc_visible, "windowcontrols_ontop", function() mp.enable_key_bindings("window-controls-ontop") end)
 
     -- autohide
     local function run_autohide(showtime_key, hide_fn, input_areas)
@@ -3608,7 +3607,7 @@ local function render()
     end
 
     local osc_areas = {"input"}
-    local wc_areas  = {"window-controls", "window-controls-title"}
+    local wc_areas  = {"window-controls", "window-controls-title", "window-controls-ontop"}
 
     if state.hide_timer then state.hide_timer.timeout = math.huge end
     run_autohide("showtime",    hide_osc, osc_areas)
@@ -3867,6 +3866,12 @@ mp.set_key_bindings({
 }, "window-controls", "force")
 mp.enable_key_bindings("window-controls")
 
+mp.set_key_bindings({
+    {"mbtn_left",           function() process_event("mbtn_left", "up") end,
+                            function() process_event("mbtn_left", "down")  end},
+}, "window-controls-ontop", "force")
+set_virt_mouse_area(0, 0, 0, 0, "window-controls-ontop")
+
 local function always_on(val)
     if state.enabled then
         if val then
@@ -3920,9 +3925,11 @@ local function visibility_mode(mode, no_osd)
     mp.disable_key_bindings("input")
     mp.disable_key_bindings("window-controls")
     mp.disable_key_bindings("window-controls-title")
+    mp.disable_key_bindings("window-controls-ontop")
     state.input_enabled = false
     state.windowcontrols_buttons = false
     state.windowcontrols_title = false
+    state.windowcontrols_ontop = false
 
     update_margins()
     request_tick()
