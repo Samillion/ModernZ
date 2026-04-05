@@ -4056,7 +4056,9 @@ opt.read_options(user_opts, "modernz", function(changed)
         set_tick_delay("display_fps", mp.get_property_number("display_fps"))
     end
     request_tick()
-    visibility_mode(user_opts.visibility, true)
+    if changed.visibility then
+        visibility_mode(user_opts.visibility, true)
+    end
     update_duration_watch()
     request_init()
 end)
