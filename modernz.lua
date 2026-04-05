@@ -2985,13 +2985,20 @@ local function osc_init()
         end
     end
     ne.eventresponder["mbtn_left_down"] = function (element)
+        element.state.mbtnleft = true
         local pos = get_slider_value(element)
         if user_opts.volumebar_unmute_on_click then
             mp.set_property_bool("mute", false)
         end
         mp.commandv("set", "volume", set_volume(pos))
     end
-    ne.eventresponder["reset"] = function (element) element.state.lastseek = nil end
+    ne.eventresponder["mbtn_left_up"] = function (element)
+        element.state.mbtnleft = false
+    end
+    ne.eventresponder["reset"] = function (element)
+        element.state.lastseek = nil
+        element.state.mbtnleft = false
+    end
     bind_buttons("volumebar")
 
     -- zoom out icon
