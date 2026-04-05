@@ -2087,8 +2087,8 @@ layouts["modern"] = function ()
 
     if title_and_chapter_h_with_offset == 0 then
         -- add some top padding if both title and chapter aren't displayed
-        title_and_chapter_h_with_offset = user_opts.osc_height * 0.2
-     end
+        title_and_chapter_h_with_offset = math.max(user_opts.osc_height * 0.2, user_opts.time_codes_offset + user_opts.title_offset + user_opts.time_font_size)
+    end
 
     local osc_geo = {
         w = osc_param.playresx,
@@ -2354,8 +2354,8 @@ layouts["modern-compact"] = function ()
 
     if title_and_chapter_h_with_offset == 0 then
         -- add some top padding if both title and chapter aren't displayed
-        title_and_chapter_h_with_offset = user_opts.osc_height * 0.2
-     end
+        title_and_chapter_h_with_offset = math.max(user_opts.osc_height * 0.2, user_opts.time_codes_offset + user_opts.title_offset + user_opts.time_font_size)
+    end
 
     local osc_geo = {
         w = osc_param.playresx,
