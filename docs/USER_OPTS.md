@@ -53,7 +53,7 @@ Create `modernz.conf` in your mpv script-opts directory:
 | show_title              | yes              | show title in the OSC (above seekbar)                                            |
 | title                   | `${media-title}` | title above seekbar: `"${media-title}"` or `"${filename}"`                       |
 | title_font_size         | 24               | font size of the title text (above seekbar)                                      |
-| chapter_title_font_size | 14               | chapter title font size                                                          |
+| chapter_title_font_size | 16               | chapter title font size                                                          |
 | show_chapter_title      | yes              | show chapter title (above seekbar)                                               |
 | chapter_above_title     | no               | show chapter above title                                                         |
 | chapter_fmt             | %s               | format for chapter display on seekbar hover (set to `"no"` to disable)           |

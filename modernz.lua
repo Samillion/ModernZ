@@ -55,7 +55,7 @@ local user_opts = {
     show_title = true,                     -- show title in the OSC (above seekbar)
     title = "${media-title}",              -- title above seekbar: "${media-title}" or "${filename}"
     title_font_size = 24,                  -- title font size (above seekbar)
-    chapter_title_font_size = 14,          -- chapter title font size
+    chapter_title_font_size = 16,          -- chapter title font size
 
     cache_info = false,                    -- show cached time information
     cache_info_speed = false,              -- show cache speed per second
