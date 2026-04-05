@@ -761,7 +761,10 @@ local function estimate_text_width(text, style)
 
         local bounds = tooltip_osd:update()
         if bounds and bounds.x1 and bounds.x0 then
-            width = bounds.x1 - bounds.x0
+            -- subtract side-bearing padding that libass adds even at bord0
+            local fs = tonumber((style or ""):match("\\fs(%d+%.?%d*)")) or 16
+            local bearing_correction = fs * 0.08 * 2
+            width = math.max(0, (bounds.x1 - bounds.x0) - bearing_correction)
         end
     end
 
@@ -1520,8 +1523,11 @@ local function render_elements(master_ass, osc_vis, wc_vis)
                 element.eventresponder["mbtn_left_down"] ~= nil or
                 element.eventresponder["mbtn_left_up"] ~= nil
             )
-            if mouse_hit(element) and is_clickable and element.enabled then
-                local hx1, hy1, hx2, hy2 = get_element_hitbox(element)
+            local hb = element.hover_box
+            if (hb and mouse_hit_coords(hb.x1, hb.y1, hb.x2, hb.y2) or mouse_hit(element)) and is_clickable and element.enabled then
+                local hx1, hy1, hx2, hy2
+                if hb then hx1, hy1, hx2, hy2 = hb.x1, hb.y1, hb.x2, hb.y2
+                else hx1, hy1, hx2, hy2 = get_element_hitbox(element) end
                 local pad = element.hover_pad ~= nil and element.hover_pad or 6
                 elem_ass:append("{}")
                 elem_ass:new_event()
@@ -1728,7 +1734,8 @@ local function render_elements(master_ass, osc_vis, wc_vis)
 
             -- add tooltip for button elements
             if element.tooltipF ~= nil and element.enabled then
-                if mouse_hit(element) then
+                local hb = element.hover_box
+                if (hb and mouse_hit_coords(hb.x1, hb.y1, hb.x2, hb.y2) or mouse_hit(element)) then
                     local tooltiplabel
 
                     -- tooltip label
@@ -1742,7 +1749,7 @@ local function render_elements(master_ass, osc_vis, wc_vis)
                         tooltiplabel = element.nothingavailable
                     end
 
-                    local tx = (element.hitbox.x1 + element.hitbox.x2) / 2
+                    local tx = hb and (hb.x1 + hb.x2) / 2 or (element.hitbox.x1 + element.hitbox.x2) / 2
                     local seekbar_ref = (state.seekbar_element and state.seekbar_element.hitbox) and state.seekbar_element or element
                     local image_mode_offset = (seekbar_ref == element) and 10 or 0
                     local ty = seekbar_ref.hitbox.y1 - user_opts.tooltip_height_offset - image_mode_offset
@@ -2267,6 +2274,10 @@ layouts["modern"] = function ()
         lo.slider.radius = user_opts.slider_rounded_corners and 2 or 0
         lo.slider.tooltip_an = 2
         start_x = start_x + 75
+        -- vol_ctrl center = bar_start - 20; bar_start = start_x - 75; left edge = center - 12
+        local vc_left = start_x - 107
+        local osc_mid = refY - (user_opts.osc_height / 2)
+        elements["vol_ctrl"].hover_box = vol_vis and {x1 = vc_left, y1 = osc_mid - 12, x2 = vc_left + 87, y2 = osc_mid + 12} or nil
     end
 
     -- time codes
@@ -2510,6 +2521,12 @@ layouts["modern-compact"] = function ()
             lo.slider.radius = user_opts.slider_rounded_corners and 2 or 0
             lo.slider.tooltip_an = 2
             start_x = start_x + 75
+            -- vol_ctrl center = bar_start - 20; bar_start = start_x - 75; left edge = center - 12
+            local vc_left = start_x - 107
+            local osc_mid = refY - (user_opts.osc_height / 2)
+            elements["vol_ctrl"].hover_box = {x1 = vc_left, y1 = osc_mid - 12, x2 = vc_left + 87, y2 = osc_mid + 12}
+        else
+            elements["vol_ctrl"].hover_box = nil
         end
     end
 
@@ -2944,11 +2961,6 @@ local function osc_init()
         if user_opts.volume_control_type ~= "logarithmic" then return state.volume end
         return state.volume and math.sqrt(state.volume * 100) or 0
     end
-    ne.slider.tooltipF = function(pos)
-        if state.audio_track_count <= 0 then return end
-        local volume = set_volume(pos)
-        return locale.volume .. ": " .. volume .. (state.mute and " (" .. locale.muted .. ")" or "")
-    end
     ne.eventresponder["mouse_move"] = function (element)
         local pos = get_slider_value(element)
         local setvol = set_volume(pos)
@@ -2958,13 +2970,20 @@ local function osc_init()
         end
     end
     ne.eventresponder["mbtn_left_down"] = function (element)
+        element.state.mbtnleft = true
         local pos = get_slider_value(element)
         if user_opts.volumebar_unmute_on_click then
             mp.set_property_bool("mute", false)
         end
         mp.commandv("set", "volume", set_volume(pos))
     end
-    ne.eventresponder["reset"] = function (element) element.state.lastseek = nil end
+    ne.eventresponder["mbtn_left_up"] = function (element)
+        element.state.mbtnleft = false
+    end
+    ne.eventresponder["reset"] = function (element)
+        element.state.lastseek = nil
+        element.state.mbtnleft = false
+    end
     bind_buttons("volumebar")
 
     -- zoom out icon
