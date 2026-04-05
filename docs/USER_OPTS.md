@@ -53,8 +53,9 @@ Create `modernz.conf` in your mpv script-opts directory:
 | show_title              | yes              | show title in the OSC (above seekbar)                                            |
 | title                   | `${media-title}` | title above seekbar: `"${media-title}"` or `"${filename}"`                       |
 | title_font_size         | 24               | font size of the title text (above seekbar)                                      |
-| chapter_title_font_size | 14               | chapter title font size                                                          |
+| chapter_title_font_size | 16               | chapter title font size                                                          |
 | show_chapter_title      | yes              | show chapter title (above seekbar)                                               |
+| chapter_above_title     | no               | show chapter above title                                                         |
 | chapter_fmt             | %s               | format for chapter display on seekbar hover (set to `"no"` to disable)           |
 | timecurrent             | yes              | show current time instead of remaining time                                      |
 | timems                  | no               | show timecodes with milliseconds                                                 |
@@ -214,9 +215,10 @@ Useful when adjusting font size or type, this will help you change the affected 
 
 | Option                      | Value | Description                                                            |
 | --------------------------- | ----- | ---------------------------------------------------------------------- |
-| title_offset                | 24    | title vertical offset relative to seekbar                              |
-| title_with_chapter_offset   | 4     | title vertical offset if a chapter title is below it                   |
-| chapter_title_offset        | 20    | chapter title vertical offset relative to seekbar                      |
+| title_offset                | 15    | title vertical offset relative to seekbar                              |
+| title_with_chapter_offset   | 2     | title vertical offset if a chapter title is below it                   |
+| chapter_title_offset        | 15    | chapter title vertical offset relative to seekbar                      |
+| chapter_above_title_offset  | 2     | chapter offset when shown above title                                  |
 | time_codes_offset           | 0     | time codes vertical offset relative to seekbar                         |
 | tooltip_height_offset       | 5     | tooltip height position offset                                         |
 | portrait_window_trigger     | 950   | portrait window width trigger to move some elements                    |
