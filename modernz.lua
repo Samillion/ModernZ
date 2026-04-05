@@ -2305,8 +2305,10 @@ layouts["modern"] = function ()
     )
     if narrow_win then
         -- try to vertically align time codes to the baseline of title/chapter
-        if no_chapter or not chapter_index or user_opts.chapter_above_title then
-                time_codes_y = title_y + ((title_h - user_opts.time_font_size) * 0.25)
+        if not user_opts.show_title and not user_opts.show_chapter_title then
+            time_codes_y = user_opts.time_codes_offset + user_opts.osc_height + user_opts.title_offset
+        elseif no_chapter or not chapter_index or user_opts.chapter_above_title then
+            time_codes_y = title_y + ((title_h - user_opts.time_font_size) * 0.25)
         else
             time_codes_y = chapter_title_y
             if chapter_h ~= user_opts.time_font_size then
@@ -2471,7 +2473,9 @@ layouts["modern-compact"] = function ()
     elements["time_codes"].visible = mp.get_property_number("duration", 0) > 0
     local time_codes_y = user_opts.time_codes_offset
     -- try to vertically align time codes to the baseline of title/chapter
-    if no_chapter or not chapter_index or user_opts.chapter_above_title then
+    if not user_opts.show_title and not user_opts.show_chapter_title then
+        time_codes_y = time_codes_y + user_opts.osc_height + user_opts.title_offset
+    elseif no_chapter or not chapter_index or user_opts.chapter_above_title then
         time_codes_y = time_codes_y + title_y + ((title_h - user_opts.time_font_size) * 0.25)
     else
         time_codes_y = time_codes_y + chapter_title_y
