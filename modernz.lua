@@ -106,6 +106,7 @@ local user_opts = {
     fullscreen_button = true,              -- show fullscreen toggle button
     info_button = true,                    -- show info button
     ontop_button = true,                   -- show window on top button
+    ontop_pin_to_top = false,              -- move ontop button to top bar when ontop is active
     screenshot_button = true,              -- show screenshot button
 
     download_button = true,                -- show download button on web videos (requires yt-dlp and ffmpeg)
@@ -1762,7 +1763,9 @@ local function render_elements(master_ass, osc_vis, wc_vis)
                         tx = math.min(osc_param.playresx - margin - tooltip_width / 2, math.max(margin + tooltip_width / 2, tx))
                     end
 
-                    draw_tooltip(elem_ass, tx, ty, tooltip_width, element.tooltip_style, bidi.fsi .. tooltiplabel .. bidi.pdi)
+                    if tooltiplabel ~= "" then
+                        draw_tooltip(elem_ass, tx, ty, tooltip_width, element.tooltip_style, bidi.fsi .. tooltiplabel .. bidi.pdi)
+                    end
                 end
             end
         end
@@ -1986,14 +1989,16 @@ local function window_controls()
     }
 
     local lo
-    local controlbox_w = window_control_box_width
+    local ontop_active = user_opts.ontop_button and user_opts.ontop_pin_to_top and mp.get_property_bool("ontop")
+    local controlbox_w = (user_opts.window_controls and window_control_box_width or 0) + (ontop_active and 50 or 0)
     local controlbox_left = wc_geo.w - controlbox_w
     local titlebox_left = wc_geo.x
     local titlebox_right = wc_geo.w - controlbox_w
     local button_y = wc_geo.y - (wc_geo.h / 2)
-    local first_geo = {x = controlbox_left + 25, y = button_y, an = 5, w = 50, h = wc_geo.h}
-    local second_geo = {x = controlbox_left + 75, y = button_y, an = 5, w = 49, h = wc_geo.h}
-    local third_geo = {x = controlbox_left + 125, y = button_y, an = 5, w = 50, h = wc_geo.h}
+    local ontop_geo  = {x = controlbox_left + 25, y = button_y, an = 5, w = 49, h = wc_geo.h}
+    local first_geo  = {x = controlbox_left + (ontop_active and 75 or 25),  y = button_y, an = 5, w = 50, h = wc_geo.h}
+    local second_geo = {x = controlbox_left + (ontop_active and 125 or 75), y = button_y, an = 5, w = 49, h = wc_geo.h}
+    local third_geo  = {x = controlbox_left + (ontop_active and 175 or 125), y = button_y, an = 5, w = 50, h = wc_geo.h}
 
     -- Window controls
     if user_opts.window_controls then
@@ -2016,6 +2021,22 @@ local function window_controls()
         wc_button("minimize", first_geo, user_opts.windowcontrols_min_hover) -- Minimize: 🗕
     end
 
+    -- Ontop button in top bar when ontop is active
+    if ontop_active then
+        state.ontop_in_topbar = true
+        elements["ontop"].hover_radius = 0
+        elements["ontop"].hover_pad = 0
+        lo = add_layout("ontop")
+        lo.geometry = ontop_geo
+        lo.style = osc_styles.window_control
+        lo.group = "top"
+        lo.button.hoverstyle = osc_styles.element_hover
+    else
+        state.ontop_in_topbar = false
+        elements["ontop"].hover_radius = nil
+        elements["ontop"].hover_pad = nil
+    end
+
     -- Window Title
     if user_opts.show_window_title then
         lo = add_layout("windowtitle")
@@ -2026,7 +2047,7 @@ local function window_controls()
     end
 
     -- only add top areas and margin if one of the elements is enabled
-    if (user_opts.show_window_title or user_opts.window_controls) then
+    if (user_opts.show_window_title or user_opts.window_controls or ontop_active) then
         -- deadzone below window controls
         local sh_area_y0 = 0
         local sh_area_y1 = wc_geo.y + get_align(1 - (2 * user_opts.deadzonesize), osc_param.playresy - wc_geo.y, 0, 0)
@@ -2157,7 +2178,7 @@ layouts["modern"] = function ()
     local track_nextprev_buttons = user_opts.track_nextprev_buttons
     local fullscreen_button = user_opts.fullscreen_button
     local info_button = user_opts.info_button
-    local ontop_button = user_opts.ontop_button
+    local ontop_button = user_opts.ontop_button and not (user_opts.ontop_pin_to_top and mp.get_property_bool("ontop"))
     local screenshot_button = user_opts.screenshot_button
     local loop_button = user_opts.loop_button
     local shuffle_button = user_opts.shuffle_button
@@ -2544,7 +2565,7 @@ layouts["modern-compact"] = function ()
     end
 
     right_side_button("fullscreen", 250, user_opts.fullscreen_button)
-    right_side_button("ontop", 300, user_opts.ontop_button)
+    right_side_button("ontop", 300, user_opts.ontop_button and not (user_opts.ontop_pin_to_top and mp.get_property_bool("ontop")))
     right_side_button("sub_track", 400, user_opts.subtitles_button and state.sub_track_count > 0)
     right_side_button("audio_track", 500, user_opts.audio_tracks_button and state.audio_track_count > 0)
     right_side_button("playlist", 600, user_opts.playlist_button)
@@ -2594,7 +2615,7 @@ layouts["modern-image"] = function ()
     local track_nextprev_buttons = user_opts.track_nextprev_buttons and state.playlist_count > 1
     local fullscreen_button = user_opts.fullscreen_button
     local info_button = user_opts.info_button
-    local ontop_button = user_opts.ontop_button
+    local ontop_button = user_opts.ontop_button and not (user_opts.ontop_pin_to_top and mp.get_property_bool("ontop"))
     local playlist_button = user_opts.playlist_button and (not user_opts.hide_empty_playlist_button or state.playlist_count > 1)
     local zoom_control = user_opts.zoom_control
 
@@ -3039,7 +3060,10 @@ local function osc_init()
     --ontop
     ne = new_element("ontop", "button")
     ne.content = function () return not state.ontop and icons.ontop_on or icons.ontop_off end
-    ne.tooltipF = function () return user_opts.tooltip_hints and (not state.ontop and locale.ontop or locale.ontop_disable) or "" end
+    ne.tooltipF = function ()
+        if user_opts.ontop_pin_to_top and state.ontop_in_topbar then return "" end
+        return user_opts.tooltip_hints and (not state.ontop and locale.ontop or locale.ontop_disable) or ""
+    end
     ne.eventresponder["mbtn_left_up"] = function ()
         mp.commandv("cycle", "ontop")
         mp.commandv("show-text", mp.get_property_bool("ontop") and locale.ontop or locale.ontop_disable)
@@ -3790,7 +3814,7 @@ mp.observe_property("touch-pos", "native", handle_touch)
 observe_cached("volume", request_tick)
 observe_cached("mute", request_tick)
 observe_cached("eof-reached", request_tick)
-observe_cached("ontop", request_tick)
+observe_cached("ontop", request_init)
 observe_cached("speed", request_tick)
 observe_cached("chapter", request_tick)
 mp.observe_property("paused-for-cache", "bool", function(_, val) state.buffering = val end)
