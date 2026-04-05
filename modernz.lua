@@ -2171,7 +2171,6 @@ layouts["modern"] = function ()
     local offset = jump_buttons and 60 or 0
     local outeroffset = (chapter_skip_buttons and 0 or 100) + (jump_buttons and 0 or 100)
 
-    local time_codes_y = user_opts.time_codes_offset + (user_opts.osc_height / 2)
     local time_codes_width = get_time_codes_width()
     local chapter_title_y, title_y
     if user_opts.chapter_above_title then
@@ -2296,6 +2295,7 @@ layouts["modern"] = function ()
         - (auto_hide_volbar and 67 or 0) -- window width with audio track and elements
         - (audio_track and not user_opts.volume_control and 12 or 0) -- audio track with no elements
         - (not audio_track and 12 or 0) -- remove excess space
+    local time_codes_y = user_opts.time_codes_offset + (user_opts.osc_height / 2)
     local narrow_win = osc_param.playresx < (
         user_opts.portrait_window_trigger
         - outeroffset
@@ -2304,9 +2304,15 @@ layouts["modern"] = function ()
         - (audio_track and 0 or 100)
     )
     if narrow_win then
-        time_codes_y = user_opts.time_codes_offset + user_opts.osc_height
-        -- align time_codes with either chapter or title (if chapter is hidden)
-        time_codes_y = (no_chapter or not chapter_index or user_opts.chapter_above_title) and (time_codes_y + user_opts.title_offset) or (time_codes_y + user_opts.chapter_title_offset)
+        -- try to vertically align time codes to the baseline of title/chapter
+        if no_chapter or not chapter_index or user_opts.chapter_above_title then
+                time_codes_y = title_y + ((title_h - user_opts.time_font_size) * 0.25)
+        else
+            time_codes_y = chapter_title_y
+            if chapter_h ~= user_opts.time_font_size then
+                time_codes_y = time_codes_y - ((user_opts.time_font_size - chapter_h) * 0.25)
+            end
+        end
     end
     elements["time_codes"].visible = mp.get_property_number("duration", 0) > 0
     lo = add_layout("time_codes")
@@ -2463,9 +2469,16 @@ layouts["modern-compact"] = function ()
 
     -- time codes
     elements["time_codes"].visible = mp.get_property_number("duration", 0) > 0
-    local time_codes_y = user_opts.time_codes_offset + user_opts.osc_height
-    -- align time_codes with either chapter or title (if chapter is hidden)
-    time_codes_y = (no_chapter or not chapter_index or user_opts.chapter_above_title) and (time_codes_y + user_opts.title_offset) or (time_codes_y + user_opts.chapter_title_offset)
+    local time_codes_y = user_opts.time_codes_offset
+    -- try to vertically align time codes to the baseline of title/chapter
+    if no_chapter or not chapter_index or user_opts.chapter_above_title then
+        time_codes_y = time_codes_y + title_y + ((title_h - user_opts.time_font_size) * 0.25)
+    else
+        time_codes_y = time_codes_y + chapter_title_y
+        if chapter_h ~= user_opts.time_font_size then
+            time_codes_y = time_codes_y - ((user_opts.time_font_size - chapter_h) * 0.25)
+        end
+    end
     lo = add_layout("time_codes")
     lo.geometry = {x = osc_geo.w - 25, y = refY - time_codes_y, an = 3, w = time_codes_width, h = user_opts.time_font_size}
     lo.layer = 48
