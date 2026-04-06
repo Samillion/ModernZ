@@ -115,6 +115,7 @@ watch-later-options-remove=osd-margin-y
 | download_path              | ~~desktop/mpv | default download directory for videos. [Learn more about setting paths here](https://mpv.io/manual/master/#paths). |
 | screenshot_button          | yes           | show screenshot button                                                                                             |
 | ontop_button               | yes           | show `window on top (pin)` button                                                                                  |
+| ontop_in_topbar            | no            | move ontop button to top bar when ontop is active                                                                  |
 | loop_button                | yes           | show `file loop` button                                                                                            |
 | shuffle_button             | no            | show `shuffle` button                                                                                              |
 | speed_button               | yes           | show speed control button                                                                                          |
