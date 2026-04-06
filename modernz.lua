@@ -2021,8 +2021,6 @@ local function window_controls()
 
     -- ontop button in top bar when ontop is active
     state.ontop_in_topbar = false
-    elements["ontop"].hover_radius = nil
-    elements["ontop"].hover_pad = nil
 
     if ontop_active then
         state.ontop_in_topbar = true
