@@ -731,10 +731,10 @@ local function get_align(align, frame, obj, margin)
     return (frame / 2) + (((frame / 2) - margin - (obj / 2)) * align)
 end
 
-local tooltip_osd = mp.create_osd_overlay and mp.create_osd_overlay("ass-events") or nil
-if tooltip_osd then
-    tooltip_osd.hidden = true
-    tooltip_osd.compute_bounds = true
+local text_measure_osd = mp.create_osd_overlay and mp.create_osd_overlay("ass-events") or nil
+if text_measure_osd then
+    text_measure_osd.hidden = true
+    text_measure_osd.compute_bounds = true
 end
 
 local text_width_cache = {}
@@ -744,22 +744,21 @@ local function estimate_text_width(text, style)
     text = tostring(text)
     if #text == 0 then return 0 end
 
-    -- Replace digits with '0' to ensure width is perfectly stable during playback
+    -- replace digits with '0' for consistency
     local measure_text = text:gsub("%d", "0")
     local cache_key = measure_text .. (style or "")
+    local width = 0
 
     if text_width_cache[cache_key] then
         return text_width_cache[cache_key]
     end
 
-    local width = 0
+    if text_measure_osd and text_measure_osd.update then
+        text_measure_osd.res_x = osc_param.playresx
+        text_measure_osd.res_y = osc_param.playresy
+        text_measure_osd.data = (style or "") .. "{\\an7\\pos(0,0)}" .. measure_text
 
-    if tooltip_osd and tooltip_osd.update then
-        tooltip_osd.res_x = osc_param.playresx
-        tooltip_osd.res_y = osc_param.playresy
-        tooltip_osd.data = (style or "") .. measure_text
-
-        local bounds = tooltip_osd:update()
+        local bounds = text_measure_osd:update()
         if bounds and bounds.x1 and bounds.x0 then
             -- subtract side-bearing padding that libass adds even at bord0
             local fs = tonumber((style or ""):match("\\fs(%d+%.?%d*)")) or 16
@@ -2767,7 +2766,8 @@ local function osc_init()
     state.active_element = nil
     state.playing_and_seeking = false
 
-    -- reset margins
+    -- reset margins and text width
+    text_width_cache = {}
     osc_param.video_margins = {l = 0, r = 0, t = 0, b = 0}
 
     elements = {}
