@@ -106,7 +106,7 @@ local user_opts = {
     fullscreen_button = true,              -- show fullscreen toggle button
     info_button = true,                    -- show info button
     ontop_button = true,                   -- show window on top button
-    ontop_pin_to_top = false,              -- move ontop button to top bar when ontop is active
+    ontop_in_topbar = false,               -- move ontop button to top bar when ontop is active
     screenshot_button = true,              -- show screenshot button
 
     download_button = true,                -- show download button on web videos (requires yt-dlp and ffmpeg)
@@ -1989,7 +1989,7 @@ local function window_controls()
     }
 
     local lo
-    local ontop_active = user_opts.ontop_button and user_opts.ontop_pin_to_top and mp.get_property_bool("ontop")
+    local ontop_active = user_opts.ontop_button and window_controls_enabled() and user_opts.ontop_in_topbar and state.ontop
     local controlbox_w = (user_opts.window_controls and window_control_box_width or 0)
     local controlbox_left = wc_geo.w - controlbox_w
     local titlebox_left = ontop_active and 50 or wc_geo.x
@@ -2019,7 +2019,11 @@ local function window_controls()
         wc_button("minimize", first_geo, user_opts.windowcontrols_min_hover) -- Minimize: 🗕
     end
 
-    -- Ontop button in top bar when ontop is active
+    -- ontop button in top bar when ontop is active
+    state.ontop_in_topbar = false
+    elements["ontop"].hover_radius = nil
+    elements["ontop"].hover_pad = nil
+
     if ontop_active then
         state.ontop_in_topbar = true
         elements["ontop"].hover_radius = 0
@@ -2029,10 +2033,6 @@ local function window_controls()
         lo.style = osc_styles.window_control
         lo.group = "top"
         lo.button.hoverstyle = osc_styles.element_hover
-    else
-        state.ontop_in_topbar = false
-        elements["ontop"].hover_radius = nil
-        elements["ontop"].hover_pad = nil
     end
 
     -- Window Title
@@ -2176,7 +2176,7 @@ layouts["modern"] = function ()
     local track_nextprev_buttons = user_opts.track_nextprev_buttons
     local fullscreen_button = user_opts.fullscreen_button
     local info_button = user_opts.info_button
-    local ontop_button = user_opts.ontop_button and not (user_opts.ontop_pin_to_top and mp.get_property_bool("ontop"))
+    local ontop_button = user_opts.ontop_button and not (window_controls_enabled() and user_opts.ontop_in_topbar and state.ontop)
     local screenshot_button = user_opts.screenshot_button
     local loop_button = user_opts.loop_button
     local shuffle_button = user_opts.shuffle_button
@@ -2563,7 +2563,7 @@ layouts["modern-compact"] = function ()
     end
 
     right_side_button("fullscreen", 250, user_opts.fullscreen_button)
-    right_side_button("ontop", 300, user_opts.ontop_button and not (user_opts.ontop_pin_to_top and mp.get_property_bool("ontop")))
+    right_side_button("ontop", 300, user_opts.ontop_button and not (window_controls_enabled() and user_opts.ontop_in_topbar and state.ontop))
     right_side_button("sub_track", 400, user_opts.subtitles_button and state.sub_track_count > 0)
     right_side_button("audio_track", 500, user_opts.audio_tracks_button and state.audio_track_count > 0)
     right_side_button("playlist", 600, user_opts.playlist_button)
@@ -2613,7 +2613,7 @@ layouts["modern-image"] = function ()
     local track_nextprev_buttons = user_opts.track_nextprev_buttons and state.playlist_count > 1
     local fullscreen_button = user_opts.fullscreen_button
     local info_button = user_opts.info_button
-    local ontop_button = user_opts.ontop_button and not (user_opts.ontop_pin_to_top and mp.get_property_bool("ontop"))
+    local ontop_button = user_opts.ontop_button and not (window_controls_enabled() and user_opts.ontop_in_topbar and state.ontop)
     local playlist_button = user_opts.playlist_button and (not user_opts.hide_empty_playlist_button or state.playlist_count > 1)
     local zoom_control = user_opts.zoom_control
 
@@ -3059,13 +3059,10 @@ local function osc_init()
     ne = new_element("ontop", "button")
     ne.content = function () return not state.ontop and icons.ontop_on or icons.ontop_off end
     ne.tooltipF = function ()
-        if user_opts.ontop_pin_to_top and state.ontop_in_topbar then return "" end
+        if user_opts.ontop_in_topbar and state.ontop_in_topbar then return "" end
         return user_opts.tooltip_hints and (not state.ontop and locale.ontop or locale.ontop_disable) or ""
     end
-    ne.eventresponder["mbtn_left_up"] = function ()
-        mp.commandv("cycle", "ontop")
-        mp.commandv("show-text", mp.get_property_bool("ontop") and locale.ontop or locale.ontop_disable)
-    end
+    ne.eventresponder["mbtn_left_up"] = function () mp.commandv("osd-msg", "cycle", "ontop") end
 
     --screenshot
     ne = new_element("screenshot", "button")
