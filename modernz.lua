@@ -3065,7 +3065,10 @@ local function osc_init()
         if user_opts.ontop_in_topbar and window_controls_enabled() and state.ontop then return nil end
         return user_opts.tooltip_hints and (not state.ontop and locale.ontop or locale.ontop_disable) or nil
     end
-    ne.eventresponder["mbtn_left_up"] = function () mp.commandv("osd-msg", "cycle", "ontop") end
+    ne.eventresponder["mbtn_left_up"] = function ()
+        mp.commandv("no-osd", "cycle", "ontop")
+        mp.commandv("show-text", state.ontop and locale.ontop_disable or locale.ontop)
+    end
 
     --screenshot
     ne = new_element("screenshot", "button")
