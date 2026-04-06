@@ -588,6 +588,7 @@ local state = {
     showhide_enabled = false,
     windowcontrols_buttons = false,
     windowcontrols_title = false,
+    windowcontrols_ontop = false,
     ontop_in_topbar = false,
     dmx_cache = 0,
     border = true,
@@ -606,7 +607,6 @@ local state = {
     ontop = false,
     speed = 1,
     file_loop = false,
-    playlist_loop = false,
     shuffled = false,
     sliderpos = 0,
     playtime_hour_force_init = false,       -- used to force request_init() once
@@ -1324,7 +1324,7 @@ local function draw_seekbar_ranges(element, elem_ass, xp, rh, override_alpha, in
     elem_ass:append("{\\1c&H" .. osc_color_convert(user_opts.seekbar_cache_color) .. "&}")
     elem_ass:merge(element.static_ass)
 
-    local radius = slider_lo.radius or 0
+    local radius = slider_lo.radius
     local gap_half = 1.5
     local cuts = {}
     if slider_lo.nibbles_style == "gap" and element.name == "seekbar" and element.slider.markerF then
@@ -1379,7 +1379,7 @@ local function draw_seekbar_nibbles(element, elem_ass)
     end
 
     if slider_lo.nibbles_style == "gap" and element.name == "seekbar" then
-        local radius = slider_lo.radius > 0 and slider_lo.radius or 0
+        local radius = slider_lo.radius
         local bg_alpha = elements["seekbarbg"] and elements["seekbarbg"].layout.alpha[1] or 128
         elem_ass:draw_stop()
         elem_ass:merge(element.style_ass)
@@ -1471,7 +1471,7 @@ local function draw_seekbar_progress(element, elem_ass)
     local xp = get_slider_ele_pos_for(element, pos)
     local slider_lo = element.layout.slider
     local elem_geo = element.layout.geometry
-    local radius = slider_lo.radius > 0 and slider_lo.radius or 0
+    local radius = slider_lo.radius
 
     if slider_lo.nibbles_style == "gap" and element.name == "seekbar" then
         draw_gap_segments(elem_ass, element, 1.5, xp, slider_lo, elem_geo, radius)
@@ -1881,7 +1881,7 @@ local function exec(args, callback)
         capture_stdout = true,
         capture_stderr = true
     }, callback)
-    return ret and ret.status or nil
+    return ret and ret.status
 end
 
 local function check_path_url()
@@ -2022,8 +2022,8 @@ local function window_controls()
     end
 
     -- ontop button in top bar when ontop is active
+    state.ontop_in_topbar = ontop_active
     if ontop_active then
-        state.ontop_in_topbar = true
         elements["ontop"].visible = osc_param.playresx >= controlbox_w + 35
         elements["ontop"].hover_radius = 0
         elements["ontop"].hover_pad = 0
@@ -2832,21 +2832,19 @@ local function osc_init()
     ne.content = (state.window_maximized or state.fullscreen) and icons.window.unmaximize or icons.window.maximize
     ne.eventresponder["mbtn_left_up"] = function () mp.commandv("cycle", (state.fullscreen and "fullscreen" or "window-maximized")) end
 
-    -- Window Title
-    ne = new_element("windowtitle", "button")
-    ne.content = function ()
-        local title = mp.command_native({"expand-text", mp.get_property("title")})
+    local function make_escaped_title(source)
+        local title = mp.command_native({"expand-text", source})
         title = title:gsub("\n", " ")
         return title ~= "" and mp.command_native({"escape-ass", title}) or "mpv"
     end
 
+    -- Window Title
+    ne = new_element("windowtitle", "button")
+    ne.content = function () return make_escaped_title(mp.get_property("title")) end
+
     -- OSC title
     ne = new_element("title", "button")
-    ne.content = function ()
-        local title = mp.command_native({"expand-text", user_opts.title})
-        title = title:gsub("\n", " ")
-        return title ~= "" and mp.command_native({"escape-ass", title}) or "mpv"
-    end
+    ne.content = function () return make_escaped_title(user_opts.title) end
     bind_buttons("title")
 
     -- Chapter title (above seekbar)
@@ -2931,7 +2929,7 @@ local function osc_init()
     ne.enabled = have_pl or not user_opts.hide_empty_playlist_button
     ne.off = not have_pl and user_opts.gray_empty_playlist_button
     ne.content = icons.playlist
-    ne.tooltipF = user_opts.tooltip_hints and (have_pl and locale.playlist .. " [" .. pl_pos .. "/" .. pl_count .. "]" or locale.playlist .. " / " .. locale.menu) or ""
+    ne.tooltipF = user_opts.tooltip_hints and (have_pl and locale.playlist .. " [" .. pl_pos .. "/" .. pl_count .. "]" or locale.playlist .. " / " .. locale.menu) or nil
     ne.nothingavailable = locale.no_playlist
     bind_buttons("playlist")
 
@@ -2964,11 +2962,11 @@ local function osc_init()
     ne.enabled = state.audio_track_count > 0
     ne.off = state.audio_track_count == 0
     ne.content = function ()
-        local volume = state.volume or 0
+        local volume = state.volume
         return state.mute and icons.volume_mute or (volume >= 75 and icons.volume_high) or (volume >= 25 and icons.volume_low) or icons.volume_quiet
     end
     ne.tooltipF = function ()
-        local volume = state.volume or 0
+        local volume = state.volume
         -- show only one decimal, if decimals exist
         volume = volume % 1 == 0 and string.format("%.0f", volume) or string.format("%.1f", volume)
         return locale.volume .. ": " .. volume .. (state.mute and " (" .. locale.muted .. ")" or "")
@@ -3015,7 +3013,7 @@ local function osc_init()
     -- zoom out icon
     ne = new_element("zoom_out_icon", "button")
     ne.content = icons.zoom_out
-    ne.tooltipF = user_opts.tooltip_hints and locale.zoom_out or ""
+    ne.tooltipF = user_opts.tooltip_hints and locale.zoom_out or nil
     ne.eventresponder["mbtn_left_up"] = function () mp.commandv("osd-msg", "set", "video-zoom", math.max(user_opts.zoom_out_min, mp.get_property_number("video-zoom", 0) - 0.05)) end
     ne.eventresponder["mbtn_right_up"] = function () mp.commandv("osd-msg", "set", "video-zoom", 0) end
     ne.eventresponder["wheel_up_press"] = function () mp.commandv("osd-msg", "set", "video-zoom", math.min(user_opts.zoom_in_max, mp.get_property_number("video-zoom", 0) + 0.05)) end
@@ -3044,7 +3042,7 @@ local function osc_init()
     -- zoom in icon
     ne = new_element("zoom_in_icon", "button")
     ne.content = icons.zoom_in
-    ne.tooltipF = user_opts.tooltip_hints and locale.zoom_in or ""
+    ne.tooltipF = user_opts.tooltip_hints and locale.zoom_in or nil
     ne.eventresponder["mbtn_left_up"] = function () mp.commandv("osd-msg", "set", "video-zoom", math.min(user_opts.zoom_in_max, mp.get_property_number("video-zoom", 0) + 0.05)) end
     ne.eventresponder["mbtn_right_up"] = function () mp.commandv("osd-msg", "set", "video-zoom", 0) end
     ne.eventresponder["wheel_up_press"] = function () mp.commandv("osd-msg", "set", "video-zoom", math.min(user_opts.zoom_in_max, mp.get_property_number("video-zoom", 0) + 0.05)) end
@@ -3053,13 +3051,13 @@ local function osc_init()
     --fullscreen
     ne = new_element("fullscreen", "button")
     ne.content = function () return state.fullscreen and icons.fullscreen_exit or icons.fullscreen end
-    ne.tooltipF = user_opts.tooltip_hints and (state.fullscreen and locale.fullscreen_exit or locale.fullscreen) or ""
+    ne.tooltipF = user_opts.tooltip_hints and (state.fullscreen and locale.fullscreen_exit or locale.fullscreen) or nil
     bind_buttons("fullscreen")
 
     --info
     ne = new_element("info", "button")
     ne.content = icons.info
-    ne.tooltipF = user_opts.tooltip_hints and locale.stats_info or ""
+    ne.tooltipF = user_opts.tooltip_hints and locale.stats_info or nil
     bind_buttons("info")
 
     --ontop
@@ -3074,7 +3072,7 @@ local function osc_init()
     --screenshot
     ne = new_element("screenshot", "button")
     ne.content = icons.screenshot
-    ne.tooltipF = user_opts.tooltip_hints and locale.screenshot or ""
+    ne.tooltipF = user_opts.tooltip_hints and locale.screenshot or nil
     bind_buttons("screenshot")
 
     --file_loop
@@ -3100,13 +3098,13 @@ local function osc_init()
     --speed
     ne = new_element("speed", "button")
     ne.content = function()
-        local speed = state.speed or 1
+        local speed = state.speed
         return string.format(speed % 1 == 0 and "%.1f×" or "%g×", speed)
     end
-    ne.tooltipF = user_opts.tooltip_hints and locale.speed_control or ""
+    ne.tooltipF = user_opts.tooltip_hints and locale.speed_control or nil
 
     local function adjust_speed(delta)
-        local new_speed = (state.speed or 1) + delta
+        local new_speed = state.speed + delta
         mp.commandv("set", "speed", math.max(0.25, math.min(100, new_speed)))
     end
 
