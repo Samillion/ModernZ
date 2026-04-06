@@ -334,7 +334,7 @@ local function build_icons(theme_name, style)
         subtitle     = o("subtitles"),
         playlist     = o("playlist_play"),
         menu         = o("more_vert"),
-        volume_mute  = o("volume_off"),
+        volume_mute  = o("no_sound"),
         volume_quiet = o("volume_mute"),
         volume_low   = o("volume_down"),
         volume_high  = o("volume_up"),
