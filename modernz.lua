@@ -2084,18 +2084,9 @@ end
 
 -- Default layout
 layouts["modern"] = function ()
-    local no_title =
-        ((user_opts.title_mbtn_left_command == "" or user_opts.title_mbtn_left_command == "ignore") and
-        (user_opts.title_mbtn_right_command == "" or user_opts.title_mbtn_right_command == "ignore")) or
-        not user_opts.show_title
-
-    local no_chapter =
-        ((user_opts.chapter_title_mbtn_left_command == "" or user_opts.chapter_title_mbtn_left_command == "ignore") and
-        (user_opts.chapter_title_mbtn_right_command == "" or user_opts.chapter_title_mbtn_right_command == "ignore")) or
-        not user_opts.show_chapter_title
-
+    local no_title = not user_opts.show_title
+    local no_chapter = not user_opts.show_chapter_title
     local chapter_index = user_opts.show_chapter_title and (state.chapter or -1) >= 0
-
     local chapter_h = (no_chapter or not chapter_index) and 0 or user_opts.chapter_title_font_size
     local chapter_offset = (no_chapter or not chapter_index) and 0 or user_opts.chapter_title_offset
     chapter_offset = user_opts.chapter_above_title and user_opts.chapter_above_title_offset or chapter_offset
@@ -2361,17 +2352,8 @@ end
 
 layouts["modern-compact"] = function ()
     local chapter_index = (state.chapter or -1) >= 0
-
-    local no_title =
-        ((user_opts.title_mbtn_left_command == "" or user_opts.title_mbtn_left_command == "ignore") and
-        (user_opts.title_mbtn_right_command == "" or user_opts.title_mbtn_right_command == "ignore")) or
-        not user_opts.show_title
-
-    local no_chapter =
-        ((user_opts.chapter_title_mbtn_left_command == "" or user_opts.chapter_title_mbtn_left_command == "ignore") and
-        (user_opts.chapter_title_mbtn_right_command == "" or user_opts.chapter_title_mbtn_right_command == "ignore")) or
-        not user_opts.show_chapter_title
-
+    local no_title = not user_opts.show_title
+    local no_chapter = not user_opts.show_chapter_title
     local chapter_h = (no_chapter or not chapter_index) and 0 or user_opts.chapter_title_font_size
     local chapter_offset = (no_chapter or not chapter_index) and 0 or user_opts.chapter_title_offset
     chapter_offset = user_opts.chapter_above_title and user_opts.chapter_above_title_offset or chapter_offset
