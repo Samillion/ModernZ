@@ -107,6 +107,7 @@ local user_opts = {
     fullscreen_button = true,              -- show fullscreen toggle button
     info_button = true,                    -- show info button
     ontop_button = true,                   -- show window on top button
+    ontop_in_topbar = false,               -- move ontop button to top bar when ontop is active
     screenshot_button = true,              -- show screenshot button
 
     download_button = true,                -- show download button on web videos (requires yt-dlp and ffmpeg)
@@ -587,6 +588,7 @@ local state = {
     showhide_enabled = false,
     windowcontrols_buttons = false,
     windowcontrols_title = false,
+    ontop_in_topbar = false,
     dmx_cache = 0,
     border = true,
     window_maximized = false,
@@ -1763,7 +1765,9 @@ local function render_elements(master_ass, osc_vis, wc_vis)
                         tx = math.min(osc_param.playresx - margin - tooltip_width / 2, math.max(margin + tooltip_width / 2, tx))
                     end
 
-                    draw_tooltip(elem_ass, tx, ty, tooltip_width, element.tooltip_style, bidi.fsi .. tooltiplabel .. bidi.pdi)
+                    if tooltiplabel ~= "" then
+                        draw_tooltip(elem_ass, tx, ty, tooltip_width, element.tooltip_style, bidi.fsi .. tooltiplabel .. bidi.pdi)
+                    end
                 end
             end
         end
@@ -1987,14 +1991,14 @@ local function window_controls()
     }
 
     local lo
-    local controlbox_w = window_control_box_width
+    local ontop_active = user_opts.ontop_button and window_controls_enabled() and user_opts.ontop_in_topbar and state.ontop
+    local controlbox_w = (user_opts.window_controls and window_control_box_width or 0)
     local controlbox_left = wc_geo.w - controlbox_w
-    local titlebox_left = wc_geo.x
-    local titlebox_right = wc_geo.w - controlbox_w
+    local titlebox_left = ontop_active and 50 or wc_geo.x
     local button_y = wc_geo.y - (wc_geo.h / 2)
-    local first_geo = {x = controlbox_left + 25, y = button_y, an = 5, w = 50, h = wc_geo.h}
+    local first_geo  = {x = controlbox_left + 25,  y = button_y, an = 5, w = 50, h = wc_geo.h}
     local second_geo = {x = controlbox_left + 75, y = button_y, an = 5, w = 49, h = wc_geo.h}
-    local third_geo = {x = controlbox_left + 125, y = button_y, an = 5, w = 50, h = wc_geo.h}
+    local third_geo  = {x = controlbox_left + 125, y = button_y, an = 5, w = 50, h = wc_geo.h}
 
     -- Window controls
     if user_opts.window_controls then
@@ -2017,23 +2021,36 @@ local function window_controls()
         wc_button("minimize", first_geo, user_opts.windowcontrols_min_hover) -- Minimize: 🗕
     end
 
+    -- ontop button in top bar when ontop is active
+    if ontop_active then
+        state.ontop_in_topbar = true
+        elements["ontop"].visible = osc_param.playresx >= controlbox_w + 35
+        elements["ontop"].hover_radius = 0
+        elements["ontop"].hover_pad = 0
+        lo = add_layout("ontop")
+        lo.geometry = {x = 25, y = button_y, an = 5, w = 50, h = wc_geo.h}
+        lo.style = osc_styles.window_control
+        lo.group = "top"
+        lo.button.hoverstyle = osc_styles.element_hover
+    end
+
     -- Window Title
     if user_opts.show_window_title then
         lo = add_layout("windowtitle")
-        lo.geometry = {x = 20, y = button_y + 14, an = 1, w = osc_param.playresx - 50, h = wc_geo.h}
+        lo.geometry = {x = math.max(20, titlebox_left + 4), y = button_y + 14, an = 1, w = osc_param.playresx - 50, h = wc_geo.h}
         lo.group = "top"
         lo.alpha[3] = 0
-        lo.style = string.format("%s{\\clip(%f,%f,%f,%f)}", osc_styles.window_title, titlebox_left, wc_geo.y - wc_geo.h, titlebox_right, wc_geo.y + wc_geo.h)
+        lo.style = string.format("%s{\\clip(%f,%f,%f,%f)}", osc_styles.window_title, titlebox_left, wc_geo.y - wc_geo.h, controlbox_left, wc_geo.y + wc_geo.h)
     end
 
     -- only add top areas and margin if one of the elements is enabled
-    if (user_opts.show_window_title or user_opts.window_controls) then
+    if (user_opts.show_window_title or user_opts.window_controls or ontop_active) then
         -- deadzone below window controls
-        local sh_area_y0 = 0
         local sh_area_y1 = wc_geo.y + get_align(1 - (2 * user_opts.deadzonesize), osc_param.playresy - wc_geo.y, 0, 0)
-        add_area("showhide_wc", wc_geo.x, sh_area_y0, wc_geo.w, sh_area_y1)
+        add_area("showhide_wc", wc_geo.x, 0, wc_geo.w, sh_area_y1)
         add_area("window-controls", get_hitbox_coords(controlbox_left, wc_geo.y, wc_geo.an, controlbox_w, wc_geo.h))
-        add_area("window-controls-title", titlebox_left, 0, titlebox_right, wc_geo.h)
+        if ontop_active then add_area("window-controls-ontop", 0, 0, 50, wc_geo.h) end
+        add_area("window-controls-title", titlebox_left, 0, controlbox_left, wc_geo.h)
         -- top bar margins
         osc_param.video_margins.t = wc_geo.h / osc_param.playresy
     end
@@ -2159,7 +2176,7 @@ layouts["modern"] = function ()
     local track_nextprev_buttons = user_opts.track_nextprev_buttons
     local fullscreen_button = user_opts.fullscreen_button
     local info_button = user_opts.info_button
-    local ontop_button = user_opts.ontop_button
+    local ontop_button = user_opts.ontop_button and not (window_controls_enabled() and user_opts.ontop_in_topbar and state.ontop)
     local screenshot_button = user_opts.screenshot_button
     local loop_button = user_opts.loop_button
     local shuffle_button = user_opts.shuffle_button
@@ -2579,7 +2596,7 @@ layouts["modern-compact"] = function ()
     end
 
     right_side_button("fullscreen", 250, user_opts.fullscreen_button)
-    right_side_button("ontop", 300, user_opts.ontop_button)
+    right_side_button("ontop", 300, user_opts.ontop_button and not (window_controls_enabled() and user_opts.ontop_in_topbar and state.ontop))
     right_side_button("sub_track", 400, user_opts.subtitles_button and state.sub_track_count > 0)
     right_side_button("audio_track", 500, user_opts.audio_tracks_button and state.audio_track_count > 0)
     right_side_button("playlist", 600, user_opts.playlist_button)
@@ -2629,7 +2646,7 @@ layouts["modern-image"] = function ()
     local track_nextprev_buttons = user_opts.track_nextprev_buttons and state.playlist_count > 1
     local fullscreen_button = user_opts.fullscreen_button
     local info_button = user_opts.info_button
-    local ontop_button = user_opts.ontop_button
+    local ontop_button = user_opts.ontop_button and not (window_controls_enabled() and user_opts.ontop_in_topbar and state.ontop)
     local playlist_button = user_opts.playlist_button and (not user_opts.hide_empty_playlist_button or state.playlist_count > 1)
     local zoom_control = user_opts.zoom_control
 
@@ -3075,11 +3092,11 @@ local function osc_init()
     --ontop
     ne = new_element("ontop", "button")
     ne.content = function () return not state.ontop and icons.ontop_on or icons.ontop_off end
-    ne.tooltipF = function () return user_opts.tooltip_hints and (not state.ontop and locale.ontop or locale.ontop_disable) or "" end
-    ne.eventresponder["mbtn_left_up"] = function ()
-        mp.commandv("cycle", "ontop")
-        mp.commandv("show-text", mp.get_property_bool("ontop") and locale.ontop or locale.ontop_disable)
+    ne.tooltipF = function ()
+        if user_opts.ontop_in_topbar and state.ontop_in_topbar then return "" end
+        return user_opts.tooltip_hints and (not state.ontop and locale.ontop or locale.ontop_disable) or ""
     end
+    ne.eventresponder["mbtn_left_up"] = function () mp.commandv("osd-msg", "cycle", "ontop") end
 
     --screenshot
     ne = new_element("screenshot", "button")
@@ -3597,6 +3614,7 @@ local function render()
     update_input_area("input", state.osc_visible, "input_enabled", function() mp.enable_key_bindings("input") end)
     update_input_area("window-controls", state.wc_visible, "windowcontrols_buttons", function() mp.enable_key_bindings("window-controls") end)
     update_input_area("window-controls-title", state.wc_visible, "windowcontrols_title", function() mp.enable_key_bindings("window-controls-title", "allow-vo-dragging") end)
+    update_input_area("window-controls-ontop", state.wc_visible, "windowcontrols_ontop", function() mp.enable_key_bindings("window-controls-ontop") end)
 
     -- autohide
     local function run_autohide(showtime_key, hide_fn, input_areas)
@@ -3620,7 +3638,7 @@ local function render()
     end
 
     local osc_areas = {"input"}
-    local wc_areas  = {"window-controls", "window-controls-title"}
+    local wc_areas  = {"window-controls", "window-controls-title", "window-controls-ontop"}
 
     if state.hide_timer then state.hide_timer.timeout = math.huge end
     run_autohide("showtime",    hide_osc, osc_areas)
@@ -3826,7 +3844,7 @@ mp.observe_property("touch-pos", "native", handle_touch)
 observe_cached("volume", request_tick)
 observe_cached("mute", request_tick)
 observe_cached("eof-reached", request_tick)
-observe_cached("ontop", request_tick)
+observe_cached("ontop", request_init)
 observe_cached("speed", request_tick)
 observe_cached("chapter", request_tick)
 mp.observe_property("paused-for-cache", "bool", function(_, val) state.buffering = val end)
@@ -3878,6 +3896,12 @@ mp.set_key_bindings({
                             function() process_event("mbtn_left", "down")  end},
 }, "window-controls", "force")
 mp.enable_key_bindings("window-controls")
+
+mp.set_key_bindings({
+    {"mbtn_left",           function() process_event("mbtn_left", "up") end,
+                            function() process_event("mbtn_left", "down")  end},
+}, "window-controls-ontop", "force")
+set_virt_mouse_area(0, 0, 0, 0, "window-controls-ontop")
 
 local function always_on(val)
     if state.enabled then
@@ -3932,9 +3956,11 @@ local function visibility_mode(mode, no_osd)
     mp.disable_key_bindings("input")
     mp.disable_key_bindings("window-controls")
     mp.disable_key_bindings("window-controls-title")
+    mp.disable_key_bindings("window-controls-ontop")
     state.input_enabled = false
     state.windowcontrols_buttons = false
     state.windowcontrols_title = false
+    state.windowcontrols_ontop = false
 
     update_margins()
     request_tick()
