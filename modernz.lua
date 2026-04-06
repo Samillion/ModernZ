@@ -589,7 +589,6 @@ local state = {
     windowcontrols_buttons = false,
     windowcontrols_title = false,
     windowcontrols_ontop = false,
-    ontop_in_topbar = false,
     dmx_cache = 0,
     border = true,
     window_maximized = false,
@@ -1765,7 +1764,7 @@ local function render_elements(master_ass, osc_vis, wc_vis)
                         tx = math.min(osc_param.playresx - margin - tooltip_width / 2, math.max(margin + tooltip_width / 2, tx))
                     end
 
-                    if tooltiplabel ~= "" then
+                    if tooltiplabel then
                         draw_tooltip(elem_ass, tx, ty, tooltip_width, element.tooltip_style, bidi.fsi .. tooltiplabel .. bidi.pdi)
                     end
                 end
@@ -2022,7 +2021,6 @@ local function window_controls()
     end
 
     -- ontop button in top bar when ontop is active
-    state.ontop_in_topbar = ontop_active
     if ontop_active then
         elements["ontop"].visible = osc_param.playresx >= controlbox_w + 35
         elements["ontop"].hover_radius = 0
@@ -2940,7 +2938,7 @@ local function osc_init()
     ne.content = icons.audio
     ne.tooltipF = function ()
         local prop = mp.get_property("current-tracks/audio/title") or mp.get_property("current-tracks/audio/lang") or locale.na
-        return (user_opts.tooltip_hints and (locale.audio .. " [" .. mp.get_property_number("aid", "-") .. "/" .. state.audio_track_count .. "] [" .. prop .. "]") or "")
+        return (user_opts.tooltip_hints and (locale.audio .. " [" .. mp.get_property_number("aid", "-") .. "/" .. state.audio_track_count .. "] [" .. prop .. "]") or nil)
     end
     ne.nothingavailable = locale.no_audio
     bind_buttons("audio_track")
@@ -2952,7 +2950,7 @@ local function osc_init()
     ne.content = icons.subtitle
     ne.tooltipF = function ()
         local prop = mp.get_property("current-tracks/sub/title") or mp.get_property("current-tracks/sub/lang") or locale.na
-        return (user_opts.tooltip_hints and (locale.subtitle .. " [" .. mp.get_property_number("sid", "-") .. "/" .. state.sub_track_count .. "] [" .. prop .. "]") or "")
+        return (user_opts.tooltip_hints and (locale.subtitle .. " [" .. mp.get_property_number("sid", "-") .. "/" .. state.sub_track_count .. "] [" .. prop .. "]") or nil)
     end
     ne.nothingavailable = locale.no_subs
     bind_buttons("sub_track")
@@ -3064,8 +3062,8 @@ local function osc_init()
     ne = new_element("ontop", "button")
     ne.content = function () return not state.ontop and icons.ontop_on or icons.ontop_off end
     ne.tooltipF = function ()
-        if user_opts.ontop_in_topbar and state.ontop_in_topbar then return "" end
-        return user_opts.tooltip_hints and (not state.ontop and locale.ontop or locale.ontop_disable) or ""
+        if user_opts.ontop_in_topbar and window_controls_enabled() and state.ontop then return nil end
+        return user_opts.tooltip_hints and (not state.ontop and locale.ontop or locale.ontop_disable) or nil
     end
     ne.eventresponder["mbtn_left_up"] = function () mp.commandv("osd-msg", "cycle", "ontop") end
 
@@ -3078,7 +3076,7 @@ local function osc_init()
     --file_loop
     ne = new_element("file_loop", "button")
     ne.content = function() return state.file_loop and icons.loop_on or icons.loop_off end
-    ne.tooltipF = function() return user_opts.tooltip_hints and (state.file_loop and locale.file_loop_enable or locale.file_loop_disable) or "" end
+    ne.tooltipF = function() return user_opts.tooltip_hints and (state.file_loop and locale.file_loop_enable or locale.file_loop_disable) or nil end
     ne.eventresponder["mbtn_left_up"] = function ()
         mp.commandv("show-text", state.file_loop and locale.file_loop_disable or locale.file_loop_enable)
         state.file_loop = not state.file_loop
@@ -3088,7 +3086,7 @@ local function osc_init()
     --shuffle
     ne = new_element("shuffle", "button")
     ne.content = function() return state.shuffled and icons.shuffle_on or icons.shuffle_off end
-    ne.tooltipF = function() return user_opts.tooltip_hints and (state.shuffled and locale.shuffle or locale.unshuffle) or "" end
+    ne.tooltipF = function() return user_opts.tooltip_hints and (state.shuffled and locale.shuffle or locale.unshuffle) or nil end
     ne.eventresponder["mbtn_left_up"] = function()
         mp.commandv("show-text", state.shuffled and locale.unshuffle or locale.shuffle)
         state.shuffled = not state.shuffled
@@ -3161,7 +3159,7 @@ local function osc_init()
         local cache_info_speed = string.format("%8s %4s/s", (number or 0), (unit or "B"))
         return user_opts.cache_info_speed and cache_info .. "\\N" .. cache_info_speed or cache_info
     end
-    ne.tooltipF = function() return (user_opts.tooltip_hints and cache_enabled()) and locale.cache or "" end
+    ne.tooltipF = function() return (user_opts.tooltip_hints and cache_enabled()) and locale.cache or nil end
     ne.eventresponder["mbtn_left_up"] = function() mp.command("script-binding stats/display-page-3") end
 
     --seekbar
