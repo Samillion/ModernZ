@@ -586,6 +586,7 @@ local state = {
     showhide_enabled = false,
     windowcontrols_buttons = false,
     windowcontrols_title = false,
+    ontop_in_topbar = false,
     dmx_cache = 0,
     border = true,
     window_maximized = false,
@@ -2020,8 +2021,6 @@ local function window_controls()
     end
 
     -- ontop button in top bar when ontop is active
-    state.ontop_in_topbar = false
-
     if ontop_active then
         state.ontop_in_topbar = true
         elements["ontop"].visible = osc_param.playresx >= controlbox_w + 35
