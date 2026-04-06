@@ -2766,7 +2766,8 @@ local function osc_init()
     state.active_element = nil
     state.playing_and_seeking = false
 
-    -- reset margins
+    -- reset margins and text width
+    text_width_cache = {}
     osc_param.video_margins = {l = 0, r = 0, t = 0, b = 0}
 
     elements = {}
