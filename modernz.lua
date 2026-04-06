@@ -2171,21 +2171,12 @@ layouts["modern"] = function ()
 
     local audio_track = state.audio_track_count > 0
     local subtitle_track = state.sub_track_count > 0
-    local jump_buttons = user_opts.jump_buttons
     local chapter_skip_buttons = user_opts.chapter_skip_buttons and type(state.chapter_list) == "table" and next(state.chapter_list)
-    local track_nextprev_buttons = user_opts.track_nextprev_buttons
-    local fullscreen_button = user_opts.fullscreen_button
-    local info_button = user_opts.info_button
     local ontop_button = user_opts.ontop_button and not (window_controls_enabled() and user_opts.ontop_in_topbar and state.ontop)
-    local screenshot_button = user_opts.screenshot_button
-    local loop_button = user_opts.loop_button
-    local shuffle_button = user_opts.shuffle_button
-    local speed_button = user_opts.speed_button
-    local download_button = user_opts.download_button and state.is_URL
     local playlist_button = user_opts.playlist_button and (not user_opts.hide_empty_playlist_button or state.playlist_count > 1)
 
-    local offset = jump_buttons and 60 or 0
-    local outeroffset = (chapter_skip_buttons and 0 or 100) + (jump_buttons and 0 or 100)
+    local offset = user_opts.jump_buttons and 60 or 0
+    local outeroffset = (chapter_skip_buttons and 0 or 100) + (user_opts.jump_buttons and 0 or 100)
 
     local time_codes_width = get_time_codes_width()
     local chapter_title_y, title_y
@@ -2198,27 +2189,29 @@ layouts["modern"] = function ()
     end
 
     -- osc title
+    local title_w = (no_chapter or not chapter_index or user_opts.chapter_above_title) and (osc_geo.w - 60 - time_codes_width) or (osc_geo.w - 50)
+    if title_w < 0 then title_w = 0 end
     elements["title"].visible = not no_title
-    geo = {x = 25, y = refY - title_y, an = 1, w = osc_geo.w - time_codes_width - 50, h = user_opts.title_font_size}
+    geo = {x = 25, y = refY - title_y, an = 1, w = title_w, h = user_opts.title_font_size}
     lo = add_layout("title")
     lo.geometry = geo
     lo.layer = 48
     lo.alpha[3] = 0
-    lo.style = string.format("%s{\\clip(0,%f,%f,%f)}", osc_styles.title, geo.y - geo.h, geo.x + geo.w, geo.y + geo.h)
+    lo.style = string.format("%s{\\clip(%f,%f,%f,%f)}", osc_styles.title, geo.x, geo.y - geo.h, geo.x + geo.w, geo.y + geo.h)
 
     -- chapter title
     if user_opts.show_chapter_title then
         elements["chapter_title"].visible = not no_chapter and chapter_index
+        geo = {x = 26, y = refY - chapter_title_y, an = 1, w = osc_geo.w - time_codes_width - 60, h = user_opts.chapter_title_font_size}
         lo = add_layout("chapter_title")
-        geo = {x = 26, y = refY - chapter_title_y, an = 1, w = osc_geo.w - time_codes_width - 50, h = user_opts.chapter_title_font_size}
         lo.geometry = geo
         lo.layer = 48
         lo.alpha[3] = 0
-        lo.style = string.format("%s{\\clip(0,%f,%f,%f)}", osc_styles.chapter_title, geo.y - geo.h, geo.x + geo.w, geo.y + geo.h)
+        lo.style = string.format("%s{\\clip(%f,%f,%f,%f)}", osc_styles.chapter_title, geo.x, geo.y - geo.h, geo.x + geo.w, geo.y + geo.h)
     end
 
     -- buttons
-    if track_nextprev_buttons then
+    if user_opts.track_nextprev_buttons then
         elements["playlist_prev"].visible = (state.playlist_count > 1 or contains(user_opts.buttons_always_active, "playlist_prev")) and (osc_param.playresx >= 500 - outeroffset)
         lo = add_layout("playlist_prev")
         lo.geometry = {x = refX - (60 + (chapter_skip_buttons and 60 or 0)) - offset, y = refY - (user_opts.osc_height / 2), an = 5, w = 30, h = 24}
@@ -2232,7 +2225,7 @@ layouts["modern"] = function ()
         lo.style = osc_styles.control_2
     end
 
-    if jump_buttons then
+    if user_opts.jump_buttons then
         lo = add_layout("jump_backward")
         lo.geometry = {x = refX - 60, y = refY - (user_opts.osc_height / 2), an = 5, w = 30, h = 24}
         lo.style = osc_styles.control_2
@@ -2242,7 +2235,7 @@ layouts["modern"] = function ()
     lo.geometry = {x = refX, y = refY - (user_opts.osc_height / 2), an = 5, w = 45, h = 28}
     lo.style = osc_styles.control_1
 
-    if jump_buttons then
+    if user_opts.jump_buttons then
         lo = add_layout("jump_forward")
         lo.geometry = {x = refX + 60, y = refY - (user_opts.osc_height / 2), an = 5, w = 30, h = 24}
         lo.style = osc_styles.control_2
@@ -2255,7 +2248,7 @@ layouts["modern"] = function ()
         lo.style = osc_styles.control_2
     end
 
-    if track_nextprev_buttons then
+    if user_opts.track_nextprev_buttons then
         elements["playlist_next"].visible = (state.playlist_count > 1 or contains(user_opts.buttons_always_active, "playlist_next")) and (osc_param.playresx >= 500 - outeroffset)
         lo = add_layout("playlist_next")
         lo.geometry = {x = refX + (60 + (chapter_skip_buttons and 60 or 0)) + offset, y = refY - (user_opts.osc_height / 2), an = 5, w = 30, h = 24}
@@ -2349,14 +2342,14 @@ layouts["modern"] = function ()
         end_x = end_x - 45
     end
 
-    if fullscreen_button then right_side_button("fullscreen", 550) end
-    if info_button then right_side_button("info", 650) end
+    if user_opts.fullscreen_button then right_side_button("fullscreen", 550) end
+    if user_opts.info_button then right_side_button("info", 650) end
     if ontop_button then right_side_button("ontop", 750) end
-    if screenshot_button then right_side_button("screenshot", 850) end
-    if loop_button then right_side_button("file_loop", 950) end
-    if shuffle_button then right_side_button("shuffle", 1050) end
-    if speed_button then right_side_button("speed", 1150, osc_styles.speed, 42) end
-    if download_button then right_side_button("download", 1150) end
+    if user_opts.screenshot_button then right_side_button("screenshot", 850) end
+    if user_opts.loop_button then right_side_button("file_loop", 950) end
+    if user_opts.shuffle_button then right_side_button("shuffle", 1050) end
+    if user_opts.speed_button then right_side_button("speed", 1150, osc_styles.speed, 42) end
+    if user_opts.download_button and state.is_URL then right_side_button("download", 1150) end
 
     if user_opts.cache_info then
         right_side_button("cache_info", 1250, osc_styles.cache, user_opts.cache_info_speed and 70 or 45)
@@ -2452,11 +2445,6 @@ layouts["modern-compact"] = function ()
     end
 
     local time_codes_width = get_time_codes_width()
-
-    -- osc title
-    elements["title"].visible = not no_title
-    local title_w = (no_chapter or not chapter_index or user_opts.chapter_above_title) and (osc_geo.w - 50 - time_codes_width - 50) or (osc_geo.w - 50)
-
     local chapter_title_y, title_y
     if user_opts.chapter_above_title then
         title_y = user_opts.osc_height + title_offset
@@ -2466,7 +2454,10 @@ layouts["modern-compact"] = function ()
         title_y = (no_chapter or not chapter_index) and (user_opts.osc_height + title_offset) or (chapter_title_y + chapter_h + user_opts.title_with_chapter_offset)
     end
 
+    -- osc title
+    local title_w = (no_chapter or not chapter_index or user_opts.chapter_above_title) and (osc_geo.w - 60 - time_codes_width) or (osc_geo.w - 50)
     if title_w < 0 then title_w = 0 end
+    elements["title"].visible = not no_title
     geo = {x = 25, y = refY - title_y, an = 1, w = title_w, h = user_opts.title_font_size}
     lo = add_layout("title")
     lo.geometry = geo
@@ -2477,7 +2468,7 @@ layouts["modern-compact"] = function ()
     -- chapter title
     if user_opts.show_chapter_title then
         elements["chapter_title"].visible = not no_chapter and chapter_index
-        geo = {x = 25, y = refY - chapter_title_y, an = 1, w = osc_geo.w - time_codes_width - 50, h = user_opts.chapter_title_font_size}
+        geo = {x = 25, y = refY - chapter_title_y, an = 1, w = osc_geo.w - time_codes_width - 60, h = user_opts.chapter_title_font_size}
         lo = add_layout("chapter_title")
         lo.geometry = geo
         lo.layer = 48
