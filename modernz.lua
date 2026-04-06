@@ -2024,6 +2024,7 @@ local function window_controls()
 
     if ontop_active then
         state.ontop_in_topbar = true
+        elements["ontop"].visible = osc_param.playresx >= controlbox_w + 35
         elements["ontop"].hover_radius = 0
         elements["ontop"].hover_pad = 0
         lo = add_layout("ontop")
