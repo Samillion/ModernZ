@@ -169,12 +169,12 @@ local user_opts = {
     button_held_size = 100,                -- relative size of a button when held/pressed. below 100 shrinks button when held down
     button_held_box_alpha = 18,            -- alpha of the hover background box when a button is held down
     button_glow_amount = 5,                -- glow intensity when "glow" hover effect is active
-    slider_hover_effect = true,            -- apply size effect only when hovering slider handles
-    slider_hover_size = 130,               -- relative size of a hovered slider handle if "slider_hover_effect" is used
     tooltip_hints = true,                  -- enable tooltips for most buttons. seek and volume tooltips are always enabled
 
     -- Progress bar settings
     seek_handle_size = 0.8,                -- size ratio of the seek handle (range: 0 ~ 1)
+    seek_hover_effect = true,              -- apply size effect when hovering seekbar handle
+    seek_hover_size = 130,                 -- relative size of seekbar handle if "seek_hover_effect" is used
     seekbar_height = "medium",             -- seekbar height preset: "small", "medium", "large", "xlarge"
     seekrange = true,                      -- show seek range overlay
     seekrangealpha = 150,                  -- transparency of the seek range
@@ -1195,7 +1195,7 @@ local function prepare_elements()
             --draw static slider parts
             local slider_lo = element.layout.slider
             -- calculate positions of min and max points
-            element.slider.min.ele_pos = user_opts.seek_handle_size > 0 and (user_opts.seek_handle_size * elem_geo.h / 2) or slider_lo.border
+            element.slider.min.ele_pos = element.name == "seekbar" and (user_opts.seek_handle_size > 0 and (user_opts.seek_handle_size * elem_geo.h / 2) or slider_lo.border) or 5.5
             element.slider.max.ele_pos = elem_geo.w - element.slider.min.ele_pos
             element.slider.min.glob_pos = element.hitbox.x1 + element.slider.min.ele_pos
             element.slider.max.glob_pos = element.hitbox.x1 + element.slider.max.ele_pos
@@ -1245,21 +1245,22 @@ end
 local function draw_seekbar_handle(element, elem_ass, override_alpha)
     local pos = element.slider.posF()
     if not pos then return 0, 0 end
-    local display_handle = user_opts.seek_handle_size > 0
+    local is_seekbar = element.name == "seekbar"
+    local display_handle = is_seekbar and user_opts.seek_handle_size > 0 or not is_seekbar
     local elem_geo = element.layout.geometry
-    local rh = display_handle and (user_opts.seek_handle_size * elem_geo.h / 2) or 0 -- handle radius
+    local rh = is_seekbar and (user_opts.seek_handle_size * elem_geo.h / 2) or 5.5 -- handle radius
     local xp = get_slider_ele_pos_for(element, pos) -- handle position
     local handle_hovered = mouse_hit_coords(element.hitbox.x1 + xp - rh, element.hitbox.y1 + elem_geo.h / 2 - rh, element.hitbox.x1 + xp + rh, element.hitbox.y1 + elem_geo.h / 2 + rh) and element.enabled
 
     if display_handle then
-        -- Apply size hover_effect when hovering over or dragging the handle
-        if (handle_hovered or element.state.mbtnleft) and user_opts.slider_hover_effect then
-            rh = rh * (user_opts.slider_hover_size / 100)
+        -- Apply size hover_effect only for the seekbar handle
+        if is_seekbar and (handle_hovered or element.state.mbtnleft) and user_opts.seek_hover_effect then
+            rh = rh * (user_opts.seek_hover_size / 100)
         end
 
         ass_draw_cir_cw(elem_ass, xp, elem_geo.h / 2, rh)
 
-        if user_opts.slider_hover_effect then
+        if is_seekbar and user_opts.seek_hover_effect then
             elem_ass:draw_stop()
             elem_ass:merge(element.style_ass)
             ass_append_alpha(elem_ass, element.layout.alpha, override_alpha or 0)
@@ -2267,7 +2268,7 @@ layouts["modern"] = function ()
         ne = new_element("volumebarbg", "box")
         ne.visible = vol_vis
         lo = add_layout("volumebarbg")
-        lo.geometry = {x = start_x, y = refY - (user_opts.osc_height / 2), an = 4, w = 55, h = 4}
+        lo.geometry = {x = start_x, y = refY - (user_opts.osc_height / 2), an = 4, w = 55, h = 3}
         lo.layer = 15
         lo.alpha[1] = 128
         lo.style = user_opts.volumebar_match_seek_color and osc_styles.seekbar_bg or osc_styles.volumebar_bg
@@ -2275,9 +2276,9 @@ layouts["modern"] = function ()
 
         elements["volumebar"].visible = vol_vis
         lo = add_layout("volumebar")
-        lo.geometry = {x = start_x, y = refY - (user_opts.osc_height / 2), an = 4, w = 55, h = 10}
+        lo.geometry = {x = start_x, y = refY - (user_opts.osc_height / 2), an = 4, w = 55, h = 27}
         lo.style = user_opts.volumebar_match_seek_color and osc_styles.seekbar_fg or osc_styles.volumebar_fg
-        lo.slider.gap = 3
+        lo.slider.gap = 12
         lo.slider.radius = user_opts.slider_rounded_corners and 2 or 0
         lo.slider.tooltip_an = 2
         start_x = start_x + 75
@@ -2531,16 +2532,17 @@ layouts["modern-compact"] = function ()
         elements["volumebar"].visible = vol_vis
         if vol_vis then
             lo = add_layout("volumebarbg")
-            lo.geometry = {x = start_x, y = refY - (user_opts.osc_height / 2), an = 4, w = 55, h = 4}
+            lo.geometry = {x = start_x, y = refY - (user_opts.osc_height / 2), an = 4, w = 55, h = 3}
             lo.layer = 15
             lo.alpha[1] = 128
             lo.style = user_opts.volumebar_match_seek_color and osc_styles.seekbar_bg or osc_styles.volumebar_bg
             lo.box.radius = user_opts.slider_rounded_corners and 2 or 0
 
             lo = add_layout("volumebar")
-            lo.geometry = {x = start_x, y = refY - (user_opts.osc_height / 2), an = 4, w = 55, h = 10}
+            lo.geometry = {x = start_x, y = refY - (user_opts.osc_height / 2), an = 4, w = 55, h = 27}
+
             lo.style = user_opts.volumebar_match_seek_color and osc_styles.seekbar_fg or osc_styles.volumebar_fg
-            lo.slider.gap = 3
+            lo.slider.gap = 12
             lo.slider.radius = user_opts.slider_rounded_corners and 2 or 0
             lo.slider.tooltip_an = 2
             start_x = start_x + 75
@@ -2654,7 +2656,7 @@ layouts["modern-image"] = function ()
         ne = new_element("zoom_control_bg", "box")
         ne.visible = zoom_vis
         lo = add_layout("zoom_control_bg")
-        lo.geometry = {x = zx + 25, y = refY - (user_opts.osc_height / 2), an = 4, w = 80, h = 4}
+        lo.geometry = {x = zx + 25, y = refY - (user_opts.osc_height / 2), an = 4, w = 80, h = 3}
         lo.layer = 15
         lo.alpha[1] = 128
         lo.style = osc_styles.volumebar_bg
@@ -2662,10 +2664,10 @@ layouts["modern-image"] = function ()
 
         elements["zoom_control"].visible = zoom_vis
         lo = add_layout("zoom_control")
-        lo.geometry = {x = zx + 25, y = refY - (user_opts.osc_height / 2), an = 4, w = 80, h = 10}
+        lo.geometry = {x = zx + 25, y = refY - (user_opts.osc_height / 2), an = 4, w = 80, h = 27}
         lo.style = osc_styles.volumebar_fg
         lo.slider.radius = user_opts.slider_rounded_corners and 2 or 0
-        lo.slider.gap = 3
+        lo.slider.gap = 12
         lo.slider.tooltip_an = 2
 
         left_side_button("zoom_in_icon", zx + 130, 300, 30)

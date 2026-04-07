@@ -177,29 +177,29 @@ watch-later-options-remove=osd-margin-y
 | button_held_size      | 100                 | relative size of a button when held/pressed. below 100 shrinks button when held down                      |
 | button_held_box_alpha | 18                  | alpha of the hover background box when a button is held down                                              |
 | button_glow_amount    | 5                   | glow intensity when `"glow"` hover effect is active                                                       |
-| slider_hover_effect   | yes                 | apply size effect only when hovering slider handles                                                       |
-| slider_hover_size     | 130                 | relative size of a hovered slider handle if "slider_hover_effect" is used                                 |
 | tooltip_hints         | yes                 | enable tooltips for most buttons. seek and volume tooltips are always enabled                             |
 
 ### Progress bar settings
 
-| Option                     | Value    | Description                                                             |
-| -------------------------- | -------- | ----------------------------------------------------------------------- |
-| seek_handle_size           | 0.8      | size ratio of the seekbar handle (range: 0 ~ 1)                         |
-| seekbar_height             | medium   | seekbar height preset: `small`, `medium`, `large`, `xlarge`             |
-| seekrange                  | yes      | show seek range overlay                                                 |
-| seekrangealpha             | 150      | transparency of the seek range                                          |
-| livemarkers                | yes      | update chapter markers on the seekbar when duration changes             |
-| seekbarkeyframes           | no       | use keyframes when dragging the seekbar                                 |
-| slider_rounded_corners     | yes      | rounded corners seekbar slider                                          |
-| nibbles_style              | gap      | chapter nibble style: `gap`, `triangle`, `bar` or `single-bar`          |
-| nibbles_top                | yes      | top chapter nibbles above seekbar                                       |
-| nibbles_bottom             | yes      | bottom chapter nibbles below seekbar                                    |
-| automatickeyframemode      | yes      | automatically set keyframes for the seekbar based on video length       |
-| automatickeyframelimit     | 600      | videos longer than this (in seconds) will have keyframes on the seekbar |
-| persistent_progress        | no       | always show a small progress line at the bottom of the screen           |
-| persistent_progress_height | 17       | height of the persistent progress bar                                   |
-| persistent_buffer          | no       | show cached buffer status in the persistent progress line               |
+| Option                     | Value    | Description                                                               |
+| -------------------------- | -------- | -----------------------------------------------------------------------   |
+| seek_handle_size           | 0.8      | size ratio of the seekbar handle (range: 0 ~ 1)                           |
+| seek_hover_effect          | yes      | apply size effect when hovering seekbar handle                            |
+| seek_hover_size            | 130      | relative size of seekbar handle if "seek_hover_effect" is used            |
+| seekbar_height             | medium   | seekbar height preset: `small`, `medium`, `large`, `xlarge`               |
+| seekrange                  | yes      | show seek range overlay                                                   |
+| seekrangealpha             | 150      | transparency of the seek range                                            |
+| livemarkers                | yes      | update chapter markers on the seekbar when duration changes               |
+| seekbarkeyframes           | no       | use keyframes when dragging the seekbar                                   |
+| slider_rounded_corners     | yes      | rounded corners seekbar slider                                            |
+| nibbles_style              | gap      | chapter nibble style: `gap`, `triangle`, `bar` or `single-bar`            |
+| nibbles_top                | yes      | top chapter nibbles above seekbar                                         |
+| nibbles_bottom             | yes      | bottom chapter nibbles below seekbar                                      |
+| automatickeyframemode      | yes      | automatically set keyframes for the seekbar based on video length         |
+| automatickeyframelimit     | 600      | videos longer than this (in seconds) will have keyframes on the seekbar   |
+| persistent_progress        | no       | always show a small progress line at the bottom of the screen             |
+| persistent_progress_height | 17       | height of the persistent progress bar                                     |
+| persistent_buffer          | no       | show cached buffer status in the persistent progress line                 |
 
 ### Miscellaneous settings
 
