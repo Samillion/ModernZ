@@ -138,9 +138,10 @@ local user_opts = {
     windowcontrols_min_hover = "#43CB44",  -- color of minimize window controls on hover
     title_color = "#FFFFFF",               -- color of the title (above seekbar)
     cache_info_color = "#FFFFFF",          -- color of the cache information
-    seekbarfg_color = "#FB8C00",           -- color of the seekbar progress and handle
+    seekbarfg_color = "#FB8C00",           -- color of the seekbar progress
     seekbarbg_color = "#94754F",           -- color of the remaining seekbar
     seekbar_cache_color = "#918F8E",       -- color of the cache ranges on the seekbar
+    seek_handle_color = "#FB8C00",         -- color of the seekbar handle
     volumebar_match_seek_color = false,    -- match volume bar color with seekbar color (ignores side_buttons_color)
     time_color = "#FFFFFF",                -- color of the timestamps (below seekbar)
     chapter_title_color = "#FFFFFF",       -- color of the chapter title (above seekbar)
@@ -1240,35 +1241,37 @@ local function get_chapter(possec)
     end
 end
 
--- Draws a handle on the seekbar according to user_opts
+-- Computes handle position and radius without drawing
 -- Returns handle position and radius
-local function draw_seekbar_handle(element, elem_ass, override_alpha)
+local function get_seekbar_handle_pos(element)
     local pos = element.slider.posF()
     if not pos then return 0, 0 end
     local display_handle = user_opts.seek_handle_size > 0
     local elem_geo = element.layout.geometry
-    local rh = display_handle and (user_opts.seek_handle_size * elem_geo.h / 2) or 0 -- handle radius
-    local xp = get_slider_ele_pos_for(element, pos) -- handle position
+    local rh = display_handle and (user_opts.seek_handle_size * elem_geo.h / 2) or 0
+    local xp = get_slider_ele_pos_for(element, pos)
     local handle_hovered = mouse_hit_coords(element.hitbox.x1 + xp - rh, element.hitbox.y1 + elem_geo.h / 2 - rh, element.hitbox.x1 + xp + rh, element.hitbox.y1 + elem_geo.h / 2 + rh) and element.enabled
-
     if display_handle then
-        -- Apply size hover_effect when hovering over or dragging the handle
         if (handle_hovered or element.state.mbtnleft) and user_opts.slider_hover_effect then
             rh = rh * (user_opts.slider_hover_size / 100)
         end
-
-        ass_draw_cir_cw(elem_ass, xp, elem_geo.h / 2, rh)
-
-        if user_opts.slider_hover_effect then
-            elem_ass:draw_stop()
-            elem_ass:merge(element.style_ass)
-            ass_append_alpha(elem_ass, element.layout.alpha, override_alpha or 0)
-            elem_ass:merge(element.static_ass)
-        end
-
         return xp, rh
     end
     return xp, 0
+end
+
+-- Draws a handle on the seekbar using precomputed position and radius
+local function draw_seekbar_handle(element, elem_ass, xp, rh)
+    if rh <= 0 then return end
+
+    elem_ass:draw_stop()
+    elem_ass:merge(element.style_ass)
+    ass_append_alpha(elem_ass, element.layout.alpha, 0)
+    if element.name == "seekbar" then
+        elem_ass:append("{\\blur0\\bord0\\1c&H" .. osc_color_convert(user_opts.seek_handle_color) .. "&}")
+    end
+    elem_ass:merge(element.static_ass)
+    ass_draw_cir_cw(elem_ass, xp, element.layout.geometry.h / 2, rh)
 end
 
 -- Collects and sorts pixel cut positions for gap-style chapter markers.
@@ -1569,9 +1572,10 @@ local function render_elements(master_ass, osc_vis, wc_vis)
                 ass_append_alpha(elem_ass, element.layout.alpha, 0, nil, anim_override)
                 elem_ass:merge(element.static_ass)
 
-                local xp, rh = draw_seekbar_handle(element, elem_ass) -- handle posistion, handle radius
+                local xp, rh = get_seekbar_handle_pos(element) -- get handle position/radius
                 draw_seekbar_progress(element, elem_ass)
                 draw_seekbar_ranges(element, elem_ass, xp, rh)
+                draw_seekbar_handle(element, elem_ass, xp, rh) -- draw handle on top of progress
 
                 elem_ass:draw_stop()
 
@@ -4046,7 +4050,7 @@ local function validate_user_opts()
         user_opts.chapter_title_color, user_opts.seekbar_cache_color, user_opts.hover_effect_color,
         user_opts.windowcontrols_close_hover, user_opts.windowcontrols_max_hover, user_opts.windowcontrols_min_hover,
         user_opts.cache_info_color, user_opts.thumbnail_box_outline,
-        user_opts.nibble_color, user_opts.nibble_current_color,
+        user_opts.nibble_color, user_opts.nibble_current_color, user_opts.seek_handle_color,
     }
 
     for _, color in pairs(colors) do
