@@ -1,5 +1,5 @@
 ## Pause Indicator Lite
-![pause_indicator_preview](https://github.com/user-attachments/assets/a70653fd-2d88-4e86-b03d-8f00a5f94cd9)
+![pause_indicator_preview](https://github.com/user-attachments/assets/d06c2c0a-818e-463f-9cd2-9148d5b59bdf)
 
 A simple script that displays an indicator on pause (and mute), with options to adjust icon type, color, height, width, opacity and whether to toggle pause with a keybind or not.
 
@@ -31,12 +31,12 @@ To adjust them you can either:
 | `icon_color`             | `#FFFFFF`       | icon fill color                                                                                                                            |
 | `icon_border_color`      | `#111111`       | icon border color                                                                                                                          |
 | `icon_border_width`      | 1.5             | icon border width                                                                                                                          |
-| `icon_opacity`           | 40              | icon opacity (0-100)                                                                                                                       |
-| `rectangles_width`       | 30              | width of rectangles (pause icon)                                                                                                           |
-| `rectangles_height`      | 80              | height of rectangles (pause icon)                                                                                                          |
-| `rectangles_spacing`     | 20              | spacing between the two rectangles (pause icon)                                                                                            |
-| `triangle_width`         | 80              | width of triangle (play icon)                                                                                                              |
-| `triangle_height`        | 80              | height of triangle (play icon)                                                                                                             |
+| `icon_opacity`           | 30              | icon opacity (0-100)                                                                                                                       |
+| `rectangles_width`       | 20              | width of rectangles (pause icon)                                                                                                           |
+| `rectangles_height`      | 60              | height of rectangles (pause icon)                                                                                                          |
+| `rectangles_spacing`     | 12              | spacing between the two rectangles (pause icon)                                                                                            |
+| `triangle_width`         | 60              | width of triangle (play icon)                                                                                                              |
+| `triangle_height`        | 60              | height of triangle (play icon)                                                                                                             |
 | `flash_play_icon`        | yes             | flash play icon on unpause (best with pause indicator icon)                                                                                |
 | `flash_icon_timeout`     | 0.3             | timeout (seconds) for flash icon                                                                                                           |
 | `themed_icons`           | no              | use icon theme specified in `icon_theme` requires `fonts/modernz-icons.ttf`                                                                |
@@ -45,7 +45,7 @@ To adjust them you can either:
 | `themed_icon_size`       | 80              | themed icon size                                                                                                                           |
 | `mute_indicator`         | no              | show a mute indicator                                                                                                                      |
 | `mute_indicator_pos`     | top_right       | position of mute indicator<br>`top_left`, `top_right`, `top_center`. also: `middle_*`, `bottom_*`<br>same as `top_*` (ie: `bottom_right`)  |
-| `mute_icon_size`         | 50              | mute indicator size                                                                                                                        |
+| `mute_icon_size`         | 35              | mute indicator size                                                                                                                        |
 
 ### How to install
 
