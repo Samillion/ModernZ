@@ -59,13 +59,15 @@ local state = {
     indicator_overlay = mp.create_osd_overlay("ass-events"),
     flash_overlay = mp.create_osd_overlay("ass-events"),
     mute_overlay = mp.create_osd_overlay("ass-events"),
+    aspect = 0,
     indicator_visible = false,
     mute_visible = false,
     indicator_timer = nil,
-    keybinds_added = false,
-    is_video = false,
-    toggled = false, 
+    flash_timer = nil,
+    paused = false,
+    toggled = false,
     eof = false,
+    keybinds_registered = false,
 }
 
 local icon_theme = {
@@ -145,9 +147,9 @@ local function draw_rectangles()
     end
 
     return string.format([[{\\rDefault\\p1\\an%s\\alpha&H%s\\bord%s\\1c&H%s&\\3c&H%s&}m 0 0 l %d 0 l %d %d l 0 %d m %d 0 l %d 0 l %d %d l %d %d{\\p0}]],
-        indicator_pos, icon_style.opacity, options.icon_border_width, icon_style.color, icon_style.border_color, options.rectangles_width, options.rectangles_width, 
-        options.rectangles_height, options.rectangles_height, options.rectangles_width + options.rectangles_spacing, 
-        options.rectangles_width * 2 + options.rectangles_spacing, options.rectangles_width * 2 + options.rectangles_spacing, 
+        indicator_pos, icon_style.opacity, options.icon_border_width, icon_style.color, icon_style.border_color, options.rectangles_width, options.rectangles_width,
+        options.rectangles_height, options.rectangles_height, options.rectangles_width + options.rectangles_spacing,
+        options.rectangles_width * 2 + options.rectangles_spacing, options.rectangles_width * 2 + options.rectangles_spacing,
         options.rectangles_height, options.rectangles_width + options.rectangles_spacing, options.rectangles_height)
 end
 
@@ -196,21 +198,19 @@ end
 
 -- draw and update indicator
 local function update_indicator(force)
-    local _, _, aspect = mp.get_osd_size()
-    if aspect == 0 then return end
-
+    if state.aspect == 0 then return end
     if not force and state.indicator_visible then
         return
     end
-
+    state.indicator_overlay:remove()
     state.indicator_overlay.data = (options.indicator_icon == "play") and draw_triangle() or draw_rectangles()
-
     state.indicator_overlay:update()
     state.indicator_visible = true
 
     if not options.indicator_stay then
         if state.indicator_timer then
             state.indicator_timer:kill()
+            state.indicator_timer = nil
         end
 
         state.indicator_timer = mp.add_timeout(options.indicator_timeout, function()
@@ -221,44 +221,56 @@ local function update_indicator(force)
 end
 
 local function flash_icon()
-    if not options.flash_play_icon then
-        state.flash_overlay:remove()
-        return
-    end
+    if state.aspect == 0 or not options.flash_play_icon then return end
 
+    if state.flash_timer then
+        state.flash_timer:kill()
+        state.flash_timer = nil
+    end
     state.flash_overlay.data = draw_triangle()
     state.flash_overlay:update()
-    mp.add_timeout(options.flash_icon_timeout, function() state.flash_overlay:remove() end)
+    state.flash_timer = mp.add_timeout(options.flash_icon_timeout, function()
+        state.flash_overlay:remove()
+    end)
 end
 
 local function mute_icon()
+    state.mute_overlay:remove()
     state.mute_overlay.data = draw_mute()
     state.mute_overlay:update()
 end
 
--- check if file is video
 local function is_video()
     local t = mp.get_property_native("current-tracks/video")
     return t ~= nil and not t.image and not t.albumart
 end
 
-local function setup_keybinds()
-    if state.keybinds_added then return end
+local function keybind_should_enable()
+    if options.keybind_eof_disable and state.eof then return false end
+    return options.keybind_mode == "always" or (options.keybind_mode == "onpause" and state.paused)
+end
 
+local function setup_keybinds()
+    if state.keybinds_registered then return end
     mp.set_key_bindings({
         {options.keybind_set, function()
             mp.commandv("cycle", "pause")
         end}
     }, "pause-indicator", "force")
-
-    state.keybinds_added = true
+    state.keybinds_registered = true
 end
 
 local pause_observer = function(_, paused)
+    state.paused = paused
     if paused then
         update_indicator()
         state.toggled = true
         state.flash_overlay:remove()
+        if options.keybind_allow and options.keybind_mode == "onpause" then
+            if keybind_should_enable() then
+                mp.enable_key_bindings("pause-indicator", "allow-vo-dragging+allow-hide-cursor")
+            end
+        end
     else
         if state.indicator_timer then
             state.indicator_timer:kill()
@@ -270,23 +282,20 @@ local pause_observer = function(_, paused)
             flash_icon()
             state.toggled = false
         end
-    end
-
-    -- keybind setup (if options allow it)
-    if options.keybind_allow then
-        setup_keybinds()
-
-        if options.keybind_mode == "always" or (options.keybind_mode == "onpause" and paused) then
-            if not state.eof then mp.enable_key_bindings("pause-indicator", "allow-vo-dragging+allow-hide-cursor") end
-        else
+        if options.keybind_allow and options.keybind_mode == "onpause" then
             mp.disable_key_bindings("pause-indicator")
         end
     end
 end
 
 local dimensions_observer = function()
+    local _, _, aspect = mp.get_osd_size()
+    state.aspect = aspect
     if state.indicator_visible then
         update_indicator(true)
+    end
+    if state.mute_visible then
+        mute_icon()
     end
 end
 
@@ -304,27 +313,60 @@ end
 
 local eof_observer = function(_, val)
     state.eof = val
+    if val and options.keybind_allow and options.keybind_eof_disable then
+        mp.disable_key_bindings("pause-indicator")
+    end
 end
 
-local function shutdown()
-    state.flash_overlay:remove()
-    state.indicator_overlay:remove()
-    state.mute_overlay:remove()
-    state.indicator_visible = false
-    mp.disable_key_bindings("pause-indicator")
-
+local function unobserve()
     mp.unobserve_property(pause_observer)
     mp.unobserve_property(dimensions_observer)
     mp.unobserve_property(mute_observer)
     mp.unobserve_property(eof_observer)
 end
 
+local function shutdown()
+    state.flash_overlay:remove()
+    state.indicator_overlay:remove()
+    state.mute_overlay:remove()
+
+    if state.indicator_timer then
+        state.indicator_timer:kill()
+        state.indicator_timer = nil
+    end
+    if state.flash_timer then
+        state.flash_timer:kill()
+        state.flash_timer = nil
+    end
+
+    state.indicator_visible = false
+    state.mute_visible = false
+    state.toggled = false
+
+    mp.disable_key_bindings("pause-indicator")
+    unobserve()
+end
+
 mp.register_event("file-loaded", function()
-    if is_video() then 
+    unobserve()
+
+    if is_video() then
+        local _, _, aspect = mp.get_osd_size()
+        state.aspect = aspect
+        state.eof = false
         mp.observe_property("pause", "bool", pause_observer)
         mp.observe_property("osd-dimensions", "native", dimensions_observer)
         mp.observe_property("mute", "bool", mute_observer)
         mp.observe_property("eof-reached", "bool", eof_observer)
+
+        if options.keybind_allow then
+            setup_keybinds()
+            if keybind_should_enable() then
+                mp.enable_key_bindings("pause-indicator", "allow-vo-dragging+allow-hide-cursor")
+            else
+                mp.disable_key_bindings("pause-indicator")
+            end
+        end
     else
         shutdown()
     end
