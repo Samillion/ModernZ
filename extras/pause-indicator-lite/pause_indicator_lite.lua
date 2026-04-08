@@ -220,13 +220,14 @@ local function update_indicator(force)
     end
 end
 
-local function flash_icon()
+local function update_flash_icon()
     if state.aspect == 0 or not options.flash_play_icon then return end
 
     if state.flash_timer then
         state.flash_timer:kill()
         state.flash_timer = nil
     end
+    state.flash_overlay:remove()
     state.flash_overlay.data = draw_triangle()
     state.flash_overlay:update()
     state.flash_timer = mp.add_timeout(options.flash_icon_timeout, function()
@@ -234,7 +235,8 @@ local function flash_icon()
     end)
 end
 
-local function mute_icon()
+local function update_mute_icon()
+    if state.aspect == 0 then return end
     state.mute_overlay:remove()
     state.mute_overlay.data = draw_mute()
     state.mute_overlay:update()
@@ -265,6 +267,10 @@ local pause_observer = function(_, paused)
     if paused then
         update_indicator()
         state.toggled = true
+        if state.flash_timer then
+            state.flash_timer:kill()
+            state.flash_timer = nil
+        end
         state.flash_overlay:remove()
         if options.keybind_allow and options.keybind_mode == "onpause" then
             if keybind_should_enable() then
@@ -279,7 +285,7 @@ local pause_observer = function(_, paused)
         state.indicator_overlay:remove()
         state.indicator_visible = false
         if state.toggled then
-            flash_icon()
+            update_flash_icon()
             state.toggled = false
         end
         if options.keybind_allow and options.keybind_mode == "onpause" then
@@ -295,7 +301,7 @@ local dimensions_observer = function()
         update_indicator(true)
     end
     if state.mute_visible then
-        mute_icon()
+        update_mute_icon()
     end
 end
 
@@ -303,7 +309,7 @@ local mute_observer = function(_, val)
     if not options.mute_indicator then return end
 
     if val then
-        mute_icon()
+        update_mute_icon()
         state.mute_visible = true
     else
         state.mute_overlay:remove()
