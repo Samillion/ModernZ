@@ -23,16 +23,16 @@ local options = {
     icon_color = "#FFFFFF",               -- icon fill color
     icon_border_color = "#111111",        -- icon border color
     icon_border_width = 1.5,              -- icon border width
-    icon_opacity = 40,                    -- icon opacity (0-100)
+    icon_opacity = 30,                    -- icon opacity (0-100)
 
     -- pause icon
-    rectangles_width = 30,                -- width of rectangles
-    rectangles_height = 80,               -- height of rectangles
-    rectangles_spacing = 20,              -- spacing between the two rectangles
+    rectangles_width = 20,                -- width of rectangles
+    rectangles_height = 60,               -- height of rectangles
+    rectangles_spacing = 12,              -- spacing between the two rectangles
 
     -- play icon
-    triangle_width = 80,                  -- width of triangle
-    triangle_height = 80,                 -- height of triangle
+    triangle_width = 60,                  -- width of triangle
+    triangle_height = 60,                 -- height of triangle
 
     -- best with pause icon
     flash_play_icon = true,               -- flash play icon on unpause
@@ -49,11 +49,24 @@ local options = {
     mute_indicator_pos = "top_right",     -- position of mute indicator. top_left, top_right, top_center
                                           -- also: middle_*, bottom_* same as top_* (ie: bottom_right)
 
-    mute_icon_size = 50,                  -- size of the mute speaker icon
+    mute_icon_size = 35,                  -- size of the mute speaker icon
 }
 
 local msg = require "mp.msg"
 require 'mp.options'.read_options(options, "pause_indicator_lite")
+
+local state = {
+    indicator_overlay = mp.create_osd_overlay("ass-events"),
+    flash_overlay = mp.create_osd_overlay("ass-events"),
+    mute_overlay = mp.create_osd_overlay("ass-events"),
+    indicator_visible = false,
+    mute_visible = false,
+    indicator_timer = nil,
+    keybinds_added = false,
+    is_video = false,
+    toggled = false, 
+    eof = false,
+}
 
 local icon_theme = {
     fluent = {
@@ -128,13 +141,13 @@ local function draw_rectangles()
     if options.themed_icons then
         return string.format([[{\\rDefault\\an%s\\alpha&H%s\\bord%s\\1c&H%s&\\3c&H%s&\\fs%s\\fn%s}%s]],
             indicator_pos, icon_opacity, options.icon_border_width, icon_color, icon_border_color, options.themed_icon_size, icon_font, icons.pause_icon)
-    else
-        return string.format([[{\\rDefault\\p1\\an%s\\alpha&H%s\\bord%s\\1c&H%s&\\3c&H%s&}m 0 0 l %d 0 l %d %d l 0 %d m %d 0 l %d 0 l %d %d l %d %d{\\p0}]],
-            indicator_pos, icon_opacity, options.icon_border_width, icon_color, icon_border_color, options.rectangles_width, options.rectangles_width, 
-            options.rectangles_height, options.rectangles_height, options.rectangles_width + options.rectangles_spacing, 
-            options.rectangles_width * 2 + options.rectangles_spacing, options.rectangles_width * 2 + options.rectangles_spacing, 
-            options.rectangles_height, options.rectangles_width + options.rectangles_spacing, options.rectangles_height)
     end
+
+    return string.format([[{\\rDefault\\p1\\an%s\\alpha&H%s\\bord%s\\1c&H%s&\\3c&H%s&}m 0 0 l %d 0 l %d %d l 0 %d m %d 0 l %d 0 l %d %d l %d %d{\\p0}]],
+        indicator_pos, icon_opacity, options.icon_border_width, icon_color, icon_border_color, options.rectangles_width, options.rectangles_width, 
+        options.rectangles_height, options.rectangles_height, options.rectangles_width + options.rectangles_spacing, 
+        options.rectangles_width * 2 + options.rectangles_spacing, options.rectangles_width * 2 + options.rectangles_spacing, 
+        options.rectangles_height, options.rectangles_width + options.rectangles_spacing, options.rectangles_height)
 end
 
 -- play icon
@@ -142,10 +155,10 @@ local function draw_triangle()
     if options.themed_icons then
         return string.format([[{\\rDefault\\an%s\\alpha&H%s\\bord%s\\1c&H%s&\\3c&H%s&\\fs%s\\fn%s}%s]],
             indicator_pos, icon_opacity, options.icon_border_width, icon_color, icon_border_color, options.themed_icon_size, icon_font, icons.play_icon)
-    else
-        return string.format([[{\\rDefault\\p1\\an%s\\alpha&H%s\\bord%s\\1c&H%s&\\3c&H%s&}m 0 0 l %d %d l 0 %d{\\p0}]],
-            indicator_pos, icon_opacity, options.icon_border_width, icon_color, icon_border_color, options.triangle_width, options.triangle_height / 2, options.triangle_height)
     end
+
+    return string.format([[{\\rDefault\\p1\\an%s\\alpha&H%s\\bord%s\\1c&H%s&\\3c&H%s&}m 0 0 l %d %d l 0 %d{\\p0}]],
+        indicator_pos, icon_opacity, options.icon_border_width, icon_color, icon_border_color, options.triangle_width, options.triangle_height / 2, options.triangle_height)
 end
 
 -- mute icon
@@ -166,134 +179,152 @@ local function draw_mute()
         -- bounding box
         "m 0 0 m 509.47 430.82 " ..
         -- speaker shape
-        "m 287.33 0 " ..
-        "l 106.77 135.6 " ..
-        "l 104.06 138.85 " ..
-        "l 0 138.85 " ..
-        "l 0 292.05 " ..
-        "l 104.06 292.05 " ..
-        "l 106.77 295.3 " ..
-        "l 287.33 430.82 " ..
-        "l 304.67 422.16 " ..
-        "l 304.67 8.66 " ..
-        "l 287.33 0 " ..
+        "m 287.33 0 " .. "l 106.77 135.6 " .. "l 104.06 138.85 " .. "l 0 138.85 " ..
+        "l 0 292.05 " .. "l 104.06 292.05 " .. "l 106.77 295.3 " .. "l 287.33 430.82 " ..
+        "l 304.67 422.16 " .. "l 304.67 8.66 " .. "l 287.33 0 " ..
         -- X mark
-        "m 487.07 305.01 " ..
-        "l 509.47 282.6 " ..
-        "l 442.27 215.4 " ..
-        "l 509.47 148.2 " ..
-        "l 487.07 125.8 " ..
-        "l 419.87 193 " ..
-        "l 352.67 125.8 " ..
-        "l 330.27 148.2 " ..
-        "l 397.47 215.4 " ..
-        "l 330.27 282.6 " ..
-        "l 352.67 305 " ..
-        "l 419.87 237.8 " ..
-        "l 487.07 305 " ..
-        "{\\p0}"
+        "m 487.07 305.01 " .. "l 509.47 282.6 " .. "l 442.27 215.4 " .. "l 509.47 148.2 " ..
+        "l 487.07 125.8 " .. "l 419.87 193 " .. "l 352.67 125.8 " .. "l 330.27 148.2 " ..
+        "l 397.47 215.4 " .. "l 330.27 282.6 " .. "l 352.67 305 " .. "l 419.87 237.8 " ..
+        "l 487.07 305 " .. "{\\p0}"
 
-    return string.format(
-        [[{\\rDefault\\an%s\\alpha&H%s\\bord%s\\1c&H%s&\\3c&H%s&\\fscx%s\\fscy%s}%s]],
+    return string.format([[{\\rDefault\\an%s\\alpha&H%s\\bord%s\\1c&H%s&\\3c&H%s&\\fscx%s\\fscy%s}%s]],
         mute_indicator_pos, icon_opacity, options.icon_border_width,
         icon_color, icon_border_color, scale, scale, vol_mute)
 end
 
--- initiate overlay
-local indicator = mp.create_osd_overlay("ass-events")
-local flash = mp.create_osd_overlay("ass-events")
-local mute = mp.create_osd_overlay("ass-events")
-
--- keep track of pause toggle and end of file
-local toggled, eof
-
 -- draw and update indicator
-local function update_indicator()
-    local _, _, display_aspect = mp.get_osd_size()
-    if display_aspect == 0 or (indicator.visible and not toggled) then return end
+local function update_indicator(force)
+    local _, _, aspect = mp.get_osd_size()
+    if aspect == 0 then return end
 
-    indicator.data = options.indicator_icon == "play" and draw_triangle() or draw_rectangles()
-    indicator:update()
+    if not force and state.indicator_visible then
+        return
+    end
+
+    state.indicator_overlay.data = (options.indicator_icon == "play") and draw_triangle() or draw_rectangles()
+
+    state.indicator_overlay:update()
+    state.indicator_visible = true
 
     if not options.indicator_stay then
-        mp.add_timeout(options.indicator_timeout, function() indicator:remove() end)
+        if state.indicator_timer then
+            state.indicator_timer:kill()
+        end
+
+        state.indicator_timer = mp.add_timeout(options.indicator_timeout, function()
+            state.indicator_overlay:remove()
+            state.indicator_visible = false
+        end)
     end
 end
 
--- flash play icon
 local function flash_icon()
-    if not options.flash_play_icon then return flash:remove() end
-    flash.data = draw_triangle()
-    flash:update()
-    mp.add_timeout(options.flash_icon_timeout, function() flash:remove() end)
+    if not options.flash_play_icon then
+        state.flash_overlay:remove()
+        return
+    end
+
+    state.flash_overlay.data = draw_triangle()
+    state.flash_overlay:update()
+    mp.add_timeout(options.flash_icon_timeout, function() state.flash_overlay:remove() end)
 end
 
--- draw mute icon
 local function mute_icon()
-    mute.data = draw_mute()
-    mute:update()
+    state.mute_overlay.data = draw_mute()
+    state.mute_overlay:update()
 end
 
 -- check if file is video
 local function is_video()
     local t = mp.get_property_native("current-tracks/video")
-    return t and not (t.image or t.albumart) and true or false
+    return t ~= nil and not t.image and not t.albumart
 end
 
--- remove overlays
-local function shutdown()
-    if flash then flash:remove() end
-    if indicator then indicator:remove() end
-    mp.unobserve_property("pause")
+local function setup_keybinds()
+    if state.keybinds_added then return end
+
+    mp.set_key_bindings({
+        {options.keybind_set, function()
+            mp.commandv("cycle", "pause")
+        end}
+    }, "pause-indicator", "force")
+
+    state.keybinds_added = true
 end
 
--- end of file keybind check
-if options.keybind_eof_disable then
-    mp.observe_property("eof-reached", "bool", function(_, val)
-        eof = val
-    end)
-end
-
--- observe when pause state changes
-mp.observe_property("pause", "bool", function(_, paused)
-    if not is_video() then return shutdown() end
+local pause_observer = function(_, paused)
     if paused then
         update_indicator()
-        toggled = true
-        if options.flash_play_icon then flash:remove() end
+        state.toggled = true
+        state.flash_overlay:remove()
     else
-        indicator:remove()
-        if toggled then
+        if state.indicator_timer then
+            state.indicator_timer:kill()
+            state.indicator_timer = nil
+        end
+        state.indicator_overlay:remove()
+        state.indicator_visible = false
+        if state.toggled then
             flash_icon()
-            toggled = false
+            state.toggled = false
         end
     end
 
     -- keybind setup (if options allow it)
-    if options.keybind_allow == true then
-        mp.set_key_bindings({
-           {options.keybind_set, function() mp.commandv("cycle", "pause") end}
-        }, "pause-indicator", "force")
+    if options.keybind_allow then
+        setup_keybinds()
 
         if options.keybind_mode == "always" or (options.keybind_mode == "onpause" and paused) then
-            if not eof then mp.enable_key_bindings("pause-indicator", "allow-vo-dragging+allow-hide-cursor") end
+            if not state.eof then mp.enable_key_bindings("pause-indicator", "allow-vo-dragging+allow-hide-cursor") end
         else
             mp.disable_key_bindings("pause-indicator")
         end
     end
-end)
+end
 
--- update pause indicator position if window size changes
-mp.observe_property("osd-dimensions", "native", function()
-    if indicator and indicator.visible then
-        update_indicator()
+local dimensions_observer = function()
+    if state.indicator_visible then
+        update_indicator(true)
+    end
+end
+
+local mute_observer = function(_, val)
+    if not options.mute_indicator then return end
+
+    if val and not state.mute_visible then
+        mute_icon()
+        state.mute_visible = true
+    else
+        state.mute_overlay:remove()
+        state.mute_visible = false
+    end
+end
+
+local eof_observer = function(_, val)
+    state.eof = val
+end
+
+local function shutdown()
+    state.flash_overlay:remove()
+    state.indicator_overlay:remove()
+    state.mute_overlay:remove()
+    state.indicator_visible = false
+    mp.disable_key_bindings("pause-indicator")
+
+    mp.unobserve_property(pause_observer)
+    mp.unobserve_property(dimensions_observer)
+    mp.unobserve_property(mute_observer)
+    mp.unobserve_property(eof_observer)
+end
+
+mp.register_event("file-loaded", function()
+    if is_video() then 
+        mp.observe_property("pause", "bool", pause_observer)
+        mp.observe_property("osd-dimensions", "native", dimensions_observer)
+        mp.observe_property("mute", "bool", mute_observer)
+        mp.observe_property("eof-reached", "bool", eof_observer)
+    else
+        shutdown()
     end
 end)
-
-if options.mute_indicator then
-    mp.observe_property("mute", "bool", function(_, val)
-        if val and not mute.visible then mute_icon() else mute:remove() end
-    end)
-else
-    mute:remove()
-end
