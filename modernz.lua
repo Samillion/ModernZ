@@ -4050,7 +4050,7 @@ local function validate_user_opts()
         user_opts.chapter_title_color, user_opts.seekbar_cache_color, user_opts.hover_effect_color,
         user_opts.windowcontrols_close_hover, user_opts.windowcontrols_max_hover, user_opts.windowcontrols_min_hover,
         user_opts.cache_info_color, user_opts.thumbnail_box_outline,
-        user_opts.nibble_color, user_opts.nibble_current_color,
+        user_opts.nibble_color, user_opts.nibble_current_color, user_opts.seek_handle_color,
     }
 
     for _, color in pairs(colors) do
