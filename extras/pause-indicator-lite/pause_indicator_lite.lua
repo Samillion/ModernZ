@@ -60,6 +60,8 @@ local state = {
     flash_overlay = mp.create_osd_overlay("ass-events"),
     mute_overlay = mp.create_osd_overlay("ass-events"),
     aspect = 0,
+    indicator_pos = 5,
+    mute_pos = 9,
     indicator_visible = false,
     mute_visible = false,
     indicator_timer = nil,
@@ -131,23 +133,23 @@ local function icon_pos(pos_opt)
     return pos[(pos_opt or ""):lower()] or 5
 end
 
-local indicator_pos = icon_pos(options.indicator_pos)
-local mute_indicator_pos = icon_pos(options.mute_indicator_pos)
+state.indicator_pos = icon_pos(options.indicator_pos)
+state.mute_pos = icon_pos(options.mute_indicator_pos)
 
 -- prevent duplicate positions
-if indicator_pos == mute_indicator_pos then
-    mute_indicator_pos = (mute_indicator_pos % 9) + 1
+if state.indicator_pos == state.mute_pos then
+    state.mute_pos = (state.mute_pos % 9) + 1
 end
 
 -- pause icon
 local function draw_rectangles()
     if options.themed_icons then
         return string.format([[{\\rDefault\\an%s\\alpha&H%s\\bord%s\\1c&H%s&\\3c&H%s&\\fs%s\\fn%s}%s]],
-            indicator_pos, icon_style.opacity, options.icon_border_width, icon_style.color, icon_style.border_color, options.themed_icon_size, icon_style.font, icon_style.theme.pause_icon)
+            state.indicator_pos, icon_style.opacity, options.icon_border_width, icon_style.color, icon_style.border_color, options.themed_icon_size, icon_style.font, icon_style.theme.pause_icon)
     end
 
     return string.format([[{\\rDefault\\p1\\an%s\\alpha&H%s\\bord%s\\1c&H%s&\\3c&H%s&}m 0 0 l %d 0 l %d %d l 0 %d m %d 0 l %d 0 l %d %d l %d %d{\\p0}]],
-        indicator_pos, icon_style.opacity, options.icon_border_width, icon_style.color, icon_style.border_color, options.rectangles_width, options.rectangles_width,
+        state.indicator_pos, icon_style.opacity, options.icon_border_width, icon_style.color, icon_style.border_color, options.rectangles_width, options.rectangles_width,
         options.rectangles_height, options.rectangles_height, options.rectangles_width + options.rectangles_spacing,
         options.rectangles_width * 2 + options.rectangles_spacing, options.rectangles_width * 2 + options.rectangles_spacing,
         options.rectangles_height, options.rectangles_width + options.rectangles_spacing, options.rectangles_height)
@@ -157,18 +159,18 @@ end
 local function draw_triangle()
     if options.themed_icons then
         return string.format([[{\\rDefault\\an%s\\alpha&H%s\\bord%s\\1c&H%s&\\3c&H%s&\\fs%s\\fn%s}%s]],
-            indicator_pos, icon_style.opacity, options.icon_border_width, icon_style.color, icon_style.border_color, options.themed_icon_size, icon_style.font, icon_style.theme.play_icon)
+            state.indicator_pos, icon_style.opacity, options.icon_border_width, icon_style.color, icon_style.border_color, options.themed_icon_size, icon_style.font, icon_style.theme.play_icon)
     end
 
     return string.format([[{\\rDefault\\p1\\an%s\\alpha&H%s\\bord%s\\1c&H%s&\\3c&H%s&}m 0 0 l %d %d l 0 %d{\\p0}]],
-        indicator_pos, icon_style.opacity, options.icon_border_width, icon_style.color, icon_style.border_color, options.triangle_width, options.triangle_height / 2, options.triangle_height)
+        state.indicator_pos, icon_style.opacity, options.icon_border_width, icon_style.color, icon_style.border_color, options.triangle_width, options.triangle_height / 2, options.triangle_height)
 end
 
 -- mute icon
 local function draw_mute()
     if options.themed_icons then
         return string.format([[{\\rDefault\\an%s\\alpha&H%s\\bord%s\\1c&H%s&\\3c&H%s&\\fs%s\\fn%s}%s]],
-            mute_indicator_pos, icon_style.opacity, options.icon_border_width,
+            state.mute_pos, icon_style.opacity, options.icon_border_width,
             icon_style.color, icon_style.border_color, options.mute_icon_size, icon_style.font, icon_style.theme.mute_icon)
     end
 
@@ -192,11 +194,17 @@ local function draw_mute()
         "l 487.07 305 " .. "{\\p0}"
 
     return string.format([[{\\rDefault\\an%s\\alpha&H%s\\bord%s\\1c&H%s&\\3c&H%s&\\fscx%s\\fscy%s}%s]],
-        mute_indicator_pos, icon_style.opacity, options.icon_border_width,
+        state.mute_pos, icon_style.opacity, options.icon_border_width,
         icon_style.color, icon_style.border_color, scale, scale, vol_mute)
 end
 
--- draw and update indicator
+local function kill_timer(key)
+    if state[key] then
+        state[key]:kill()
+        state[key] = nil
+    end
+end
+
 local function update_indicator(force)
     if state.aspect == 0 then return end
     if not force and state.indicator_visible then
@@ -208,10 +216,7 @@ local function update_indicator(force)
     state.indicator_visible = true
 
     if not options.indicator_stay then
-        if state.indicator_timer then
-            state.indicator_timer:kill()
-            state.indicator_timer = nil
-        end
+        kill_timer("indicator_timer")
 
         state.indicator_timer = mp.add_timeout(options.indicator_timeout, function()
             state.indicator_overlay:remove()
@@ -223,10 +228,7 @@ end
 local function update_flash_icon()
     if state.aspect == 0 or not options.flash_play_icon then return end
 
-    if state.flash_timer then
-        state.flash_timer:kill()
-        state.flash_timer = nil
-    end
+    kill_timer("flash_timer")
     state.flash_overlay:remove()
     state.flash_overlay.data = draw_triangle()
     state.flash_overlay:update()
@@ -267,10 +269,7 @@ local pause_observer = function(_, paused)
     if paused then
         update_indicator()
         state.toggled = true
-        if state.flash_timer then
-            state.flash_timer:kill()
-            state.flash_timer = nil
-        end
+        kill_timer("flash_timer")
         state.flash_overlay:remove()
         if options.keybind_allow and options.keybind_mode == "onpause" then
             if keybind_should_enable() then
@@ -278,10 +277,7 @@ local pause_observer = function(_, paused)
             end
         end
     else
-        if state.indicator_timer then
-            state.indicator_timer:kill()
-            state.indicator_timer = nil
-        end
+        kill_timer("indicator_timer")
         state.indicator_overlay:remove()
         state.indicator_visible = false
         if state.toggled then
@@ -336,14 +332,8 @@ local function shutdown()
     state.indicator_overlay:remove()
     state.mute_overlay:remove()
 
-    if state.indicator_timer then
-        state.indicator_timer:kill()
-        state.indicator_timer = nil
-    end
-    if state.flash_timer then
-        state.flash_timer:kill()
-        state.flash_timer = nil
-    end
+    kill_timer("indicator_timer")
+    kill_timer("flash_timer")
 
     state.indicator_visible = false
     state.mute_visible = false
