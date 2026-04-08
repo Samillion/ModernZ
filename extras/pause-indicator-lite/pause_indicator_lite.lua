@@ -293,7 +293,7 @@ end
 local mute_observer = function(_, val)
     if not options.mute_indicator then return end
 
-    if val and not state.mute_visible then
+    if val then
         mute_icon()
         state.mute_visible = true
     else
