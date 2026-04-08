@@ -216,7 +216,6 @@ local function update_indicator(force)
 
     if not options.indicator_stay then
         kill_timer("indicator_timer")
-
         state.indicator_timer = mp.add_timeout(options.indicator_timeout, function()
             state.indicator_overlay:remove()
             state.indicator_visible = false
@@ -226,7 +225,6 @@ end
 
 local function update_flash_icon()
     if state.aspect == 0 or not options.flash_play_icon then return end
-
     kill_timer("flash_timer")
     state.flash_overlay:remove()
     state.flash_overlay.data = draw_triangle()
@@ -301,8 +299,6 @@ local dimensions_observer = function()
 end
 
 local mute_observer = function(_, val)
-    if not options.mute_indicator then return end
-
     if val then
         update_mute_icon()
         state.mute_visible = true
@@ -314,7 +310,7 @@ end
 
 local eof_observer = function(_, val)
     state.eof = val
-    if val and options.keybind_allow and options.keybind_eof_disable then
+    if val and options.keybind_eof_disable then
         mp.disable_key_bindings("pause-indicator")
     end
 end
