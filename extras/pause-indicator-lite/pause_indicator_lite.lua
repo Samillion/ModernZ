@@ -12,7 +12,6 @@ local options = {
     indicator_timeout = 0.6,              -- timeout (seconds) if indicator doesn't stay
     indicator_pos = "middle_center",      -- position of indicator. top_left, top_right, top_center
                                           -- also: middle_*, bottom_* same as top_* (ie: bottom_right)
-
     -- keybind
     keybind_allow = false,                -- allow keybind to toggle pause
     keybind_set = "ctrl+mbtn_left",       -- the used keybind to toggle pause
@@ -328,12 +327,12 @@ local function unobserve()
 end
 
 local function shutdown()
+    kill_timer("indicator_timer")
+    kill_timer("flash_timer")
+
     state.flash_overlay:remove()
     state.indicator_overlay:remove()
     state.mute_overlay:remove()
-
-    kill_timer("indicator_timer")
-    kill_timer("flash_timer")
 
     state.indicator_visible = false
     state.mute_visible = false
@@ -345,15 +344,19 @@ end
 
 mp.register_event("file-loaded", function()
     unobserve()
-
     if is_video() then
         local _, _, aspect = mp.get_osd_size()
         state.aspect = aspect
         state.eof = false
+        state.paused = false
         mp.observe_property("pause", "bool", pause_observer)
         mp.observe_property("osd-dimensions", "native", dimensions_observer)
-        mp.observe_property("mute", "bool", mute_observer)
-        mp.observe_property("eof-reached", "bool", eof_observer)
+        if options.mute_indicator then
+            mp.observe_property("mute", "bool", mute_observer)
+        end
+        if options.keybind_allow then
+            mp.observe_property("eof-reached", "bool", eof_observer)
+        end
 
         if options.keybind_allow then
             setup_keybinds()
