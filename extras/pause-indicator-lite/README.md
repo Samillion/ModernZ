@@ -25,7 +25,7 @@ To adjust them you can either:
 | `indicator_timeout`      | 0.6             | timeout (seconds) if indicator doesn't stay                                                                                                |
 | `indicator_pos`          | middle_center   | position of indicator<br>`top_left`, `top_right`, `top_center`. also: `middle_*`, `bottom_*`<br>same as `top_*` (ie: `bottom_right`)       |
 | `keybind_allow`          | no              | allow keybind to toggle pause                                                                                                              |
-| `keybind_set`            | shift+mbtn_left | the used keybind to toggle pause [[reference](https://github.com/mpv-player/mpv/blob/master/etc/input.conf)]                               |
+| `keybind_set`            | ctrl+mbtn_left  | the used keybind to toggle pause [[reference](https://github.com/mpv-player/mpv/blob/master/etc/input.conf)]                               |
 | `keybind_mode`           | onpause         | mode to activate keybind<br>`onpause`: only active when paused, to unpause<br>`always`: always active to toggle pause/unpause              |
 | `keybind_eof_disable`    | yes             | disable keybind on eof (end of file) [[reference](https://github.com/Samillion/ModernZ/issues/291)]                                        |
 | `icon_color`             | `#FFFFFF`       | icon fill color                                                                                                                            |
