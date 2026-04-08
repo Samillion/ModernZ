@@ -544,7 +544,7 @@ local function set_osc_styles()
         control_2 = "{\\blur0\\bord0\\1c&H" .. osc_color_convert(user_opts.middle_buttons_color) .. "&\\3c&HFFFFFF&\\fs" .. midbuttons_size .. "\\fn" .. icons.iconfont .. "}",
         control_3 = "{\\blur0\\bord0\\1c&H" .. osc_color_convert(user_opts.side_buttons_color) .. "&\\3c&HFFFFFF&\\fs" .. sidebuttons_size .. "\\fn" .. icons.iconfont .. "}",
         element_down = "{\\1c&H" .. osc_color_convert(user_opts.held_element_color) .. "&" .. string.format("\\fscx%s\\fscy%s", user_opts.button_held_size, user_opts.button_held_size) .. "}",
-        element_hover = "{" .. (hover_effects.color and "\\1c&H" .. osc_color_convert(user_opts.hover_effect_color) .. "&" or "") .."\\2c&HFFFFFF&" .. (hover_effects.size and string.format("\\fscx%s\\fscy%s", user_opts.button_hover_size, user_opts.button_hover_size) or "") .. "}",
+        element_hover = "{" .. (hover_effects.color and "\\1c&H" .. osc_color_convert(user_opts.hover_effect_color) .. "&" or "") .. (hover_effects.size and string.format("\\fscx%s\\fscy%s", user_opts.button_hover_size, user_opts.button_hover_size) or "") .. "}",
         hover_bg = "{\\blur0\\bord0\\1c&H" .. osc_color_convert(user_opts.hover_effect_color) .. "&}",
     }
 end
@@ -595,7 +595,6 @@ local state = {
     window_maximized = false,
     osd = mp.create_osd_overlay("ass-events"),
     logo_osd = mp.create_osd_overlay("ass-events"),
-    buffering = false,
     new_file_flag = false,                  -- flag to detect new file starts
     chapter_list = {},                      -- sorted by time
     chapter = -1,                           -- current chapter index
@@ -3149,22 +3148,22 @@ local function osc_init()
     ne = new_element("cache_info", "button")
     ne.content = function ()
         if not cache_enabled() then return "" end
-        local cache_state = state.demuxer_cache_state and state.demuxer_cache_state["cache-duration"]
-        local thresh = math.min(state.dmx_cache * 0.05, 5) -- 5% or 5s
-        if cache_state and math.abs(cache_state - state.dmx_cache) >= thresh then
+        local dcs = state.demuxer_cache_state
+        local dmx_cache = state.dmx_cache
+        local cache_state = dcs and dcs["cache-duration"]
+        local thresh = math.min(dmx_cache * 0.05, 5)
+        if cache_state and math.abs(cache_state - dmx_cache) >= thresh then
+            dmx_cache = cache_state
             state.dmx_cache = cache_state
         end
-        local dmx_cache = state.dmx_cache
         local min = math.floor(dmx_cache / 60)
         local sec = math.floor(dmx_cache % 60)
-        local cache_time = (min > 0 and string.format("%sm%02ds", min, sec) or string.format("%3ds", sec))
-        local dmx_speed = state.demuxer_cache_state and state.demuxer_cache_state["raw-input-rate"] or 0
-        local cache_speed = utils.format_bytes_humanized(dmx_speed)
-        local number, unit = cache_speed:match("([%d%.]+)%s*(%S+)")
-        local percent = mp.get_property("cache-buffering-state") or "0"
-        local cache_info = state.buffering and (locale.buffering .. ": " .. percent .. "%") or cache_time
-        local cache_info_speed = string.format("%8s %4s/s", (number or 0), (unit or "B"))
-        return user_opts.cache_info_speed and cache_info .. "\\N" .. cache_info_speed or cache_info
+        local cache_time = (min > 0) and string.format("%sm%02ds", min, sec) or string.format("%3ds", sec)
+        local cache_info = (mp.get_property_bool("paused-for-cache") == true) and (locale.buffering .. ": " .. (mp.get_property("cache-buffering-state") or 0) .. "%") or cache_time
+        if not user_opts.cache_info_speed then return cache_info end
+        local dmx_speed = (dcs and dcs["raw-input-rate"]) or 0
+        local number, unit = utils.format_bytes_humanized(dmx_speed):match("([%d%.]+)%s*(%S+)")
+        return cache_info .. "\\N" .. string.format("%8s %4s/s", number or 0, unit or "B")
     end
     ne.tooltipF = function() return (user_opts.tooltip_hints and cache_enabled()) and locale.cache or nil end
     ne.eventresponder["mbtn_left_up"] = function() mp.command("script-binding stats/display-page-3") end
@@ -3823,7 +3822,6 @@ observe_cached("eof-reached", request_tick)
 observe_cached("ontop", request_init)
 observe_cached("speed", request_tick)
 observe_cached("chapter", request_tick)
-mp.observe_property("paused-for-cache", "bool", function(_, val) state.buffering = val end)
 -- ensure compatibility with auto loop scripts
 mp.observe_property("loop-file", "bool", function(_, val)
     state.file_loop = (val ~= false)
