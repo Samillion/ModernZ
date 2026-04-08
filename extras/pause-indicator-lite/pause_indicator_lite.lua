@@ -356,9 +356,6 @@ mp.register_event("file-loaded", function()
         end
         if options.keybind_allow then
             mp.observe_property("eof-reached", "bool", eof_observer)
-        end
-
-        if options.keybind_allow then
             setup_keybinds()
             if keybind_should_enable() then
                 mp.enable_key_bindings("pause-indicator", "allow-vo-dragging+allow-hide-cursor")
