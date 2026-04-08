@@ -73,12 +73,12 @@ local icon_theme = {
         filled = {
             pause_icon = "fluent_pause_filled",
             play_icon  = "fluent_play_arrow_filled",
-            mute_icon  = "fluent_volume_off_filled"
+            mute_icon  = "fluent_no_sound_filled"
         },
         outline = {
             pause_icon = "fluent_pause",
             play_icon  = "fluent_play_arrow",
-            mute_icon  = "fluent_volume_off"
+            mute_icon  = "fluent_no_sound"
         }
     },
     material = {
@@ -111,12 +111,13 @@ local function convert_opacity(value)
     return string.format("%02X", (255 - (value * 2.55)))
 end
 
--- colors and opacity
-local icon_color = convert_color(options.icon_color)
-local icon_border_color = convert_color(options.icon_border_color)
-local icon_opacity = convert_opacity(options.icon_opacity)
-local icons = icon_theme[options.icon_theme] and icon_theme[options.icon_theme][options.theme_style] or icon_theme["fluent"]["outline"]
-local icon_font = icon_theme.font
+local icon_style = {
+    color = convert_color(options.icon_color),
+    border_color = convert_color(options.icon_border_color),
+    opacity = convert_opacity(options.icon_opacity),
+    theme = icon_theme[options.icon_theme] and icon_theme[options.icon_theme][options.theme_style] or icon_theme["fluent"]["outline"],
+    font = icon_theme.font,
+}
 
 -- indicator position
 local function icon_pos(pos_opt)
@@ -140,11 +141,11 @@ end
 local function draw_rectangles()
     if options.themed_icons then
         return string.format([[{\\rDefault\\an%s\\alpha&H%s\\bord%s\\1c&H%s&\\3c&H%s&\\fs%s\\fn%s}%s]],
-            indicator_pos, icon_opacity, options.icon_border_width, icon_color, icon_border_color, options.themed_icon_size, icon_font, icons.pause_icon)
+            indicator_pos, icon_style.opacity, options.icon_border_width, icon_style.color, icon_style.border_color, options.themed_icon_size, icon_style.font, icon_style.theme.pause_icon)
     end
 
     return string.format([[{\\rDefault\\p1\\an%s\\alpha&H%s\\bord%s\\1c&H%s&\\3c&H%s&}m 0 0 l %d 0 l %d %d l 0 %d m %d 0 l %d 0 l %d %d l %d %d{\\p0}]],
-        indicator_pos, icon_opacity, options.icon_border_width, icon_color, icon_border_color, options.rectangles_width, options.rectangles_width, 
+        indicator_pos, icon_style.opacity, options.icon_border_width, icon_style.color, icon_style.border_color, options.rectangles_width, options.rectangles_width, 
         options.rectangles_height, options.rectangles_height, options.rectangles_width + options.rectangles_spacing, 
         options.rectangles_width * 2 + options.rectangles_spacing, options.rectangles_width * 2 + options.rectangles_spacing, 
         options.rectangles_height, options.rectangles_width + options.rectangles_spacing, options.rectangles_height)
@@ -154,19 +155,19 @@ end
 local function draw_triangle()
     if options.themed_icons then
         return string.format([[{\\rDefault\\an%s\\alpha&H%s\\bord%s\\1c&H%s&\\3c&H%s&\\fs%s\\fn%s}%s]],
-            indicator_pos, icon_opacity, options.icon_border_width, icon_color, icon_border_color, options.themed_icon_size, icon_font, icons.play_icon)
+            indicator_pos, icon_style.opacity, options.icon_border_width, icon_style.color, icon_style.border_color, options.themed_icon_size, icon_style.font, icon_style.theme.play_icon)
     end
 
     return string.format([[{\\rDefault\\p1\\an%s\\alpha&H%s\\bord%s\\1c&H%s&\\3c&H%s&}m 0 0 l %d %d l 0 %d{\\p0}]],
-        indicator_pos, icon_opacity, options.icon_border_width, icon_color, icon_border_color, options.triangle_width, options.triangle_height / 2, options.triangle_height)
+        indicator_pos, icon_style.opacity, options.icon_border_width, icon_style.color, icon_style.border_color, options.triangle_width, options.triangle_height / 2, options.triangle_height)
 end
 
 -- mute icon
 local function draw_mute()
     if options.themed_icons then
         return string.format([[{\\rDefault\\an%s\\alpha&H%s\\bord%s\\1c&H%s&\\3c&H%s&\\fs%s\\fn%s}%s]],
-            mute_indicator_pos, icon_opacity, options.icon_border_width,
-            icon_color, icon_border_color, options.mute_icon_size, icon_font, icons.mute_icon)
+            mute_indicator_pos, icon_style.opacity, options.icon_border_width,
+            icon_style.color, icon_style.border_color, options.mute_icon_size, icon_style.font, icon_style.theme.mute_icon)
     end
 
     -- path drawn on a 509.47x430.82 canvas
@@ -189,8 +190,8 @@ local function draw_mute()
         "l 487.07 305 " .. "{\\p0}"
 
     return string.format([[{\\rDefault\\an%s\\alpha&H%s\\bord%s\\1c&H%s&\\3c&H%s&\\fscx%s\\fscy%s}%s]],
-        mute_indicator_pos, icon_opacity, options.icon_border_width,
-        icon_color, icon_border_color, scale, scale, vol_mute)
+        mute_indicator_pos, icon_style.opacity, options.icon_border_width,
+        icon_style.color, icon_style.border_color, scale, scale, vol_mute)
 end
 
 -- draw and update indicator
