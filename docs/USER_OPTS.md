@@ -30,21 +30,22 @@ Create `modernz.conf` in your mpv script-opts directory:
 
 ### OSC behaviour and scaling
 
-| Option               | Value  | Description                                                                                                                                        |
-| -------------------- | ------ | -------------------------------------------------------------------------------------------------------------------------------------------------- |
-| hidetimeout          | 2000   | time (in ms) before OSC hides if no mouse movement                                                                                                 |
-| keep_with_cursor     | yes    | keep OSC visible while cursor hovers over bottom or top bar                                                                                        |
-| fadeduration         | 200    | fade-out duration (in ms), set to `"0"` for no fade                                                                                                |
-| fadein               | no     | whether to enable fade-in effect                                                                                                                   |
-| minmousemove         | 0      | minimum mouse movement (in pixels) required to show OSC                                                                                            |
-| deadzonesize         | 0.75   | controls how much of the window ignores mouse movement for showing the osc; `0.0` always shows on movement, `1.0` only shows when directly hovered |
-| osc_on_seek          | yes    | show OSC when seeking                                                                                                                              |
-| osc_on_start         | both   | show OSC/window controls on start of every file (`no`, `bottom`, `top`, `both`)                                                                    |
-| mouse_seek_pause     | yes    | pause video while seeking with mouse move (on button hold)                                                                                         |
-| force_seek_tooltip   | no     | force show seekbar tooltip on mouse drag, even if not hovering seekbar                                                                             |
-| vidscale             | auto   | scale osc with the video. (set to `"no"` to disable)                                                                                               |
-| scalewindowed        | 1.0    | osc scale factor when windowed                                                                                                                     |
-| scalefullscreen      | 1.0    | osc scale factor when fullscreen                                                                                                                   |
+| Option               | Value   | Description                                                                                                                                        |
+| -------------------- | ------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
+| hidetimeout          | 2000    | time (in ms) before OSC hides if no mouse movement                                                                                                 |
+| keep_with_cursor     | yes     | keep OSC visible while cursor hovers over bottom or top bar                                                                                        |
+| fadeduration         | 200     | fade-out duration (in ms), set to `"0"` for no fade                                                                                                |
+| fadein               | yes     | whether to enable fade-in effect                                                                                                                   |
+| minmousemove         | 0       | minimum mouse movement (in pixels) required to show OSC                                                                                            |
+| deadzonesize         | 0.75    | controls how much of the window ignores mouse movement for showing the osc; `0.0` always shows on movement, `1.0` only shows when directly hovered |
+| deadzone_hide        | instant | hide behavior when cursor enters deadzone or leaves window: `"instant"` or `"timeout"`                                                             |
+| osc_on_seek          | yes     | show OSC when seeking                                                                                                                              |
+| osc_on_start         | both    | show OSC/window controls on start of every file (`no`, `bottom`, `top`, `both`)                                                                    |
+| mouse_seek_pause     | yes     | pause video while seeking with mouse move (on button hold)                                                                                         |
+| force_seek_tooltip   | no      | force show seekbar tooltip on mouse drag, even if not hovering seekbar                                                                             |
+| vidscale             | auto    | scale osc with the video. (set to `"no"` to disable)                                                                                               |
+| scalewindowed        | 1.0     | osc scale factor when windowed                                                                                                                     |
+| scalefullscreen      | 1.0     | osc scale factor when fullscreen                                                                                                                   |
 
 ### Elements display
 
