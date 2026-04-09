@@ -79,6 +79,7 @@ local user_opts = {
     show_window_title = false,             -- show window title in borderless/fullscreen mode
     window_title_font_size = 26,           -- window title font size
     window_controls = true,                -- show window controls (close, minimize, maximize) in borderless/fullscreen
+    windowcontrols_independent = true,     -- show window controls (top bar) and bottom bar independently on hover
 
     -- Subtitle and OSD display settings
     sub_margins = true,                    -- raise subtitles above the OSC when shown
@@ -3458,7 +3459,7 @@ local function process_event(source, what)
             ((state.last_mouseX ~= nil and state.last_mouseY ~= nil) and
                 (math.abs(mouseX - state.last_mouseX) >= user_opts.minmousemove or
                  math.abs(mouseY - state.last_mouseY) >= user_opts.minmousemove)) then
-            if window_controls_enabled() then
+            if window_controls_enabled() and user_opts.windowcontrols_independent then
                 if mouse_in_area("showhide_wc") then
                     show_wc()
                 elseif user_opts.visibility ~= "always" then
@@ -3471,6 +3472,7 @@ local function process_event(source, what)
                 end
             else
                 show_osc()
+                if window_controls_enabled() then show_wc() end
             end
         end
         state.last_mouseX, state.last_mouseY = mouseX, mouseY
@@ -3626,6 +3628,10 @@ local function render()
 
     local osc_areas = {"input"}
     local wc_areas  = {"window-controls", "window-controls-title", "window-controls-ontop"}
+    if not user_opts.windowcontrols_independent then
+        osc_areas = {"input", "window-controls", "window-controls-title", "window-controls-ontop"}
+        wc_areas = osc_areas
+    end
 
     if state.hide_timer then state.hide_timer.timeout = math.huge end
     if not state.keeponpause_active then
