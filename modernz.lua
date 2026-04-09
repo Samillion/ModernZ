@@ -4073,10 +4073,6 @@ local function validate_user_opts()
         end
     end
 
-    -- validate deprecated keeponpause values
-    if user_opts.keeponpause == true then user_opts.keeponpause = "both"
-    elseif user_opts.keeponpause == false then user_opts.keeponpause = "no" end
-
     if user_opts.keeponpause ~= "no" and user_opts.keeponpause ~= "bottombar" and user_opts.keeponpause ~= "both" then
         msg.warn("keeponpause value '" .. tostring(user_opts.keeponpause) .. "' is invalid. Resetting to 'no'.")
         user_opts.keeponpause = "no"
