@@ -25,7 +25,7 @@ Create `modernz.conf` in your mpv script-opts directory:
 | showfullscreen            | yes             | show OSC when fullscreen                                                                                                       |
 | showonselect              | no              | show OSC when a select menu is open                                                                                            |
 | showonpause               | yes             | show OSC when paused                                                                                                           |
-| keeponpause               | no              | disable OSC hide timeout when paused                                                                                           |
+| keeponpause               | no              | keep OSC visible while paused: `"no"`, `"bottombar"`, `"both"`                                                                 |
 | greenandgrumpy            | no              | disable Santa hat in December                                                                                                  |
 
 ### OSC behaviour and scaling
