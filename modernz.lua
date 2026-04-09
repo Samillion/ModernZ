@@ -39,9 +39,10 @@ local user_opts = {
     hidetimeout = 1500,                    -- time (in ms) before OSC hides if no mouse movement
     keep_with_cursor = true,               -- keep OSC visible while cursor hovers over bottom or top bar
     fadeduration = 200,                    -- fade-out duration (in ms), set to 0 for no fade
-    fadein = false,                        -- whether to enable fade-in effect
+    fadein = true,                         -- whether to enable fade-in effect
     minmousemove = 0,                      -- minimum mouse movement (in pixels) required to show OSC
     deadzonesize = 0.75,                   -- size of the deadzone (0.0 = whole screen, 1.0 = no deadzone)
+    deadzone_hide = "instant",             -- hide behavior when cursor enters deadzone or leaves window: "instant" or "timeout"
     osc_on_seek = true,                    -- show OSC when seeking
     osc_on_start = "both",                 -- show OSC on start of every file ("no", "bottom", "top", "both")
     mouse_seek_pause = true,               -- pause video while seeking with mouse move (on button hold)
@@ -2807,6 +2808,12 @@ local function osc_init()
     local have_ch = #state.chapter_list > 0
     local loop = mp.get_property("loop-playlist", "no")
 
+    local function make_escaped_title(source)
+        local title = mp.command_native({"expand-text", source})
+        title = title:gsub("\n", " ")
+        return title ~= "" and mp.command_native({"escape-ass", title}) or "mpv"
+    end
+
     local ne
 
     -- Window controls
@@ -2833,12 +2840,6 @@ local function osc_init()
     ne.hover_pad = 0
     ne.content = (state.window_maximized or state.fullscreen) and icons.window.unmaximize or icons.window.maximize
     ne.eventresponder["mbtn_left_up"] = function () mp.commandv("cycle", (state.fullscreen and "fullscreen" or "window-maximized")) end
-
-    local function make_escaped_title(source)
-        local title = mp.command_native({"expand-text", source})
-        title = title:gsub("\n", " ")
-        return title ~= "" and mp.command_native({"escape-ass", title}) or "mpv"
-    end
 
     -- Window Title
     ne = new_element("windowtitle", "button")
@@ -3101,18 +3102,16 @@ local function osc_init()
     end
 
     --speed
+    local function adjust_speed(delta)
+        local new_speed = state.speed + delta
+        mp.commandv("set", "speed", math.max(0.25, math.min(100, new_speed)))
+    end
     ne = new_element("speed", "button")
     ne.content = function()
         local speed = state.speed
         return string.format(speed % 1 == 0 and "%.1f×" or "%g×", speed)
     end
     ne.tooltipF = user_opts.tooltip_hints and locale.speed_control or nil
-
-    local function adjust_speed(delta)
-        local new_speed = state.speed + delta
-        mp.commandv("set", "speed", math.max(0.25, math.min(100, new_speed)))
-    end
-
     ne.eventresponder["mbtn_left_up"] = function() adjust_speed(user_opts.speed_button_click) end
     ne.eventresponder["mbtn_right_up"] = function() mp.commandv("set", "speed", 1) end
     ne.eventresponder["wheel_up_press"] = function() adjust_speed(user_opts.speed_button_scroll) end
@@ -3145,6 +3144,7 @@ local function osc_init()
             exec(command, download_done)
         end
     end
+
     -- cache info
     ne = new_element("cache_info", "button")
     ne.content = function ()
@@ -3364,8 +3364,19 @@ end
 
 local function mouse_leave()
     if get_hidetimeout() >= 0 and get_touchtimeout() <= 0 then
-        if not state.keeponpause_active then hide_osc() end
-        hide_wc()
+        if user_opts.deadzone_hide == "timeout" then
+            local now = mp.get_time()
+            if state.osc_visible and not state.keeponpause_active then
+                state.showtime = now
+            end
+            if state.wc_visible then
+                state.wc_showtime = now
+            end
+            request_tick()
+        else
+            if not state.keeponpause_active then hide_osc() end
+            hide_wc()
+        end
     end
     -- reset mouse position
     state.last_mouseX, state.last_mouseY = nil, nil
@@ -4021,9 +4032,7 @@ end)
 
 -- validate string type user options
 local function validate_user_opts()
-    if user_opts.window_top_bar ~= "auto" and
-       user_opts.window_top_bar ~= "yes" and
-       user_opts.window_top_bar ~= "no" then
+    if user_opts.window_top_bar ~= "auto" and user_opts.window_top_bar ~= "yes" and user_opts.window_top_bar ~= "no" then
           msg.warn("window_top_bar cannot be '" .. user_opts.window_top_bar .. "'. Ignoring.")
           user_opts.window_top_bar = "auto"
     end
@@ -4033,8 +4042,7 @@ local function validate_user_opts()
         user_opts.seek_handle_size = 0
     end
 
-    if user_opts.volume_control_type ~= "linear" and
-       user_opts.volume_control_type ~= "logarithmic" then
+    if user_opts.volume_control_type ~= "linear" and user_opts.volume_control_type ~= "logarithmic" then
           msg.warn("volumecontrol cannot be '" .. user_opts.volume_control_type .. "'. Ignoring.")
           user_opts.volume_control_type = "linear"
     end
@@ -4054,8 +4062,8 @@ local function validate_user_opts()
         user_opts.window_controls_color, user_opts.held_element_color, user_opts.thumbnail_box_color,
         user_opts.chapter_title_color, user_opts.seekbar_cache_color, user_opts.hover_effect_color,
         user_opts.windowcontrols_close_hover, user_opts.windowcontrols_max_hover, user_opts.windowcontrols_min_hover,
-        user_opts.cache_info_color, user_opts.thumbnail_box_outline,
-        user_opts.nibble_color, user_opts.nibble_current_color, user_opts.seek_handle_color,
+        user_opts.cache_info_color, user_opts.thumbnail_box_outline, user_opts.nibble_color, user_opts.nibble_current_color,
+        user_opts.seek_handle_color,
     }
 
     for _, color in pairs(colors) do
@@ -4080,6 +4088,11 @@ local function validate_user_opts()
     if user_opts.keeponpause ~= "no" and not user_opts.showonpause then
         msg.warn("keeponpause requires showonpause. Setting showonpause=yes.")
         user_opts.showonpause = true
+    end
+
+    if user_opts.deadzone_hide ~= "instant" and user_opts.deadzone_hide ~= "timeout" then
+        msg.warn("deadzone_hide value '" .. tostring(user_opts.deadzone_hide) .. "' is invalid. Resetting to 'instant'.")
+        user_opts.deadzone_hide = "instant"
     end
 
     local watch_later = "," .. ((mp.get_property("options/watch-later-options") or ""):gsub("%s+", "")) .. ","
