@@ -32,7 +32,7 @@ local user_opts = {
     showfullscreen = true,                 -- show OSC when fullscreen
     showonselect = false,                  -- show OSC when a select menu is open
     showonpause = true,                    -- show OSC when paused
-    keeponpause = false,                   -- disable OSC hide timeout when paused
+    keeponpause = "no",                    -- keep OSC visible while paused: "no", "bottombar", "both"
     greenandgrumpy = false,                -- disable Santa hat in December
 
     -- OSC behaviour and scaling
@@ -596,6 +596,7 @@ local state = {
     osd = mp.create_osd_overlay("ass-events"),
     logo_osd = mp.create_osd_overlay("ass-events"),
     new_file_flag = false,                  -- flag to detect new file starts
+    keeponpause_active = false,             -- keeponpause bottombar active state
     chapter_list = {},                      -- sorted by time
     chapter = -1,                           -- current chapter index
     visibility_modes = {},                  -- visibility_modes to cycle through
@@ -3363,7 +3364,7 @@ end
 
 local function mouse_leave()
     if get_hidetimeout() >= 0 and get_touchtimeout() <= 0 then
-        hide_osc()
+        if not state.keeponpause_active then hide_osc() end
         hide_wc()
     end
     -- reset mouse position
@@ -3454,7 +3455,7 @@ local function process_event(source, what)
                 end
                 if mouse_in_area("showhide") then
                     show_osc()
-                elseif user_opts.visibility ~= "always" then
+                elseif user_opts.visibility ~= "always" and not state.keeponpause_active then
                     hide_osc()
                 end
             else
@@ -3616,8 +3617,10 @@ local function render()
     local wc_areas  = {"window-controls", "window-controls-title", "window-controls-ontop"}
 
     if state.hide_timer then state.hide_timer.timeout = math.huge end
-    run_autohide("showtime",    hide_osc, osc_areas)
-    run_autohide("wc_showtime", hide_wc,  wc_areas)
+    if not state.keeponpause_active then
+        run_autohide("showtime", hide_osc, osc_areas)
+    end
+    run_autohide("wc_showtime", hide_wc, wc_areas)
 
     -- actual rendering
     local ass = assdraw.ass_new()
@@ -3759,7 +3762,6 @@ mp.register_event("file-loaded", function()
         user_opts.seekbarkeyframes = mp.get_property_number("duration", 0) > user_opts.automatickeyframelimit
     end
     local oos = user_opts.osc_on_start
-    if oos == true or oos == "yes" then oos = "both" end
     if oos == "bottom" or oos == "both" then show_osc() end
     if oos == "top" or oos == "both" then show_wc() end
 end)
@@ -3962,17 +3964,22 @@ mp.observe_property("pause", "bool", function(_, enabled)
     if user_opts.showonpause and user_opts.visibility ~= "never" then
         state.enabled = enabled
         if enabled then
-            if user_opts.keeponpause then
+            if user_opts.keeponpause == "both" then
                 -- save mode and set visibility to "always" temporarily
                 if not state.keeponpause_restore and user_opts.visibility ~= "always" then
                     state.keeponpause_restore = user_opts.visibility
                 end
                 visibility_mode("always", true)
+            elseif user_opts.keeponpause == "bottombar" then
+                state.keeponpause_active = true
+                show_osc()
             else
                 show_osc()
             end
         else
-            -- restore mode if it was changed by keeponpause
+            -- clear keeponpause bottombar active state
+            state.keeponpause_active = false
+            -- restore mode if it was changed by keeponpause=both
             if state.keeponpause_restore then
                 visibility_mode(state.keeponpause_restore, true)
                 state.keeponpause_restore = nil
@@ -4066,7 +4073,11 @@ local function validate_user_opts()
         end
     end
 
-    if user_opts.keeponpause and not user_opts.showonpause then
+    if user_opts.keeponpause ~= "no" and user_opts.keeponpause ~= "bottombar" and user_opts.keeponpause ~= "both" then
+        msg.warn("keeponpause value '" .. tostring(user_opts.keeponpause) .. "' is invalid. Resetting to 'no'.")
+        user_opts.keeponpause = "no"
+    end
+    if user_opts.keeponpause ~= "no" and not user_opts.showonpause then
         msg.warn("keeponpause requires showonpause. Setting showonpause=yes.")
         user_opts.showonpause = true
     end
