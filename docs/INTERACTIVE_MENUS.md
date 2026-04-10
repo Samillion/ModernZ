@@ -17,7 +17,7 @@ For detailed information on how to interact with these controls, please refer to
 ## Context Menu
 For the best experience, make sure you’re running the latest version of mpv (git/master) to take advantage of all recently added features.
 
-<img width="985" height="587" alt="image" src="https://github.com/user-attachments/assets/33131b6c-5e56-4f64-bb9a-e6d91e1bbf06" />
+<img width="985" height="587" alt="modernz-menu" src="https://github.com/user-attachments/assets/33131b6c-5e56-4f64-bb9a-e6d91e1bbf06" />
 
 To enable context-menu:
 - Bind context menu in your `input.conf`
