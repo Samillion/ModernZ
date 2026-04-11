@@ -1,6 +1,6 @@
 ## Interactive Menus
 
-https://github.com/user-attachments/assets/a12be7c5-9d14-41f7-8b04-bc63d79c4213
+https://github.com/user-attachments/assets/43b92663-d69a-4549-87cd-e60cff89d395
 
 ModernZ integrates mpv’s built-in [`console.lua`](https://github.com/mpv-player/mpv/blob/master/player/lua/console.lua) and [`select.lua`](https://github.com/mpv-player/mpv/blob/master/player/lua/select.lua) scripts, available in mpv starting from **v0.39+**.
 
@@ -15,14 +15,9 @@ These integrations are accessible through the following interface elements:
 For detailed information on how to interact with these controls, please refer to the [Controls Manual](/docs/CONTROLS.md).
 
 ## Context Menu
-For the best experience, make sure you’re running the latest version of mpv (git/master) to take advantage of all recently added features, especially when using the `modern-compact` layout.
+For the best experience, make sure you’re running the latest version of mpv (git/master) to take advantage of all recently added features.
 
-Because the new layout is more compact, additional options remain easily accessible via: (thanks to @guidocella)
-
-- Right-click the **Playlist** button (Menu)
-- Open the new **Context Menu**
-
-![modernz-menu-context](https://github.com/user-attachments/assets/b345c64b-3a9e-4885-9340-0d224a43e40d)
+<img width="985" height="587" alt="modernz-menu" src="https://github.com/user-attachments/assets/33131b6c-5e56-4f64-bb9a-e6d91e1bbf06" />
 
 To enable context-menu:
 - Bind context menu in your `input.conf`
@@ -30,8 +25,58 @@ To enable context-menu:
 - Optional: To adjust the context menu, you can use the default [menu.conf](https://github.com/mpv-player/mpv/blob/master/etc/menu.conf) as a reference
   - Place your modified `menu.conf` in your mpv config folder, same location as `mpv.conf`
   - As an example, here is a modified [menu.conf](https://github.com/Samillion/mpv-conf/blob/master/menu.conf)
+  - To not use native OS context-menu, you can add `load-context-menu=yes` to your `mpv.conf`.
 
-Additionally, to not use native Windows context-menu, you can add `load-context-menu=yes` to your `mpv.conf`.
+#### Context menu list for ModernZ in `menu.conf`:
+
+You can add or remove any of the list items to suit your needs. [[full list of ModernZ options](/docs/USER_OPTS.md)]
+
+```
+
+&ModernZ
+	&Layout
+		&Modern				no-osd change-list script-opts append modernz-layout=modern
+		Modern &Compact		no-osd change-list script-opts append modernz-layout=modern-compact
+
+	&Theme
+		&Icon Theme
+            &Fluent		no-osd change-list script-opts append modernz-icon_theme=fluent
+            &Material	no-osd change-list script-opts append modernz-icon_theme=material
+		Icon &Style
+            &Mixed		no-osd change-list script-opts append modernz-icon_style=mixed
+            &Filled		no-osd change-list script-opts append modernz-icon_style=filled
+            &Outline	no-osd change-list script-opts append modernz-icon_style=outline
+
+	&Seekbar
+        &Persistent Progress	script-binding modernz/progress-toggle
+        &Seekbar Height
+            &small		no-osd change-list script-opts append modernz-seekbar_height=small
+            &medium		no-osd change-list script-opts append modernz-seekbar_height=medium
+            &large		no-osd change-list script-opts append modernz-seekbar_height=large
+            &xlarge		no-osd change-list script-opts append modernz-seekbar_height=xlarge
+        &Chapter Marker
+            &gap			no-osd change-list script-opts append modernz-nibbles_style=gap
+            &triangle		no-osd change-list script-opts append modernz-nibbles_style=triangle
+            &bar			no-osd change-list script-opts append modernz-nibbles_style=bar
+            &single-bar		no-osd change-list script-opts append modernz-nibbles_style=single-bar
+
+	&Cycle OSC visibility	script-binding modernz/visibility
+
+	L&anguage
+		Defa&ult				no-osd change-list script-opts append modernz-language=default
+		&Arabic					no-osd change-list script-opts append modernz-language=ar
+		&Danish					no-osd change-list script-opts append modernz-language=dk
+		&English				no-osd change-list script-opts append modernz-language=en
+		&French					no-osd change-list script-opts append modernz-language=fr
+		&German					no-osd change-list script-opts append modernz-language=de
+		&Icelandic				no-osd change-list script-opts append modernz-language=is
+		&Japanese				no-osd change-list script-opts append modernz-language=jp
+		&Polish					no-osd change-list script-opts append modernz-language=pl
+		&Russian				no-osd change-list script-opts append modernz-language=ru
+		&Spanish				no-osd change-list script-opts append modernz-language=es
+		Simplified &Chinese		no-osd change-list script-opts append modernz-language=zh
+
+```
 
 ### Open File Dialog (Optional)
 The solution below only works for Windows, however you can search for one that works for your operating system in [mpv user scripts](https://github.com/mpv-player/mpv/wiki/User-Scripts) or [awesome-mpv](https://github.com/stax76/awesome-mpv), then apply it the same way.

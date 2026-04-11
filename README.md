@@ -175,6 +175,36 @@ If you find the seek bar too thin or too thick, you can easily adjust its size u
     </tr>
 </table>
 
+### Chapter Markers
+You can change the chapter markers style by using the `nibbles_style` option, which accepts: `gap`, `triangle`, `bar`, and `single-bar`
+
+<table>
+    <tr>
+        <th><code>gap</code> (Default)</th>
+        <th><code>triangle</code></th>
+    </tr>
+    <tr>
+        <td>
+            <img width="500" height="110" alt="chapter_gap" src="https://github.com/user-attachments/assets/c89cf611-36ec-4668-86ca-c4b4ebd73122" />
+        </td>
+        <td>
+            <img width="500" height="110" alt="chapter_triangle" src="https://github.com/user-attachments/assets/2cfc504e-086c-4392-bab9-aff90b0fac0c" />
+        </td>
+    </tr>
+    <tr>
+        <th><code>bar</code></th>
+        <th><code>single-bar</code></th>
+    </tr>
+    <tr>
+        <td>
+            <img width="500" height="110" alt="chapter_bar" src="https://github.com/user-attachments/assets/b609661d-8ec3-4146-ba3c-853dc802e64f" />
+        </td>
+        <td>
+            <img width="500" height="110" alt="chapter_singlebar" src="https://github.com/user-attachments/assets/03696a4c-8dc5-44f6-8090-b27e01562526" />
+        </td>
+    </tr>
+</table>
+
 ### Colors
 
 Not a fan of white buttons and text? You have complete control to customize colors to perfectly reflect your style.
@@ -273,12 +303,12 @@ For a full list of interactions, check out the [Button Interactions Guide](/docs
 ModernZ doesn't set keybinds by default to avoid interfering with your current setup. You can add keybinds in `input.conf` if you prefer:
 
 ```
-v   script-binding modernz/visibility               # Cycle visibility modes
-V   script-message-to modernz osc-visibility cycle  # Set a visibility mode: cycle, auto, always, never
-w   script-binding modernz/progress-toggle          # Toggle progress bar
-x   script-message-to modernz osc-show              # Show OSC
-y   script-message-to modernz osc-hide              # Hide OSC
-z   script-message-to modernz osc-idlescreen        # Toggle idle screen
+v   script-binding modernz/visibility              # Cycle visibility modes
+V   script-message-to modernz osc-visibility cycle # Set a visibility mode: cycle, auto, always, never
+w   script-binding modernz/progress-toggle         # Toggle persistent progress
+x   script-message-to modernz osc-show             # Show OSC
+y   script-message-to modernz osc-hide             # Hide OSC
+z   script-message-to modernz osc-idlescreen       # Toggle idle screen
 ```
 
 ## Translations

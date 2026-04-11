@@ -32,16 +32,17 @@ local user_opts = {
     showfullscreen = true,                 -- show OSC when fullscreen
     showonselect = false,                  -- show OSC when a select menu is open
     showonpause = true,                    -- show OSC when paused
-    keeponpause = false,                   -- disable OSC hide timeout when paused
+    keeponpause = "no",                    -- keep OSC visible while paused: "no", "bottombar", "both"
     greenandgrumpy = false,                -- disable Santa hat in December
 
     -- OSC behaviour and scaling
     hidetimeout = 1500,                    -- time (in ms) before OSC hides if no mouse movement
     keep_with_cursor = true,               -- keep OSC visible while cursor hovers over bottom or top bar
     fadeduration = 200,                    -- fade-out duration (in ms), set to 0 for no fade
-    fadein = false,                        -- whether to enable fade-in effect
+    fadein = true,                         -- whether to enable fade-in effect
     minmousemove = 0,                      -- minimum mouse movement (in pixels) required to show OSC
     deadzonesize = 0.75,                   -- size of the deadzone (0.0 = whole screen, 1.0 = no deadzone)
+    deadzone_hide = "instant",             -- hide behavior when cursor enters deadzone or leaves window: "instant" or "timeout"
     osc_on_seek = true,                    -- show OSC when seeking
     osc_on_start = "both",                 -- show OSC on start of every file ("no", "bottom", "top", "both")
     mouse_seek_pause = true,               -- pause video while seeking with mouse move (on button hold)
@@ -78,6 +79,7 @@ local user_opts = {
     show_window_title = false,             -- show window title in borderless/fullscreen mode
     window_title_font_size = 26,           -- window title font size
     window_controls = true,                -- show window controls (close, minimize, maximize) in borderless/fullscreen
+    windowcontrols_independent = true,     -- show window controls (top bar) and bottom bar independently on hover
 
     -- Subtitle and OSD display settings
     sub_margins = true,                    -- raise subtitles above the OSC when shown
@@ -598,6 +600,7 @@ local state = {
     osd = mp.create_osd_overlay("ass-events"),
     logo_osd = mp.create_osd_overlay("ass-events"),
     new_file_flag = false,                  -- flag to detect new file starts
+    keeponpause_active = false,             -- keeponpause bottombar active state
     chapter_list = {},                      -- sorted by time
     chapter = -1,                           -- current chapter index
     visibility_modes = {},                  -- visibility_modes to cycle through
@@ -2857,6 +2860,12 @@ local function osc_init()
     local have_ch = #state.chapter_list > 0
     local loop = mp.get_property("loop-playlist", "no")
 
+    local function make_escaped_title(source)
+        local title = mp.command_native({"expand-text", source})
+        title = title:gsub("\n", " ")
+        return title ~= "" and mp.command_native({"escape-ass", title}) or "mpv"
+    end
+
     local ne
 
     -- Window controls
@@ -2883,12 +2892,6 @@ local function osc_init()
     ne.hover_pad = 0
     ne.content = (state.window_maximized or state.fullscreen) and icons.window.unmaximize or icons.window.maximize
     ne.eventresponder["mbtn_left_up"] = function () mp.commandv("cycle", (state.fullscreen and "fullscreen" or "window-maximized")) end
-
-    local function make_escaped_title(source)
-        local title = mp.command_native({"expand-text", source})
-        title = title:gsub("\n", " ")
-        return title ~= "" and mp.command_native({"escape-ass", title}) or "mpv"
-    end
 
     -- Window Title
     ne = new_element("windowtitle", "button")
@@ -3152,18 +3155,16 @@ local function osc_init()
     end
 
     --speed
+    local function adjust_speed(delta)
+        local new_speed = state.speed + delta
+        mp.commandv("set", "speed", math.max(0.25, math.min(100, new_speed)))
+    end
     ne = new_element("speed", "button")
     ne.content = function()
         local speed = state.speed
         return string.format(speed % 1 == 0 and "%.1f×" or "%g×", speed)
     end
     ne.tooltipF = user_opts.tooltip_hints and locale.speed_control or nil
-
-    local function adjust_speed(delta)
-        local new_speed = state.speed + delta
-        mp.commandv("set", "speed", math.max(0.25, math.min(100, new_speed)))
-    end
-
     ne.eventresponder["mbtn_left_up"] = function() adjust_speed(user_opts.speed_button_click) end
     ne.eventresponder["mbtn_right_up"] = function() mp.commandv("set", "speed", 1) end
     ne.eventresponder["wheel_up_press"] = function() adjust_speed(user_opts.speed_button_scroll) end
@@ -3196,6 +3197,7 @@ local function osc_init()
             exec(command, download_done)
         end
     end
+
     -- cache info
     ne = new_element("cache_info", "button")
     ne.content = function ()
@@ -3417,8 +3419,19 @@ end
 
 local function mouse_leave()
     if get_hidetimeout() >= 0 and get_touchtimeout() <= 0 then
-        hide_osc()
-        hide_wc()
+        if user_opts.deadzone_hide == "timeout" then
+            local now = mp.get_time()
+            if state.osc_visible and not state.keeponpause_active then
+                state.showtime = now
+            end
+            if state.wc_visible then
+                state.wc_showtime = now
+            end
+            request_tick()
+        else
+            if not state.keeponpause_active then hide_osc() end
+            hide_wc()
+        end
     end
     -- reset mouse position
     state.last_mouseX, state.last_mouseY = nil, nil
@@ -3500,7 +3513,7 @@ local function process_event(source, what)
             ((state.last_mouseX ~= nil and state.last_mouseY ~= nil) and
                 (math.abs(mouseX - state.last_mouseX) >= user_opts.minmousemove or
                  math.abs(mouseY - state.last_mouseY) >= user_opts.minmousemove)) then
-            if window_controls_enabled() then
+            if window_controls_enabled() and user_opts.windowcontrols_independent then
                 if mouse_in_area("showhide_wc") then
                     show_wc()
                 elseif user_opts.visibility ~= "always" then
@@ -3508,11 +3521,12 @@ local function process_event(source, what)
                 end
                 if mouse_in_area("showhide") then
                     show_osc()
-                elseif user_opts.visibility ~= "always" then
+                elseif user_opts.visibility ~= "always" and not state.keeponpause_active then
                     hide_osc()
                 end
             else
                 show_osc()
+                if window_controls_enabled() then show_wc() end
             end
         end
         state.last_mouseX, state.last_mouseY = mouseX, mouseY
@@ -3668,10 +3682,16 @@ local function render()
 
     local osc_areas = {"input"}
     local wc_areas  = {"window-controls", "window-controls-title", "window-controls-ontop"}
+    if not user_opts.windowcontrols_independent then
+        osc_areas = {"input", "window-controls", "window-controls-title", "window-controls-ontop"}
+        wc_areas = osc_areas
+    end
 
     if state.hide_timer then state.hide_timer.timeout = math.huge end
-    run_autohide("showtime",    hide_osc, osc_areas)
-    run_autohide("wc_showtime", hide_wc,  wc_areas)
+    if not state.keeponpause_active then
+        run_autohide("showtime", hide_osc, osc_areas)
+    end
+    run_autohide("wc_showtime", hide_wc, wc_areas)
 
     -- actual rendering
     local ass = assdraw.ass_new()
@@ -3813,7 +3833,6 @@ mp.register_event("file-loaded", function()
         user_opts.seekbarkeyframes = mp.get_property_number("duration", 0) > user_opts.automatickeyframelimit
     end
     local oos = user_opts.osc_on_start
-    if oos == true or oos == "yes" then oos = "both" end
     if oos == "bottom" or oos == "both" then show_osc() end
     if oos == "top" or oos == "both" then show_wc() end
 end)
@@ -4016,17 +4035,22 @@ mp.observe_property("pause", "bool", function(_, enabled)
     if user_opts.showonpause and user_opts.visibility ~= "never" then
         state.enabled = enabled
         if enabled then
-            if user_opts.keeponpause then
+            if user_opts.keeponpause == "both" then
                 -- save mode and set visibility to "always" temporarily
                 if not state.keeponpause_restore and user_opts.visibility ~= "always" then
                     state.keeponpause_restore = user_opts.visibility
                 end
                 visibility_mode("always", true)
+            elseif user_opts.keeponpause == "bottombar" then
+                state.keeponpause_active = true
+                show_osc()
             else
                 show_osc()
             end
         else
-            -- restore mode if it was changed by keeponpause
+            -- clear keeponpause bottombar active state
+            state.keeponpause_active = false
+            -- restore mode if it was changed by keeponpause=both
             if state.keeponpause_restore then
                 visibility_mode(state.keeponpause_restore, true)
                 state.keeponpause_restore = nil
@@ -4068,9 +4092,7 @@ end)
 
 -- validate string type user options
 local function validate_user_opts()
-    if user_opts.window_top_bar ~= "auto" and
-       user_opts.window_top_bar ~= "yes" and
-       user_opts.window_top_bar ~= "no" then
+    if user_opts.window_top_bar ~= "auto" and user_opts.window_top_bar ~= "yes" and user_opts.window_top_bar ~= "no" then
           msg.warn("window_top_bar cannot be '" .. user_opts.window_top_bar .. "'. Ignoring.")
           user_opts.window_top_bar = "auto"
     end
@@ -4080,8 +4102,7 @@ local function validate_user_opts()
         user_opts.seek_handle_size = 0
     end
 
-    if user_opts.volume_control_type ~= "linear" and
-       user_opts.volume_control_type ~= "logarithmic" then
+    if user_opts.volume_control_type ~= "linear" and user_opts.volume_control_type ~= "logarithmic" then
           msg.warn("volumecontrol cannot be '" .. user_opts.volume_control_type .. "'. Ignoring.")
           user_opts.volume_control_type = "linear"
     end
@@ -4120,9 +4141,18 @@ local function validate_user_opts()
         end
     end
 
-    if user_opts.keeponpause and not user_opts.showonpause then
+    if user_opts.keeponpause ~= "no" and user_opts.keeponpause ~= "bottombar" and user_opts.keeponpause ~= "both" then
+        msg.warn("keeponpause value '" .. tostring(user_opts.keeponpause) .. "' is invalid. Resetting to 'no'.")
+        user_opts.keeponpause = "no"
+    end
+    if user_opts.keeponpause ~= "no" and not user_opts.showonpause then
         msg.warn("keeponpause requires showonpause. Setting showonpause=yes.")
         user_opts.showonpause = true
+    end
+
+    if user_opts.deadzone_hide ~= "instant" and user_opts.deadzone_hide ~= "timeout" then
+        msg.warn("deadzone_hide value '" .. tostring(user_opts.deadzone_hide) .. "' is invalid. Resetting to 'instant'.")
+        user_opts.deadzone_hide = "instant"
     end
 
     local watch_later = "," .. ((mp.get_property("options/watch-later-options") or ""):gsub("%s+", "")) .. ","
