@@ -1245,39 +1245,39 @@ local function get_chapter(possec)
     end
 end
 
--- Computes the seekbar handle's screen position and radius, without drawing anything.
--- Returns three values: xp (x position), rh (radius), is_active (hovered or being dragged).
+-- Computes handle position and radius without drawing
+-- Returns handle position, radius, and whether the handle is active (hovered or dragged)
 local function get_seekbar_handle_pos(element)
     local pos = element.slider.posF()
     if not pos then return 0, 0, false end
+
     local elem_geo = element.layout.geometry
-    -- radius is a fraction of the element height, controlled by seek_handle_size (0 = hidden, 1 = full)
-    local rh = user_opts.seek_handle_size * elem_geo.h / 2
-    -- xp is the horizontal pixel offset from the left edge of the slider element
-    local xp = get_slider_ele_pos_for(element, pos)
-    local handle_hovered = mouse_hit_coords(
-        element.hitbox.x1 + xp - rh, element.hitbox.y1 + elem_geo.h / 2 - rh,
-        element.hitbox.x1 + xp + rh, element.hitbox.y1 + elem_geo.h / 2 + rh
+    local handle_radius = user_opts.seek_handle_size * elem_geo.h / 2
+    local handle_x = get_slider_ele_pos_for(element, pos)
+    local center_y = elem_geo.h / 2
+
+    local mouse_over_handle = mouse_hit_coords(
+        element.hitbox.x1 + handle_x - handle_radius,
+        element.hitbox.y1 + center_y - handle_radius,
+        element.hitbox.x1 + handle_x + handle_radius,
+        element.hitbox.y1 + center_y + handle_radius
     ) and element.enabled
-    local is_active = handle_hovered or element.state.handle_drag
-    if rh > 0 then
+
+    local is_active = mouse_over_handle or element.state.handle_drag
+
+    if handle_radius > 0 then
         if is_active then
-            -- grow the handle while active, scaled by slider_hover_size
-            rh = rh * (user_opts.slider_hover_size / 100)
-            -- clamp xp so the grown handle never overflows past the ends of the bar
-            xp = limit_range(rh, elem_geo.w - rh, xp)
+            handle_radius = handle_radius * (user_opts.slider_hover_size / 100)
+            handle_x = limit_range(handle_radius, elem_geo.w - handle_radius, handle_x)
         end
-        return xp, rh, is_active
+        return handle_x, handle_radius, is_active
     end
-    -- seek_handle_size is 0, handle is disabled
-    return xp, 0, false
+
+    return handle_x, 0, false
 end
 
--- Resets the ASS drawing context and starts a new layer in the given fill color.
--- Must be called before each ass_draw_cir_cw() call when drawing the handle,
--- because each circle needs its own isolated style state (color, blur, border).
--- Without this reset, the color from a previous draw call would bleed through.
-local function handle_begin_layer(element, elem_ass, color, anim_override)
+-- Prepares elem_ass for a new draw layer with the given color
+local function begin_draw_layer(element, elem_ass, color, anim_override)
     elem_ass:draw_stop()
     elem_ass:merge(element.style_ass)
     ass_append_alpha(elem_ass, element.layout.alpha, 0, nil, anim_override)
@@ -1285,38 +1285,32 @@ local function handle_begin_layer(element, elem_ass, color, anim_override)
     elem_ass:merge(element.static_ass)
 end
 
--- Draws the seekbar handle at the precomputed position (xp) and radius (rh).
--- If a border is configured, two concentric circles are drawn using the painter's algorithm:
---   1. A larger outer circle in the border color  (radius = rh)
---   2. A smaller inner circle in the fill color   (radius = inner_radius)
--- The outer circle's rim that isn't covered by the inner circle becomes the visible border ring.
+-- Draws a handle on the seekbar using precomputed position and radius
+local function draw_seekbar_handle(element, elem_ass, handle_x, handle_radius, anim_override, is_active)
+    if handle_radius <= 0 then return end
 
-local function draw_seekbar_handle(element, elem_ass, xp, rh, anim_override, handle_hovered)
-    if rh <= 0 then return end
-
-    local cy = element.layout.geometry.h / 2   -- vertical center of the element
+    local center_y = element.layout.geometry.h / 2
     local slider_lo = element.layout.slider
-    -- pick fill color from the slider's layout (set per-slider in layouts), fall back to side buttons color
+
     local fill_color = slider_lo.handle_color or user_opts.side_buttons_color
-    -- border thickness as a ratio of rh: shrinks on hover to give a subtle active state
-    local border_ratio = handle_hovered and user_opts.seek_handle_border_hover_size or user_opts.seek_handle_border_size
-    local border_color = slider_lo.handle_border and border_ratio > 0 and slider_lo.handle_border
-    local has_border = border_color ~= nil and border_color ~= false
+    local border_color = slider_lo.handle_border
+    local border_thickness = is_active
+        and user_opts.seek_handle_border_hover_size
+        or  user_opts.seek_handle_border_size
+    local has_border = border_color and border_color ~= "" and border_thickness > 0
 
     if has_border then
         -- inner_radius is how far the fill circle extends inward from the outer edge
-        -- e.g. border_ratio=0.45, rh=10 → inner_radius=5.5, leaving a 4.5px border ring
-        local inner_radius = rh * (1 - border_ratio)
-
-        handle_begin_layer(element, elem_ass, border_color, anim_override)
-        ass_draw_cir_cw(elem_ass, xp, cy, rh)           -- outer circle: border color fills the full handle area
-
-        handle_begin_layer(element, elem_ass, fill_color, anim_override)
-        ass_draw_cir_cw(elem_ass, xp, cy, inner_radius) -- inner circle: fill color painted on top, hiding the center
+        local inner_radius = handle_radius * (1 - border_thickness)
+        -- full circle in border color, then smaller circle in fill color on top
+        begin_draw_layer(element, elem_ass, border_color, anim_override)
+        ass_draw_cir_cw(elem_ass, handle_x, center_y, handle_radius)
+        begin_draw_layer(element, elem_ass, fill_color, anim_override)
+        ass_draw_cir_cw(elem_ass, handle_x, center_y, inner_radius)
     else
         -- no border configured, just draw a single solid circle
-        handle_begin_layer(element, elem_ass, fill_color, anim_override)
-        ass_draw_cir_cw(elem_ass, xp, cy, rh)
+        begin_draw_layer(element, elem_ass, fill_color, anim_override)
+        ass_draw_cir_cw(elem_ass, handle_x, center_y, handle_radius)
     end
 end
 
@@ -1618,10 +1612,10 @@ local function render_elements(master_ass, osc_vis, wc_vis)
                 ass_append_alpha(elem_ass, element.layout.alpha, 0, nil, anim_override)
                 elem_ass:merge(element.static_ass)
 
-                local xp, rh, handle_hovered = get_seekbar_handle_pos(element) -- get handle position/radius
+                local handle_x, handle_radius, is_active = get_seekbar_handle_pos(element) -- get handle position/radius
                 draw_seekbar_progress(element, elem_ass)
-                draw_seekbar_ranges(element, elem_ass, xp, rh)
-                draw_seekbar_handle(element, elem_ass, xp, rh, anim_override, handle_hovered) -- draw handle on top of progress
+                draw_seekbar_ranges(element, elem_ass, handle_x, handle_radius)
+                draw_seekbar_handle(element, elem_ass, handle_x, handle_radius, anim_override, is_active) -- draw handle on top of progress
 
                 elem_ass:draw_stop()
 
@@ -3267,8 +3261,8 @@ local function osc_init()
     end
     local function seekbar_drag_start(element)
         element.state.mbtnleft = true
-        local _, _, hovered = get_seekbar_handle_pos(element)
-        element.state.handle_drag = hovered
+        local _, _, clicked_on_handle = get_seekbar_handle_pos(element)
+        element.state.handle_drag = clicked_on_handle
         element.state.was_paused = mp.get_property_bool("pause")
         state.playing_and_seeking = true
         if not element.state.was_paused and user_opts.mouse_seek_pause then
@@ -4123,8 +4117,12 @@ local function validate_user_opts()
         user_opts.chapter_title_color, user_opts.seekbar_cache_color, user_opts.hover_effect_color,
         user_opts.windowcontrols_close_hover, user_opts.windowcontrols_max_hover, user_opts.windowcontrols_min_hover,
         user_opts.cache_info_color, user_opts.thumbnail_box_outline, user_opts.nibble_color, user_opts.nibble_current_color,
-        user_opts.seek_handle_color, user_opts.seek_handle_border_color
+        user_opts.seek_handle_color,
     }
+
+    if user_opts.seek_handle_border_color ~= "" then
+        colors[#colors + 1] = user_opts.seek_handle_border_color
+    end
 
     for _, color in pairs(colors) do
         if color:find("^#%x%x%x%x%x%x$") == nil then
