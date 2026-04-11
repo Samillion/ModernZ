@@ -66,6 +66,7 @@ ModernZ currently includes translations for the following languages:
     "en": {
         "idle": "Drop files or URLs here to play",
         "na": "Not available",
+        "unknown": "Unknown",
         "video": "Video",
         "audio": "Audio",
         "subtitle": "Subtitle",
@@ -130,6 +131,7 @@ ModernZ currently includes translations for the following languages:
 | ---------------------------------------------- | ------------------------------ | ---------------- |
 | `idle`                                         | Idle message                   | State label      |
 | `na`                                           | Not available                  | Text label       |
+| `unknown`                                      | Unknown                        | Text label       |
 | `video`                                        | Video                          | Text label       |
 | `audio`                                        | Audio tracks                   | Button label     |
 | `subtitle`                                     | Subtitle tracks                | Button label     |
