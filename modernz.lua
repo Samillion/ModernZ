@@ -1741,7 +1741,11 @@ local function render_elements(master_ass, osc_vis, wc_vis)
             end
 
             -- add tooltip for button elements
-            if element.tooltipF ~= nil and element.enabled then
+            local seeking_with_force_tooltip = user_opts.force_seek_tooltip
+                and state.mouse_down_counter > 0
+                and state.playing_and_seeking
+
+            if element.tooltipF ~= nil and element.enabled and not seeking_with_force_tooltip then
                 local hb = element.hover_box
                 if (hb and mouse_hit_coords(hb.x1, hb.y1, hb.x2, hb.y2) or mouse_hit(element)) then
                     local tooltiplabel
