@@ -143,7 +143,8 @@ local user_opts = {
     seekbarfg_color = "#FB8C00",           -- color of the seekbar progress
     seekbarbg_color = "#94754F",           -- color of the remaining seekbar
     seekbar_cache_color = "#918F8E",       -- color of the cache ranges on the seekbar
-    seek_handle_color = "#FB8C00",         -- color of the seekbar handle
+    seek_handle_color = "#94754F",         -- color of the seekbar handle
+    seek_handle_border_color = "#FB8C00",  -- inner border color drawn inside the seekbar handle (set to "" to disable)
     volumebar_match_seek_color = false,    -- match volume bar color with seekbar color (ignores side_buttons_color)
     time_color = "#FFFFFF",                -- color of the timestamps (below seekbar)
     chapter_title_color = "#FFFFFF",       -- color of the chapter title (above seekbar)
@@ -176,10 +177,9 @@ local user_opts = {
     tooltip_hints = true,                  -- enable tooltips for most buttons. seek and volume tooltips are always enabled
 
     -- Progress bar settings
-    seek_handle_size = 1,                  -- size ratio of the seek handle (range: 0 ~ 1)
-    seek_handle_border_color = "#454545",  -- inner border color drawn inside the seekbar handle (set to "" to disable)
-    seek_handle_border_size = 0.45,        -- border thickness as a fraction of the handle radius
-    seek_handle_border_hover_size = 0.28,  -- border thickness when handle is hovered (set equal to seek_handle_border_size to disable)
+    seek_handle_size = 0.8,                -- size ratio of the seek handle (range: 0 ~ 1)
+    seek_handle_border_size = 0.35,        -- border thickness as a fraction of the handle radius
+    seek_handle_border_hover_size = 0.25,  -- border thickness when handle is hovered (set equal to seek_handle_border_size to disable)
     seekbar_height = "medium",             -- seekbar height preset: "small", "medium", "large", "xlarge"
     seekrange = true,                      -- show seek range overlay
     seekrangealpha = 150,                  -- transparency of the seek range
@@ -1217,7 +1217,9 @@ local function prepare_elements()
         -- if the element is supposed to be disabled,
         -- style it accordingly and kill the eventresponders
         if not element.enabled then
-            element.layout.alpha[1] = 215
+            if element.name ~= "seekbar" then
+                element.layout.alpha[1] = 215
+            end
             if not (element.name == "sub_track" or element.name == "audio_track" or element.name == "playlist") then -- keep these to display tooltips
                 element.eventresponder = nil
             end
@@ -1379,7 +1381,7 @@ local function draw_seekbar_ranges(element, elem_ass, xp, rh, override_alpha, in
     end
 
     for _, range in pairs(seekRanges) do
-        local pstart = math.max(0, get_slider_ele_pos_for(element, range["start"]) - slider_lo.gap)
+        local pstart = math.max(xp, get_slider_ele_pos_for(element, range["start"]) - slider_lo.gap)
         local pend = math.min(elem_geo.w, get_slider_ele_pos_for(element, range["end"]) + slider_lo.gap)
 
         -- round edge only when cache range reaches start/end
@@ -1422,7 +1424,7 @@ local function draw_seekbar_nibbles(element, elem_ass)
 
     if slider_lo.nibbles_style == "gap" and element.name == "seekbar" then
         local radius = slider_lo.radius
-        local bg_alpha = elements["seekbarbg"] and elements["seekbarbg"].layout.alpha[1] or 128
+        local bg_alpha = 0
         elem_ass:draw_stop()
         elem_ass:merge(element.style_ass)
         ass_append_alpha(elem_ass, element.layout.alpha, bg_alpha)
@@ -1834,10 +1836,13 @@ local function render_persistent_progress(master_ass)
         elem_ass:merge(element.static_ass)
 
         -- draw pos marker
+        local pos = element.slider.posF and element.slider.posF()
+        local xp = pos and get_slider_ele_pos_for(element, pos) or 0
+
         draw_seekbar_progress(element, elem_ass)
 
         if user_opts.persistent_buffer then
-            draw_seekbar_ranges(element, elem_ass, nil, nil, nil, true)
+            draw_seekbar_ranges(element, elem_ass, xp, 0, nil, true)
         end
 
         elem_ass:draw_stop()
@@ -2182,8 +2187,7 @@ layouts["modern"] = function ()
     lo.layer = 15
     lo.style = osc_styles.seekbar_bg
     lo.box.radius = user_opts.slider_rounded_corners and seekbar_height_style.radius or 0
-    lo.alpha[1] = 128
-    lo.alpha[3] = 128
+    lo.alpha[1] = 0
 
     lo = add_layout("seekbar")
     local seekbar_h = 18
@@ -2315,7 +2319,7 @@ layouts["modern"] = function ()
         lo = add_layout("volumebarbg")
         lo.geometry = {x = start_x, y = refY - (user_opts.osc_height / 2), an = 4, w = 55, h = 4}
         lo.layer = 15
-        lo.alpha[1] = 128
+        lo.alpha[1] = 0
         lo.style = user_opts.volumebar_match_seek_color and osc_styles.seekbar_bg or osc_styles.volumebar_bg
         lo.box.radius = user_opts.slider_rounded_corners and 2 or 0
 
@@ -2451,8 +2455,7 @@ layouts["modern-compact"] = function ()
     lo.layer = 15
     lo.style = osc_styles.seekbar_bg
     lo.box.radius = user_opts.slider_rounded_corners and seekbar_height_style.radius or 0
-    lo.alpha[1] = 152
-    lo.alpha[3] = 128
+    lo.alpha[1] = 0
 
     lo = add_layout("seekbar")
     local seekbar_h = 18
@@ -2582,7 +2585,7 @@ layouts["modern-compact"] = function ()
             lo = add_layout("volumebarbg")
             lo.geometry = {x = start_x, y = refY - (user_opts.osc_height / 2), an = 4, w = 55, h = 4}
             lo.layer = 15
-            lo.alpha[1] = 128
+            lo.alpha[1] = 0
             lo.style = user_opts.volumebar_match_seek_color and osc_styles.seekbar_bg or osc_styles.volumebar_bg
             lo.box.radius = user_opts.slider_rounded_corners and 2 or 0
 
@@ -2706,7 +2709,7 @@ layouts["modern-image"] = function ()
         lo = add_layout("zoom_control_bg")
         lo.geometry = {x = zx + 25, y = refY - (user_opts.osc_height / 2), an = 4, w = 80, h = 4}
         lo.layer = 15
-        lo.alpha[1] = 128
+        lo.alpha[1] = 0
         lo.style = osc_styles.volumebar_bg
         lo.box.radius = user_opts.slider_rounded_corners and 2 or 0
 

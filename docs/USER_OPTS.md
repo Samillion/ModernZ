@@ -148,7 +148,8 @@ watch-later-options-remove=osd-margin-y
 | seekbarfg_color                   | `#FB8C00` | color of the seekbar progress                                                                     |
 | seekbarbg_color                   | `#94754F` | color of the remaining seekbar                                                                    |
 | seekbar_cache_color               | `#918F8E` | color of the cache ranges on the seekbar                                                          |
-| seek_handle_color                 | `#FB8C00` | color of the seekbar handle                                                                       |
+| seek_handle_color                 | `#94754F` | color of the seekbar handle                                                                       |
+| seek_handle_border_color          | `#FB8C00` | inner border color drawn inside the seekbar handle                                                |
 | volumebar_match_seek_color        | no        | match volume bar color with seekbar color (ignores `side_buttons_color`)                          |
 | time_color                        | `#FFFFFF` | color of the timestamps (below seekbar)                                                           |
 | chapter_title_color               | `#FFFFFF` | color of the chapter title (above seekbar)                                                        |
@@ -187,10 +188,9 @@ watch-later-options-remove=osd-margin-y
 
 | Option                        | Value    | Description                                                             |
 | --------------------------    | -------- | ----------------------------------------------------------------------- |
-| seek_handle_size              | 1        | size ratio of the seekbar handle (range: 0 ~ 1)                         |
-| seek_handle_border_color      | `#454545`| inner border color drawn inside the seekbar handle                      |
-| seek_handle_border_size       | 0.45     | border thickness as a fraction of the handle radius                     |
-| seek_handle_border_hover_size | 0.28     | border thickness when handle is hovered                                 |
+| seek_handle_size              | 0.8      | size ratio of the seekbar handle (range: 0 ~ 1)                         |
+| seek_handle_border_size       | 0.35     | border thickness as a fraction of the handle radius                     |
+| seek_handle_border_hover_size | 0.25     | border thickness when handle is hovered                                 |
 | seekbar_height                | medium   | seekbar height preset: `small`, `medium`, `large`, `xlarge`             |
 | seekrange                     | yes      | show seek range overlay                                                 |
 | seekrangealpha                | 150      | transparency of the seek range                                          |
