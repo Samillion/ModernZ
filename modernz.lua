@@ -373,6 +373,7 @@ local language = {
     ["default"] = {
         idle = "Drop files or URLs here to play",
         na = "Not available",
+        unknown = "Unknown",
         video = "Video",
         audio = "Audio",
         subtitle = "Subtitle",
@@ -1745,7 +1746,7 @@ local function render_elements(master_ass, osc_vis, wc_vis)
                 and state.mouse_down_counter > 0
                 and state.playing_and_seeking
 
-            if element.tooltipF ~= nil and element.enabled and not seeking_with_force_tooltip then
+            if element.tooltipF ~= nil and element.enabled and not seeking_with_force_tooltip and user_opts.tooltip_hints then
                 local hb = element.hover_box
                 if (hb and mouse_hit_coords(hb.x1, hb.y1, hb.x2, hb.y2) or mouse_hit(element)) then
                     local tooltiplabel
@@ -2937,7 +2938,7 @@ local function osc_init()
     ne.enabled = have_pl or not user_opts.hide_empty_playlist_button
     ne.off = not have_pl and user_opts.gray_empty_playlist_button
     ne.content = icons.playlist
-    ne.tooltipF = user_opts.tooltip_hints and (have_pl and locale.playlist .. " [" .. pl_pos .. "/" .. pl_count .. "]" or locale.playlist .. " / " .. locale.menu) or nil
+    ne.tooltipF = function() return have_pl and locale.playlist .. " [" .. pl_pos .. "/" .. pl_count .. "]" or locale.playlist .. " / " .. locale.menu end
     ne.nothingavailable = locale.no_playlist
     bind_buttons("playlist")
 
@@ -2947,8 +2948,8 @@ local function osc_init()
     ne.off = state.audio_track_count == 0 or not mp.get_property_native("aid")
     ne.content = icons.audio
     ne.tooltipF = function ()
-        local prop = mp.get_property("current-tracks/audio/title") or mp.get_property("current-tracks/audio/lang") or locale.na
-        return (user_opts.tooltip_hints and (locale.audio .. " [" .. mp.get_property_number("aid", "-") .. "/" .. state.audio_track_count .. "] [" .. prop .. "]") or nil)
+        local prop = mp.get_property("current-tracks/audio/title") or mp.get_property("current-tracks/audio/lang") or locale.unknown
+        return locale.audio .. " [" .. mp.get_property_number("aid", "-") .. "/" .. state.audio_track_count .. "] [" .. prop .. "]"
     end
     ne.nothingavailable = locale.no_audio
     bind_buttons("audio_track")
@@ -2959,8 +2960,8 @@ local function osc_init()
     ne.off = state.sub_track_count == 0 or not mp.get_property_native("sid")
     ne.content = icons.subtitle
     ne.tooltipF = function ()
-        local prop = mp.get_property("current-tracks/sub/title") or mp.get_property("current-tracks/sub/lang") or locale.na
-        return (user_opts.tooltip_hints and (locale.subtitle .. " [" .. mp.get_property_number("sid", "-") .. "/" .. state.sub_track_count .. "] [" .. prop .. "]") or nil)
+        local prop = mp.get_property("current-tracks/sub/title") or mp.get_property("current-tracks/sub/lang") or locale.unknown
+        return locale.subtitle .. " [" .. mp.get_property_number("sid", "-") .. "/" .. state.sub_track_count .. "] [" .. prop .. "]"
     end
     ne.nothingavailable = locale.no_subs
     bind_buttons("sub_track")
@@ -3021,7 +3022,7 @@ local function osc_init()
     -- zoom out icon
     ne = new_element("zoom_out_icon", "button")
     ne.content = icons.zoom_out
-    ne.tooltipF = user_opts.tooltip_hints and locale.zoom_out or nil
+    ne.tooltipF = locale.zoom_out
     ne.eventresponder["mbtn_left_up"] = function () mp.commandv("osd-msg", "set", "video-zoom", math.max(user_opts.zoom_out_min, mp.get_property_number("video-zoom", 0) - 0.05)) end
     ne.eventresponder["mbtn_right_up"] = function () mp.commandv("osd-msg", "set", "video-zoom", 0) end
     ne.eventresponder["wheel_up_press"] = function () mp.commandv("osd-msg", "set", "video-zoom", math.min(user_opts.zoom_in_max, mp.get_property_number("video-zoom", 0) + 0.05)) end
@@ -3050,7 +3051,7 @@ local function osc_init()
     -- zoom in icon
     ne = new_element("zoom_in_icon", "button")
     ne.content = icons.zoom_in
-    ne.tooltipF = user_opts.tooltip_hints and locale.zoom_in or nil
+    ne.tooltipF = locale.zoom_in
     ne.eventresponder["mbtn_left_up"] = function () mp.commandv("osd-msg", "set", "video-zoom", math.min(user_opts.zoom_in_max, mp.get_property_number("video-zoom", 0) + 0.05)) end
     ne.eventresponder["mbtn_right_up"] = function () mp.commandv("osd-msg", "set", "video-zoom", 0) end
     ne.eventresponder["wheel_up_press"] = function () mp.commandv("osd-msg", "set", "video-zoom", math.min(user_opts.zoom_in_max, mp.get_property_number("video-zoom", 0) + 0.05)) end
@@ -3058,14 +3059,14 @@ local function osc_init()
 
     --fullscreen
     ne = new_element("fullscreen", "button")
-    ne.content = function () return state.fullscreen and icons.fullscreen_exit or icons.fullscreen end
-    ne.tooltipF = user_opts.tooltip_hints and (state.fullscreen and locale.fullscreen_exit or locale.fullscreen) or nil
+    ne.content = function() return state.fullscreen and icons.fullscreen_exit or icons.fullscreen end
+    ne.tooltipF = function() return state.fullscreen and locale.fullscreen_exit or locale.fullscreen end
     bind_buttons("fullscreen")
 
     --info
     ne = new_element("info", "button")
     ne.content = icons.info
-    ne.tooltipF = user_opts.tooltip_hints and locale.stats_info or nil
+    ne.tooltipF = locale.stats_info
     bind_buttons("info")
 
     --ontop
@@ -3073,7 +3074,7 @@ local function osc_init()
     ne.content = function () return not state.ontop and icons.ontop_on or icons.ontop_off end
     ne.tooltipF = function ()
         if user_opts.ontop_in_topbar and window_controls_enabled() and state.ontop then return nil end
-        return user_opts.tooltip_hints and (not state.ontop and locale.ontop or locale.ontop_disable) or nil
+        return state.ontop and locale.ontop_disable or locale.ontop
     end
     ne.eventresponder["mbtn_left_up"] = function ()
         mp.commandv("no-osd", "cycle", "ontop")
@@ -3083,13 +3084,13 @@ local function osc_init()
     --screenshot
     ne = new_element("screenshot", "button")
     ne.content = icons.screenshot
-    ne.tooltipF = user_opts.tooltip_hints and locale.screenshot or nil
+    ne.tooltipF = locale.screenshot
     bind_buttons("screenshot")
 
     --file_loop
     ne = new_element("file_loop", "button")
     ne.content = function() return state.file_loop and icons.loop_on or icons.loop_off end
-    ne.tooltipF = function() return user_opts.tooltip_hints and (state.file_loop and locale.file_loop_enable or locale.file_loop_disable) or nil end
+    ne.tooltipF = function() return state.file_loop and locale.file_loop_enable or locale.file_loop_disable end
     ne.eventresponder["mbtn_left_up"] = function ()
         mp.commandv("show-text", state.file_loop and locale.file_loop_disable or locale.file_loop_enable)
         state.file_loop = not state.file_loop
@@ -3099,7 +3100,7 @@ local function osc_init()
     --shuffle
     ne = new_element("shuffle", "button")
     ne.content = function() return state.shuffled and icons.shuffle_on or icons.shuffle_off end
-    ne.tooltipF = function() return user_opts.tooltip_hints and (state.shuffled and locale.shuffle or locale.unshuffle) or nil end
+    ne.tooltipF = function() return state.shuffled and locale.shuffle or locale.unshuffle end
     ne.eventresponder["mbtn_left_up"] = function()
         mp.commandv("show-text", state.shuffled and locale.unshuffle or locale.shuffle)
         state.shuffled = not state.shuffled
@@ -3116,7 +3117,7 @@ local function osc_init()
         local speed = state.speed
         return string.format(speed % 1 == 0 and "%.1f×" or "%g×", speed)
     end
-    ne.tooltipF = user_opts.tooltip_hints and locale.speed_control or nil
+    ne.tooltipF = locale.speed_control
     ne.eventresponder["mbtn_left_up"] = function() adjust_speed(user_opts.speed_button_click) end
     ne.eventresponder["mbtn_right_up"] = function() mp.commandv("set", "speed", 1) end
     ne.eventresponder["wheel_up_press"] = function() adjust_speed(user_opts.speed_button_scroll) end
@@ -3171,7 +3172,7 @@ local function osc_init()
         local number, unit = utils.format_bytes_humanized(dmx_speed):match("([%d%.]+)%s*(%S+)")
         return cache_info .. "\\N" .. string.format("%8s %4s/s", number or 0, unit or "B")
     end
-    ne.tooltipF = function() return (user_opts.tooltip_hints and cache_enabled()) and locale.cache or nil end
+    ne.tooltipF = function() return cache_enabled() and locale.cache or nil end
     ne.eventresponder["mbtn_left_up"] = function() mp.command("script-binding stats/display-page-3") end
 
     --seekbar
