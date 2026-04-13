@@ -140,11 +140,11 @@ local user_opts = {
     windowcontrols_min_hover = "#43CB44",  -- color of minimize window controls on hover
     title_color = "#FFFFFF",               -- color of the title (above seekbar)
     cache_info_color = "#FFFFFF",          -- color of the cache information
-    seekbarfg_color = "#FB8C00",           -- color of the seekbar progress
-    seekbarbg_color = "#94754F",           -- color of the remaining seekbar
-    seekbar_cache_color = "#918F8E",       -- color of the cache ranges on the seekbar
-    seek_handle_color = "#94754F",         -- color of the seekbar handle
-    seek_handle_border_color = "#FB8C00",  -- inner border color drawn inside the seekbar handle (set to "" to disable)
+    seekbar_cache_color = "#FFFFFF",       -- color of the cache ranges on the seekbar
+    seekbarfg_color = "#FF8232",           -- color of the seekbar progress
+    seekbarbg_color = "#999999",           -- color of the remaining seekbar
+    seek_handle_color = "#994D18",         -- color of the seekbar handle
+    seek_handle_border_color = "#FF8232",  -- inner border color drawn inside the seekbar handle (set to "" to disable)
     volumebar_match_seek_color = false,    -- match volume bar color with seekbar color (ignores side_buttons_color)
     time_color = "#FFFFFF",                -- color of the timestamps (below seekbar)
     chapter_title_color = "#FFFFFF",       -- color of the chapter title (above seekbar)
@@ -152,10 +152,10 @@ local user_opts = {
     middle_buttons_color = "#FFFFFF",      -- color of the middle buttons (skip, jump, chapter, etc.)
     playpause_color = "#FFFFFF",           -- color of the play/pause button
     held_element_color = "#999999",        -- color of the element when held down (pressed)
-    hover_effect_color = "#FB8C00",        -- color of a hovered button when hover_effect includes "color"
+    hover_effect_color = "#FF8232",        -- color of a hovered button when hover_effect includes "color"
     thumbnail_box_color = "#111111",       -- color of the background for thumbnail box
     thumbnail_box_outline = "#404040",     -- color of the border outline for thumbnail box
-    nibble_color = "#FB8C00",              -- color of chapter nibbles on the seekbar
+    nibble_color = "#FF8232",              -- color of chapter nibbles on the seekbar
     nibble_current_color = "#FFFFFF",      -- color of the current chapter nibble on the seekbar
 
     osc_fade_strength = 100,               -- strength of the OSC background fade (0 to disable)
@@ -178,8 +178,8 @@ local user_opts = {
 
     -- Progress bar settings
     seek_handle_size = 0.8,                -- size ratio of the seek handle (range: 0 ~ 1)
-    seek_handle_border_size = 0.35,        -- border thickness as a fraction of the handle radius
-    seek_handle_border_hover_size = 0.25,  -- border thickness when handle is hovered (set equal to seek_handle_border_size to disable)
+    seek_handle_border_size = 0.42,        -- border thickness as a fraction of the handle radius
+    seek_handle_border_hover_size = 0.31,  -- border thickness when handle is hovered (set equal to seek_handle_border_size to disable)
     seekbar_height = "medium",             -- seekbar height preset: "small", "medium", "large", "xlarge"
     seekrange = true,                      -- show seek range overlay
     seekrangealpha = 150,                  -- transparency of the seek range
@@ -1424,7 +1424,7 @@ local function draw_seekbar_nibbles(element, elem_ass)
 
     if slider_lo.nibbles_style == "gap" and element.name == "seekbar" then
         local radius = slider_lo.radius
-        local bg_alpha = 0
+        local bg_alpha = 128
         elem_ass:draw_stop()
         elem_ass:merge(element.style_ass)
         ass_append_alpha(elem_ass, element.layout.alpha, bg_alpha)
@@ -2187,7 +2187,7 @@ layouts["modern"] = function ()
     lo.layer = 15
     lo.style = osc_styles.seekbar_bg
     lo.box.radius = user_opts.slider_rounded_corners and seekbar_height_style.radius or 0
-    lo.alpha[1] = 0
+    lo.alpha[1] = 128
 
     lo = add_layout("seekbar")
     local seekbar_h = 18
@@ -2319,7 +2319,7 @@ layouts["modern"] = function ()
         lo = add_layout("volumebarbg")
         lo.geometry = {x = start_x, y = refY - (user_opts.osc_height / 2), an = 4, w = 55, h = 4}
         lo.layer = 15
-        lo.alpha[1] = 0
+        lo.alpha[1] = 128
         lo.style = user_opts.volumebar_match_seek_color and osc_styles.seekbar_bg or osc_styles.volumebar_bg
         lo.box.radius = user_opts.slider_rounded_corners and 2 or 0
 
@@ -2455,7 +2455,7 @@ layouts["modern-compact"] = function ()
     lo.layer = 15
     lo.style = osc_styles.seekbar_bg
     lo.box.radius = user_opts.slider_rounded_corners and seekbar_height_style.radius or 0
-    lo.alpha[1] = 0
+    lo.alpha[1] = 128
 
     lo = add_layout("seekbar")
     local seekbar_h = 18
@@ -2585,7 +2585,7 @@ layouts["modern-compact"] = function ()
             lo = add_layout("volumebarbg")
             lo.geometry = {x = start_x, y = refY - (user_opts.osc_height / 2), an = 4, w = 55, h = 4}
             lo.layer = 15
-            lo.alpha[1] = 0
+            lo.alpha[1] = 128
             lo.style = user_opts.volumebar_match_seek_color and osc_styles.seekbar_bg or osc_styles.volumebar_bg
             lo.box.radius = user_opts.slider_rounded_corners and 2 or 0
 
@@ -2709,7 +2709,7 @@ layouts["modern-image"] = function ()
         lo = add_layout("zoom_control_bg")
         lo.geometry = {x = zx + 25, y = refY - (user_opts.osc_height / 2), an = 4, w = 80, h = 4}
         lo.layer = 15
-        lo.alpha[1] = 0
+        lo.alpha[1] = 128
         lo.style = osc_styles.volumebar_bg
         lo.box.radius = user_opts.slider_rounded_corners and 2 or 0
 
@@ -3262,27 +3262,20 @@ local function osc_init()
             element.state.lastseek = seekto
         end
     end
-    local function seekbar_drag_start(element)
-        element.state.mbtnleft = true
-        local _, _, clicked_on_handle = get_seekbar_handle_pos(element)
-        element.state.handle_drag = clicked_on_handle
-        element.state.was_paused = mp.get_property_bool("pause")
-        state.playing_and_seeking = true
-        if not element.state.was_paused and user_opts.mouse_seek_pause then
-            mp.commandv("cycle", "pause")
-        end
-    end
     ne.eventresponder["mbtn_left_down"] = function (element)
-        seekbar_drag_start(element)
+        element.state.mbtnleft = true
+        element.state.was_paused = mp.get_property_bool("pause")
+        state.playing_and_seeking = false
         mp.commandv("seek", get_slider_value(element), "absolute-percent+exact")
     end
     ne.eventresponder["shift+mbtn_left_down"] = function (element)
-        seekbar_drag_start(element)
+        element.state.mbtnleft = true
+        element.state.was_paused = mp.get_property_bool("pause")
+        state.playing_and_seeking = false
         mp.commandv("seek", get_slider_value(element), "absolute-percent")
     end
     ne.eventresponder["mbtn_left_up"] = function (element)
         element.state.mbtnleft = false
-        element.state.handle_drag = false
         if state.playing_and_seeking then
             -- only unpause if the video was playing before the drag started
             if not element.state.was_paused and not mp.get_property_bool("eof-reached") and user_opts.mouse_seek_pause then
@@ -3311,7 +3304,6 @@ local function osc_init()
         element.state.lastseek = nil
         if element.state.mbtnleft then
             element.state.mbtnleft = false
-            element.state.handle_drag = false
             if state.playing_and_seeking then
                 if not element.state.was_paused and not mp.get_property_bool("eof-reached") and user_opts.mouse_seek_pause then
                     mp.commandv("cycle", "pause")
