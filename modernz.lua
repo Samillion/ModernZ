@@ -3820,7 +3820,7 @@ observe_cached("title-bar", request_init_resize)
 observe_cached("window-maximized", request_init_resize)
 observe_cached("idle-active", request_tick)
 mp.observe_property("user-data/mpv/console/open", "bool", function(_, val)
-    if val and user_opts.visibility == "auto" and not user_opts.showonselect then
+    if val and user_opts.visibility == "auto" and not user_opts.showonselect and not state.keeponpause_active then
         -- clear pending thumbnail
         if thumbfast.width ~= 0 and thumbfast.height ~= 0 then
             mp.commandv("script-message-to", "thumbfast", "clear")
@@ -4108,10 +4108,10 @@ local function validate_user_opts()
 
     local watch_later = "," .. ((mp.get_property("options/watch-later-options") or ""):gsub("%s+", "")) .. ","
     if user_opts.sub_margins and watch_later:find(",sub-pos,", 1, true) then
-        msg.warn("sub_margins: add watch-later-options-remove=sub-pos to mpv.conf")
+        msg.warn("sub_margins conflict: add watch-later-options-remove=sub-pos to mpv.conf")
     end
     if user_opts.osd_margins and watch_later:find(",osd-margin-y,", 1, true) then
-        msg.warn("osd_margins: add watch-later-options-remove=osd-margin-y to mpv.conf")
+        msg.warn("osd_margins conflict: add watch-later-options-remove=osd-margin-y to mpv.conf")
     end
 end
 
