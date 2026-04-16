@@ -669,11 +669,8 @@ end
 -- show-text helper
 local function show_message(text, duration)
     if not user_opts.osd_messages then return end
-    if duration then
-        mp.commandv("show-text", text, tostring(duration), "1")
-    else
-        mp.commandv("show-text", text, "-1", "1")
-    end
+    local dur = duration and tostring(duration) or "-1"
+    mp.commandv("show-text", text, dur, "1")
 end
 
 local function set_osd(osd, res_x, res_y, text, z)
