@@ -2144,7 +2144,15 @@ layouts["modern"] = function ()
 
     if title_and_chapter_h_with_offset == 0 then
         -- add some top padding if both title and chapter aren't displayed
-        title_and_chapter_h_with_offset = math.max(user_opts.osc_height * 0.2, user_opts.time_codes_offset + user_opts.title_offset + user_opts.time_font_size)
+        local ch_skip = user_opts.chapter_skip_buttons and type(state.chapter_list) == "table" and next(state.chapter_list)
+        local outer = (ch_skip and 0 or 100) + (user_opts.jump_buttons and 0 or 100)
+        local timecodes_above = osc_param.playresx < (user_opts.portrait_window_trigger - outer
+            - (user_opts.playlist_button and (not user_opts.hide_empty_playlist_button or state.playlist_count > 1) and 0 or 100)
+            - (state.sub_track_count > 0 and 0 or 100)
+            - (state.audio_track_count > 0 and 0 or 100))
+        title_and_chapter_h_with_offset = timecodes_above
+            and math.max(user_opts.osc_height * 0.2, user_opts.time_codes_offset + user_opts.title_offset + user_opts.time_font_size)
+            or user_opts.osc_height * 0.2
     end
 
     local osc_geo = {
