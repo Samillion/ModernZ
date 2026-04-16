@@ -145,10 +145,11 @@ watch-later-options-remove=osd-margin-y
 | windowcontrols_max_hover          | `#F8BC3A` | color of maximize window controls on hover                                                        |
 | windowcontrols_min_hover          | `#43CB44` | color of minimize window controls on hover                                                        |
 | title_color                       | `#FFFFFF` | color of the title (above seekbar)                                                                |
-| seekbarfg_color                   | `#FB8C00` | color of the seekbar progress                                                                     |
-| seekbarbg_color                   | `#94754F` | color of the remaining seekbar                                                                    |
-| seekbar_cache_color               | `#918F8E` | color of the cache ranges on the seekbar                                                          |
-| seek_handle_color                 | `#FB8C00` | color of the seekbar handle                                                                       |
+| seekbar_cache_color               | `#FFFFFF` | color of the cache ranges on the seekbar                                                          |
+| seekbarfg_color                   | `#FF8232` | color of the seekbar progress                                                                     |
+| seekbarbg_color                   | `#999999` | color of the remaining seekbar                                                                    |
+| seek_handle_color                 | `#994D18` | color of the seekbar handle                                                                       |
+| seek_handle_border_color          | `#FF8232` | inner border color drawn inside the seekbar handle                                                |
 | volumebar_match_seek_color        | no        | match volume bar color with seekbar color (ignores `side_buttons_color`)                          |
 | time_color                        | `#FFFFFF` | color of the timestamps (below seekbar)                                                           |
 | chapter_title_color               | `#FFFFFF` | color of the chapter title (above seekbar)                                                        |
@@ -157,10 +158,10 @@ watch-later-options-remove=osd-margin-y
 | middle_buttons_color              | `#FFFFFF` | color of the middle buttons (skip, jump, chapter, etc.)                                           |
 | playpause_color                   | `#FFFFFF` | color of the play/pause button                                                                    |
 | held_element_color                | `#999999` | color of the element when held down (pressed)                                                     |
-| hover_effect_color                | `#FB8C00` | color of a hovered button when `hover_effect` includes `"color"`                                  |
+| hover_effect_color                | `#FF8232` | color of a hovered button when `hover_effect` includes `"color"`                                  |
 | thumbnail_box_color               | `#111111` | color of the background for thumbnail box                                                         |
 | thumbnail_box_outline             | `#404040` | color of the border outline for thumbnail box                                                     |
-| nibble_color                      | `#FB8C00` | color of chapter nibbles on the seekbar                                                           |
+| nibble_color                      | `#FF8232` | color of chapter nibbles on the seekbar                                                           |
 | nibble_current_color              | `#FFFFFF` | color of the current chapter nibble on the seekbar                                                |
 | osc_fade_strength                 | 100       | strength of the OSC background fade (0 to disable)                                                |
 | fade_blur_strength                | 100       | blur strength for the OSC alpha fade. caution: high values can take a lot of CPU time to render   |
@@ -180,29 +181,30 @@ watch-later-options-remove=osd-margin-y
 | button_held_size      | 100                 | relative size of a button when held/pressed. below 100 shrinks button when held down                      |
 | button_held_box_alpha | 18                  | alpha of the hover background box when a button is held down                                              |
 | button_glow_amount    | 5                   | glow intensity when `"glow"` hover effect is active                                                       |
-| slider_hover_effect   | yes                 | apply size effect only when hovering slider handles                                                       |
-| slider_hover_size     | 130                 | relative size of a hovered slider handle if "slider_hover_effect" is used                                 |
+| slider_hover_size     | 100                 | relative size of a hovered slider handle (100 = no size change)                                           |
 | tooltip_hints         | yes                 | enable tooltips for most buttons. seek and volume tooltips are always enabled                             |
 
 ### Progress bar settings
 
-| Option                     | Value    | Description                                                             |
-| -------------------------- | -------- | ----------------------------------------------------------------------- |
-| seek_handle_size           | 0.8      | size ratio of the seekbar handle (range: 0 ~ 1)                         |
-| seekbar_height             | medium   | seekbar height preset: `small`, `medium`, `large`, `xlarge`             |
-| seekrange                  | yes      | show seek range overlay                                                 |
-| seekrangealpha             | 150      | transparency of the seek range                                          |
-| livemarkers                | yes      | update chapter markers on the seekbar when duration changes             |
-| seekbarkeyframes           | no       | use keyframes when dragging the seekbar                                 |
-| slider_rounded_corners     | yes      | rounded corners seekbar slider                                          |
-| nibbles_style              | gap      | chapter nibble style: `gap`, `triangle`, `bar` or `single-bar`          |
-| nibbles_top                | yes      | top chapter nibbles above seekbar                                       |
-| nibbles_bottom             | yes      | bottom chapter nibbles below seekbar                                    |
-| automatickeyframemode      | yes      | automatically set keyframes for the seekbar based on video length       |
-| automatickeyframelimit     | 600      | videos longer than this (in seconds) will have keyframes on the seekbar |
-| persistent_progress        | no       | always show a small progress line at the bottom of the screen           |
-| persistent_progress_height | 17       | height of the persistent progress bar                                   |
-| persistent_buffer          | no       | show cached buffer status in the persistent progress line               |
+| Option                        | Value    | Description                                                             |
+| --------------------------    | -------- | ----------------------------------------------------------------------- |
+| seek_handle_size              | 0.8      | size ratio of the seekbar handle (range: 0 ~ 1)                         |
+| seek_handle_border_size       | 0.42     | border thickness as a fraction of the handle radius                     |
+| seek_handle_border_hover_size | 0.31     | border thickness when handle is hovered                                 |
+| seekbar_height                | medium   | seekbar height preset: `small`, `medium`, `large`, `xlarge`             |
+| seekrange                     | yes      | show seek range overlay                                                 |
+| seekrangealpha                | 150      | transparency of the seek range                                          |
+| livemarkers                   | yes      | update chapter markers on the seekbar when duration changes             |
+| seekbarkeyframes              | no       | use keyframes when dragging the seekbar                                 |
+| slider_rounded_corners        | yes      | rounded corners seekbar slider                                          |
+| nibbles_style                 | gap      | chapter nibble style: `gap`, `triangle`, `bar` or `single-bar`          |
+| nibbles_top                   | yes      | top chapter nibbles above seekbar                                       |
+| nibbles_bottom                | yes      | bottom chapter nibbles below seekbar                                    |
+| automatickeyframemode         | yes      | automatically set keyframes for the seekbar based on video length       |
+| automatickeyframelimit        | 600      | videos longer than this (in seconds) will have keyframes on the seekbar |
+| persistent_progress           | no       | always show a small progress line at the bottom of the screen           |
+| persistent_progress_height    | 17       | height of the persistent progress bar                                   |
+| persistent_buffer             | no       | show cached buffer status in the persistent progress line               |
 
 ### Miscellaneous settings
 

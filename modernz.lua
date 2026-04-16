@@ -140,10 +140,11 @@ local user_opts = {
     windowcontrols_min_hover = "#43CB44",  -- color of minimize window controls on hover
     title_color = "#FFFFFF",               -- color of the title (above seekbar)
     cache_info_color = "#FFFFFF",          -- color of the cache information
-    seekbarfg_color = "#FB8C00",           -- color of the seekbar progress
-    seekbarbg_color = "#94754F",           -- color of the remaining seekbar
-    seekbar_cache_color = "#918F8E",       -- color of the cache ranges on the seekbar
-    seek_handle_color = "#FB8C00",         -- color of the seekbar handle
+    seekbar_cache_color = "#FFFFFF",       -- color of the cache ranges on the seekbar
+    seekbarfg_color = "#FF8232",           -- color of the seekbar progress
+    seekbarbg_color = "#999999",           -- color of the remaining seekbar
+    seek_handle_color = "#994D18",         -- color of the seekbar handle
+    seek_handle_border_color = "#FF8232",  -- inner border color drawn inside the seekbar handle (set to "" to disable)
     volumebar_match_seek_color = false,    -- match volume bar color with seekbar color (ignores side_buttons_color)
     time_color = "#FFFFFF",                -- color of the timestamps (below seekbar)
     chapter_title_color = "#FFFFFF",       -- color of the chapter title (above seekbar)
@@ -151,10 +152,10 @@ local user_opts = {
     middle_buttons_color = "#FFFFFF",      -- color of the middle buttons (skip, jump, chapter, etc.)
     playpause_color = "#FFFFFF",           -- color of the play/pause button
     held_element_color = "#999999",        -- color of the element when held down (pressed)
-    hover_effect_color = "#FB8C00",        -- color of a hovered button when hover_effect includes "color"
+    hover_effect_color = "#FF8232",        -- color of a hovered button when hover_effect includes "color"
     thumbnail_box_color = "#111111",       -- color of the background for thumbnail box
     thumbnail_box_outline = "#404040",     -- color of the border outline for thumbnail box
-    nibble_color = "#FB8C00",              -- color of chapter nibbles on the seekbar
+    nibble_color = "#FF8232",              -- color of chapter nibbles on the seekbar
     nibble_current_color = "#FFFFFF",      -- color of the current chapter nibble on the seekbar
 
     osc_fade_strength = 100,               -- strength of the OSC background fade (0 to disable)
@@ -172,12 +173,13 @@ local user_opts = {
     button_held_size = 100,                -- relative size of a button when held/pressed. below 100 shrinks button when held down
     button_held_box_alpha = 18,            -- alpha of the hover background box when a button is held down
     button_glow_amount = 5,                -- glow intensity when "glow" hover effect is active
-    slider_hover_effect = true,            -- apply size effect only when hovering slider handles
-    slider_hover_size = 130,               -- relative size of a hovered slider handle if "slider_hover_effect" is used
+    slider_hover_size = 100,               -- relative size of a hovered slider handle
     tooltip_hints = true,                  -- enable tooltips for most buttons. seek and volume tooltips are always enabled
 
     -- Progress bar settings
     seek_handle_size = 0.8,                -- size ratio of the seek handle (range: 0 ~ 1)
+    seek_handle_border_size = 0.42,        -- border thickness as a fraction of the handle radius
+    seek_handle_border_hover_size = 0.31,  -- border thickness when handle is hovered (set equal to seek_handle_border_size to disable)
     seekbar_height = "medium",             -- seekbar height preset: "small", "medium", "large", "xlarge"
     seekrange = true,                      -- show seek range overlay
     seekrangealpha = 150,                  -- transparency of the seek range
@@ -1216,7 +1218,9 @@ local function prepare_elements()
         -- if the element is supposed to be disabled,
         -- style it accordingly and kill the eventresponders
         if not element.enabled then
-            element.layout.alpha[1] = 215
+            if element.name ~= "seekbar" then
+                element.layout.alpha[1] = 215
+            end
             if not (element.name == "sub_track" or element.name == "audio_track" or element.name == "playlist") then -- keep these to display tooltips
                 element.eventresponder = nil
             end
@@ -1245,36 +1249,72 @@ local function get_chapter(possec)
 end
 
 -- Computes handle position and radius without drawing
--- Returns handle position and radius
+-- Returns handle position, radius, and whether the handle is active (hovered or dragged)
 local function get_seekbar_handle_pos(element)
     local pos = element.slider.posF()
-    if not pos then return 0, 0 end
-    local display_handle = user_opts.seek_handle_size > 0
+    if not pos then return 0, 0, false end
+
     local elem_geo = element.layout.geometry
-    local rh = display_handle and (user_opts.seek_handle_size * elem_geo.h / 2) or 0
-    local xp = get_slider_ele_pos_for(element, pos)
-    local handle_hovered = mouse_hit_coords(element.hitbox.x1 + xp - rh, element.hitbox.y1 + elem_geo.h / 2 - rh, element.hitbox.x1 + xp + rh, element.hitbox.y1 + elem_geo.h / 2 + rh) and element.enabled
-    if display_handle then
-        if (handle_hovered or element.state.mbtnleft) and user_opts.slider_hover_effect then
-            rh = rh * (user_opts.slider_hover_size / 100)
+    local handle_radius = user_opts.seek_handle_size * elem_geo.h / 2
+    local handle_x = get_slider_ele_pos_for(element, pos)
+    local center_y = elem_geo.h / 2
+
+    local mouse_over_handle = mouse_hit_coords(
+        element.hitbox.x1 + handle_x - handle_radius,
+        element.hitbox.y1 + center_y - handle_radius,
+        element.hitbox.x1 + handle_x + handle_radius,
+        element.hitbox.y1 + center_y + handle_radius
+    ) and element.enabled
+
+    local is_active = mouse_over_handle or element.state.handle_drag
+
+    if handle_radius > 0 then
+        if is_active then
+            handle_radius = handle_radius * (user_opts.slider_hover_size / 100)
+            handle_x = limit_range(handle_radius, elem_geo.w - handle_radius, handle_x)
         end
-        return xp, rh
+        return handle_x, handle_radius, is_active
     end
-    return xp, 0
+
+    return handle_x, 0, false
+end
+
+-- Prepares elem_ass for a new draw layer with the given color
+local function begin_draw_layer(element, elem_ass, color, anim_override)
+    elem_ass:draw_stop()
+    elem_ass:merge(element.style_ass)
+    ass_append_alpha(elem_ass, element.layout.alpha, 0, nil, anim_override)
+    elem_ass:append("{\\blur0\\bord0\\1c&H" .. osc_color_convert(color) .. "&}")
+    elem_ass:merge(element.static_ass)
 end
 
 -- Draws a handle on the seekbar using precomputed position and radius
-local function draw_seekbar_handle(element, elem_ass, xp, rh)
-    if rh <= 0 then return end
+local function draw_seekbar_handle(element, elem_ass, handle_x, handle_radius, anim_override, is_active)
+    if handle_radius <= 0 then return end
 
-    elem_ass:draw_stop()
-    elem_ass:merge(element.style_ass)
-    ass_append_alpha(elem_ass, element.layout.alpha, 0)
-    if element.name == "seekbar" then
-        elem_ass:append("{\\blur0\\bord0\\1c&H" .. osc_color_convert(user_opts.seek_handle_color) .. "&}")
+    local center_y = element.layout.geometry.h / 2
+    local slider_lo = element.layout.slider
+
+    local fill_color = slider_lo.handle_color or user_opts.side_buttons_color
+    local border_color = slider_lo.handle_border
+    local border_thickness = is_active
+        and user_opts.seek_handle_border_hover_size
+        or  user_opts.seek_handle_border_size
+    local has_border = border_color and border_color ~= "" and border_thickness > 0
+
+    if has_border then
+        -- inner_radius is how far the fill circle extends inward from the outer edge
+        local inner_radius = handle_radius * (1 - border_thickness)
+        -- full circle in border color, then smaller circle in fill color on top
+        begin_draw_layer(element, elem_ass, border_color, anim_override)
+        ass_draw_cir_cw(elem_ass, handle_x, center_y, handle_radius)
+        begin_draw_layer(element, elem_ass, fill_color, anim_override)
+        ass_draw_cir_cw(elem_ass, handle_x, center_y, inner_radius)
+    else
+        -- no border configured, just draw a single solid circle
+        begin_draw_layer(element, elem_ass, fill_color, anim_override)
+        ass_draw_cir_cw(elem_ass, handle_x, center_y, handle_radius)
     end
-    elem_ass:merge(element.static_ass)
-    ass_draw_cir_cw(elem_ass, xp, element.layout.geometry.h / 2, rh)
 end
 
 -- Collects and sorts pixel cut positions for gap-style chapter markers.
@@ -1342,7 +1382,7 @@ local function draw_seekbar_ranges(element, elem_ass, xp, rh, override_alpha, in
     end
 
     for _, range in pairs(seekRanges) do
-        local pstart = math.max(0, get_slider_ele_pos_for(element, range["start"]) - slider_lo.gap)
+        local pstart = math.max(xp, get_slider_ele_pos_for(element, range["start"]) - slider_lo.gap)
         local pend = math.min(elem_geo.w, get_slider_ele_pos_for(element, range["end"]) + slider_lo.gap)
 
         -- round edge only when cache range reaches start/end
@@ -1385,7 +1425,7 @@ local function draw_seekbar_nibbles(element, elem_ass)
 
     if slider_lo.nibbles_style == "gap" and element.name == "seekbar" then
         local radius = slider_lo.radius
-        local bg_alpha = elements["seekbarbg"] and elements["seekbarbg"].layout.alpha[1] or 128
+        local bg_alpha = 128
         elem_ass:draw_stop()
         elem_ass:merge(element.style_ass)
         ass_append_alpha(elem_ass, element.layout.alpha, bg_alpha)
@@ -1575,10 +1615,10 @@ local function render_elements(master_ass, osc_vis, wc_vis)
                 ass_append_alpha(elem_ass, element.layout.alpha, 0, nil, anim_override)
                 elem_ass:merge(element.static_ass)
 
-                local xp, rh = get_seekbar_handle_pos(element) -- get handle position/radius
+                local handle_x, handle_radius, is_active = get_seekbar_handle_pos(element) -- get handle position/radius
                 draw_seekbar_progress(element, elem_ass)
-                draw_seekbar_ranges(element, elem_ass, xp, rh)
-                draw_seekbar_handle(element, elem_ass, xp, rh) -- draw handle on top of progress
+                draw_seekbar_ranges(element, elem_ass, handle_x, handle_radius)
+                draw_seekbar_handle(element, elem_ass, handle_x, handle_radius, anim_override, is_active) -- draw handle on top of progress
 
                 elem_ass:draw_stop()
 
@@ -1801,10 +1841,13 @@ local function render_persistent_progress(master_ass)
         elem_ass:merge(element.static_ass)
 
         -- draw pos marker
+        local pos = element.slider.posF and element.slider.posF()
+        local xp = pos and get_slider_ele_pos_for(element, pos) or 0
+
         draw_seekbar_progress(element, elem_ass)
 
         if user_opts.persistent_buffer then
-            draw_seekbar_ranges(element, elem_ass, nil, nil, nil, true)
+            draw_seekbar_ranges(element, elem_ass, xp, 0, nil, true)
         end
 
         elem_ass:draw_stop()
@@ -2150,13 +2193,14 @@ layouts["modern"] = function ()
     lo.style = osc_styles.seekbar_bg
     lo.box.radius = user_opts.slider_rounded_corners and seekbar_height_style.radius or 0
     lo.alpha[1] = 128
-    lo.alpha[3] = 128
 
     lo = add_layout("seekbar")
     local seekbar_h = 18
     lo.geometry = {x = refX, y = refY - user_opts.osc_height, an = 5, w = osc_geo.w - 30, h = seekbar_h}
     lo.layer = 49
     lo.style = osc_styles.seekbar_fg
+    lo.slider.handle_color = user_opts.seek_handle_color
+    lo.slider.handle_border = user_opts.seek_handle_border_color
     lo.slider.gap = (seekbar_h - seekbar_bg_h) / 2.0
     lo.slider.radius = user_opts.slider_rounded_corners and seekbar_height_style.radius or 0
     lo.slider.tooltip_an = 2
@@ -2288,6 +2332,7 @@ layouts["modern"] = function ()
         lo = add_layout("volumebar")
         lo.geometry = {x = start_x, y = refY - (user_opts.osc_height / 2), an = 4, w = 55, h = 10}
         lo.style = user_opts.volumebar_match_seek_color and osc_styles.seekbar_fg or osc_styles.volumebar_fg
+        lo.slider.handle_color = user_opts.volumebar_match_seek_color and user_opts.seekbarfg_color or user_opts.side_buttons_color
         lo.slider.gap = 3
         lo.slider.radius = user_opts.slider_rounded_corners and 2 or 0
         lo.slider.tooltip_an = 2
@@ -2415,14 +2460,15 @@ layouts["modern-compact"] = function ()
     lo.layer = 15
     lo.style = osc_styles.seekbar_bg
     lo.box.radius = user_opts.slider_rounded_corners and seekbar_height_style.radius or 0
-    lo.alpha[1] = 152
-    lo.alpha[3] = 128
+    lo.alpha[1] = 128
 
     lo = add_layout("seekbar")
     local seekbar_h = 18
     lo.geometry = {x = refX, y = refY - user_opts.osc_height, an = 5, w = osc_geo.w - 30, h = seekbar_h}
     lo.layer = 49
     lo.style = osc_styles.seekbar_fg
+    lo.slider.handle_color = user_opts.seek_handle_color
+    lo.slider.handle_border = user_opts.seek_handle_border_color
     lo.slider.gap = (seekbar_h - seekbar_bg_h) / 2.0
     lo.slider.radius = user_opts.slider_rounded_corners and seekbar_height_style.radius or 0
     lo.slider.tooltip_an = 2
@@ -2551,6 +2597,7 @@ layouts["modern-compact"] = function ()
             lo = add_layout("volumebar")
             lo.geometry = {x = start_x, y = refY - (user_opts.osc_height / 2), an = 4, w = 55, h = 10}
             lo.style = user_opts.volumebar_match_seek_color and osc_styles.seekbar_fg or osc_styles.volumebar_fg
+            lo.slider.handle_color = user_opts.volumebar_match_seek_color and user_opts.seekbarfg_color or user_opts.side_buttons_color
             lo.slider.gap = 3
             lo.slider.radius = user_opts.slider_rounded_corners and 2 or 0
             lo.slider.tooltip_an = 2
@@ -2675,6 +2722,7 @@ layouts["modern-image"] = function ()
         lo = add_layout("zoom_control")
         lo.geometry = {x = zx + 25, y = refY - (user_opts.osc_height / 2), an = 4, w = 80, h = 10}
         lo.style = osc_styles.volumebar_fg
+        lo.slider.handle_color = user_opts.side_buttons_color
         lo.slider.radius = user_opts.slider_rounded_corners and 2 or 0
         lo.slider.gap = 3
         lo.slider.tooltip_an = 2
@@ -3012,6 +3060,7 @@ local function osc_init()
     end
     ne.eventresponder["mbtn_left_up"] = function (element)
         element.state.mbtnleft = false
+        element.state.handle_drag = false
     end
     ne.eventresponder["reset"] = function (element)
         element.state.lastseek = nil
@@ -4070,6 +4119,10 @@ local function validate_user_opts()
         user_opts.cache_info_color, user_opts.thumbnail_box_outline, user_opts.nibble_color, user_opts.nibble_current_color,
         user_opts.seek_handle_color,
     }
+
+    if user_opts.seek_handle_border_color ~= "" then
+        colors[#colors + 1] = user_opts.seek_handle_border_color
+    end
 
     for _, color in pairs(colors) do
         if color:find("^#%x%x%x%x%x%x$") == nil then
