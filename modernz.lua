@@ -85,6 +85,7 @@ local user_opts = {
     sub_margins = true,                    -- raise subtitles above the OSC when shown
     osd_margins = false,                   -- adjust OSD to not overlap with OSC
     dynamic_margins = true,                -- update margins dynamically with OSC visibility
+    osd_messages = true,                   -- show ModernZ OSD messages (button actions, download status, etc.)
 
     -- Buttons display and functionality
     subtitles_button = true,               -- show the subtitles menu button
@@ -663,6 +664,16 @@ local function kill_animation(anitype_key, anistart_key, animation_key)
     state[anitype_key]   = nil
     state[anistart_key]  = nil
     state[animation_key] = nil
+end
+
+-- show-text helper
+local function show_message(text, duration)
+    if not user_opts.osd_messages then return end
+    if duration then
+        mp.commandv("show-text", text, tostring(duration), "1")
+    else
+        mp.commandv("show-text", text, "-1", "1")
+    end
 end
 
 local function set_osd(osd, res_x, res_y, text, z)
@@ -1915,11 +1926,11 @@ end
 local function download_done(success, result, error)
     if success then
         local download_path = mp.command_native({"expand-path", user_opts.download_path})
-        mp.commandv("show-text", "Download saved to " .. download_path)
+        show_message("Download saved to " .. download_path)
         state.downloaded_once = true
         msg.info("Download completed")
     else
-        mp.commandv("show-text", "Download failed - " .. (error or "Unknown error"))
+        show_message("Download failed - " .. (error or "Unknown error"))
         msg.info("Download failed")
     end
     state.downloading = false
@@ -3127,7 +3138,7 @@ local function osc_init()
     end
     ne.eventresponder["mbtn_left_up"] = function ()
         mp.commandv("no-osd", "cycle", "ontop")
-        mp.commandv("show-text", state.ontop and locale.ontop_disable or locale.ontop)
+        show_message(state.ontop and locale.ontop_disable or locale.ontop)
     end
 
     --screenshot
@@ -3141,7 +3152,7 @@ local function osc_init()
     ne.content = function() return state.file_loop and icons.loop_on or icons.loop_off end
     ne.tooltipF = function() return state.file_loop and locale.file_loop_enable or locale.file_loop_disable end
     ne.eventresponder["mbtn_left_up"] = function ()
-        mp.commandv("show-text", state.file_loop and locale.file_loop_disable or locale.file_loop_enable)
+        show_message(state.file_loop and locale.file_loop_disable or locale.file_loop_enable)
         state.file_loop = not state.file_loop
         mp.set_property_native("loop-file", state.file_loop)
     end
@@ -3151,7 +3162,7 @@ local function osc_init()
     ne.content = function() return state.shuffled and icons.shuffle_on or icons.shuffle_off end
     ne.tooltipF = function() return state.shuffled and locale.shuffle or locale.unshuffle end
     ne.eventresponder["mbtn_left_up"] = function()
-        mp.commandv("show-text", state.shuffled and locale.unshuffle or locale.shuffle)
+        show_message(state.shuffled and locale.unshuffle or locale.shuffle)
         state.shuffled = not state.shuffled
         mp.command("playlist-" .. (state.shuffled and "shuffle" or "unshuffle"))
     end
@@ -3180,11 +3191,11 @@ local function osc_init()
         local localpath = mp.command_native({"expand-path", user_opts.download_path})
 
         if state.downloaded_once then
-            mp.commandv("show-text", locale.downloaded)
+            show_message(locale.downloaded)
         elseif state.downloading then
-            mp.commandv("show-text", locale.download_in_progress)
+            show_message(locale.download_in_progress)
         else
-            mp.commandv("show-text", locale.downloading .. "...")
+            show_message(locale.downloading .. "...")
             state.downloading = true
             local command = {
                 "yt-dlp",
