@@ -3205,6 +3205,7 @@ local function osc_init()
     ne.eventresponder["mouse_move"] = function (element)
         if not element.state.mbtnleft then return end -- allow drag for mbtnleft only!
         state.playing_and_seeking = true
+        mp.commandv("script-message", "seekbar-drag", "start")
         if not mp.get_property_bool("pause") and user_opts.mouse_seek_pause then
             mp.commandv("cycle", "pause")
         end
@@ -3239,6 +3240,7 @@ local function osc_init()
             end
             state.playing_and_seeking = false
         end
+        mp.commandv("script-message", "seekbar-drag", "end")
     end
     ne.eventresponder["mbtn_right_down"] = function (element)
         local chapter

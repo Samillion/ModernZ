@@ -49,6 +49,9 @@ local options = {
                                           -- also: middle_*, bottom_* same as top_* (ie: bottom_right)
 
     mute_icon_size = 35,                  -- size of the mute speaker icon
+
+    -- seekbar dragging
+    seekbar_hide = false,                 -- hide indicator when dragging seekbar (requires OSC support)
 }
 
 local msg = require "mp.msg"
@@ -69,6 +72,7 @@ local state = {
     toggled = false,
     eof = false,
     keybinds_registered = false,
+    seeking = false,
 }
 
 local icon_theme = {
@@ -261,13 +265,21 @@ local function setup_keybinds()
     state.keybinds_registered = true
 end
 
+if options.seekbar_hide then
+    mp.register_script_message("seekbar-drag", function(val)
+        state.seeking = (val == "start")
+    end)
+end
+
 local pause_observer = function(_, paused)
     state.paused = paused
     if paused then
-        update_indicator()
-        state.toggled = true
         kill_timer("flash_timer")
         state.flash_overlay:remove()
+        if not (options.seekbar_hide and state.seeking) then
+            update_indicator()
+            state.toggled = true
+        end
         if options.keybind_allow and options.keybind_mode == "onpause" then
             if keybind_should_enable() then
                 mp.enable_key_bindings("pause-indicator", "allow-vo-dragging+allow-hide-cursor")
@@ -277,7 +289,7 @@ local pause_observer = function(_, paused)
         kill_timer("indicator_timer")
         state.indicator_overlay:remove()
         state.indicator_visible = false
-        if state.toggled then
+        if state.toggled and not (options.seekbar_hide and state.seeking) then
             update_flash_icon()
             state.toggled = false
         end
