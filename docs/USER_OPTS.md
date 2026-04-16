@@ -87,11 +87,12 @@ watch-later-options-remove=sub-pos
 watch-later-options-remove=osd-margin-y
 ```
 
-| Option          | Value | Description                                    |
-| --------------- | ----- | ---------------------------------------------- |
-| sub_margins     | yes   | raise subtitles above the OSC when shown       |
-| osd_margins     | no    | adjust OSD to not overlap with OSC             |
-| dynamic_margins | yes   | update margins dynamically with OSC visibility |
+| Option          | Value | Description                                                       |
+| --------------- | ----- | ----------------------------------------------------------------- |
+| sub_margins     | yes   | raise subtitles above the OSC when shown                          |
+| osd_margins     | no    | adjust OSD to not overlap with OSC                                |
+| dynamic_margins | yes   | update margins dynamically with OSC visibility                    |
+| osd_messages    | yes   | show ModernZ OSD messages (button actions, download status, etc.) |
 
 ### Buttons display and functionality
 
