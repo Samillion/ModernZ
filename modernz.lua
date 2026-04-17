@@ -1563,7 +1563,13 @@ local function render_elements(master_ass, osc_vis, wc_vis)
             end
             if mouse_hit(element) then
                 -- mouse down styling
-                if element.styledown then style_ass:append(osc_styles.element_down) end
+                if element.styledown then
+                    local down_style = osc_styles.element_down
+                    if element.name == "title" or element.name == "chapter_title" or element.name == "time_codes" or element.name == "speed" or element.name == "cache_info" then
+                        down_style = down_style:gsub("\\fscx%d+\\fscy%d+", "")
+                    end
+                    style_ass:append(down_style)
+                end
                 if element.softrepeat and state.mouse_down_counter >= 15 and state.mouse_down_counter % 5 == 0 then
                     element.eventresponder[state.active_event_source.."_down"](element)
                 end
