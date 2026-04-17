@@ -46,6 +46,7 @@ To adjust them you can either:
 | `mute_indicator`         | no              | show a mute indicator                                                                                                                      |
 | `mute_indicator_pos`     | top_right       | position of mute indicator<br>`top_left`, `top_right`, `top_center`. also: `middle_*`, `bottom_*`<br>same as `top_*` (ie: `bottom_right`)  |
 | `mute_icon_size`         | 35              | mute indicator size                                                                                                                        |
+| `seekbar_hide`           | no              | hide indicator when dragging seekbar (requires OSC support)                                                                                |
 
 ### How to install
 
