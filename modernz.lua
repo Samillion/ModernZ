@@ -222,6 +222,10 @@ local user_opts = {
     title_mbtn_mid_command = "show-text ${path}",
     title_mbtn_right_command = "script-binding select/select-watch-history",
 
+    -- chapter title mouse actions
+    chapter_title_mbtn_left_command = "script-binding select/select-chapter",
+    chapter_title_mbtn_right_command = "show-text ${chapter-list} 3000",
+
     -- playlist button mouse actions
     playlist_mbtn_left_command = "script-binding select/select-playlist",
     playlist_mbtn_right_command = "script-binding select/menu",
@@ -260,10 +264,6 @@ local user_opts = {
     chapter_next_mbtn_left_command = "add chapter 1",
     chapter_next_mbtn_mid_command = "show-text ${chapter-list} 3000",
     chapter_next_mbtn_right_command = "script-binding select/select-chapter",
-
-    -- chapter title (below seekbar) mouse actions
-    chapter_title_mbtn_left_command = "script-binding select/select-chapter",
-    chapter_title_mbtn_right_command = "show-text ${chapter-list} 3000",
 
     -- playlist skip buttons mouse actions
     playlist_prev_mbtn_left_command = "playlist-prev",
