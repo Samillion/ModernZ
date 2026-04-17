@@ -112,9 +112,10 @@ Below is a list that explains the OSC buttons function depending on how you inte
 
 ### Loop
 
-| Action            | Function                        |
-| ----------------- | ------------------------------- |
-| Left mouse click  | Toggle current file loop on/off |
+| Action             | Function                        |
+| ------------------ | ------------------------------- |
+| Left mouse click   | Toggle current file loop on/off |
+| Right mouse click  | Toggle playlist loop on/off     |
 
 ### Shuffle
 
