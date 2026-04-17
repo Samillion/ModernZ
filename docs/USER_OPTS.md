@@ -122,8 +122,6 @@ watch-later-options-remove=osd-margin-y
 | loop_button                | yes           | show `file loop` button                                                                                            |
 | shuffle_button             | no            | show `shuffle` button                                                                                              |
 | speed_button               | yes           | show speed control button                                                                                          |
-| speed_button_click         | 1             | speed change amount per click                                                                                      |
-| speed_button_scroll        | 0.25          | speed change amount on scroll                                                                                      |
 | buttons_always_active      | none          | force buttons to always be active. can add: `playlist_prev`, `playlist_next`                                       |
 | info_button                | yes           | show `info (stats)` button                                                                                         |
 | fullscreen_button          | yes           | show `fullscreen toggle` button                                                                                    |
@@ -240,6 +238,8 @@ Customize the button function based on mouse actions.
 | Title (above seekbar)         | title_mbtn_left_command          | `script-binding stats/display-page-5`        |
 |                               | title_mbtn_mid_command           | `show-text ${path}`                          |
 |                               | title_mbtn_right_command         | `script-binding select/select-watch-history` |
+| Chapter title                 | chapter_title_mbtn_left_command  | `script-binding select/select-chapter`       |
+|                               | chapter_title_mbtn_right_command | `show-text ${chapter-list} 3000`             |
 | Playlist button               | playlist_mbtn_left_command       | `script-binding select/select-playlist`      |
 |                               | playlist_mbtn_right_command      | `script-binding select/menu`                 |
 | Volume button                 | vol_ctrl_mbtn_left_command       | `no-osd cycle mute`                          |
@@ -266,8 +266,6 @@ Customize the button function based on mouse actions.
 |                               | chapter_next_mbtn_left_command   | `add chapter 1`                              |
 |                               | chapter_next_mbtn_mid_command    | `show-text ${chapter-list} 3000`             |
 |                               | chapter_next_mbtn_right_command  | `script-binding select/select-chapter`       |
-| Chapter title (below seekbar) | chapter_title_mbtn_left_command  | `script-binding select/select-chapter`       |
-|                               | chapter_title_mbtn_right_command | `show-text ${chapter-list} 3000`             |
 | Playlist skip Buttons         | playlist_prev_mbtn_left_command  | `playlist-prev`                              |
 |                               | playlist_prev_mbtn_mid_command   | `show-text ${playlist} 3000`                 |
 |                               | playlist_prev_mbtn_right_command | `script-binding select/select-playlist`      |
@@ -277,7 +275,14 @@ Customize the button function based on mouse actions.
 | Fullscreen button             | fullscreen_mbtn_left_command     | `cycle fullscreen`                           |
 |                               | fullscreen_mbtn_right_command    | `cycle window-maximized`                     |
 | Info button                   | info_mbtn_left_command           | `script-binding stats/display-page-1-toggle` |
+| Pin (ontop) button            | ontop_mbtn_left_command          | `osd-msg cycle ontop`                        |
 | Screenshot button             | screenshot_mbtn_left_command     | `osd-msg screenshot video`                   |
+| Loop button                   | file_loop_mbtn_left_command      | `osd-msg cycle-values loop-file inf no`      |
+|                               | file_loop_mbtn_right_command     | `osd-msg cycle-values loop-playlist inf no`  |
+| Speed button                  | speed_mbtn_left_command          | `osd-msg add speed 1`                        |
+|                               | speed_mbtn_right_command         | `osd-msg set speed 1`                        |
+|                               | speed_wheel_down_command         | `osd-msg add speed -0.25`                    |
+|                               | speed_wheel_up_command           | `osd-msg add speed 0.25`                     |
 
 ### Auto Profile
 
