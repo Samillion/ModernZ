@@ -118,8 +118,6 @@ local user_opts = {
     loop_button = true,                    -- show file loop button
     shuffle_button = false,                -- show shuffle button
     speed_button = true,                   -- show speed control button
-    speed_button_click = 1,                -- speed change amount per click
-    speed_button_scroll = 0.25,            -- speed change amount on scroll
 
     buttons_always_active = "none",        -- force buttons to always be active. can add: playlist_prev, playlist_next
 
@@ -283,8 +281,21 @@ local user_opts = {
     -- info button mouse actions
     info_mbtn_left_command = "script-binding stats/display-page-1-toggle",
 
+    -- ontop (pin) button mouse actions
+    ontop_mbtn_left_command = "osd-msg cycle ontop",
+
     -- screenshot button mouse actions
     screenshot_mbtn_left_command = "osd-msg screenshot video",
+
+    -- loop file button mouse actions
+    file_loop_mbtn_left_command = "osd-msg cycle-values loop-file inf no",
+    file_loop_mbtn_right_command = "osd-msg cycle-values loop-playlist inf no",
+
+    -- speed button mouse actions
+    speed_mbtn_left_command = "osd-msg add speed 1",
+    speed_mbtn_right_command = "osd-msg set speed 1",
+    speed_wheel_down_command = "osd-msg add speed -0.25",
+    speed_wheel_up_command = "osd-msg add speed 0.25",
 }
 
 local osc_param = {                  -- calculated by osc_init()
@@ -1915,11 +1926,11 @@ end
 local function download_done(success, result, error)
     if success then
         local download_path = mp.command_native({"expand-path", user_opts.download_path})
-        mp.commandv("show-text", "Download saved to " .. download_path)
+        mp.commandv("show-text", "Download saved to " .. download_path, "-1", "1")
         state.downloaded_once = true
         msg.info("Download completed")
     else
-        mp.commandv("show-text", "Download failed - " .. (error or "Unknown error"))
+        mp.commandv("show-text", "Download failed - " .. (error or "Unknown error"), "-1", "1")
         msg.info("Download failed")
     end
     state.downloading = false
@@ -3125,10 +3136,7 @@ local function osc_init()
         if user_opts.ontop_in_topbar and window_controls_enabled() and state.ontop then return nil end
         return state.ontop and locale.ontop_disable or locale.ontop
     end
-    ne.eventresponder["mbtn_left_up"] = function ()
-        mp.commandv("no-osd", "cycle", "ontop")
-        mp.commandv("show-text", state.ontop and locale.ontop_disable or locale.ontop)
-    end
+    bind_buttons("ontop")
 
     --screenshot
     ne = new_element("screenshot", "button")
@@ -3140,37 +3148,23 @@ local function osc_init()
     ne = new_element("file_loop", "button")
     ne.content = function() return state.file_loop and icons.loop_on or icons.loop_off end
     ne.tooltipF = function() return state.file_loop and locale.file_loop_enable or locale.file_loop_disable end
-    ne.eventresponder["mbtn_left_up"] = function ()
-        mp.commandv("show-text", state.file_loop and locale.file_loop_disable or locale.file_loop_enable)
-        state.file_loop = not state.file_loop
-        mp.set_property_native("loop-file", state.file_loop)
-    end
+    bind_buttons("file_loop")
 
     --shuffle
     ne = new_element("shuffle", "button")
     ne.content = function() return state.shuffled and icons.shuffle_on or icons.shuffle_off end
     ne.tooltipF = function() return state.shuffled and locale.shuffle or locale.unshuffle end
     ne.eventresponder["mbtn_left_up"] = function()
-        mp.commandv("show-text", state.shuffled and locale.unshuffle or locale.shuffle)
+        mp.commandv("show-text", state.shuffled and locale.unshuffle or locale.shuffle, "-1", "1")
         state.shuffled = not state.shuffled
         mp.command("playlist-" .. (state.shuffled and "shuffle" or "unshuffle"))
     end
 
     --speed
-    local function adjust_speed(delta)
-        local new_speed = state.speed + delta
-        mp.commandv("set", "speed", math.max(0.25, math.min(100, new_speed)))
-    end
     ne = new_element("speed", "button")
-    ne.content = function()
-        local speed = state.speed
-        return string.format(speed % 1 == 0 and "%.1f×" or "%g×", speed)
-    end
+    ne.content = function() return string.format(state.speed % 1 == 0 and "%.1f×" or "%g×", state.speed) end
     ne.tooltipF = locale.speed_control
-    ne.eventresponder["mbtn_left_up"] = function() adjust_speed(user_opts.speed_button_click) end
-    ne.eventresponder["mbtn_right_up"] = function() mp.commandv("set", "speed", 1) end
-    ne.eventresponder["wheel_up_press"] = function() adjust_speed(user_opts.speed_button_scroll) end
-    ne.eventresponder["wheel_down_press"] = function() adjust_speed(-user_opts.speed_button_scroll) end
+    bind_buttons("speed")
 
     --download
     ne = new_element("download", "button")
@@ -3180,11 +3174,11 @@ local function osc_init()
         local localpath = mp.command_native({"expand-path", user_opts.download_path})
 
         if state.downloaded_once then
-            mp.commandv("show-text", locale.downloaded)
+            mp.commandv("show-text", locale.downloaded, "-1", "1")
         elseif state.downloading then
-            mp.commandv("show-text", locale.download_in_progress)
+            mp.commandv("show-text", locale.download_in_progress, "-1", "1")
         else
-            mp.commandv("show-text", locale.downloading .. "...")
+            mp.commandv("show-text", locale.downloading .. "...", "-1", "1")
             state.downloading = true
             local command = {
                 "yt-dlp",
