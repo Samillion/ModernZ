@@ -105,6 +105,8 @@ local user_opts = {
     playlist_button = true,                -- show playlist button
     hide_empty_playlist_button = false,    -- hide playlist button when no playlist exists
     gray_empty_playlist_button = false,    -- gray out the playlist button when no playlist exists
+    hide_subtitles_button_if_one = false,  -- hide subtitles button if only one subtitle exists
+    hide_audio_tracks_button_if_one = false, -- hide audio tracks button if only one audio track exists
 
     fullscreen_button = true,              -- show fullscreen toggle button
     info_button = true,                    -- show info button
@@ -2218,6 +2220,9 @@ layouts["modern"] = function ()
     local chapter_skip_buttons = user_opts.chapter_skip_buttons and type(state.chapter_list) == "table" and next(state.chapter_list)
     local ontop_button = user_opts.ontop_button and not (window_controls_enabled() and user_opts.ontop_in_topbar and state.ontop)
     local playlist_button = user_opts.playlist_button and (not user_opts.hide_empty_playlist_button or state.playlist_count > 1)
+    local audio_tracks_button = audio_track and user_opts.audio_tracks_button and (not user_opts.hide_audio_tracks_button_if_one or state.audio_track_count > 1)
+    local subtitles_button = subtitle_track and user_opts.subtitles_button and (not user_opts.hide_subtitles_button_if_one or state.sub_track_count > 1)
+    local volume_control = audio_track and user_opts.volume_control
 
     local offset = user_opts.jump_buttons and 60 or 0
     local outeroffset = (chapter_skip_buttons and 0 or 100) + (user_opts.jump_buttons and 0 or 100)
@@ -2309,10 +2314,10 @@ layouts["modern"] = function ()
     end
 
     if playlist_button then left_side_button("playlist", 550) end
-    if audio_track and user_opts.audio_tracks_button then left_side_button("audio_track", 650) end
-    if subtitle_track and user_opts.subtitles_button then left_side_button("sub_track", 750) end
+    if audio_tracks_button then left_side_button("audio_track", 650) end
+    if subtitles_button then left_side_button("sub_track", 750) end
 
-    if audio_track and user_opts.volume_control then
+    if volume_control then
         -- volume button
         left_side_button("vol_ctrl", 850)
         start_x = start_x - 25 -- vol_ctrl uses a narrower step (+20 not +45)
@@ -2344,18 +2349,18 @@ layouts["modern"] = function ()
     end
 
     -- time codes
-    local auto_hide_volbar = (audio_track and user_opts.volume_control) and osc_param.playresx < (user_opts.hide_volume_bar_trigger - outeroffset)
+    local auto_hide_volbar = volume_control and osc_param.playresx < (user_opts.hide_volume_bar_trigger - outeroffset)
     local time_codes_x = start_x
         - (auto_hide_volbar and 67 or 0) -- window width with audio track and elements
-        - (audio_track and not user_opts.volume_control and 12 or 0) -- audio track with no elements
-        - (not audio_track and 12 or 0) -- remove excess space
+        - (not volume_control and 12 or 0) -- audio track with no elements
+        - (not audio_tracks_button and 12 or 0) -- remove excess space
     local time_codes_y = user_opts.time_codes_offset + (user_opts.osc_height / 2)
     local narrow_win = osc_param.playresx < (
         user_opts.portrait_window_trigger
         - outeroffset
         - (playlist_button and 0 or 100)
-        - (subtitle_track and 0 or 100)
-        - (audio_track and 0 or 100)
+        - (subtitles_button and 0 or 100)
+        - (audio_tracks_button and 0 or 100)
     )
     if narrow_win then
         -- try to vertically align time codes to the baseline of title/chapter
@@ -2415,6 +2420,12 @@ layouts["modern-compact"] = function ()
     local title_offset = (no_chapter or not chapter_index or user_opts.chapter_above_title) and user_opts.title_offset or user_opts.title_with_chapter_offset
     title_offset = no_title and 0 or title_offset
     local title_and_chapter_h_with_offset = chapter_h + chapter_offset + title_h + title_offset
+
+    local audio_track = state.audio_track_count > 0
+    local subtitle_track = state.sub_track_count > 0
+    local audio_tracks_button = audio_track and user_opts.audio_tracks_button and (not user_opts.hide_audio_tracks_button_if_one or state.audio_track_count > 1)
+    local subtitles_button = subtitle_track and user_opts.subtitles_button and (not user_opts.hide_subtitles_button_if_one or state.sub_track_count > 1)
+    local volume_control = audio_track and user_opts.volume_control
 
     if title_and_chapter_h_with_offset == 0 then
         -- add some top padding if both title and chapter aren't displayed
@@ -2626,8 +2637,8 @@ layouts["modern-compact"] = function ()
 
     right_side_button("fullscreen", 250, user_opts.fullscreen_button)
     right_side_button("ontop", 300, user_opts.ontop_button and not (window_controls_enabled() and user_opts.ontop_in_topbar and state.ontop))
-    right_side_button("sub_track", 400, user_opts.subtitles_button and state.sub_track_count > 0)
-    right_side_button("audio_track", 500, user_opts.audio_tracks_button and state.audio_track_count > 0)
+    right_side_button("sub_track", 400, subtitles_button)
+    right_side_button("audio_track", 500, audio_tracks_button)
     right_side_button("playlist", 600, user_opts.playlist_button)
     right_side_button("download", 700, state.is_URL and user_opts.download_button)
     right_side_button("speed", 700, user_opts.speed_button, osc_styles.speed, 42)
