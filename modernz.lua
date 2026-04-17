@@ -1186,7 +1186,8 @@ local function prepare_elements()
         end
 
         -- Calculate the hitbox
-        local bX1, bY1, bX2, bY2 = get_hitbox_coords(elem_geo.x, elem_geo.y, elem_geo.an, hitbox_w, elem_geo.h)
+        local hitbox_h = elem_geo.h + ((element.name == "volumebar" or element.name == "zoom_control") and 14 or 0)
+        local bX1, bY1, bX2, bY2 = get_hitbox_coords(elem_geo.x, elem_geo.y, elem_geo.an, hitbox_w, hitbox_h)
         element.hitbox = {x1 = bX1, y1 = bY1, x2 = bX2, y2 = bY2}
 
         local style_ass = assdraw.ass_new()
