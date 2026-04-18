@@ -1488,21 +1488,12 @@ local function draw_seekbar_nibbles(element, elem_ass)
         end
     end
 
-    -- start a new ASS event with the given color
-    local function start_nibble_event(color)
-        elem_ass:draw_stop()
-        elem_ass:merge(element.style_ass)
-        ass_append_alpha(elem_ass, element.layout.alpha, 0)
-        elem_ass:append("{\\blur0\\bord0\\1c&H" .. osc_color_convert(color) .. "&}")
-        elem_ass:merge(element.static_ass)
-    end
-
     -- draw non-current chapter nibbles
     local has_non_current = false
     for n, marker in ipairs(markers) do
         if n > 1 and (n - 1) ~= current_chapter and marker >= element.slider.min.value and marker <= element.slider.max.value then
             if not has_non_current then
-                start_nibble_event(user_opts.nibble_color)
+                begin_draw_layer(element, elem_ass, user_opts.nibble_color)
                 has_non_current = true
             end
             draw_nibble(elem_ass, get_slider_ele_pos_for(element, marker))
@@ -1513,7 +1504,7 @@ local function draw_seekbar_nibbles(element, elem_ass)
     if current_chapter > 0 and current_chapter < #markers then
         local marker = markers[current_chapter + 1]
         if marker >= element.slider.min.value and marker <= element.slider.max.value then
-            start_nibble_event(user_opts.nibble_current_color)
+            begin_draw_layer(element, elem_ass, user_opts.nibble_current_color)
             draw_nibble(elem_ass, get_slider_ele_pos_for(element, marker))
         end
     end
