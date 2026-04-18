@@ -143,7 +143,7 @@ watch-later-options-remove=osd-margin-y
 | windowcontrols_max_hover          | `#F8BC3A` | color of maximize window controls on hover                                                        |
 | windowcontrols_min_hover          | `#43CB44` | color of minimize window controls on hover                                                        |
 | title_color                       | `#FFFFFF` | color of the title (above seekbar)                                                                |
-| seekbar_cache_color               | `#FFFFFF` | color of the cache ranges on the seekbar                                                          |
+| seekbar_cache_color               | `#B1B1B1` | color of the cache ranges on the seekbar                                                          |
 | seekbarfg_color                   | `#FF8232` | color of the seekbar progress                                                                     |
 | seekbarbg_color                   | `#999999` | color of the remaining seekbar                                                                    |
 | seek_handle_color                 | `#C96508` | color of the seekbar handle                                                                       |
