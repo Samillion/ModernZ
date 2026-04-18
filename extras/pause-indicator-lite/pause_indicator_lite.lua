@@ -290,7 +290,10 @@ end
 local dimensions_observer = function()
     local _, _, aspect = mp.get_osd_size()
     state.aspect = aspect
-    if state.indicator_visible then
+    if state.paused and not state.indicator_visible then
+        update_indicator(true)
+        state.toggled = true
+    elseif state.indicator_visible then
         update_indicator(true)
     end
     if state.mute_visible then
