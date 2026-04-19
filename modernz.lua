@@ -1,4 +1,4 @@
--- ModernZ v0.3.2rc (https://github.com/Samillion/ModernZ)
+-- ModernZ v0.3.2 (https://github.com/Samillion/ModernZ)
 --
 -- This script is a derivative of the original mpv-osc-modern by maoiscat
 -- and subsequent forks:
@@ -914,8 +914,7 @@ local function ass_append_alpha(ass, alpha, modifier, inverse, anim_override)
         ar[ai] = av
     end
 
-    ass:append(string.format("{\\1a&H%X&\\2a&H%X&\\3a&H%X&\\4a&H%X&}",
-               ar[1], ar[2], ar[3], ar[4]))
+    ass:append(string.format("{\\1a&H%X&\\2a&H%X&\\3a&H%X&\\4a&H%X&}", ar[1], ar[2], ar[3], ar[4]))
 end
 
 -- draw tooltip background box and label
@@ -1310,9 +1309,7 @@ local function draw_seekbar_handle(element, elem_ass, handle_x, handle_radius, a
 
     local fill_color = slider_lo.handle_color or user_opts.side_buttons_color
     local border_color = slider_lo.handle_border
-    local border_thickness = is_active
-        and user_opts.seek_handle_border_hover_size
-        or  user_opts.seek_handle_border_size
+    local border_thickness = is_active and user_opts.seek_handle_border_hover_size or user_opts.seek_handle_border_size
     local has_border = border_color and border_color ~= "" and border_thickness > 0
 
     if has_border then
@@ -1330,11 +1327,8 @@ local function draw_seekbar_handle(element, elem_ass, handle_x, handle_radius, a
     end
 end
 
--- Collects and sorts pixel cut positions for gap-style chapter markers.
--- Builds sorted pixel cut positions for chapter gaps (skipping the first chapter marker).
--- Draws bar segments split around chapter gaps, stopping at x_max (bar_w for bg, xp for fg).
-local function draw_gap_segments(elem_ass, element, gap_half, x_max, slider_lo, elem_geo, radius)
-    gap_half = gap_half or 1.5
+-- Collects and sorts pixel-space cut positions for gap-style chapter markers, skipping the first marker
+local function collect_gap_cuts(element)
     local cuts = {}
     if element.slider.markerF then
         for n, marker in ipairs(element.slider.markerF()) do
@@ -1344,6 +1338,13 @@ local function draw_gap_segments(elem_ass, element, gap_half, x_max, slider_lo, 
         end
         table.sort(cuts)
     end
+    return cuts
+end
+
+-- Draws bar segments split around chapter gaps, stopping at x_max (bar_w for bg, xp for fg).
+local function draw_gap_segments(elem_ass, element, gap_half, x_max, slider_lo, elem_geo, radius)
+    gap_half = gap_half or 1.5
+    local cuts = collect_gap_cuts(element)
     -- clamp x_max back to the nearest gap boundary if it falls inside a gap
     for _, cut in ipairs(cuts) do
         if x_max > cut - gap_half and x_max < cut + gap_half then
@@ -1384,15 +1385,7 @@ local function draw_seekbar_ranges(element, elem_ass, xp, rh, override_alpha, in
 
     local radius = slider_lo.radius
     local gap_half = 1.5
-    local cuts = {}
-    if slider_lo.nibbles_style == "gap" and element.name == "seekbar" and element.slider.markerF then
-        for n, marker in ipairs(element.slider.markerF()) do
-            if n > 1 and marker >= element.slider.min.value and marker <= element.slider.max.value then
-                cuts[#cuts + 1] = get_slider_ele_pos_for(element, marker)
-            end
-        end
-        table.sort(cuts)
-    end
+    local cuts = (slider_lo.nibbles_style == "gap" and element.name == "seekbar") and collect_gap_cuts(element) or {}
 
     for _, range in pairs(seekRanges) do
         local pstart = math.max(xp, get_slider_ele_pos_for(element, range["start"]) - slider_lo.gap)
@@ -1792,9 +1785,7 @@ local function render_elements(master_ass, osc_vis, wc_vis)
             end
 
             -- add tooltip for button elements
-            local seeking_with_force_tooltip = user_opts.force_seek_tooltip
-                and state.mouse_down_counter > 0
-                and state.playing_and_seeking
+            local seeking_with_force_tooltip = user_opts.force_seek_tooltip and state.mouse_down_counter > 0 and state.playing_and_seeking
 
             if element.tooltipF ~= nil and element.enabled and not seeking_with_force_tooltip and user_opts.tooltip_hints then
                 local hb = element.hover_box
@@ -4093,21 +4084,6 @@ end)
 
 -- validate string type user options
 local function validate_user_opts()
-    if user_opts.window_top_bar ~= "auto" and user_opts.window_top_bar ~= "yes" and user_opts.window_top_bar ~= "no" then
-          msg.warn("window_top_bar cannot be '" .. user_opts.window_top_bar .. "'. Ignoring.")
-          user_opts.window_top_bar = "auto"
-    end
-
-    if user_opts.seek_handle_size < 0 then
-        msg.warn("seek_handle_size must be 0 or higher. Setting it to 0 (minimum).")
-        user_opts.seek_handle_size = 0
-    end
-
-    if user_opts.volume_control_type ~= "linear" and user_opts.volume_control_type ~= "logarithmic" then
-          msg.warn("volumecontrol cannot be '" .. user_opts.volume_control_type .. "'. Ignoring.")
-          user_opts.volume_control_type = "linear"
-    end
-
     if not language[user_opts.language] then
        msg.warn("language '" .. user_opts.language .. "' not found. Ignoring.")
        user_opts.language = "default"
@@ -4116,15 +4092,30 @@ local function validate_user_opts()
        end
     end
 
+    if user_opts.seek_handle_size < 0 then
+        msg.warn("seek_handle_size must be 0 or higher. Setting it to 0 (minimum).")
+        user_opts.seek_handle_size = 0
+    end
+
+    local function validate_string_opt(key, valid, default)
+        for _, v in ipairs(valid) do
+            if user_opts[key] == v then return end
+        end
+        msg.warn(key .. " value '" .. tostring(user_opts[key]) .. "' is invalid. Resetting to '" .. default .. "'.")
+        user_opts[key] = default
+    end
+    validate_string_opt("window_top_bar", {"auto", "yes", "no"}, "auto")
+    validate_string_opt("volume_control_type", {"linear", "logarithmic"}, "linear")
+    validate_string_opt("keeponpause",  {"no", "bottombar", "both"}, "no")
+    validate_string_opt("deadzone_hide", {"instant", "timeout"}, "instant")
+
     local colors = {
-        user_opts.osc_color, user_opts.seekbarfg_color, user_opts.seekbarbg_color,
-        user_opts.title_color, user_opts.time_color, user_opts.side_buttons_color,
-        user_opts.middle_buttons_color, user_opts.playpause_color, user_opts.window_title_color,
-        user_opts.window_controls_color, user_opts.held_element_color, user_opts.thumbnail_box_color,
-        user_opts.chapter_title_color, user_opts.seekbar_cache_color, user_opts.hover_effect_color,
-        user_opts.windowcontrols_close_hover, user_opts.windowcontrols_max_hover, user_opts.windowcontrols_min_hover,
-        user_opts.cache_info_color, user_opts.thumbnail_box_outline, user_opts.nibble_color, user_opts.nibble_current_color,
-        user_opts.seek_handle_color,
+        user_opts.osc_color, user_opts.seekbarfg_color, user_opts.seekbarbg_color, user_opts.title_color, user_opts.time_color,
+        user_opts.side_buttons_color, user_opts.middle_buttons_color, user_opts.playpause_color, user_opts.window_title_color,
+        user_opts.window_controls_color, user_opts.held_element_color, user_opts.thumbnail_box_color, user_opts.chapter_title_color,
+        user_opts.seekbar_cache_color, user_opts.hover_effect_color, user_opts.windowcontrols_close_hover, user_opts.windowcontrols_max_hover,
+        user_opts.windowcontrols_min_hover, user_opts.cache_info_color, user_opts.thumbnail_box_outline, user_opts.nibble_color,
+        user_opts.nibble_current_color, user_opts.seek_handle_color,
     }
 
     if user_opts.seek_handle_border_color ~= "" then
@@ -4146,18 +4137,9 @@ local function validate_user_opts()
         end
     end
 
-    if user_opts.keeponpause ~= "no" and user_opts.keeponpause ~= "bottombar" and user_opts.keeponpause ~= "both" then
-        msg.warn("keeponpause value '" .. tostring(user_opts.keeponpause) .. "' is invalid. Resetting to 'no'.")
-        user_opts.keeponpause = "no"
-    end
     if user_opts.keeponpause ~= "no" and not user_opts.showonpause then
         msg.warn("keeponpause requires showonpause. Setting showonpause=yes.")
         user_opts.showonpause = true
-    end
-
-    if user_opts.deadzone_hide ~= "instant" and user_opts.deadzone_hide ~= "timeout" then
-        msg.warn("deadzone_hide value '" .. tostring(user_opts.deadzone_hide) .. "' is invalid. Resetting to 'instant'.")
-        user_opts.deadzone_hide = "instant"
     end
 
     local watch_later = "," .. ((mp.get_property("options/watch-later-options") or ""):gsub("%s+", "")) .. ","
