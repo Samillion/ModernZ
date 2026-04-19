@@ -1,4 +1,4 @@
--- ModernZ v0.3.2rc (https://github.com/Samillion/ModernZ)
+-- ModernZ v0.3.2 (https://github.com/Samillion/ModernZ)
 --
 -- This script is a derivative of the original mpv-osc-modern by maoiscat
 -- and subsequent forks:
