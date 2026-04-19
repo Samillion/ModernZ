@@ -289,8 +289,10 @@ end
 
 local dimensions_observer = function()
     local _, _, aspect = mp.get_osd_size()
+    local first_valid = state.aspect == 0 and aspect ~= 0
     state.aspect = aspect
-    if state.paused and not state.indicator_visible then
+    if aspect == 0 then return end
+    if first_valid and state.paused then
         update_indicator(true)
         state.toggled = true
     elseif state.indicator_visible then
@@ -347,7 +349,7 @@ mp.register_event("file-loaded", function()
         local _, _, aspect = mp.get_osd_size()
         state.aspect = aspect
         state.eof = false
-        state.paused = false
+        state.toggled = false
         mp.observe_property("pause", "bool", pause_observer)
         mp.observe_property("osd-dimensions", "native", dimensions_observer)
         if options.mute_indicator then
