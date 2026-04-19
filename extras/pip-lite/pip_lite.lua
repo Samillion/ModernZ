@@ -48,17 +48,17 @@ end
 local function capture_state()
     state.autofit = mp.get_property("autofit")
     state.autofit_larger = mp.get_property("autofit-larger")
-    state.maximized = mp.get_property_bool("window-maximized")
-    state.fullscreen = mp.get_property_bool("fullscreen")
+    state.maximized = mp.get_property("window-maximized") == "yes"
+    state.fullscreen = mp.get_property("fullscreen") == "yes"
 end
 
 local function set_pip_mode()
-    if state.pip or mp.get_property_bool("fullscreen") then return end
+    if state.pip or mp.get_property("fullscreen") == "yes" then return end
 
     state.pip = true
     -- un-maximize so autofit and geometry take effect
     if state.maximized then
-        mp.set_property_bool("window-maximized", false)
+        mp.set_property("window-maximized", "no")
     end
 
     mp.set_property("autofit", options.autofit)
@@ -83,9 +83,9 @@ local function restore_mode()
         mp.set_property("geometry", options.geometry_restore)
 
         if was_fullscreen then
-            mp.set_property_bool("fullscreen", true)
+            mp.set_property("fullscreen", "yes")
         elseif was_maximized then
-            mp.set_property_bool("window-maximized", true)
+            mp.set_property("window-maximized", "yes")
         end
     end)
 end
@@ -98,7 +98,7 @@ local function on_ontop_change(_, value)
 
         if state.fullscreen then
             mp.add_timeout(0, function()
-                mp.set_property_bool("fullscreen", false)
+                mp.set_property("fullscreen", "no")
             end)
         else
             set_pip_mode()
@@ -110,12 +110,12 @@ end
 
 mp.observe_property("ontop", "bool", on_ontop_change)
 mp.observe_property("fullscreen", "bool", function(_, fs)
-    if not fs and mp.get_property_bool("ontop") then
+    if not fs and mp.get_property("ontop") == "yes" then
         set_pip_mode()
     end
 end)
 -- ontop is already enabled when the script loads
-if mp.get_property_bool("ontop") and not mp.get_property_bool("fullscreen") then
+if mp.get_property("ontop") == "yes" and mp.get_property("fullscreen") ~= "yes" then
     capture_state()
     set_pip_mode()
 end
