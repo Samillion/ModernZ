@@ -3008,15 +3008,18 @@ local function osc_init()
     ne.nothingavailable = locale.no_playlist
     bind_buttons("playlist")
 
+    -- track tooltip helper
+    local function track_tooltip(label, track_type, id_prop, count)
+        local prop = mp.get_property("current-tracks/" .. track_type .. "/title") or mp.get_property("current-tracks/" .. track_type .. "/lang") or locale.unknown
+        return label .. " [" .. mp.get_property_number(id_prop, "-") .. "/" .. count .. "] [" .. prop .. "]"
+    end
+
     --audio_track
     ne = new_element("audio_track", "button")
     ne.enabled = state.audio_track_count > 0
     ne.off = state.audio_track_count == 0 or not mp.get_property_native("aid")
     ne.content = icons.audio
-    ne.tooltipF = function ()
-        local prop = mp.get_property("current-tracks/audio/title") or mp.get_property("current-tracks/audio/lang") or locale.unknown
-        return locale.audio .. " [" .. mp.get_property_number("aid", "-") .. "/" .. state.audio_track_count .. "] [" .. prop .. "]"
-    end
+    ne.tooltipF = function () return track_tooltip(locale.audio, "audio", "aid", state.audio_track_count) end
     ne.nothingavailable = locale.no_audio
     bind_buttons("audio_track")
 
@@ -3025,10 +3028,7 @@ local function osc_init()
     ne.enabled = state.sub_track_count > 0
     ne.off = state.sub_track_count == 0 or not mp.get_property_native("sid")
     ne.content = icons.subtitle
-    ne.tooltipF = function ()
-        local prop = mp.get_property("current-tracks/sub/title") or mp.get_property("current-tracks/sub/lang") or locale.unknown
-        return locale.subtitle .. " [" .. mp.get_property_number("sid", "-") .. "/" .. state.sub_track_count .. "] [" .. prop .. "]"
-    end
+    ne.tooltipF = function () return track_tooltip(locale.subtitle, "sub", "sid", state.sub_track_count) end
     ne.nothingavailable = locale.no_subs
     bind_buttons("sub_track")
 
@@ -3086,14 +3086,20 @@ local function osc_init()
     end
     bind_buttons("volumebar")
 
+	-- zoom in/out helper
+    local function zoom_step(delta)
+        local z = mp.get_property_number("video-zoom", 0)
+        mp.commandv("osd-msg", "set", "video-zoom", math.max(user_opts.zoom_out_min, math.min(user_opts.zoom_in_max, z + delta)))
+    end
+
     -- zoom out icon
     ne = new_element("zoom_out_icon", "button")
     ne.content = icons.zoom_out
     ne.tooltipF = locale.zoom_out
-    ne.eventresponder["mbtn_left_up"] = function () mp.commandv("osd-msg", "set", "video-zoom", math.max(user_opts.zoom_out_min, mp.get_property_number("video-zoom", 0) - 0.05)) end
+    ne.eventresponder["mbtn_left_up"] = function () zoom_step(-0.05) end
     ne.eventresponder["mbtn_right_up"] = function () mp.commandv("osd-msg", "set", "video-zoom", 0) end
-    ne.eventresponder["wheel_up_press"] = function () mp.commandv("osd-msg", "set", "video-zoom", math.min(user_opts.zoom_in_max, mp.get_property_number("video-zoom", 0) + 0.05)) end
-    ne.eventresponder["wheel_down_press"] = function () mp.commandv("osd-msg", "set", "video-zoom", math.max(user_opts.zoom_out_min, mp.get_property_number("video-zoom", 0) - 0.05)) end
+    ne.eventresponder["wheel_up_press"] = function () zoom_step(0.05) end
+    ne.eventresponder["wheel_down_press"] = function () zoom_step(-0.05) end
 
     -- zoom slider
     ne = new_element("zoom_control", "slider")
@@ -3112,17 +3118,17 @@ local function osc_init()
     ne.eventresponder["mbtn_left_down"] = function (element) mp.commandv("osd-msg", "set", "video-zoom", get_slider_value(element)) end
     ne.eventresponder["reset"] = function (element) element.state.lastseek = nil end
     ne.eventresponder["mbtn_right_up"] = function () mp.commandv("osd-msg", "set", "video-zoom", 0) end
-    ne.eventresponder["wheel_up_press"] = function () mp.commandv("osd-msg", "set", "video-zoom", math.min(user_opts.zoom_in_max, mp.get_property_number("video-zoom", 0) + 0.05)) end
-    ne.eventresponder["wheel_down_press"] = function () mp.commandv("osd-msg", "set", "video-zoom", math.max(user_opts.zoom_out_min, mp.get_property_number("video-zoom", 0) - 0.05)) end
+    ne.eventresponder["wheel_up_press"] = function () zoom_step(0.05) end
+    ne.eventresponder["wheel_down_press"]= function () zoom_step(-0.05) end
 
     -- zoom in icon
     ne = new_element("zoom_in_icon", "button")
     ne.content = icons.zoom_in
     ne.tooltipF = locale.zoom_in
-    ne.eventresponder["mbtn_left_up"] = function () mp.commandv("osd-msg", "set", "video-zoom", math.min(user_opts.zoom_in_max, mp.get_property_number("video-zoom", 0) + 0.05)) end
+    ne.eventresponder["mbtn_left_up"] = function () zoom_step(0.05) end
     ne.eventresponder["mbtn_right_up"] = function () mp.commandv("osd-msg", "set", "video-zoom", 0) end
-    ne.eventresponder["wheel_up_press"] = function () mp.commandv("osd-msg", "set", "video-zoom", math.min(user_opts.zoom_in_max, mp.get_property_number("video-zoom", 0) + 0.05)) end
-    ne.eventresponder["wheel_down_press"] = function () mp.commandv("osd-msg", "set", "video-zoom", math.max(user_opts.zoom_out_min, mp.get_property_number("video-zoom", 0) - 0.05)) end
+    ne.eventresponder["wheel_up_press"] = function () zoom_step(0.05) end
+    ne.eventresponder["wheel_down_press"]= function () zoom_step(-0.05) end
 
     --fullscreen
     ne = new_element("fullscreen", "button")
