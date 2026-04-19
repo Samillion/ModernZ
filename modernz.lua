@@ -2873,6 +2873,13 @@ local function osc_init()
 
     local function make_escaped_title(source)
         local title = mp.command_native({"expand-text", source})
+        -- Decode URL title (%XX code)
+        if state.is_URL then
+            title = title:gsub("+", " ")
+            title = title:gsub("%%(%x%x)", function(h)
+                return string.char(tonumber(h, 16))
+            end)
+        end
         title = title:gsub("\n", " ")
         return title ~= "" and mp.command_native({"escape-ass", title}) or "mpv"
     end
