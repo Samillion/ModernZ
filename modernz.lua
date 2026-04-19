@@ -253,6 +253,7 @@ local user_opts = {
     sub_track_wheel_up_command = "cycle sub down",
 
     -- play/pause button mouse actions
+    play_pause_mbtn_left_command = "cycle pause",
     play_pause_mbtn_mid_command = "cycle-values loop-playlist inf no",
     play_pause_mbtn_right_command = "cycle-values loop-file inf no",
 
@@ -2962,15 +2963,15 @@ local function osc_init()
     --play_pause
     ne = new_element("play_pause", "button")
     ne.content = function () return state.eof_reached and icons.replay or (state.pause and not state.playing_and_seeking and icons.play) or icons.pause end
+    bind_buttons("play_pause")
     ne.eventresponder["mbtn_left_up"] = function ()
         if state.eof_reached then
             mp.commandv("seek", 0, "absolute-percent")
             mp.commandv("set", "pause", "no")
         else
-            mp.commandv("cycle", "pause")
+            mp.command(user_opts.play_pause_mbtn_left_command)
         end
     end
-    bind_buttons("play_pause")
 
     local jump_amount = user_opts.jump_amount
     local jump_more_amount = user_opts.jump_more_amount
