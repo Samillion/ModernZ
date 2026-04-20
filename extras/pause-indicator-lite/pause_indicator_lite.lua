@@ -69,6 +69,7 @@ local state = {
     toggled = false,
     eof = false,
     keybinds_registered = false,
+    indicator_dismissed = false,
 }
 
 local icon_theme = {
@@ -205,7 +206,7 @@ local function kill_timer(key)
 end
 
 local function update_indicator(force)
-    if state.aspect == 0 then return end
+    if not state.aspect or state.aspect == 0 then return end
     if not force and state.indicator_visible then
         return
     end
@@ -219,12 +220,13 @@ local function update_indicator(force)
         state.indicator_timer = mp.add_timeout(options.indicator_timeout, function()
             state.indicator_overlay:remove()
             state.indicator_visible = false
+            state.indicator_dismissed = true
         end)
     end
 end
 
 local function update_flash_icon()
-    if state.aspect == 0 or not options.flash_play_icon then return end
+    if not state.aspect or state.aspect == 0 or not options.flash_play_icon then return end
     kill_timer("flash_timer")
     state.flash_overlay:remove()
     state.flash_overlay.data = draw_triangle()
@@ -235,7 +237,7 @@ local function update_flash_icon()
 end
 
 local function update_mute_icon()
-    if state.aspect == 0 then return end
+    if not state.aspect or state.aspect == 0 then return end
     state.mute_overlay:remove()
     state.mute_overlay.data = draw_mute()
     state.mute_overlay:update()
@@ -277,6 +279,7 @@ local pause_observer = function(_, paused)
         kill_timer("indicator_timer")
         state.indicator_overlay:remove()
         state.indicator_visible = false
+        state.indicator_dismissed = false
         if state.toggled then
             update_flash_icon()
             state.toggled = false
@@ -289,15 +292,16 @@ end
 
 local dimensions_observer = function()
     local _, _, aspect = mp.get_osd_size()
-    local first_valid = state.aspect == 0 and aspect ~= 0
+    if not aspect or aspect == 0 then return end
     state.aspect = aspect
-    if aspect == 0 then return end
-    if first_valid and state.paused then
+
+    if state.paused and not state.indicator_visible and not state.indicator_dismissed then
         update_indicator(true)
         state.toggled = true
     elseif state.indicator_visible then
         update_indicator(true)
     end
+
     if state.mute_visible then
         update_mute_icon()
     end
@@ -349,7 +353,9 @@ mp.register_event("file-loaded", function()
         local _, _, aspect = mp.get_osd_size()
         state.aspect = aspect
         state.eof = false
-        state.toggled = false
+        state.indicator_dismissed = false
+        state.paused = mp.get_property_bool("pause") or false
+        state.indicator_visible = false
         mp.observe_property("pause", "bool", pause_observer)
         mp.observe_property("osd-dimensions", "native", dimensions_observer)
         if options.mute_indicator then
