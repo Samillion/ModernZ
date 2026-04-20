@@ -3511,12 +3511,12 @@ local function process_event(source, what)
             if window_controls_enabled() and user_opts.windowcontrols_independent then
                 if mouse_in_area("showhide_wc") then
                     show_wc()
-                elseif user_opts.visibility ~= "always" then
+                elseif user_opts.visibility ~= "always" and user_opts.deadzone_hide ~= "timeout" then
                     hide_wc()
                 end
                 if mouse_in_area("showhide") then
                     show_osc()
-                elseif user_opts.visibility ~= "always" and not state.keeponpause_active then
+                elseif user_opts.visibility ~= "always" and not state.keeponpause_active and user_opts.deadzone_hide ~= "timeout" then
                     hide_osc()
                 end
             else
