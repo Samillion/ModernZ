@@ -1,4 +1,4 @@
--- ModernZ v0.3.2 (https://github.com/Samillion/ModernZ)
+-- ModernZ v0.3.3rc (https://github.com/Samillion/ModernZ)
 --
 -- This script is a derivative of the original mpv-osc-modern by maoiscat
 -- and subsequent forks:
@@ -569,17 +569,17 @@ end
 -- internal states, do not touch
 local state = {
     showtime = nil,                         -- time of last invocation (last mouse move)
+    wc_showtime = nil,                      -- time of last invocation for window controls
+    wc_anistart = nil,                      -- time when the wc animation started
+    wc_anitype = nil,                       -- current type of wc animation
+    wc_animation = nil,                     -- current wc animation alpha
     touchtime = nil,                        -- time of last invocation (last touch event)
     touchpoints = {},                       -- current touch points
     osc_visible = false,                    -- osc visibility
+    wc_visible = false,                     -- window controls visibility
     anistart = nil,                         -- time when the animation started
     anitype = nil,                          -- current type of animation
     animation = nil,                        -- current animation alpha
-    wc_visible = false,                     -- window controls visibility
-    wc_showtime = nil,
-    wc_anitype = nil,
-    wc_anistart = nil,
-    wc_animation = nil,
     mouse_down_counter = 0,                 -- used for softrepeat
     active_element = nil,                   -- nil = none, 0 = background, 1+ = see elements[]
     active_event_source = nil,              -- the "button" that issued the current event
@@ -600,7 +600,13 @@ local state = {
     audio_track_count = 0,
     sub_track_count = 0,
     playlist_count = 0,
-    playlist_pos = 0,
+    playlist_pos_1 = 0,
+    pause = false,
+    volume = 0,
+    mute = false,
+    osd_dimensions = {w = 0, h = 0, aspect = 0},
+    osd_scale_by_window = false,
+    file_loaded = false,                  -- flag to detect new file starts
     enabled = true,
     input_enabled = true,
     showhide_enabled = false,
@@ -612,22 +618,18 @@ local state = {
     window_maximized = false,
     osd = mp.create_osd_overlay("ass-events"),
     logo_osd = mp.create_osd_overlay("ass-events"),
-    new_file_flag = false,                  -- flag to detect new file starts
     keeponpause_active = false,             -- keeponpause bottombar active state
     chapter_list = {},                      -- sorted by time
     chapter = -1,                           -- current chapter index
     visibility_modes = {},                  -- visibility_modes to cycle through
-    mute = false,
-    pause = false,
     eof_reached = false,
-    volume = 0,
     ontop = false,
     speed = 1,
     file_loop = false,
     shuffled = false,
     sliderpos = 0,
-    playtime_hour_force_init = false,       -- used to force request_init() once
     playing_and_seeking = false,
+    playtime_hour_force_init = false,       -- used to force request_init() once
     persistent_seekbar_element = nil,
     seekbar_element = nil,
     persistent_progress_toggle = user_opts.persistent_progress,
@@ -707,11 +709,11 @@ end
 
 -- scale factor for translating between real and virtual ASS coordinates
 local function get_virt_scale_factor()
-    local w, h = mp.get_osd_size()
-    if w <= 0 or h <= 0 then
+    if state.osd_dimensions.w == 0 or state.osd_dimensions.h == 0 then
         return 0, 0
     end
-    return osc_param.playresx / w, osc_param.playresy / h
+    return osc_param.playresx / state.osd_dimensions.w,
+           osc_param.playresy / state.osd_dimensions.h
 end
 
 local function recently_touched()
@@ -2561,7 +2563,7 @@ layouts["modern-compact"] = function ()
     start_x = start_x + 55
 
     local pl_count = state.playlist_count
-    local pl_pos = state.playlist_pos + 1
+    local pl_pos = state.playlist_pos_1
 
     if user_opts.track_nextprev_buttons then
         local prev_vis = pl_pos > 1 and osc_param.playresx >= 300
@@ -2827,7 +2829,8 @@ local function osc_init()
 
     -- set canvas resolution according to display aspect and scaling setting
     local baseResY = 720
-    local _, display_h, display_aspect = mp.get_osd_size()
+    local display_h = state.osd_dimensions.h
+    local display_aspect = state.osd_dimensions.aspect
     local scale
 
     if state.fullscreen then
@@ -2838,7 +2841,7 @@ local function osc_init()
 
     local scale_with_video
     if user_opts.vidscale == "auto" then
-        scale_with_video = mp.get_property_native("osd-scale-by-window")
+        scale_with_video = state.osd_scale_by_window
     else
         scale_with_video = user_opts.vidscale == "yes"
     end
@@ -2867,7 +2870,7 @@ local function osc_init()
     -- some often needed stuff
     local pl_count = state.playlist_count
     local have_pl = pl_count > 1
-    local pl_pos = state.playlist_pos + 1
+    local pl_pos = state.playlist_pos_1
     local have_ch = #state.chapter_list > 0
     local loop = mp.get_property("loop-playlist", "no")
 
@@ -3560,7 +3563,8 @@ end
 
 local function render()
     msg.trace("rendering")
-    local current_screen_sizeX, current_screen_sizeY = mp.get_osd_size()
+    local current_screen_sizeX = state.osd_dimensions.w
+    local current_screen_sizeY = state.osd_dimensions.h
     local mouseX, mouseY = get_virt_mouse_pos()
     local now = mp.get_time()
 
@@ -3638,12 +3642,7 @@ local function render()
                 set_virt_mouse_area(cords.x1, cords.y1, cords.x2, cords.y2, area_name)
             end
             if visible ~= state[enabled_key] then
-                if visible then
-                    enable_fn()
-                else
-                    set_virt_mouse_area(0, 0, 0, 0, area_name)
-                    mp.disable_key_bindings(area_name)
-                end
+                if visible then enable_fn() else mp.disable_key_bindings(area_name) end
                 state[enabled_key] = visible
             end
         end
@@ -3715,7 +3714,7 @@ tick = function()
     if state.idle_active then
         msg.trace("idle message")
         if user_opts.idlescreen then
-            local _, _, display_aspect = mp.get_osd_size()
+            local display_aspect = state.osd_dimensions.aspect
             if display_aspect == 0 then return end
             local display_h = 360
             local display_w = display_h * display_aspect
@@ -3821,7 +3820,7 @@ mp.register_event("shutdown", function()
 end)
 mp.register_event("file-loaded", function()
     is_image() -- check if file is an image
-    state.new_file_flag = true
+    state.file_loaded = true
     state.file_size_normalized = "Approximating size..."
     check_path_url()
     if user_opts.automatickeyframemode then
@@ -3834,7 +3833,7 @@ end)
 mp.register_event("start-file", request_init)
 mp.observe_property("track-list", "native", update_tracklist)
 observe_cached("playlist-count", request_init)
-observe_cached("playlist-pos", request_init)
+observe_cached("playlist-pos-1", request_init)
 observe_cached("chapter-list", function ()
     state.chapter_list = state.chapter_list or {}
     table.sort(state.chapter_list, function(a, b) return a.time < b.time end)
@@ -3842,8 +3841,8 @@ observe_cached("chapter-list", function ()
     request_init()
 end)
 mp.register_event("seek", function()
-    if state.new_file_flag then
-        state.new_file_flag = false
+    if state.file_loaded then
+        state.file_loaded = false
         return
     end
     if user_opts.osc_on_seek and not (state.file_loop and mp.get_property_number("time-pos", -1) == 0) then
@@ -3877,12 +3876,8 @@ mp.observe_property("display-fps", "number", set_tick_delay)
 observe_cached("demuxer-cache-state", request_tick)
 mp.observe_property("vo-configured", "bool", request_tick)
 mp.observe_property("playback-time", "number", request_tick)
-mp.observe_property("osd-dimensions", "native", function()
-    -- (we could use the value instead of re-querying it all the time, but then
-    --  we might have to worry about property update ordering)
-    request_init_resize()
-end)
-mp.observe_property("osd-scale-by-window", "native", request_init_resize)
+observe_cached("osd-dimensions", request_init_resize)
+observe_cached("osd-scale-by-window", request_init_resize)
 mp.observe_property("touch-pos", "native", handle_touch)
 observe_cached("volume", request_tick)
 observe_cached("mute", request_tick)
