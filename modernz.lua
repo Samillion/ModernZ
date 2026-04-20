@@ -3636,11 +3636,14 @@ local function render()
         for _, cords in ipairs(areas) do
             if visible then
                 set_virt_mouse_area(cords.x1, cords.y1, cords.x2, cords.y2, area_name)
-            else
-                set_virt_mouse_area(0, 0, 0, 0, area_name)
             end
             if visible ~= state[enabled_key] then
-                if visible then enable_fn() else mp.disable_key_bindings(area_name) end
+                if visible then
+                    enable_fn()
+                else
+                    set_virt_mouse_area(0, 0, 0, 0, area_name)
+                    mp.disable_key_bindings(area_name)
+                end
                 state[enabled_key] = visible
             end
         end
