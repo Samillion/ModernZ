@@ -2812,7 +2812,7 @@ end
 
 local function build_cache_seek_ranges()
     if not user_opts.seekrange or not cache_enabled() then return nil end
-    if not state.duration or state.duration <= 0 then return nil end
+    if not state.duration then return nil end
     local nranges = {}
     for _, range in ipairs(state.demuxer_cache_state["seekable-ranges"]) do
         nranges[#nranges + 1] = {
@@ -3229,7 +3229,7 @@ local function osc_init()
     ne.enabled = mp.get_property("percent-pos") ~= nil
     ne.thumbnailable = true
     ne.slider.markerF = function ()
-        if state.duration and state.duration > 0 then
+        if state.duration then
             local chapters = state.chapter_list
             local markers = {}
             for n = 1, #chapters do
@@ -3336,7 +3336,7 @@ local function osc_init()
     ne = new_element("time_codes", "button")
     ne.content = function()
         local playback_time = mp.get_property_number("playback-time", 0)
-        if not state.duration or state.duration <= 0 then return "--:--" end
+        if not state.duration then return "--:--" end
 
         local playtime_remaining = state.tc_left_rem and mp.get_property_number("playtime-remaining", 0) or playback_time
         local prefix = state.tc_left_rem and (user_opts.unicodeminus and UNICODE_MINUS or "-") or ""
