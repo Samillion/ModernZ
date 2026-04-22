@@ -240,6 +240,8 @@ Customize the button function based on mouse actions.
 |                               | title_mbtn_right_command         | `script-binding select/select-watch-history` |
 | Chapter title                 | chapter_title_mbtn_left_command  | `script-binding select/select-chapter`       |
 |                               | chapter_title_mbtn_right_command | `show-text ${chapter-list} 3000`             |
+| Seekbar                       | seekbar_wheel_up_command         | `seek 10`                                    |
+|                               | seekbar_wheel_down_command       | `seek -10`                                   |
 | Playlist button               | playlist_mbtn_left_command       | `script-binding select/select-playlist`      |
 |                               | playlist_mbtn_right_command      | `script-binding select/menu`                 |
 | Volume button                 | vol_ctrl_mbtn_left_command       | `no-osd cycle mute`                          |

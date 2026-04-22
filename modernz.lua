@@ -226,6 +226,10 @@ local user_opts = {
     chapter_title_mbtn_left_command = "script-binding select/select-chapter",
     chapter_title_mbtn_right_command = "show-text ${chapter-list} 3000",
 
+    -- seekbar wheel actions
+    seekbar_wheel_up_command = "seek 10",
+    seekbar_wheel_down_command = "seek -10",
+    
     -- playlist button mouse actions
     playlist_mbtn_left_command = "script-binding select/select-playlist",
     playlist_mbtn_right_command = "script-binding select/menu",
@@ -3079,7 +3083,7 @@ local function osc_init()
     end
     bind_buttons("volumebar")
 
-	-- zoom in/out helper
+    -- zoom in/out helper
     local function zoom_step(delta)
         local z = mp.get_property_number("video-zoom", 0)
         mp.commandv("osd-msg", "set", "video-zoom", math.max(user_opts.zoom_out_min, math.min(user_opts.zoom_in_max, z + delta)))
@@ -3315,8 +3319,7 @@ local function osc_init()
             end
         end
     end
-    ne.eventresponder["wheel_up_press"] = function () mp.commandv("seek", 10) end
-    ne.eventresponder["wheel_down_press"] = function () mp.commandv("seek", -10) end
+    bind_buttons("seekbar")
 
     --persistent seekbar
     ne = new_element("persistent_seekbar", "slider")
