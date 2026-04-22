@@ -229,7 +229,7 @@ local user_opts = {
     -- seekbar wheel actions
     seekbar_wheel_up_command = "seek 10",
     seekbar_wheel_down_command = "seek -10",
-    
+
     -- playlist button mouse actions
     playlist_mbtn_left_command = "script-binding select/select-playlist",
     playlist_mbtn_right_command = "script-binding select/menu",
@@ -1660,9 +1660,6 @@ local function render_elements(master_ass, osc_vis, wc_vis)
                         local r_w, r_h = get_virt_scale_factor()
 
                         local tooltip_width = estimate_text_width(tooltiplabel, slider_lo.tooltip_style)
-                        local tooltip_fs = user_opts.tooltip_font_size
-                        local pad_v = 3 -- vertical padding for chapter title Y offset
-                        local thumbnail_radius = user_opts.thumbnail_box_radius > 0 and user_opts.thumbnail_box_radius or 0
 
                         local chapter_text = nil
                         local chapter_width = 0
@@ -1695,49 +1692,51 @@ local function render_elements(master_ass, osc_vis, wc_vis)
                             state.sliderpos = sliderpos
                         end
 
-                        if thumbfast.disabled then
-                            if chapter_text and osd_w and r_w > 0 then
-                                local titleY = ty - tooltip_fs - 2 * pad_v - 5
-                                draw_tooltip(elem_ass, tx, titleY, chapter_width, slider_lo.tooltip_style, chapter_text, slider_lo.alpha)
+                        local tooltip_fs = user_opts.tooltip_font_size
+                        local pad_v = 3
+                        local gap = 5
+
+                        -- Anchor above tooltip: ty (baseline) - fs (height) - pad_v (tooltip padding) - gap
+                        local current_y = ty - tooltip_fs - pad_v - gap
+
+                        -- Thumbfast logic
+                        if element.thumbnailable and not thumbfast.disabled and osd_w then
+                            local thumb_pad = user_opts.thumbnail_box_padding
+                            local thumb_radius = user_opts.thumbnail_box_radius > 0 and user_opts.thumbnail_box_radius or 0
+
+                            local hover_sec = 0
+                            if state.duration then hover_sec = state.duration * sliderpos / 100 end
+
+                            local margin_x = 18 / r_w
+                            local thumb_x = math.min(osd_w - thumbfast.width - margin_x, math.max(margin_x, tx / r_w - thumbfast.width / 2))
+                            thumb_x = math.floor(thumb_x + 0.5)
+
+                            local thumb_y_px = current_y - (thumb_pad * r_h) - (thumbfast.height * r_h)
+
+                            if state.anitype == nil then
+                                elem_ass:new_event()
+                                elem_ass:append("{\\rDefault}")
+                                elem_ass:pos(thumb_x * r_w, thumb_y_px)
+                                elem_ass:an(7)
+                                elem_ass:append(osc_styles.thumbnail)
+                                elem_ass:draw_start()
+                                elem_ass:round_rect_cw(-thumb_pad * r_w, -thumb_pad * r_h, (thumbfast.width + thumb_pad) * r_w, (thumbfast.height + thumb_pad) * r_h, thumb_radius)
+                                elem_ass:draw_stop()
+
+                                mp.commandv("script-message-to", "thumbfast", "thumb", hover_sec, thumb_x, math.floor(thumb_y_px / r_h + 0.5))
                             end
-                        -- thumbfast
-                        elseif element.thumbnailable and not thumbfast.disabled then
-                            if osd_w then
-                                local hover_sec = 0
-                                if state.duration then hover_sec = state.duration * sliderpos / 100 end
-                                local thumbPad = user_opts.thumbnail_box_padding
-                                local thumbMarginX = 18 / r_w
-                                local thumbMarginY = user_opts.tooltip_font_size + thumbPad + 5 + 2 / r_h
 
-                                local thumbX = math.min(osd_w - thumbfast.width - thumbMarginX, math.max(thumbMarginX, tx / r_w - thumbfast.width / 2))
-                                local thumbY = (ty - thumbMarginY) / r_h - thumbfast.height
+                            -- Keep tooltips anchored to the thumbnail center even at window edges
+                            tx = (thumb_x + thumbfast.width / 2) * r_w
+                            an = 2
 
-                                thumbX = math.floor(thumbX + 0.5)
-                                thumbY = math.floor(thumbY + 0.5)
+                            -- Advance anchor above the thumbnail
+                            current_y = thumb_y_px - (thumb_pad * r_h) - gap
+                        end
 
-                                if state.anitype == nil then
-                                    elem_ass:new_event()
-                                    elem_ass:append("{\\rDefault}")
-                                    elem_ass:pos(thumbX * r_w, ty - thumbMarginY - thumbfast.height * r_h)
-                                    elem_ass:an(7)
-                                    elem_ass:append(osc_styles.thumbnail)
-                                    elem_ass:draw_start()
-                                    elem_ass:round_rect_cw(-thumbPad * r_w, -thumbPad * r_h, (thumbfast.width + thumbPad) * r_w, (thumbfast.height + thumbPad) * r_h, thumbnail_radius)
-                                    elem_ass:draw_stop()
-
-                                    -- force tooltip to be centered on the thumb, even at far left/right of screen
-                                    tx = (thumbX + thumbfast.width / 2) * r_w
-                                    an = 2
-
-                                    mp.commandv("script-message-to", "thumbfast", "thumb", hover_sec, thumbX, thumbY)
-                                end
-
-                                an = 2
-                                if chapter_text then
-                                    local chapterY = thumbY * r_h - thumbPad * r_h - pad_v - 5
-                                    draw_tooltip(elem_ass, tx, chapterY, chapter_width, slider_lo.tooltip_style, chapter_text, slider_lo.alpha)
-                                end
-                            end
+                        if chapter_text and r_w > 0 then
+                            local chapter_y = current_y - pad_v
+                            draw_tooltip(elem_ass, tx, chapter_y, chapter_width, slider_lo.tooltip_style, chapter_text, slider_lo.alpha)
                         end
 
                         draw_tooltip(elem_ass, tx, ty, tooltip_width, slider_lo.tooltip_style, tooltiplabel, slider_lo.alpha)
