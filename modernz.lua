@@ -619,6 +619,7 @@ local state = {
     osd = mp.create_osd_overlay("ass-events"),
     logo_osd = mp.create_osd_overlay("ass-events"),
     keeponpause_active = false,             -- keeponpause bottombar active state
+    cursor_hide_flag = nil,                 -- flag to add allow-hide-cursor when keep_with_cursor=no
     chapter_list = {},                      -- sorted by time
     chapter = -1,                           -- current chapter index
     visibility_modes = {},                  -- visibility_modes to cycle through
@@ -1587,7 +1588,7 @@ local function render_elements(master_ass, osc_vis, wc_vis)
                 elem_ass:pos(0, 0)
                 elem_ass:an(7)
                 local hover_base_alpha = state.mouse_down_counter > 0 and (255 - math.floor(math.max(0, math.min(100, user_opts.button_held_box_alpha)) * 2.55)) or (element.hover_alpha or 0xE6)
-                ass_append_alpha(elem_ass, {[1] = hover_base_alpha, [2] = 255, [3] = 255, [4] = 255}, element.layout.alpha[1])
+                ass_append_alpha(elem_ass, {[1] = hover_base_alpha, [2] = 255, [3] = 255, [4] = 255}, element.layout.alpha[1], nil, anim_override)
                 local hover_style = element.hover_color
                     and "{\\blur0\\bord0\\1c&H" .. osc_color_convert(element.hover_color) .. "&}"
                     or osc_styles.hover_bg
@@ -3080,7 +3081,7 @@ local function osc_init()
     end
     bind_buttons("volumebar")
 
-	-- zoom in/out helper
+    -- zoom in/out helper
     local function zoom_step(delta)
         local z = mp.get_property_number("video-zoom", 0)
         mp.commandv("osd-msg", "set", "video-zoom", math.max(user_opts.zoom_out_min, math.min(user_opts.zoom_in_max, z + delta)))
@@ -3474,6 +3475,11 @@ local function process_event(source, what)
                 if what == "down" then
                     state.active_element = n
                     state.active_event_source = source
+                    -- suppress cursor hiding while a click is in progress
+                    if state.cursor_hide_flag then
+                        mp.enable_key_bindings("input", nil)
+                        mp.enable_key_bindings("window-controls", nil)
+                    end
                 end
                 -- fire the down or press event if the element has one
                 if element_has_action(elements[n], action) then
@@ -3498,6 +3504,13 @@ local function process_event(source, what)
                 elements[n].eventresponder["reset"](elements[n])
             end
         end
+        -- restore cursor-hide behaviour now that the click is done
+        if state.cursor_hide_flag then
+            mp.enable_key_bindings("input", state.cursor_hide_flag)
+            mp.enable_key_bindings("window-controls", state.cursor_hide_flag)
+        end
+        -- restart the hide timer from the moment the button is released
+        reset_timeout()
         state.active_element = nil
         state.mouse_down_counter = 0
     elseif source == "mouse_move" then
@@ -3648,9 +3661,9 @@ local function render()
         end
     end
 
-    update_input_area("input", state.osc_visible, "input_enabled", function() mp.enable_key_bindings("input") end)
-    update_input_area("window-controls", state.wc_visible, "windowcontrols_buttons", function() mp.enable_key_bindings("window-controls") end)
-    update_input_area("window-controls-title", state.wc_visible, "windowcontrols_title", function() mp.enable_key_bindings("window-controls-title", "allow-vo-dragging") end)
+    update_input_area("input", state.osc_visible, "input_enabled", function() mp.enable_key_bindings("input", state.cursor_hide_flag) end)
+    update_input_area("window-controls", state.wc_visible, "windowcontrols_buttons", function() mp.enable_key_bindings("window-controls", state.cursor_hide_flag) end)
+    update_input_area("window-controls-title", state.wc_visible, "windowcontrols_title", function() mp.enable_key_bindings("window-controls-title", state.cursor_hide_flag and "allow-vo-dragging+allow-hide-cursor" or "allow-vo-dragging") end)
     update_input_area("window-controls-ontop", state.wc_visible, "windowcontrols_ontop", function() mp.enable_key_bindings("window-controls-ontop") end)
 
     -- autohide
@@ -3926,13 +3939,13 @@ mp.set_key_bindings({
     {"shift+mbtn_left_dbl", "ignore"},
     {"mbtn_right_dbl",      "ignore"},
 }, "input", "force")
-mp.enable_key_bindings("input")
+mp.enable_key_bindings("input", state.cursor_hide_flag)
 
 mp.set_key_bindings({
     {"mbtn_left",           function() process_event("mbtn_left", "up") end,
                             function() process_event("mbtn_left", "down")  end},
 }, "window-controls", "force")
-mp.enable_key_bindings("window-controls")
+mp.enable_key_bindings("window-controls", state.cursor_hide_flag)
 
 mp.set_key_bindings({
     {"mbtn_left",           function() process_event("mbtn_left", "up") end,
@@ -4147,6 +4160,8 @@ local function validate_user_opts()
     if user_opts.osd_margins and watch_later:find(",osd-margin-y,", 1, true) then
         msg.warn("osd_margins conflict: add watch-later-options-remove=osd-margin-y to mpv.conf")
     end
+
+    state.cursor_hide_flag = not user_opts.keep_with_cursor and "allow-hide-cursor" or nil
 end
 
 -- read options from config and command-line
