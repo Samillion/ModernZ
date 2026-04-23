@@ -640,13 +640,13 @@ local state = {
     persistent_progress_toggle = user_opts.persistent_progress,
     user_subpos = mp.get_property_number("sub-pos") or 100,
     osc_adjusted_subpos = nil,
+    is_image = false,
+    is_url = false,
+    url_path = "",                           -- used for yt-dlp downloading
     downloaded_once = false,
     downloading = false,
     file_size_bytes = 0,
     file_size_normalized = "Approximating size...",
-    is_url = false,
-    is_image = false,
-    url_path = "",                           -- used for yt-dlp downloading
 }
 
 local logo_lines = {
