@@ -610,7 +610,7 @@ local state = {
     mute = false,
     osd_dimensions = {w = 0, h = 0, aspect = 0},
     osd_scale_by_window = false,
-    file_loaded = false,                  -- flag to detect new file starts
+    file_loaded = false,                    -- flag to detect file load
     enabled = true,
     input_enabled = true,
     showhide_enabled = false,
@@ -640,13 +640,13 @@ local state = {
     persistent_progress_toggle = user_opts.persistent_progress,
     user_subpos = mp.get_property_number("sub-pos") or 100,
     osc_adjusted_subpos = nil,
+    is_image = false,
+    is_url = false,
+    url_path = "",                           -- used for yt-dlp downloading
     downloaded_once = false,
     downloading = false,
     file_size_bytes = 0,
     file_size_normalized = "Approximating size...",
-    is_URL = false,
-    is_image = false,
-    url_path = "",                           -- used for yt-dlp downloading
 }
 
 local logo_lines = {
@@ -1240,7 +1240,8 @@ local function prepare_elements()
             if element.name ~= "seekbar" then
                 element.layout.alpha[1] = 215
             end
-            if not (element.name == "sub_track" or element.name == "audio_track" or element.name == "playlist") then -- keep these to display tooltips
+            -- keep these to display tooltips
+            if not (element.name == "sub_track" or element.name == "audio_track" or element.name == "playlist") then
                 element.eventresponder = nil
             end
         end
@@ -1864,15 +1865,15 @@ end
 --
 -- Initialisation and Layout
 --
+local function is_image()
+    local t = mp.get_property_native("current-tracks/video")
+    state.is_image = t ~= nil and t.image == true and t.albumart ~= true
+end
+
 local function is_url(s)
     if not s then return false end
     local url_pattern = "^[%w]+://[%w%.%-_]+%.[%a]+[-%w%.%-%_/?&=]*"
     return string.match(s, url_pattern) ~= nil
-end
-
-local function is_image()
-    local current_track = mp.get_property_native("current-tracks/video")
-    state.is_image = current_track ~= nil and current_track.image == true and current_track.albumart ~= true
 end
 
 local function get_ytdl_format()
@@ -1944,7 +1945,7 @@ local function exec(args, callback)
 end
 
 local function check_path_url()
-    state.is_URL = false
+    state.is_url = false
     state.downloading = false
 
     local path = mp.get_property("path")
@@ -1957,7 +1958,7 @@ local function check_path_url()
     end
 
     if is_url(path) then
-        state.is_URL = true
+        state.is_url = true
         state.url_path = path
         msg.info("URL detected.")
 
@@ -2408,7 +2409,7 @@ layouts["modern"] = function ()
     if user_opts.loop_button then right_side_button("file_loop", 950) end
     if user_opts.shuffle_button then right_side_button("shuffle", 1050) end
     if user_opts.speed_button then right_side_button("speed", 1150, osc_styles.speed, 42) end
-    if user_opts.download_button and state.is_URL then right_side_button("download", 1150) end
+    if user_opts.download_button and state.is_url then right_side_button("download", 1150) end
 
     if user_opts.cache_info then
         right_side_button("cache_info", 1250, osc_styles.cache, user_opts.cache_info_speed and 70 or 45)
@@ -2643,7 +2644,7 @@ layouts["modern-compact"] = function ()
     right_side_button("sub_track", 400, user_opts.subtitles_button and state.sub_track_count > 0)
     right_side_button("audio_track", 500, user_opts.audio_tracks_button and state.audio_track_count > 0)
     right_side_button("playlist", 600, user_opts.playlist_button)
-    right_side_button("download", 700, state.is_URL and user_opts.download_button)
+    right_side_button("download", 700, state.is_url and user_opts.download_button)
     right_side_button("speed", 700, user_opts.speed_button, osc_styles.speed, 42)
 
     elements["cache_info"].visible = user_opts.cache_info and osc_geo.w >= 850
@@ -2748,7 +2749,7 @@ layouts["modern-image"] = function ()
     if fullscreen_button then right_side_button("fullscreen", 350) end
     if info_button then right_side_button("info", 400) end
     if ontop_button then right_side_button("ontop", 450) end
-    if user_opts.download_button then right_side_button("download", 500, state.is_URL) end
+    if user_opts.download_button then right_side_button("download", 500, state.is_url) end
 end
 
 local function set_bar_visible(visible_key, visible)
