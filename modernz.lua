@@ -646,7 +646,7 @@ local state = {
     downloaded_once = false,
     downloading = false,
     file_size_bytes = 0,
-    file_size_normalized = "Approximating size...",
+    file_size_normalized = nil,
 }
 
 local logo_lines = {
@@ -1963,7 +1963,8 @@ local function check_path_url()
         msg.info("URL detected.")
 
         if user_opts.download_button then
-            msg.info("Fetching file size...")
+            msg.info("Approximating file size...")
+            state.file_size_normalized = "Approximating file size..."
             local command = {
                 "yt-dlp",
                 state.is_image and "" or get_ytdl_format(),
@@ -3811,7 +3812,6 @@ end)
 mp.register_event("file-loaded", function()
     is_image() -- check if file is an image
     state.file_loaded = true
-    state.file_size_normalized = "Approximating size..."
     check_path_url()
     if user_opts.automatickeyframemode then
         user_opts.seekbarkeyframes = (state.duration or 0) > user_opts.automatickeyframelimit
