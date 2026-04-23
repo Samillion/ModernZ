@@ -3449,8 +3449,17 @@ end
 --
 local function reset_timeout()
     local now = mp.get_time()
-    state.showtime = now
-    state.wc_showtime = now
+    if window_controls_enabled() and user_opts.windowcontrols_independent then
+        -- only reset the timer for the bar the event belongs to
+        if mouse_in_area({"window-controls", "window-controls-title", "window-controls-ontop"}) then
+            state.wc_showtime = now
+        else
+            state.showtime = now
+        end
+    else
+        state.showtime = now
+        state.wc_showtime = now
+    end
 end
 
 local function element_has_action(element, action)
@@ -3657,7 +3666,9 @@ local function render()
         if state[showtime_key] == nil or hide_timeout < 0 then return end
         local timeout = state[showtime_key] + (hide_timeout / 1000) - now
         if timeout <= 0 and get_touchtimeout() <= 0 then
-            if state.active_element == nil and (not user_opts.keep_with_cursor or not mouse_in_area(input_areas)) then
+            -- a hold in the bottom bar should not prevent the top bar from hiding, and vice versa.
+            local element_blocks_hide = state.active_element ~= nil and mouse_in_area(input_areas)
+            if not element_blocks_hide and (not user_opts.keep_with_cursor or not mouse_in_area(input_areas)) then
                 hide_fn()
             end
         else
