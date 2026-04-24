@@ -1,10 +1,7 @@
 ## Open-File
 ![open_file_menu](https://github.com/user-attachments/assets/5a638c25-4e65-456f-80bc-89a9dcf86041)
 
-This script enables you to open file dialog on Windows directly from mpv:
-- Open a file
-- Add a subtitle
-- Add an audio track
+This script enables you to open files, add subtitles, or add audio tracks directly from mpv via the Windows file dialog
 
 ## Usage
 
