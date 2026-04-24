@@ -78,30 +78,15 @@ You can add or remove any of the list items to suit your needs. [[full list of M
 
 ```
 
-### Open File Dialog (Optional)
+### Open File (Optional)
 
-<img width="2023" height="1123" alt="open-file" src="https://github.com/user-attachments/assets/3b4ffa5f-05bb-420f-99d5-33d8abf2b9e4" /><br>
+<img width="2035" height="1145" alt="open-file" src="https://github.com/user-attachments/assets/5e0c360c-77d2-4844-8bcc-280eaa8a4bf4" /><br>
+[open-file.lua](/extras/open-file) script allows you to open file dialog on Windows directly from mpv:
+- Open a file
+- Add a subtitle
+- Add an audio track
 
-To be able to open a file or add a subtitle directly from mpv, you can use [open-file.lua](https://github.com/Samillion/mpv-conf/blob/master/scripts/open-file.lua) script.
 
-In your `input.conf`, add:
-```
-Ctrl+o          script-binding open_file/open
-Ctrl+Shift+s    script-binding open_file/add_subtitle
-```
-
-In your `menu.conf`, add:
-```
-&Open File		script-binding open_file/open
-&Add Subtitle	script-binding open_file/add_subtitle
-```
-
-You can see how that's done by viewing this [input.conf](https://github.com/Samillion/mpv-conf/blob/master/input.conf) and this [menu.conf](https://github.com/Samillion/mpv-conf/blob/master/menu.conf).
-
-The script `open-file.lua` only works for Windows, however you can search for one that works for your operating system in [mpv user scripts](https://github.com/mpv-player/mpv/wiki/User-Scripts) or [awesome-mpv](https://github.com/stax76/awesome-mpv), then apply it the same way.
-
-- Linux (Gnome): [zenity-open-files.lua](https://github.com/alifarazz/mpv-zenity-open-files/blob/master/zenity-open-files.lua)
-- Linux (KDE): [kdialog-open-files.lua](https://gist.github.com/ntasos/d1d846abd7d25e4e83a78d22ee067a22)
 
 ## Notes
 > [!IMPORTANT]
