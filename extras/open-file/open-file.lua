@@ -1,16 +1,9 @@
 --[[
 
-    Open file dialog for Windows with a keybind or context-menu
+    Open files, add subtitles, or add audio tracks directly from mpv 
+    via the Windows file dialog
 
-    input.conf:
-        Ctrl+o          script-binding open_file/open
-        Ctrl+Shift+s    script-binding open_file/add_subtitle
-        Ctrl+Shift+a    script-binding open_file/add_audio
-
-    menu.conf:
-        &Open File			script-binding open_file/open
-        &Add Subtitle		script-binding open_file/add_subtitle
-        A&dd Audio Track	script-binding open_file/add_audio
+    More info: https://github.com/Samillion/ModernZ/tree/main/extras/open-file
 
     A fork of https://github.com/rossy/mpv-open-file-dialog
 
