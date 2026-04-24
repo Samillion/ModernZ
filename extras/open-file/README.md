@@ -30,7 +30,7 @@ A&dd Audio Track	script-binding open_file/add_audio
 
 ## How to install
 
-Simply place [open-file.lua](./open-file/open-file.lua) in the mpv scripts folder:
+Simply place [open-file.lua](./open-file.lua) in the mpv scripts folder:
 
 - Windows: `%APPDATA%\mpv\scripts\` or `C:\users\USERNAME\AppData\Roaming\mpv\scripts\`
 
