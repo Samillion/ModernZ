@@ -645,7 +645,6 @@ local state = {
     url_path = "",                           -- used for yt-dlp downloading
     downloaded_once = false,
     downloading = false,
-    file_size_bytes = 0,
     file_size_normalized = nil,
 }
 
@@ -1870,78 +1869,22 @@ local function is_image()
     state.is_image = t ~= nil and t.image == true and t.albumart ~= true
 end
 
-local function is_url(s)
-    if not s then return false end
-    local url_pattern = "^[%w]+://[%w%.%-_]+%.[%a]+[-%w%.%-%_/?&=]*"
-    return string.match(s, url_pattern) ~= nil
-end
-
 local function get_ytdl_format()
-    local mpv_ytdl = mp.get_property("file-local-options/ytdl-format") or mp.get_property("ytdl-format") or ""
-    return mpv_ytdl ~= "" and ("-f " .. mpv_ytdl) or "-f bestvideo+bestaudio/best"
+    local fmt = mp.get_property("file-local-options/ytdl-format") or mp.get_property("ytdl-format") or ""
+    return fmt ~= "" and ("-f " .. fmt) or "-f bestvideo+bestaudio/best"
 end
 
-local function strip_empty_args(args)
+local function exec(args, callback)
     for i = #args, 1, -1 do
-        if args[i] == nil or args[i] == "" then
-            table.remove(args, i)
-        end
+        if args[i] == nil or args[i] == "" then table.remove(args, i) end
     end
-end
-
-local function exec_filesize(args)
-    strip_empty_args(args)
+    msg.info("Executing: " .. table.concat(args, " "))
     mp.command_native_async({
         name = "subprocess",
         args = args,
         capture_stdout = true,
         capture_stderr = true
-    }, function(res, val)
-        local fileSizeString = val.stdout
-        state.file_size_bytes = tonumber(fileSizeString)
-
-        if state.file_size_bytes then
-            state.file_size_normalized = utils.format_bytes_humanized(state.file_size_bytes)
-            msg.info("Download size: " .. state.file_size_normalized)
-        else
-            local fs_prop = mp.get_property_osd("file-size")
-
-            if fs_prop and fs_prop ~= "" then
-                state.file_size_normalized = fs_prop
-                msg.info("Download size: " .. fs_prop)
-            else
-                state.file_size_normalized = "Unknown"
-                msg.info("Unable to retrieve file size.")
-            end
-        end
-
-        request_tick()
-    end)
-end
-
-local function download_done(success, result, error)
-    if success then
-        local download_path = mp.command_native({"expand-path", user_opts.download_path})
-        mp.commandv("show-text", "Download saved to " .. download_path, "-1", "1")
-        state.downloaded_once = true
-        msg.info("Download completed")
-    else
-        mp.commandv("show-text", "Download failed - " .. (error or "Unknown error"), "-1", "1")
-        msg.info("Download failed")
-    end
-    state.downloading = false
-end
-
-local function exec(args, callback)
-    strip_empty_args(args)
-    msg.info("Executing command: " .. table.concat(args, " "))
-    local ret = mp.command_native_async({
-        name = "subprocess",
-        args = args,
-        capture_stdout = true,
-        capture_stderr = true
     }, callback)
-    return ret and ret.status
 end
 
 local function check_path_url()
@@ -1949,15 +1892,12 @@ local function check_path_url()
     state.downloading = false
 
     local path = mp.get_property("path")
-    if not path then return nil end
+    if not path then return end
 
-    if string.find(path, "https://") then
-        path = string.gsub(path, "ytdl://", "") -- Remove "ytdl://" prefix
-    else
-        path = string.gsub(path, "ytdl://", "https://") -- Replace "ytdl://" with "https://"
-    end
+    -- normalize ytdl:// prefix: ytdl://https://... > https://..., ytdl://... > https://...
+    path = path:gsub("^ytdl://https?://", "https://"):gsub("^ytdl://", "https://")
 
-    if is_url(path) then
+    if path:match("^[%w]+://") then
         state.is_url = true
         state.url_path = path
         msg.info("URL detected.")
@@ -1965,17 +1905,44 @@ local function check_path_url()
         if user_opts.download_button then
             msg.info("Approximating file size...")
             state.file_size_normalized = "Approximating file size..."
-            local command = {
+            exec({
                 "yt-dlp",
                 state.is_image and "" or get_ytdl_format(),
                 "--no-download",
-                "-O",
-                "%(filesize,filesize_approx)s", -- Fetch file size or approximate size
+                "-O", "%(filesize,filesize_approx)s",
                 path
-            }
-            exec_filesize(command)
+            }, function(_, result)
+                local bytes = tonumber(result.stdout)
+                if bytes then
+                    state.file_size_normalized = utils.format_bytes_humanized(bytes)
+                    msg.info("Download size: " .. state.file_size_normalized)
+                else
+                    local fs_prop = mp.get_property_osd("file-size")
+                    if fs_prop and fs_prop ~= "" then
+                        state.file_size_normalized = fs_prop
+                        msg.info("Download size: " .. fs_prop)
+                    else
+                        state.file_size_normalized = "Unknown"
+                        msg.info("Unable to retrieve file size.")
+                    end
+                end
+                request_tick()
+            end)
         end
     end
+end
+
+local function download_done(success, _, error)
+    if success then
+        local path = mp.command_native({"expand-path", user_opts.download_path})
+        mp.commandv("show-text", "Download saved to " .. path, "-1", "1")
+        state.downloaded_once = true
+        msg.info("Download completed")
+    else
+        mp.commandv("show-text", "Download failed - " .. (error or "Unknown error"), "-1", "1")
+        msg.info("Download failed")
+    end
+    state.downloading = false
 end
 
 local function new_element(name, type)
