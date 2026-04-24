@@ -79,14 +79,9 @@ You can add or remove any of the list items to suit your needs. [[full list of M
 ```
 
 ### Open File (Optional)
+![open_file_menu](https://github.com/user-attachments/assets/5a638c25-4e65-456f-80bc-89a9dcf86041)
 
-<img width="2035" height="1145" alt="open-file" src="https://github.com/user-attachments/assets/5e0c360c-77d2-4844-8bcc-280eaa8a4bf4" /><br>
-[open-file.lua](/extras/open-file) script allows you to open file dialog on Windows directly from mpv:
-- Open a file
-- Add a subtitle
-- Add an audio track
-
-
+The [open-file.lua](/extras/open-file) script enables you to open files, add subtitles, or add audio tracks directly from mpv via the Windows file dialog
 
 ## Notes
 > [!IMPORTANT]

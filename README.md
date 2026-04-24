@@ -341,7 +341,7 @@ For a complete list of available languages, contribution guidelines, and in-dept
 
 The following scripts are maintained by me. Feel free to use them if they're useful to you.
 
-- [Open-File](/extras/open-file/) - Allows you to open a file, add a subtitle, or add an audio track, directly from mpv using open file dialog on Windows
+- [Open-File](/extras/open-file/) - Open files, add subtitles, or add audio tracks directly from mpv via the Windows file dialog
 - [Pause-Indicator-Lite](/extras/pause-indicator-lite) - A simple script that displays an indicator on pause
 - [PiP-Lite](/extras/pip-lite) - Add a PiP mode (Picture-in-Picture) via the ModernZ pin button or when `ontop` is enabled
 - [ytdlAutoFormat](https://github.com/Samillion/mpv-ytdlautoformat) - A simple mpv script to automatically change `ytdl-format` (yt-dlp) for specified domains
