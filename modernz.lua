@@ -53,16 +53,16 @@ local user_opts = {
     scalefullscreen = 1.0,                 -- osc scale factor when fullscreen
 
     -- Elements display
-    show_title = true,                     -- show title in the OSC (above seekbar)
-    title = "${media-title}",              -- title above seekbar: "${media-title}" or "${filename}"
-    title_font_size = 24,                  -- title font size (above seekbar)
+    show_title = true,                     -- show title in the OSC
+    title = "${media-title}",              -- title: "${media-title}" or "${filename}"
+    title_font_size = 24,                  -- title font size
     chapter_title_font_size = 16,          -- chapter title font size
 
     cache_info = false,                    -- show cached time information
     cache_info_speed = false,              -- show cache speed per second
     cache_info_font_size = 12,             -- font size of the cache information
 
-    show_chapter_title = true,             -- show chapter title (above seekbar)
+    show_chapter_title = true,             -- show chapter title
     chapter_above_title = false,           -- show chapter above title
     chapter_fmt = "%s",                    -- format for chapter display on seekbar hover (set to "no" to disable)
 
@@ -136,7 +136,7 @@ local user_opts = {
     windowcontrols_close_hover = "#F45C5B", -- color of close window control on hover
     windowcontrols_max_hover = "#F8BC3A",  -- color of maximize window controls on hover
     windowcontrols_min_hover = "#43CB44",  -- color of minimize window controls on hover
-    title_color = "#FFFFFF",               -- color of the title (above seekbar)
+    title_color = "#FFFFFF",               -- color of the title
     cache_info_color = "#FFFFFF",          -- color of the cache information
     seekbar_cache_color = "#B1B1B1",       -- color of the cache ranges on the seekbar
     seekbarfg_color = "#FF8232",           -- color of the seekbar progress
@@ -145,7 +145,7 @@ local user_opts = {
     seek_handle_border_color = "#FF8232",  -- inner border color drawn inside the seekbar handle (set to "" to disable)
     volumebar_match_seek_color = false,    -- match volume bar color with seekbar color (ignores side_buttons_color)
     time_color = "#FFFFFF",                -- color of the timestamps (below seekbar)
-    chapter_title_color = "#FFFFFF",       -- color of the chapter title (above seekbar)
+    chapter_title_color = "#FFFFFF",       -- color of the chapter title
     side_buttons_color = "#FFFFFF",        -- color of the side buttons (audio, subtitles, playlist, etc.)
     middle_buttons_color = "#FFFFFF",      -- color of the middle buttons (skip, jump, chapter, etc.)
     playpause_color = "#FFFFFF",           -- color of the play/pause button
@@ -164,6 +164,7 @@ local user_opts = {
     window_fade_transparency_strength = 0, -- use with "window_fade_blur_strength=0" to create a transparency box
     thumbnail_box_padding = 4.5,           -- thumbnail box padding around the image
     thumbnail_box_radius = 4,              -- round corner radius for thumbnail box border (0 to disable)
+    thumbnail_box_outline_size = 1,        -- thumbnail box border outline size (thickness)
 
     -- Button interaction settings
     hover_effect = "size,glow,color,box",  -- active button hover effects: "glow", "size", "color", "box"; can use multiple separated by commas
@@ -217,7 +218,7 @@ local user_opts = {
     -- Mouse commands
     -- customize the button function based on mouse action
 
-    -- title above seekbar mouse actions
+    -- title mouse actions
     title_mbtn_left_command = "script-binding stats/display-page-5",
     title_mbtn_mid_command = "show-text ${path}",
     title_mbtn_right_command = "script-binding select/select-watch-history",
@@ -553,7 +554,7 @@ local function set_osc_styles()
         chapter_title = "{\\bord1\\1c&H" .. osc_color_convert(user_opts.chapter_title_color) .. "&\\3c&H0&\\fs" .. user_opts.chapter_title_font_size .. "\\fn" .. user_opts.font .. "}",
         seekbar_bg = "{\\1c&H" .. osc_color_convert(user_opts.seekbarbg_color) .. "&}",
         seekbar_fg = "{\\blur1\\bord1\\1c&H" .. osc_color_convert(user_opts.seekbarfg_color) .. "&}",
-        thumbnail = "{\\bord1\\1c&H" .. osc_color_convert(user_opts.thumbnail_box_color) .. "&\\3c&H" .. osc_color_convert(user_opts.thumbnail_box_outline) .. "&}",
+        thumbnail = "{\\bord" .. user_opts.thumbnail_box_outline_size .. "\\1c&H" .. osc_color_convert(user_opts.thumbnail_box_color) .. "&\\3c&H" .. osc_color_convert(user_opts.thumbnail_box_outline) .. "&}",
         time = "{\\bord1\\1c&H" .. osc_color_convert(user_opts.time_color) .. "&\\3c&H0&\\fs" .. user_opts.time_font_size .. "\\fn" .. user_opts.font .. "}",
         cache = "{\\bord1\\1c&H" .. osc_color_convert(user_opts.cache_info_color) .. "&\\3c&H0&\\fs" .. user_opts.cache_info_font_size .. "\\fn" .. user_opts.font .. "}",
         tooltip = "{\\bord1\\1c&HFFFFFF&\\3c&H0&\\fs" .. user_opts.tooltip_font_size .. "\\fn" .. user_opts.font .. "}",
@@ -2887,7 +2888,7 @@ local function osc_init()
     ne.content = function () return make_escaped_title(user_opts.title) end
     bind_buttons("title")
 
-    -- Chapter title (above seekbar)
+    -- Chapter title
     ne = new_element("chapter_title", "button")
     ne.content = function()
         local chapter_index = state.chapter or -1

@@ -51,11 +51,11 @@ Create `modernz.conf` in your mpv script-opts directory:
 
 | Option                  | Value            | Description                                                                      |
 | ----------------------- | ---------------- | -------------------------------------------------------------------------------- |
-| show_title              | yes              | show title in the OSC (above seekbar)                                            |
-| title                   | `${media-title}` | title above seekbar: `"${media-title}"` or `"${filename}"`                       |
-| title_font_size         | 24               | font size of the title text (above seekbar)                                      |
+| show_title              | yes              | show title in the OSC                                                            |
+| title                   | `${media-title}` | title: `"${media-title}"` or `"${filename}"`                                     |
+| title_font_size         | 24               | font size of the title text                                                      |
 | chapter_title_font_size | 16               | chapter title font size                                                          |
-| show_chapter_title      | yes              | show chapter title (above seekbar)                                               |
+| show_chapter_title      | yes              | show chapter title                                                               |
 | chapter_above_title     | no               | show chapter above title                                                         |
 | chapter_fmt             | %s               | format for chapter display on seekbar hover (set to `"no"` to disable)           |
 | timecurrent             | yes              | show current time instead of remaining time                                      |
@@ -142,15 +142,15 @@ watch-later-options-remove=osd-margin-y
 | windowcontrols_close_hover        | `#E81123` | color of close window control on hover                                                            |
 | windowcontrols_max_hover          | `#F8BC3A` | color of maximize window controls on hover                                                        |
 | windowcontrols_min_hover          | `#43CB44` | color of minimize window controls on hover                                                        |
-| title_color                       | `#FFFFFF` | color of the title (above seekbar)                                                                |
+| title_color                       | `#FFFFFF` | color of the title                                                                                |
 | seekbar_cache_color               | `#B1B1B1` | color of the cache ranges on the seekbar                                                          |
 | seekbarfg_color                   | `#FF8232` | color of the seekbar progress                                                                     |
 | seekbarbg_color                   | `#999999` | color of the remaining seekbar                                                                    |
 | seek_handle_color                 | `#C96508` | color of the seekbar handle                                                                       |
 | seek_handle_border_color          | `#FF8232` | inner border color drawn inside the seekbar handle                                                |
 | volumebar_match_seek_color        | no        | match volume bar color with seekbar color (ignores `side_buttons_color`)                          |
-| time_color                        | `#FFFFFF` | color of the timestamps (below seekbar)                                                           |
-| chapter_title_color               | `#FFFFFF` | color of the chapter title (above seekbar)                                                        |
+| time_color                        | `#FFFFFF` | color of the timestamps                                                                           |
+| chapter_title_color               | `#FFFFFF` | color of the chapter title                                                                        |
 | cache_info_color                  | `#FFFFFF` | color of the cache information                                                                    |
 | side_buttons_color                | `#FFFFFF` | color of the side buttons (audio, subtitles, playlist, etc.)                                      |
 | middle_buttons_color              | `#FFFFFF` | color of the middle buttons (skip, jump, chapter, etc.)                                           |
@@ -169,6 +169,7 @@ watch-later-options-remove=osd-margin-y
 | window_fade_transparency_strength | 0         | use with "window_fade_blur_strength=0" to create a transparency box                               |
 | thumbnail_box_padding             | 4.5       | thumbnail box padding around the image                                                            |
 | thumbnail_box_radius              | 4         | round corner radius for thumbnail box border (0 to disable)                                       |
+| thumbnail_box_outline_size        | 1         | thumbnail box border outline size (thickness)                                                     |
 
 ### Button interaction settings
 
@@ -235,7 +236,7 @@ Customize the button function based on mouse actions.
 
 | Type                          | Option                           | Function                                     |
 | ----------------------------- | -------------------------------- | -------------------------------------------- |
-| Title (above seekbar)         | title_mbtn_left_command          | `script-binding stats/display-page-5`        |
+| Title                         | title_mbtn_left_command          | `script-binding stats/display-page-5`        |
 |                               | title_mbtn_mid_command           | `show-text ${path}`                          |
 |                               | title_mbtn_right_command         | `script-binding select/select-watch-history` |
 | Chapter title                 | chapter_title_mbtn_left_command  | `script-binding select/select-chapter`       |
