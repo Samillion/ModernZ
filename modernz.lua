@@ -1593,7 +1593,7 @@ local function render_elements(master_ass, osc_vis, wc_vis)
                 elem_ass:pos(0, 0)
                 elem_ass:an(7)
                 local hover_base_alpha = state.mouse_down_counter > 0 and (255 - math.floor(math.max(0, math.min(100, user_opts.button_held_box_alpha)) * 2.55)) or (element.hover_alpha or 0xE6)
-                ass_append_alpha(elem_ass, {[1] = hover_base_alpha, [2] = 255, [3] = 255, [4] = 255}, element.layout.alpha[1])
+                ass_append_alpha(elem_ass, {[1] = hover_base_alpha, [2] = 255, [3] = 255, [4] = 255}, element.layout.alpha[1], nil, anim_override)
                 local hover_style = element.hover_color
                     and "{\\blur0\\bord0\\1c&H" .. osc_color_convert(element.hover_color) .. "&}"
                     or osc_styles.hover_bg
