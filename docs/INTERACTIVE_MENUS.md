@@ -17,7 +17,7 @@ For detailed information on how to interact with these controls, please refer to
 ## Context Menu
 For the best experience, make sure you’re running the latest version of mpv (git/master) to take advantage of all recently added features.
 
-<img width="985" height="587" alt="modernz-menu" src="https://github.com/user-attachments/assets/33131b6c-5e56-4f64-bb9a-e6d91e1bbf06" />
+![modernz-menu](https://github.com/user-attachments/assets/77225622-0de0-40d9-a71a-446e5016460b)
 
 To enable context-menu:
 - Bind context menu in your `input.conf`
@@ -37,7 +37,6 @@ You can add or remove any of the list items to suit your needs. [[full list of M
 	&Layout
 		&Modern				no-osd change-list script-opts append modernz-layout=modern
 		Modern &Compact		no-osd change-list script-opts append modernz-layout=modern-compact
-
 	&Theme
 		&Icon Theme
             &Fluent		no-osd change-list script-opts append modernz-icon_theme=fluent
@@ -78,14 +77,14 @@ You can add or remove any of the list items to suit your needs. [[full list of M
 
 ```
 
-### Open File (Optional)
+## Open File
 ![open_file_menu](https://github.com/user-attachments/assets/5a638c25-4e65-456f-80bc-89a9dcf86041)
 
 The [open-file.lua](/extras/open-file) script enables you to open files, add subtitles, or add audio tracks directly from mpv via the Windows file dialog
 
 ## Notes
 > [!IMPORTANT]
-> If the menus are not functioning as shown in the video, it is most likely because you're using an outdated version of mpv
+> If the menus are not functioning as shown above, it is most likely you're using an outdated version of mpv
 
 - Check [mpv installation sources](https://mpv.io/installation/) on the official website for up-to-date packages
 - Use [mpv-build](https://github.com/mpv-player/mpv-build) to get the latest release
