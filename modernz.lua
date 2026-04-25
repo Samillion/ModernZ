@@ -2091,10 +2091,10 @@ end
 local layouts = {}
 
 -- create the OSC fade background box and window bar alpha box
-local function setup_bg_elements(posX, posY, osc_w, osc_alpha3, wc_alpha3)
+local function setup_bg_elements(posX, posY, osc_w, osc_h, osc_alpha3, wc_alpha3)
     new_element("osc_fade_bg", "box")
     local lo = add_layout("osc_fade_bg")
-    lo.geometry = {x = posX, y = posY, an = 7, w = osc_w, h = 1}
+    lo.geometry = {x = posX, y = posY, an = 7, w = osc_w, h = osc_h}
     lo.style = osc_styles.osc_fade_bg
     lo.layer = 10
     lo.alpha[3] = osc_alpha3
@@ -2162,7 +2162,7 @@ layouts["modern"] = function ()
     local lo, geo, ne
 
     -- osc background
-    setup_bg_elements(posX, posY, osc_w, user_opts.fade_transparency_strength, user_opts.window_fade_transparency_strength)
+    setup_bg_elements(posX, posY, osc_w, osc_geo.h, user_opts.fade_transparency_strength, user_opts.window_fade_transparency_strength)
 
     local refX = osc_w / 2
     local refY = posY
@@ -2225,7 +2225,7 @@ layouts["modern"] = function ()
     lo.geometry = geo
     lo.layer = 48
     lo.alpha[3] = 0
-    lo.style = string.format("%s{\\clip(%f,%f,%f,%f)}", osc_styles.title, geo.x, geo.y - geo.h, geo.x + geo.w, geo.y + geo.h)
+    lo.style = string.format("%s{\\clip(%f,%f,%f,%f)}", osc_styles.title, 0, 0, geo.x + geo.w, geo.y + geo.h)
 
     -- chapter title
     if user_opts.show_chapter_title then
@@ -2235,7 +2235,7 @@ layouts["modern"] = function ()
         lo.geometry = geo
         lo.layer = 48
         lo.alpha[3] = 0
-        lo.style = string.format("%s{\\clip(%f,%f,%f,%f)}", osc_styles.chapter_title, geo.x, geo.y - geo.h, geo.x + geo.w, geo.y + geo.h)
+        lo.style = string.format("%s{\\clip(%f,%f,%f,%f)}", osc_styles.chapter_title, 0, 0, geo.x + geo.w, geo.y + geo.h)
     end
 
     -- buttons
@@ -2430,7 +2430,7 @@ layouts["modern-compact"] = function ()
     local osc_w = osc_geo.w
     local lo, geo, ne
     -- osc background
-    setup_bg_elements(posX, posY, osc_w, user_opts.fade_transparency_strength, user_opts.window_fade_transparency_strength)
+    setup_bg_elements(posX, posY, osc_w, osc_geo.h, user_opts.fade_transparency_strength, user_opts.window_fade_transparency_strength)
 
     local refX = osc_w / 2
     local refY = posY
@@ -2484,7 +2484,7 @@ layouts["modern-compact"] = function ()
     lo.geometry = geo
     lo.layer = 48
     lo.alpha[3] = 0
-    lo.style = string.format("%s{\\clip(%f,%f,%f,%f)}", osc_styles.title, geo.x, geo.y - geo.h, geo.x + geo.w, geo.y + geo.h)
+    lo.style = string.format("%s{\\clip(%f,%f,%f,%f)}", osc_styles.title, 0, 0, geo.x + geo.w, geo.y + geo.h)
 
     -- chapter title
     if user_opts.show_chapter_title then
@@ -2494,7 +2494,7 @@ layouts["modern-compact"] = function ()
         lo.geometry = geo
         lo.layer = 48
         lo.alpha[3] = 0
-        lo.style = string.format("%s{\\clip(%f,%f,%f,%f)}", osc_styles.chapter_title, geo.x, geo.y - geo.h, geo.x + geo.w, geo.y + geo.h)
+        lo.style = string.format("%s{\\clip(%f,%f,%f,%f)}", osc_styles.chapter_title, 0, 0, geo.x + geo.w, geo.y + geo.h)
     end
 
     -- time codes
@@ -2651,7 +2651,7 @@ layouts["modern-image"] = function ()
     local osc_w = osc_geo.w
     local lo, ne
     -- osc background
-    setup_bg_elements(posX, posY, osc_w, user_opts.fade_transparency_strength, user_opts.window_fade_transparency_strength)
+    setup_bg_elements(posX, posY, osc_w, osc_geo.h, user_opts.fade_transparency_strength, user_opts.window_fade_transparency_strength)
 
     local refX = osc_w / 2
     local refY = posY
