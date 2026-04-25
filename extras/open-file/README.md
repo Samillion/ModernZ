@@ -34,6 +34,9 @@ Simply place [open-file.lua](./open-file.lua) in the mpv scripts folder:
 
 ```
 📁 mpv/
+│   ├── 📄 input.conf
+|   ├── 📄 menu.conf
+│   └── 📄 mpv.conf
 └── 📁 scripts/
     └── 📄 open-file.lua
 ```
