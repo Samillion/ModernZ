@@ -3439,10 +3439,20 @@ local function element_has_action(element, action)
     return element and element.eventresponder and element.eventresponder[action]
 end
 
--- Dynamically sets the "input" mouse area to only the element currently under
--- the cursor, or clears it to nothing when hovering empty bar space.
--- This ensures clicks between elements pass through to mpv's default handlers
--- (e.g. context menu on right-click) instead of being silently consumed.
+-- dynamically sets the "input" mouse area to only the hovered element
+local click_keys = {
+    "mbtn_left_up", "mbtn_left_down", "mbtn_left_press",
+    "mbtn_right_up", "mbtn_right_down", "mbtn_right_press",
+    "wheel_up_press", "wheel_down_press",
+}
+local function has_click_action(e)
+    if not e.eventresponder then return false end
+    for _, k in ipairs(click_keys) do
+        if e.eventresponder[k] then return true end
+    end
+    return false
+end
+
 local function refresh_input_area()
     if not state.osc_visible then
         set_virt_mouse_area(0, 0, 0, 0, "input")
@@ -3450,27 +3460,24 @@ local function refresh_input_area()
     end
 
     -- during an active drag, keep the input area locked to the held element
-    -- so mouse_move and button_up fire correctly even outside its hitbox
     if state.active_element and elements[state.active_element] then
         local e = elements[state.active_element]
         set_virt_mouse_area(e.hitbox.x1, e.hitbox.y1, e.hitbox.x2, e.hitbox.y2, "input")
         return
     end
 
-    -- bail early if the cursor isn't inside the bottom bar zone at all;
-    -- osc_param.areas["input"] still holds the full bar rect for this check
+    -- bail early if the cursor isn't inside the bottom bar zone at all
     if not mouse_in_area("input") then
         set_virt_mouse_area(0, 0, 0, 0, "input")
         return
     end
 
-    -- find the topmost (highest layer) interactive element under the cursor;
-    -- elements are sorted ascending by layer, so iterate forward and keep
-    -- overwriting to match process_event's own dispatch priority
+    -- find the topmost element with direct click handlers under the cursor;
+    -- layer order matches process_event's dispatch priority
     local hovered = nil
     for n = 1, #elements do
         local e = elements[n]
-        if e.hitbox and e.eventresponder and mouse_hit(e) then
+        if e.hitbox and has_click_action(e) and mouse_hit(e) then
             hovered = e
         end
     end
@@ -3675,10 +3682,7 @@ local function render()
         end
     end
 
-    -- "input" binding group: enable/disable based on bar visibility, but let
-    -- refresh_input_area() own the mouse area so it tracks the hovered element
-    -- rather than blanketing the whole bar (which would swallow all clicks in
-    -- empty space and block mpv's context menu / other default handlers)
+    -- sync input area to cursor position
     if state.osc_visible ~= state.input_enabled then
         if state.osc_visible then
             mp.enable_key_bindings("input")
