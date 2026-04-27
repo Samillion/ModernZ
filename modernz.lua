@@ -647,6 +647,9 @@ local state = {
     downloaded_once = false,
     downloading = false,
     file_size_normalized = nil,
+    title_max_w = nil,
+    windowtitle_max_w = nil,
+    chapter_title_max_w = nil,
 }
 
 local logo_lines = {
@@ -2069,6 +2072,7 @@ local function window_controls()
         lo.group = "top"
         lo.alpha[3] = 0
         lo.style = string.format("%s{\\clip(%f,%f,%f,%f)}", osc_styles.window_title, titlebox_left, wc_geo.y - wc_geo.h, controlbox_left, wc_geo.y + wc_geo.h)
+        state.windowtitle_max_w = controlbox_left - math.max(20, titlebox_left + 4)
     end
 
     -- only add top areas and margin if one of the elements is enabled
@@ -2219,6 +2223,7 @@ layouts["modern"] = function ()
     -- osc title
     local title_w = (no_chapter or not chapter_index or user_opts.chapter_above_title) and (osc_geo.w - 60 - time_codes_width) or (osc_geo.w - 50)
     if title_w < 0 then title_w = 0 end
+    state.title_max_w = title_w
     elements["title"].visible = not no_title
     geo = {x = 25, y = refY - title_y, an = 1, w = title_w, h = user_opts.title_font_size}
     lo = add_layout("title")
@@ -2236,6 +2241,7 @@ layouts["modern"] = function ()
         lo.layer = 48
         lo.alpha[3] = 0
         lo.style = string.format("%s{\\clip(%f,%f,%f,%f)}", osc_styles.chapter_title, 0, 0, geo.x + geo.w, geo.y + geo.h)
+        state.chapter_title_max_w = geo.w
     end
 
     -- buttons
@@ -2478,6 +2484,7 @@ layouts["modern-compact"] = function ()
     -- osc title
     local title_w = (no_chapter or not chapter_index or user_opts.chapter_above_title) and (osc_geo.w - 60 - time_codes_width) or (osc_geo.w - 50)
     if title_w < 0 then title_w = 0 end
+    state.title_max_w = title_w
     elements["title"].visible = not no_title
     geo = {x = 25, y = refY - title_y, an = 1, w = title_w, h = user_opts.title_font_size}
     lo = add_layout("title")
@@ -2495,6 +2502,7 @@ layouts["modern-compact"] = function ()
         lo.layer = 48
         lo.alpha[3] = 0
         lo.style = string.format("%s{\\clip(%f,%f,%f,%f)}", osc_styles.chapter_title, 0, 0, geo.x + geo.w, geo.y + geo.h)
+        state.chapter_title_max_w = geo.w
     end
 
     -- time codes
@@ -2879,13 +2887,31 @@ local function osc_init()
     ne.content = (state.window_maximized or state.fullscreen) and icons.window.unmaximize or icons.window.maximize
     ne.eventresponder["mbtn_left_up"] = function () mp.commandv("cycle", (state.fullscreen and "fullscreen" or "window-maximized")) end
 
+    local function truncate_title(title, max_w, style)
+        if not max_w or max_w <= 0 or estimate_text_width(title, style) <= max_w then return title end
+        local low, high, fit = 1, #title, 0
+        while low <= high do
+            local mid = math.floor((low + high) / 2)
+            if estimate_text_width(title:sub(1, mid) .. "…", style) <= max_w then
+                fit = mid; low = mid + 1
+            else
+                high = mid - 1
+            end
+        end
+        return title:sub(1, fit) .. "…"
+    end
+
     -- Window Title
     ne = new_element("windowtitle", "button")
-    ne.content = function () return make_escaped_title(mp.get_property("title")) end
+    ne.content = function ()
+        return truncate_title(make_escaped_title(mp.get_property("title")), state.windowtitle_max_w, osc_styles.window_title)
+    end
 
     -- OSC title
     ne = new_element("title", "button")
-    ne.content = function () return make_escaped_title(user_opts.title) end
+    ne.content = function ()
+        return truncate_title(make_escaped_title(user_opts.title), state.title_max_w, osc_styles.title)
+    end
     bind_buttons("title")
 
     -- Chapter title
@@ -2893,13 +2919,11 @@ local function osc_init()
     ne.content = function()
         local chapter_index = state.chapter or -1
         if user_opts.chapter_fmt == "no" or chapter_index < 0 then return "" end
-
-        local chapters = state.chapter_list
-        local chapter_data = chapters[chapter_index + 1]
-        local chapter_title = chapter_data and chapter_data.title ~= "" and chapter_data.title or string.format("%s: %d/%d", locale.chapter, chapter_index + 1, #chapters)
-        chapter_title = mp.command_native({"escape-ass", chapter_title})
-
-        return string.format(user_opts.chapter_fmt, chapter_title)
+        local chapter_data = state.chapter_list[chapter_index + 1]
+        local chapter_title = mp.command_native({"escape-ass",
+            chapter_data and chapter_data.title ~= "" and chapter_data.title
+            or string.format("%s: %d/%d", locale.chapter, chapter_index + 1, #state.chapter_list)})
+        return truncate_title(string.format(user_opts.chapter_fmt, chapter_title), state.chapter_title_max_w, osc_styles.chapter_title)
     end
     bind_buttons("chapter_title")
 
