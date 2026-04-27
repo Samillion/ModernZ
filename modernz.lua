@@ -3851,9 +3851,6 @@ mp.register_event("file-loaded", function()
     is_image() -- check if file is an image
     state.file_loaded = true
     check_path_url()
-    if user_opts.automatickeyframemode then
-        user_opts.seekbarkeyframes = (state.duration or 0) > user_opts.automatickeyframelimit
-    end
     local oos = user_opts.osc_on_start
     if oos == "bottom" or oos == "both" then show_osc() end
     if oos == "top" or oos == "both" then show_wc() end
@@ -3868,6 +3865,9 @@ observe_cached("chapter-list", function ()
     request_init()
 end)
 observe_cached("duration", function ()
+    if user_opts.automatickeyframemode then
+        user_opts.seekbarkeyframes = (state.duration or 0) > user_opts.automatickeyframelimit
+    end
     if user_opts.livemarkers and state.chapter_list[1] then
         request_init()
     end
