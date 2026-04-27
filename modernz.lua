@@ -3373,6 +3373,9 @@ local function hide_osc()
     if thumbfast.width ~= 0 and thumbfast.height ~= 0 then
         mp.commandv("script-message-to", "thumbfast", "clear")
     end
+    -- clear input area immediately so clicks pass through while the bar is
+    -- hidden, rather than waiting for the next render tick to do it
+    set_virt_mouse_area(0, 0, 0, 0, "input")
     -- reset margins before hide_bar wipes the overlay
     if not state.enabled then
         reset_margins()
@@ -3434,6 +3437,56 @@ end
 
 local function element_has_action(element, action)
     return element and element.eventresponder and element.eventresponder[action]
+end
+
+-- dynamically sets the "input" mouse area to only the hovered element
+local click_keys = {
+    "mbtn_left_up", "mbtn_left_down", "mbtn_left_press",
+    "mbtn_right_up", "mbtn_right_down", "mbtn_right_press",
+    "wheel_up_press", "wheel_down_press",
+}
+local function has_click_action(e)
+    if not e.eventresponder then return false end
+    for _, k in ipairs(click_keys) do
+        if e.eventresponder[k] then return true end
+    end
+    return false
+end
+
+local function refresh_input_area()
+    if not state.osc_visible then
+        set_virt_mouse_area(0, 0, 0, 0, "input")
+        return
+    end
+
+    -- during an active drag, keep the input area locked to the held element
+    if state.active_element and elements[state.active_element] then
+        local e = elements[state.active_element]
+        set_virt_mouse_area(e.hitbox.x1, e.hitbox.y1, e.hitbox.x2, e.hitbox.y2, "input")
+        return
+    end
+
+    -- bail early if the cursor isn't inside the bottom bar zone at all
+    if not mouse_in_area("input") then
+        set_virt_mouse_area(0, 0, 0, 0, "input")
+        return
+    end
+
+    -- find the topmost element with direct click handlers under the cursor;
+    -- layer order matches process_event's dispatch priority
+    local hovered = nil
+    for n = 1, #elements do
+        local e = elements[n]
+        if e.hitbox and has_click_action(e) and mouse_hit(e) then
+            hovered = e
+        end
+    end
+
+    if hovered then
+        set_virt_mouse_area(hovered.hitbox.x1, hovered.hitbox.y1, hovered.hitbox.x2, hovered.hitbox.y2, "input")
+    else
+        set_virt_mouse_area(0, 0, 0, 0, "input")
+    end
 end
 
 local function process_event(source, what)
@@ -3507,6 +3560,10 @@ local function process_event(source, what)
         if element_has_action(elements[n], action) then
             elements[n].eventresponder[action](elements[n])
         end
+
+        -- update input area to follow the cursor so only the element
+        -- currently under it captures clicks; empty space passes through
+        refresh_input_area()
     end
 
     -- ensure rendering after any (mouse) event - icons could change etc
@@ -3625,7 +3682,17 @@ local function render()
         end
     end
 
-    update_input_area("input", state.osc_visible, "input_enabled", function() mp.enable_key_bindings("input") end)
+    -- sync input area to cursor position
+    if state.osc_visible ~= state.input_enabled then
+        if state.osc_visible then
+            mp.enable_key_bindings("input")
+        else
+            mp.disable_key_bindings("input")
+        end
+        state.input_enabled = state.osc_visible
+    end
+    refresh_input_area()
+
     update_input_area("window-controls", state.wc_visible, "windowcontrols_buttons", function() mp.enable_key_bindings("window-controls") end)
     update_input_area("window-controls-title", state.wc_visible, "windowcontrols_title", function() mp.enable_key_bindings("window-controls-title", "allow-vo-dragging") end)
     update_input_area("window-controls-ontop", state.wc_visible, "windowcontrols_ontop", function() mp.enable_key_bindings("window-controls-ontop") end)
