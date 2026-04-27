@@ -183,7 +183,7 @@ local user_opts = {
     seekrange = true,                      -- show seek range overlay
     seekrangealpha = 150,                  -- transparency of the seek range
     livemarkers = true,                    -- update chapter markers on the seekbar when duration changes
-    seekbarkeyframes = false,              -- use keyframes when dragging the seekbar
+    seekbarkeyframes = true,               -- use keyframes when dragging the seekbar
     slider_rounded_corners = true,         -- rounded corners seekbar slider
 
     nibbles_style = "gap",                 -- chapter nibble style: "gap", "triangle", "bar", or "single-bar"
@@ -3215,6 +3215,9 @@ local function osc_init()
     end
     ne.slider.posF = function ()
         if state.eof_reached then return 100 end
+        if ne.state.mbtnleft then
+            return get_slider_value(ne)
+        end
         return mp.get_property_number("percent-pos")
     end
     ne.slider.tooltipF = function (pos)
