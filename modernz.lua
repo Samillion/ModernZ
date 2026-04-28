@@ -13,7 +13,12 @@ local assdraw = require "mp.assdraw"
 local msg = require "mp.msg"
 local opt = require "mp.options"
 local utils = require "mp.utils"
-mp.set_property("osc", "no")
+-- Disable the built-in OSC if not already set in mpv.conf
+-- Avoid redundant property set that can cause mpv >= 0.41 to load the
+-- built-in osc.lua alongside ModernZ, resulting in duplicate progress bars
+if mp.get_property("osc") ~= "no" then
+    mp.set_property("osc", "no")
+end
 
 -- Parameters
 -- default user option values
