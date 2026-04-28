@@ -194,7 +194,7 @@ watch-later-options-remove=osd-margin-y
 | seekrange                     | yes      | show seek range overlay                                                 |
 | seekrangealpha                | 150      | transparency of the seek range                                          |
 | livemarkers                   | yes      | update chapter markers on the seekbar when duration changes             |
-| seekbarkeyframes              | no       | use keyframes when dragging the seekbar                                 |
+| seekbarkeyframes              | yes      | use keyframes when dragging the seekbar                                 |
 | slider_rounded_corners        | yes      | rounded corners seekbar slider                                          |
 | nibbles_style                 | gap      | chapter nibble style: `gap`, `triangle`, `bar` or `single-bar`          |
 | nibbles_top                   | yes      | top chapter nibbles above seekbar                                       |

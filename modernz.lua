@@ -183,7 +183,7 @@ local user_opts = {
     seekrange = true,                      -- show seek range overlay
     seekrangealpha = 150,                  -- transparency of the seek range
     livemarkers = true,                    -- update chapter markers on the seekbar when duration changes
-    seekbarkeyframes = false,              -- use keyframes when dragging the seekbar
+    seekbarkeyframes = true,               -- use keyframes when dragging the seekbar
     slider_rounded_corners = true,         -- rounded corners seekbar slider
 
     nibbles_style = "gap",                 -- chapter nibble style: "gap", "triangle", "bar", or "single-bar"
@@ -3215,6 +3215,9 @@ local function osc_init()
     end
     ne.slider.posF = function ()
         if state.eof_reached then return 100 end
+        if ne.state.mbtnleft then
+            return get_slider_value(ne)
+        end
         return mp.get_property_number("percent-pos")
     end
     ne.slider.tooltipF = function (pos)
@@ -3848,9 +3851,6 @@ mp.register_event("file-loaded", function()
     is_image() -- check if file is an image
     state.file_loaded = true
     check_path_url()
-    if user_opts.automatickeyframemode then
-        user_opts.seekbarkeyframes = (state.duration or 0) > user_opts.automatickeyframelimit
-    end
     local oos = user_opts.osc_on_start
     if oos == "bottom" or oos == "both" then show_osc() end
     if oos == "top" or oos == "both" then show_wc() end
@@ -3865,6 +3865,9 @@ observe_cached("chapter-list", function ()
     request_init()
 end)
 observe_cached("duration", function ()
+    if user_opts.automatickeyframemode then
+        user_opts.seekbarkeyframes = (state.duration or 0) > user_opts.automatickeyframelimit
+    end
     if user_opts.livemarkers and state.chapter_list[1] then
         request_init()
     end
