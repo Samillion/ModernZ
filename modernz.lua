@@ -3215,9 +3215,6 @@ local function osc_init()
     end
     ne.slider.posF = function ()
         if state.eof_reached then return 100 end
-        if ne.state.mbtnleft then
-            return get_slider_value(ne)
-        end
         return mp.get_property_number("percent-pos")
     end
     ne.slider.tooltipF = function (pos)
