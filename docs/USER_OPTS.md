@@ -106,7 +106,6 @@ watch-later-options-remove=osd-margin-y
 | jump_mode                  | relative      | seek mode for jump buttons: `"relative"` or `"exact"`                                                              |
 | jump_softrepeat            | yes           | enable continuous jumping when holding down seek buttons                                                           |
 | chapter_skip_buttons       | no            | show the skip back and forward (chapter) buttons                                                                   |
-| chapter_softrepeat         | yes           | enable continuous skipping when holding down chapter skip buttons                                                  |
 | track_nextprev_buttons     | yes           | show next/previous playlist track buttons                                                                          |
 | volume_control             | yes           | show mute button and volume slider                                                                                 |
 | volume_control_type        | linear        | volume scale type: `"linear"` or `"logarithmic"`                                                                   |
