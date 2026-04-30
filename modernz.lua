@@ -96,7 +96,6 @@ local user_opts = {
     jump_mode = "relative",                -- seek mode for jump buttons: "relative" or "exact"
     jump_softrepeat = true,                -- enable continuous jumping when holding down seek buttons
     chapter_skip_buttons = false,          -- show the chapter skip backward and forward buttons
-    chapter_softrepeat = true,             -- enable continuous skipping when holding down chapter skip buttons
     track_nextprev_buttons = true,         -- show next/previous playlist track buttons
 
     volume_control = true,                 -- show mute button and volume slider
@@ -2953,14 +2952,12 @@ local function osc_init()
 
     --chapter_prev
     ne = new_element("chapter_prev", "button")
-    ne.softrepeat = user_opts.chapter_softrepeat
     ne.content = icons.rewind
     ne.enabled = have_ch -- disables button when no chapters available.
     bind_buttons("chapter_prev", true)
 
     --chapter_next
     ne = new_element("chapter_next", "button")
-    ne.softrepeat = user_opts.chapter_softrepeat
     ne.content = icons.forward
     ne.enabled = have_ch -- disables button when no chapters available.
     bind_buttons("chapter_next", true)
