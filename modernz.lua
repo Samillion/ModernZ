@@ -2142,7 +2142,15 @@ layouts["default"] = function ()
 
     if title_and_chapter_h_with_offset == 0 then
         -- add some top padding if both title and chapter aren't displayed
-        title_and_chapter_h_with_offset = user_opts.osc_height * 0.2
+        local ch_skip = user_opts.chapter_skip_buttons and type(state.chapter_list) == "table" and next(state.chapter_list)
+        local outer = (ch_skip and 0 or 100) + (user_opts.jump_buttons and 0 or 100)
+        local timecodes_above = osc_param.playresx < (user_opts.portrait_window_trigger - outer
+            - (user_opts.playlist_button and (not user_opts.hide_empty_playlist_button or state.playlist_count > 1) and 0 or 100)
+            - (state.sub_track_count > 0 and 0 or 100)
+            - (state.audio_track_count > 0 and 0 or 100))
+        title_and_chapter_h_with_offset = timecodes_above
+            and math.max(user_opts.osc_height * 0.2, user_opts.time_codes_offset + user_opts.title_offset + user_opts.time_font_size)
+            or user_opts.osc_height * 0.2
     end
 
     local osc_geo = {
@@ -2213,7 +2221,7 @@ layouts["default"] = function ()
     local playlist_button = user_opts.playlist_button and (not user_opts.hide_empty_playlist_button or state.playlist_count > 1)
 
     local offset = user_opts.jump_buttons and 60 or 0
-    local outeroffset = (chapter_skip_buttons and 0 or 120) + (user_opts.jump_buttons and 0 or 120)
+    local outeroffset = (chapter_skip_buttons and 0 or 100) + (user_opts.jump_buttons and 0 or 100)
 
     local time_codes_width = get_time_codes_width()
     local chapter_title_y, title_y
@@ -2226,8 +2234,10 @@ layouts["default"] = function ()
     end
 
     -- osc title
+    local title_w = (no_chapter or not chapter_index or user_opts.chapter_above_title) and (osc_geo.w - 60 - time_codes_width) or (osc_geo.w - 50)
+    if title_w < 0 then title_w = 0 end
     elements["title"].visible = not no_title
-    geo = {x = 25, y = refY - title_y, an = 1, w = osc_geo.w - 50, h = user_opts.title_font_size}
+    geo = {x = 25, y = refY - title_y, an = 1, w = title_w, h = user_opts.title_font_size}
     lo = add_layout("title")
     lo.geometry = geo
     lo.layer = 48
@@ -2237,7 +2247,7 @@ layouts["default"] = function ()
     -- chapter title
     if user_opts.show_chapter_title then
         elements["chapter_title"].visible = not no_chapter and chapter_index
-        geo = {x = 26, y = refY - chapter_title_y, an = 1, w = osc_geo.w - 60, h = user_opts.chapter_title_font_size}
+        geo = {x = 26, y = refY - chapter_title_y, an = 1, w = osc_geo.w - time_codes_width - 60, h = user_opts.chapter_title_font_size}
         lo = add_layout("chapter_title")
         lo.geometry = geo
         lo.layer = 48
@@ -2259,12 +2269,12 @@ layouts["default"] = function ()
     end
 
     if playlist_button then left_side_button("playlist", 550) end
-    if audio_track and user_opts.audio_tracks_button then left_side_button("audio_track", 800) end
-    if subtitle_track and user_opts.subtitles_button then left_side_button("sub_track", 800) end
+    if audio_track and user_opts.audio_tracks_button then left_side_button("audio_track", 650) end
+    if subtitle_track and user_opts.subtitles_button then left_side_button("sub_track", 750) end
 
     if audio_track and user_opts.volume_control then
         -- volume button
-        left_side_button("vol_ctrl", 900)
+        left_side_button("vol_ctrl", 850)
         start_x = start_x - 25 -- vol_ctrl uses a narrower step (+20 not +45)
 
         -- volume bar
@@ -2291,61 +2301,82 @@ layouts["default"] = function ()
         local vc_left = start_x - 107
         local osc_mid = refY - (user_opts.osc_height / 2)
         elements["vol_ctrl"].hover_box = vol_vis and {x1 = vc_left, y1 = osc_mid - 12, x2 = vc_left + 87, y2 = osc_mid + 12} or nil
-        start_x = vol_vis and start_x or start_x - 75
     end
 
     -- time codes
-    local time_codes_width = get_time_codes_width()
+    local auto_hide_volbar = (audio_track and user_opts.volume_control) and osc_param.playresx < (user_opts.hide_volume_bar_trigger - outeroffset)
+    local time_codes_x = start_x
+        - (auto_hide_volbar and 67 or 0) -- window width with audio track and elements
+        - (audio_track and not user_opts.volume_control and 12 or 0) -- audio track with no elements
+        - (not audio_track and 12 or 0) -- remove excess space
+    local time_codes_y = user_opts.time_codes_offset + (user_opts.osc_height / 2)
+    local narrow_win = osc_param.playresx < (
+        user_opts.portrait_window_trigger
+        - outeroffset
+        - (playlist_button and 0 or 100)
+        - (subtitle_track and 0 or 100)
+        - (audio_track and 0 or 100)
+    )
+    if narrow_win then
+        -- try to vertically align time codes to the baseline of title/chapter
+        if not user_opts.show_title and not user_opts.show_chapter_title then
+            time_codes_y = user_opts.time_codes_offset + user_opts.osc_height + user_opts.title_offset
+        elseif no_chapter or not chapter_index or user_opts.chapter_above_title then
+            time_codes_y = title_y + ((title_h - user_opts.time_font_size) * 0.25)
+        else
+            time_codes_y = chapter_title_y
+            if chapter_h ~= user_opts.time_font_size then
+                time_codes_y = time_codes_y - ((user_opts.time_font_size - chapter_h) * 0.25)
+            end
+        end
+    end
     elements["time_codes"].visible = (state.duration or 0) > 0
     lo = add_layout("time_codes")
-    lo.geometry = {x = start_x + 5, y = refY - (user_opts.osc_height / 2), an = 4, w = time_codes_width, h = user_opts.time_font_size}
+    lo.geometry = {x = (narrow_win and (osc_geo.w - 25) or time_codes_x), y = refY - time_codes_y, an = (narrow_win and 3 or 4), w = time_codes_width, h = user_opts.time_font_size}
     lo.layer = 48
     lo.alpha[3] = 0
     lo.style = osc_styles.time
 
     -- center buttons
     if user_opts.track_nextprev_buttons then
-        elements["playlist_prev"].visible = (state.playlist_count > 1 or contains(user_opts.buttons_always_active, "playlist_prev")) and (osc_param.playresx >= 800 - outeroffset)
+        elements["playlist_prev"].visible = (state.playlist_count > 1 or contains(user_opts.buttons_always_active, "playlist_prev")) and (osc_param.playresx >= 500 - outeroffset)
         lo = add_layout("playlist_prev")
         lo.geometry = {x = refX - (60 + (chapter_skip_buttons and 60 or 0)) - offset, y = refY - (user_opts.osc_height / 2), an = 5, w = 30, h = 24}
         lo.style = osc_styles.control_2
     end
 
     if chapter_skip_buttons then
-        elements["chapter_prev"].visible = osc_param.playresx >= 700 - outeroffset
+        elements["chapter_prev"].visible = osc_param.playresx >= 400 - outeroffset
         lo = add_layout("chapter_prev")
         lo.geometry = {x = refX - 60 - offset, y = refY - (user_opts.osc_height / 2), an = 5, w = 30, h = 24}
         lo.style = osc_styles.control_2
     end
 
     if user_opts.jump_buttons then
-        elements["jump_backward"].visible = osc_param.playresx >= 700 - outeroffset
         lo = add_layout("jump_backward")
         lo.geometry = {x = refX - 60, y = refY - (user_opts.osc_height / 2), an = 5, w = 30, h = 24}
         lo.style = osc_styles.control_2
     end
 
     lo = add_layout("play_pause")
-    elements["play_pause"].visible = osc_param.playresx >= 400 - outeroffset
     lo.geometry = {x = refX, y = refY - (user_opts.osc_height / 2), an = 5, w = 45, h = 28}
     lo.style = osc_styles.control_1
 
     if user_opts.jump_buttons then
-        elements["jump_forward"].visible = osc_param.playresx >= 700 - outeroffset
         lo = add_layout("jump_forward")
         lo.geometry = {x = refX + 60, y = refY - (user_opts.osc_height / 2), an = 5, w = 30, h = 24}
         lo.style = osc_styles.control_2
     end
 
     if chapter_skip_buttons then
-        elements["chapter_next"].visible = osc_param.playresx >= 700 - outeroffset
+        elements["chapter_next"].visible = osc_param.playresx >= 400 - outeroffset
         lo = add_layout("chapter_next")
         lo.geometry = {x = refX + 60 + offset, y = refY - (user_opts.osc_height / 2), an = 5, w = 30, h = 24}
         lo.style = osc_styles.control_2
     end
 
     if user_opts.track_nextprev_buttons then
-        elements["playlist_next"].visible = (state.playlist_count > 1 or contains(user_opts.buttons_always_active, "playlist_next")) and (osc_param.playresx >= 800 - outeroffset)
+        elements["playlist_next"].visible = (state.playlist_count > 1 or contains(user_opts.buttons_always_active, "playlist_next")) and (osc_param.playresx >= 500 - outeroffset)
         lo = add_layout("playlist_next")
         lo.geometry = {x = refX + (60 + (chapter_skip_buttons and 60 or 0)) + offset, y = refY - (user_opts.osc_height / 2), an = 5, w = 30, h = 24}
         lo.style = osc_styles.control_2
@@ -2364,14 +2395,14 @@ layouts["default"] = function ()
         end
     end
 
-    right_side_button("fullscreen", 300, user_opts.fullscreen_button)
+    right_side_button("fullscreen", 550, user_opts.fullscreen_button)
     right_side_button("info", 650, user_opts.info_button)
-    right_side_button("ontop", 450, user_opts.ontop_button and not (window_controls_enabled() and user_opts.ontop_in_topbar and state.ontop))
+    right_side_button("ontop", 750, user_opts.ontop_button and not (window_controls_enabled() and user_opts.ontop_in_topbar and state.ontop))
     right_side_button("screenshot", 850, user_opts.screenshot_button)
     right_side_button("file_loop", 950, user_opts.loop_button)
     right_side_button("shuffle", 1050, user_opts.shuffle_button)
-    right_side_button("download", 1150, state.is_url and user_opts.download_button)
     right_side_button("speed", 1150, user_opts.speed_button, osc_styles.speed, 42)
+    right_side_button("download", 1150, state.is_url and user_opts.download_button)
 
     if user_opts.cache_info then
         right_side_button("cache_info", 1250, user_opts.cache_info, osc_styles.cache, user_opts.cache_info_speed and 70 or 45)
