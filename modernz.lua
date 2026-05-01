@@ -2221,7 +2221,7 @@ layouts["default"] = function ()
     local playlist_button = user_opts.playlist_button and (not user_opts.hide_empty_playlist_button or state.playlist_count > 1)
 
     local offset = user_opts.jump_buttons and 60 or 0
-    local outeroffset = (chapter_skip_buttons and 0 or 100) + (user_opts.jump_buttons and 0 or 100)
+    local outeroffset = (chapter_skip_buttons and 0 or 120) + (user_opts.jump_buttons and 0 or 120)
 
     local time_codes_width = get_time_codes_width()
     local chapter_title_y, title_y
@@ -2299,7 +2299,7 @@ layouts["default"] = function ()
         local vc_left = start_x - 107
         local osc_mid = refY - (user_opts.osc_height / 2)
         elements["vol_ctrl"].hover_box = vol_vis and {x1 = vc_left, y1 = osc_mid - 12, x2 = vc_left + 87, y2 = osc_mid + 12} or nil
-        start_x = vol_vis and start_x or start_x - 65
+        start_x = vol_vis and start_x or start_x - 75
     end
 
     -- time codes
