@@ -160,6 +160,7 @@ watch-later-options-remove=osd-margin-y
 | thumbnail_box_outline             | `#404040` | color of the border outline for thumbnail box                                                     |
 | nibble_color                      | `#FF8232` | color of chapter nibbles on the seekbar                                                           |
 | nibble_current_color              | `#FFFFFF` | color of the current chapter nibble on the seekbar                                                |
+| ab_loop_color                     | `#2596be` | color of the A/B loop range on the seekbar                                                        |
 | osc_fade_strength                 | 100       | strength of the OSC background fade (0 to disable)                                                |
 | fade_blur_strength                | 100       | blur strength for the OSC alpha fade. caution: high values can take a lot of CPU time to render   |
 | fade_transparency_strength        | 0         | use with "fade_blur_strength=0" to create a transparency box                                      |

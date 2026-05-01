@@ -154,6 +154,7 @@ local user_opts = {
     thumbnail_box_outline = "#404040",     -- color of the border outline for thumbnail box
     nibble_color = "#FF8232",              -- color of chapter nibbles on the seekbar
     nibble_current_color = "#FFFFFF",      -- color of the current chapter nibble on the seekbar
+    ab_loop_color = "#2596be",             -- color of the A/B loop range on the seekbar
 
     osc_fade_strength = 100,               -- strength of the OSC background fade (0 to disable)
     fade_blur_strength = 100,              -- blur strength for the OSC alpha fade. caution: high values can take a lot of CPU time to render
@@ -1428,6 +1429,21 @@ local function draw_seekbar_ranges(element, elem_ass, xp, rh, override_alpha, in
     end
 end
 
+-- show visual indicator in seek ranges for ab loop
+local function draw_ab_loop_range(element, elem_ass)
+    if element.name ~= "seekbar" then return end
+    local ab_a = mp.get_property_number("ab-loop-a")
+    if not state.duration or not ab_a or ab_a < 0 then return end
+    local ab_b = mp.get_property_number("ab-loop-b")
+    local slider_lo = element.layout.slider
+    local elem_geo = element.layout.geometry
+    local ax = get_slider_ele_pos_for(element, ab_a / state.duration * 100)
+    local bx = (ab_b and ab_b > ab_a and ab_b <= state.duration) and get_slider_ele_pos_for(element, ab_b / state.duration * 100) or elem_geo.w
+    if ax >= bx then return end
+    begin_draw_layer(element, elem_ass, user_opts.ab_loop_color)
+    elem_ass:rect_cw(ax, slider_lo.gap, bx, elem_geo.h - slider_lo.gap)
+end
+
 local function draw_seekbar_nibbles(element, elem_ass)
     local slider_lo = element.layout.slider
     local elem_geo = element.layout.geometry
@@ -1628,6 +1644,7 @@ local function render_elements(master_ass, osc_vis, wc_vis)
                 local handle_x, handle_radius, is_active = get_seekbar_handle_pos(element) -- get handle position/radius
                 draw_seekbar_progress(element, elem_ass)
                 draw_seekbar_ranges(element, elem_ass, handle_x, handle_radius)
+                draw_ab_loop_range(element, elem_ass)
                 draw_seekbar_handle(element, elem_ass, handle_x, handle_radius, anim_override, is_active) -- draw handle on top of progress
 
                 elem_ass:draw_stop()
@@ -3849,7 +3866,12 @@ mp.register_event("file-loaded", function()
     if oos == "bottom" or oos == "both" then show_osc() end
     if oos == "top" or oos == "both" then show_wc() end
 end)
-mp.register_event("start-file", request_init)
+mp.register_event("start-file", function()
+    -- reset ab loop on new file start
+    mp.set_property("ab-loop-a", "no")
+    mp.set_property("ab-loop-b", "no")
+    request_init()
+end)
 mp.observe_property("track-list", "native", update_tracklist)
 observe_cached("playlist-count", request_init)
 observe_cached("playlist-pos-1", request_init)
@@ -4139,7 +4161,7 @@ local function validate_user_opts()
         user_opts.window_controls_color, user_opts.held_element_color, user_opts.thumbnail_box_color, user_opts.chapter_title_color,
         user_opts.seekbar_cache_color, user_opts.hover_effect_color, user_opts.windowcontrols_close_hover, user_opts.windowcontrols_max_hover,
         user_opts.windowcontrols_min_hover, user_opts.cache_info_color, user_opts.thumbnail_box_outline, user_opts.nibble_color,
-        user_opts.nibble_current_color, user_opts.seek_handle_color,
+        user_opts.nibble_current_color, user_opts.seek_handle_color, user_opts.ab_loop_color,
     }
 
     if user_opts.seek_handle_border_color ~= "" then
