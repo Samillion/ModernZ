@@ -53,7 +53,7 @@ Choose the layout that suits your preference using the `layout` option in your `
     </thead>
     <tbody>
         <tr>
-            <td><img width="1961" height="125" alt="layout_compact" src="https://github.com/user-attachments/assets/f18c4432-32da-48b4-bc93-d50592b4a25b" /></td>
+            <td><img width="1961" height="125" alt="layout_compact" src="https://github.com/user-attachments/assets/6a51fd86-5ed0-4162-9991-8edad2250221" /></td>
         </tr>
     </tbody>
 </table>
