@@ -20,7 +20,7 @@ mp.set_property("osc", "no")
 -- do not touch, change them in modernz.conf
 local user_opts = {
     -- Language and display
-    language = "default",                  -- set language (for available options, see: https://github.com/Samillion/ModernZ/blob/main/docs/TRANSLATIONS.md)
+    language = "default",                  -- set language
     layout = "default",                    -- set layout: default, compact, mini, seekbar
     icon_theme = "fluent",                 -- set icon theme. accepts "fluent" or "material"
     icon_style = "mixed",                  -- "mixed", "filled", "outline"
@@ -2528,7 +2528,7 @@ layouts["compact"] = function ()
             lo = add_layout(name)
             lo.geometry = {x = start_x, y = refY - (user_opts.osc_height / 2), an = 5, w = w or 24, h = 24}
             lo.style = osc_styles.control_2
-            start_x = start_x + (step or 55)
+            start_x = start_x + (step or 45)
         end
     end
 
@@ -2536,7 +2536,7 @@ layouts["compact"] = function ()
     lo = add_layout("play_pause")
     lo.geometry = {x = start_x, y = refY - (user_opts.osc_height / 2), an = 5, w = 24, h = 24}
     lo.style = osc_styles.control_2
-    start_x = start_x + 55
+    start_x = start_x + 45
 
     local pl_count = state.playlist_count
     local pl_pos = state.playlist_pos_1
@@ -2548,7 +2548,7 @@ layouts["compact"] = function ()
             lo = add_layout("playlist_prev")
             lo.geometry = {x = start_x, y = refY - (user_opts.osc_height / 2), an = 5, w = 24, h = 24}
             lo.style = osc_styles.control_2
-            start_x = start_x + 55
+            start_x = start_x + 45
         end
 
         local next_vis = pl_pos < pl_count and osc_param.playresx >= 550
@@ -2557,7 +2557,7 @@ layouts["compact"] = function ()
             lo = add_layout("playlist_next")
             lo.geometry = {x = start_x, y = refY - (user_opts.osc_height / 2), an = 5, w = 24, h = 24}
             lo.style = osc_styles.control_2
-            start_x = start_x + 55
+            start_x = start_x + 45
         end
     end
 
@@ -2607,7 +2607,7 @@ layouts["compact"] = function ()
             lo = add_layout(name)
             lo.geometry = {x = end_x, y = refY - (user_opts.osc_height / 2), an = 5, w = (w or 24), h = 24}
             lo.style = style or osc_styles.control_2
-            end_x = end_x - 55
+            end_x = end_x - 45
         end
     end
 
