@@ -2,7 +2,7 @@
 
 A sleek and modern OSC for [mpv](https://mpv.io/). This project is a fork of ModernX that enhances functionality by adding more features while preserving the core standards of mpv's OSC.
 
-<img width="1715" height="966" alt="ModernZ" src="https://github.com/user-attachments/assets/a2c8081e-2909-4bd1-872d-c59c48e76302" />
+![modernz_preview](https://github.com/user-attachments/assets/69a967ae-cf8a-4a92-9193-4799f901cd94)
 
 <p align="center">
   <a href="#installation"><strong>Installation »</strong></a><br>
@@ -14,10 +14,10 @@ A sleek and modern OSC for [mpv](https://mpv.io/). This project is a fork of Mod
 
 ## Features
 
-- 🎨 Modern, customizable interface with multiple layouts, themes, and icon styles [[options](#configuration)]
-- 🖱️ Independent hover zone for top bar (window controls) and bottom bar (OSC)
+- 🎨 Modern, customizable interface with multiple layouts, themes, and icon styles [[options](#customization)]
+- 🖱️ Independent hover zone for top bar (window controls bar) and bottom bar (OSC)
 - 📷 Image Viewer mode with zoom controls [[details](/docs/IMAGE_VIEWER.md)]
-- 🎛️ Buttons: download, playlist, speed control, screenshot, pin, loop, cache, and more. [[details](/docs/CONTROLS.md)]
+- 🎛️ Buttons: download, playlist, speed control, screenshot, pin, loop, shuffle, and more. [[details](/docs/CONTROLS.md)]
 - 📄 Interactive menus for playlist, subtitles, chapters, audio tracks, and audio devices
 - 🌐 Multi-language support with JSON [locale](#translations) integration
 - ⌨️ Configurable controls [[details](#controls)]
@@ -28,32 +28,56 @@ A sleek and modern OSC for [mpv](https://mpv.io/). This project is a fork of Mod
 </a>
 
 ## Customization
-Choose the layout that suits your preference (`modern` or `modern-compact`) using the `layout` option in your `modernz.conf`.
+ModernZ provides a wide range of customization options, including multiple layouts, themes, icon styles, color adjustments, and much more.
 
 ### Layouts
+Choose the layout that suits your preference using the `layout` option in your `modernz.conf`, which accepts: `default`, `compact`, `mini`, and `seekbar`
 
 <table>
     <thead>
         <tr>
-            <th><code>modern</code></th>
+            <th><code>default</code></th>
         </tr>
     </thead>
     <tbody>
         <tr>
-            <td><img width="1715" height="120" alt="modernz_modern_layout" src="https://github.com/user-attachments/assets/97791b5b-e7c8-47bc-8805-a286052762f6" /></td>
+            <td><img width="1961" height="125" alt="layout_default" src="https://github.com/user-attachments/assets/afa29219-d3ea-490b-bf34-530a9ba212a4" /></td>
         </tr>
     </tbody>
 </table>
-
 <table>
     <thead>
         <tr>
-            <th><code>modern-compact</code></th>
+            <th><code>compact</code></th>
         </tr>
     </thead>
     <tbody>
         <tr>
-            <td><img width="1715" height="150" alt="modernz_compact_layout" src="https://github.com/user-attachments/assets/b88f7823-b328-427e-8720-c2d4ab2c496a" /></td>
+            <td><img width="1961" height="125" alt="layout_compact" src="https://github.com/user-attachments/assets/f18c4432-32da-48b4-bc93-d50592b4a25b" /></td>
+        </tr>
+    </tbody>
+</table>
+<table>
+    <thead>
+        <tr>
+            <th><code>mini</code></th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><img width="1961" height="125" alt="layout_mini" src="https://github.com/user-attachments/assets/a4f5d467-0286-4280-b284-9aaec8e6e42f" /></td>
+        </tr>
+    </tbody>
+</table>
+<table>
+    <thead>
+        <tr>
+            <th><code>seekbar</code></th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><img width="1961" height="124" alt="layout_seekbar" src="https://github.com/user-attachments/assets/4479b9d3-cdfb-4ebb-ac85-8d4c8ba101e1" /></td>
         </tr>
     </tbody>
 </table>
@@ -70,7 +94,7 @@ You can also change the icon theme to `fluent` or `material` to match your prefe
     </thead>
     <tbody>
         <tr>
-            <td><img width="1715" height="120" alt="modernz_fluent_theme" src="https://github.com/user-attachments/assets/9c0172db-f959-4c95-a31f-aab55290f5ec" /></td>
+            <td><img width="1961" height="125" alt="theme_fluent" src="https://github.com/user-attachments/assets/0fb0580c-6389-4427-8f23-e71ac1092aca" /></td>
         </tr>
     </tbody>
 </table>
@@ -83,14 +107,14 @@ You can also change the icon theme to `fluent` or `material` to match your prefe
     </thead>
     <tbody>
         <tr>
-            <td><img width="1715" height="120" alt="modernz_material_theme" src="https://github.com/user-attachments/assets/cc532cd8-32aa-4dba-93eb-5f8f599ea654" /></td>
+            <td><img width="1961" height="125" alt="theme_material" src="https://github.com/user-attachments/assets/95d2ebd6-b87d-4170-8faa-cb7112c3482a" /></td>
         </tr>
     </tbody>
 </table>
 
-### Theme Styles
+### Icon Styles
 
-Both `fluent` and `material` themes have different styles as well. By using the `icon_style` option, you can choose `mixed`, `filled`, or `outline`.
+Both `fluent` and `material` themes have different icon styles as well. By using the `icon_style` option, you can choose `mixed`, `filled`, or `outline`.
 
 <table>
     <thead>
@@ -105,15 +129,15 @@ Both `fluent` and `material` themes have different styles as well. By using the 
     <tbody>
         <tr>
             <td><code>mixed</code></td>
-            <td><img width="1715" height="120" alt="modernz_fluent_mixed" src="https://github.com/user-attachments/assets/58774224-1fd2-4939-8263-b14bba551be0" /></td>
+            <td><img width="1961" height="125" alt="icon_style_fluent_mixed" src="https://github.com/user-attachments/assets/ce59d30d-adcf-4961-b153-4711a7bc12c6" /></td>
         </tr>
         <tr>
             <td><code>filled</code></td>
-            <td><img width="1715" height="120" alt="modernz_fluent_filled" src="https://github.com/user-attachments/assets/c0beee55-b6c8-4bef-a192-0b529c1ecea9" /></td>
+            <td><img width="1961" height="125" alt="icon_style_fluent_filled" src="https://github.com/user-attachments/assets/a5047c68-c8be-43c9-9c5a-c12dbeeb916f" /></td>
         </tr>
         <tr>
             <td><code>outline</code></td>
-            <td><img width="1715" height="120" alt="modernz_fluent_outline" src="https://github.com/user-attachments/assets/5c6af748-1f4e-46e6-b6b9-470954e93ef8" /></td>
+            <td><img width="1961" height="125" alt="icon_style_fluent_outline" src="https://github.com/user-attachments/assets/ce660cf4-b3f9-43a1-af92-fe2175a43bf6" /></td>
         </tr>
     </tbody>
 </table>
@@ -131,22 +155,22 @@ Both `fluent` and `material` themes have different styles as well. By using the 
     <tbody>
         <tr>
             <td><code>mixed</code></td>
-            <td><img width="1715" height="120" alt="modernz_material_mixed" src="https://github.com/user-attachments/assets/2518a9f6-8a07-499c-912d-a527535d6ff1" /></td>
+            <td><img width="1961" height="125" alt="icon_style_material_mixed" src="https://github.com/user-attachments/assets/3fb6730b-3ec2-4ce2-80e8-41faf2aced8c" /></td>
         </tr>
         <tr>
             <td><code>filled</code></td>
-            <td><img width="1715" height="120" alt="modernz_material_filled" src="https://github.com/user-attachments/assets/c14f94f3-0564-4ef8-b46a-6e1edb75556c" /></td>
+            <td><img width="1961" height="125" alt="icon_style_material_filled" src="https://github.com/user-attachments/assets/befe569c-ea72-42b4-a0f0-f189578a0df5" /></td>
         </tr>
         <tr>
             <td><code>outline</code></td>
-            <td><img width="1715" height="120" alt="modernz_material_outline" src="https://github.com/user-attachments/assets/d1e12ff2-a4bb-4956-9049-821fe243ad93" /></td>
+            <td><img width="1961" height="125" alt="icon_style_material_outline" src="https://github.com/user-attachments/assets/8f28b937-d03c-4920-98c4-b69998989626" /></td>
         </tr>
     </tbody>
 </table>
 
 ### Seek Bar
 
-If you find the seek bar too thin or too thick, you can easily adjust its size using the `seekbar_height` option. Available values include `small`, `medium` (default), `large`, and `xlarge`.
+If you find the seek bar too thin or too thick, you can easily adjust its size using the `seekbar_height` option. Available values include `small`, `medium`, `large`, and `xlarge`.
 
 <table>
     <tr>
@@ -154,24 +178,16 @@ If you find the seek bar too thin or too thick, you can easily adjust its size u
         <th><code>medium</code> (Default)</th>
     </tr>
     <tr>
-        <td>
-            <img width="500" height="110" alt="seekbar_small" src="https://github.com/user-attachments/assets/749e6ee9-8964-45bd-841e-8e14510b1805" />
-        </td>
-        <td>
-            <img width="500" height="110" alt="seekbar_medium" src="https://github.com/user-attachments/assets/6ed7aa8f-0f66-436c-bc71-04f5e38d89da" />
-        </td>
+        <td><img width="500" height="125" alt="seekbar_height_small" src="https://github.com/user-attachments/assets/d233d440-9915-4796-8cf7-5c9e85a0b27c" /></td>
+        <td><img width="500" height="125" alt="seekbar_height_medium" src="https://github.com/user-attachments/assets/cbe7d65c-c35b-41c2-a66a-c57c09665e8d" /></td>
     </tr>
     <tr>
         <th><code>large</code></th>
         <th><code>xlarge</code></th>
     </tr>
     <tr>
-        <td>
-            <img width="500" height="110" alt="seekbar_large" src="https://github.com/user-attachments/assets/282ba6a8-d33a-4f10-a431-c90a6245883d" />
-        </td>
-        <td>
-            <img width="500" height="110" alt="seekbar_xlarge" src="https://github.com/user-attachments/assets/49b2cafb-ac82-47fa-b0fb-176fbc1942d5" />
-        </td>
+        <td><img width="500" height="125" alt="seekbar_height_large" src="https://github.com/user-attachments/assets/a2d76a38-b25b-4501-b38c-707db8c5f16f" /></td>
+        <td><img width="500" height="125" alt="seekbar_height_xlarge" src="https://github.com/user-attachments/assets/1542a3aa-e905-4c8a-a797-ee8841b33ca2" /></td>
     </tr>
 </table>
 
@@ -184,24 +200,16 @@ You can change the chapter markers style by using the `nibbles_style` option, wh
         <th><code>triangle</code></th>
     </tr>
     <tr>
-        <td>
-            <img width="500" height="110" alt="chapter_gap" src="https://github.com/user-attachments/assets/c89cf611-36ec-4668-86ca-c4b4ebd73122" />
-        </td>
-        <td>
-            <img width="500" height="110" alt="chapter_triangle" src="https://github.com/user-attachments/assets/2cfc504e-086c-4392-bab9-aff90b0fac0c" />
-        </td>
+        <td><img width="550" height="125" alt="chapter_marker_gap" src="https://github.com/user-attachments/assets/27d8e320-8df9-4f70-80a0-23f1e9116ac7" /></td>
+        <td><img width="550" height="125" alt="chapter_marker_triangle" src="https://github.com/user-attachments/assets/cc8774b6-3271-496c-909b-b662c01f9ebb" /></td>
     </tr>
     <tr>
         <th><code>bar</code></th>
         <th><code>single-bar</code></th>
     </tr>
     <tr>
-        <td>
-            <img width="500" height="110" alt="chapter_bar" src="https://github.com/user-attachments/assets/b609661d-8ec3-4146-ba3c-853dc802e64f" />
-        </td>
-        <td>
-            <img width="500" height="110" alt="chapter_singlebar" src="https://github.com/user-attachments/assets/03696a4c-8dc5-44f6-8090-b27e01562526" />
-        </td>
+        <td><img width="550" height="125" alt="chapter_marker_bar" src="https://github.com/user-attachments/assets/1674d5fe-0aa7-4240-9b14-56077852b2ce" /></td>
+        <td><img width="550" height="125" alt="chapter_marker_singlebar" src="https://github.com/user-attachments/assets/ef57c568-8421-48db-9dab-6f3bbb18da11" /></td>
     </tr>
 </table>
 
