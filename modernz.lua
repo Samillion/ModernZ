@@ -2225,8 +2225,8 @@ layouts["default"] = function ()
 
     -- osc title
     local title_w = (no_chapter or not chapter_index or user_opts.chapter_above_title) and (osc_geo.w - 60 - time_codes_width) or (osc_geo.w - 50)
-    if title_w < 0 then title_w = 0 end
     state.title_max_w = title_w
+    if title_w < 0 then title_w = 0 end
     elements["title"].visible = not no_title
     geo = {x = 25, y = refY - title_y, an = 1, w = title_w, h = user_opts.title_font_size}
     lo = add_layout("title")
@@ -2493,8 +2493,8 @@ layouts["compact"] = function ()
 
     -- osc title
     local title_w = (no_chapter or not chapter_index or user_opts.chapter_above_title) and (osc_geo.w - 60 - time_codes_width) or (osc_geo.w - 50)
-    if title_w < 0 then title_w = 0 end
     state.title_max_w = title_w
+    if title_w < 0 then title_w = 0 end
     elements["title"].visible = not no_title
     geo = {x = 25, y = refY - title_y, an = 1, w = osc_geo.w - 50, h = user_opts.title_font_size}
     lo = add_layout("title")
