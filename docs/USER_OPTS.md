@@ -146,7 +146,7 @@ watch-later-options-remove=osd-margin-y
 | seekbarfg_color                   | `#FF8232` | color of the seekbar progress                                                                     |
 | seekbarbg_color                   | `#999999` | color of the remaining seekbar                                                                    |
 | seek_handle_color                 | `#C96508` | color of the seekbar handle                                                                       |
-| seek_handle_border_color          | `#FF8232` | inner border color drawn inside the seekbar handle                                                |
+| seek_handle_border_color          | `#FF8232` | inner border color drawn inside the seekbar handle (set to `disable` to disable)                  |
 | volumebar_match_seek_color        | no        | match volume bar color with seekbar color (ignores `side_buttons_color`)                          |
 | time_color                        | `#FFFFFF` | color of the timestamps                                                                           |
 | chapter_title_color               | `#FFFFFF` | color of the chapter title                                                                        |
