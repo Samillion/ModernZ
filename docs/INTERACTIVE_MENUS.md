@@ -1,6 +1,6 @@
 ## Interactive Menus
 
-https://github.com/user-attachments/assets/43b92663-d69a-4549-87cd-e60cff89d395
+https://github.com/user-attachments/assets/51a3549a-7944-48b3-899f-f3a03a8caeaf
 
 ModernZ integrates mpv’s built-in [`console.lua`](https://github.com/mpv-player/mpv/blob/master/player/lua/console.lua) and [`select.lua`](https://github.com/mpv-player/mpv/blob/master/player/lua/select.lua) scripts, available in mpv starting from **v0.39+**.
 
@@ -29,14 +29,16 @@ To enable context-menu:
 
 #### Context menu list for ModernZ in `menu.conf`:
 
-You can add or remove any of the list items to suit your needs. [[full list of ModernZ options](/docs/USER_OPTS.md)]
+You can add or adjust any of the list items to suit your needs from the [[list of ModernZ options](/docs/USER_OPTS.md)] in the context menu.
 
 ```
 
-&ModernZ
+&ModernZ			disabled=idle_active
 	&Layout
-		&Modern				no-osd change-list script-opts append modernz-layout=modern
-		Modern &Compact		no-osd change-list script-opts append modernz-layout=modern-compact
+		&Default	no-osd change-list script-opts append modernz-layout=default
+		&Compact	no-osd change-list script-opts append modernz-layout=compact
+		&Mini		no-osd change-list script-opts append modernz-layout=mini
+		&Seekbar	no-osd change-list script-opts append modernz-layout=seekbar
 	&Theme
 		&Icon Theme
             &Fluent		no-osd change-list script-opts append modernz-icon_theme=fluent

@@ -15,7 +15,7 @@ Create `modernz.conf` in your mpv script-opts directory:
 | Option                    | Value           | Description                                                                                                                    |
 | ------------------------- | --------------- | ------------------------------------------------------------------------------------------------------------------------------ |
 | language                  | default         | set language (for available options, see: [Translations](https://github.com/Samillion/ModernZ/blob/main/docs/TRANSLATIONS.md)) |
-| layout                    | modern          | set layout: `"modern"` or `"modern-compact"`                                                                                   |
+| layout                    | default         | set layout: `default`, `compact`, `mini`, `seekbar`                                                                            |
 | icon_theme                | fluent          | set icon theme. accepts `fluent` or `material`                                                                                 |
 | icon_style                | mixed           | "mixed", "filled", "outline"                                                                                                   |
 | font                      | mpv-osd-symbols | font for the OSC (default: mpv-osd-symbols or the one set in mpv.conf)                                                         |
@@ -106,7 +106,6 @@ watch-later-options-remove=osd-margin-y
 | jump_mode                  | relative      | seek mode for jump buttons: `"relative"` or `"exact"`                                                              |
 | jump_softrepeat            | yes           | enable continuous jumping when holding down seek buttons                                                           |
 | chapter_skip_buttons       | no            | show the skip back and forward (chapter) buttons                                                                   |
-| chapter_softrepeat         | yes           | enable continuous skipping when holding down chapter skip buttons                                                  |
 | track_nextprev_buttons     | yes           | show next/previous playlist track buttons                                                                          |
 | volume_control             | yes           | show mute button and volume slider                                                                                 |
 | volume_control_type        | linear        | volume scale type: `"linear"` or `"logarithmic"`                                                                   |
@@ -114,17 +113,17 @@ watch-later-options-remove=osd-margin-y
 | playlist_button            | yes           | show playlist button: Left-click for simple playlist, Right-click for interactive playlist                         |
 | hide_empty_playlist_button | no            | hide playlist button when no playlist exists                                                                       |
 | gray_empty_playlist_button | no            | gray out the playlist button when no playlist exists                                                               |
-| download_button            | yes           | show download button on web videos (requires yt-dlp and ffmpeg)                                                    |
-| download_path              | ~~desktop/mpv | default download directory for videos. [Learn more about setting paths here](https://mpv.io/manual/master/#paths). |
-| screenshot_button          | yes           | show screenshot button                                                                                             |
+| fullscreen_button          | yes           | show `fullscreen toggle` button                                                                                    |
+| info_button                | yes           | show `info (stats)` button                                                                                         |
 | ontop_button               | yes           | show `window on top (pin)` button                                                                                  |
 | ontop_in_topbar            | no            | move ontop button to top bar when ontop is active                                                                  |
+| screenshot_button          | yes           | show screenshot button                                                                                             |
+| download_button            | yes           | show download button on web videos (requires yt-dlp and ffmpeg)                                                    |
+| download_path              | ~~desktop/mpv | default download directory for videos. [Learn more about setting paths here](https://mpv.io/manual/master/#paths). |
 | loop_button                | yes           | show `file loop` button                                                                                            |
 | shuffle_button             | no            | show `shuffle` button                                                                                              |
 | speed_button               | yes           | show speed control button                                                                                          |
 | buttons_always_active      | none          | force buttons to always be active. can add: `playlist_prev`, `playlist_next`                                       |
-| info_button                | yes           | show `info (stats)` button                                                                                         |
-| fullscreen_button          | yes           | show `fullscreen toggle` button                                                                                    |
 | playpause_size             | 28            | icon size for the play/pause button                                                                                |
 | midbuttons_size            | 24            | icon size for the middle buttons                                                                                   |
 | sidebuttons_size           | 24            | icon size for the side buttons                                                                                     |
@@ -147,7 +146,7 @@ watch-later-options-remove=osd-margin-y
 | seekbarfg_color                   | `#FF8232` | color of the seekbar progress                                                                     |
 | seekbarbg_color                   | `#999999` | color of the remaining seekbar                                                                    |
 | seek_handle_color                 | `#C96508` | color of the seekbar handle                                                                       |
-| seek_handle_border_color          | `#FF8232` | inner border color drawn inside the seekbar handle                                                |
+| seek_handle_border_color          | `#FF8232` | inner border color drawn inside the seekbar handle (set to `disable` to disable)                  |
 | volumebar_match_seek_color        | no        | match volume bar color with seekbar color (ignores `side_buttons_color`)                          |
 | time_color                        | `#FFFFFF` | color of the timestamps                                                                           |
 | chapter_title_color               | `#FFFFFF` | color of the chapter title                                                                        |
@@ -161,6 +160,7 @@ watch-later-options-remove=osd-margin-y
 | thumbnail_box_outline             | `#404040` | color of the border outline for thumbnail box                                                     |
 | nibble_color                      | `#FF8232` | color of chapter nibbles on the seekbar                                                           |
 | nibble_current_color              | `#FFFFFF` | color of the current chapter nibble on the seekbar                                                |
+| ab_loop_color                     | `#2596be` | color of the A/B loop range on the seekbar                                                        |
 | osc_fade_strength                 | 100       | strength of the OSC background fade (0 to disable)                                                |
 | fade_blur_strength                | 100       | blur strength for the OSC alpha fade. caution: high values can take a lot of CPU time to render   |
 | fade_transparency_strength        | 0         | use with "fade_blur_strength=0" to create a transparency box                                      |
@@ -173,37 +173,37 @@ watch-later-options-remove=osd-margin-y
 
 ### Button interaction settings
 
-| Option                | Value               | Description                                                                                               |
-| -------------------   | ------------------- | --------------------------------------------------------------------------------------------------------- |
-| hover_effect          | size,glow,color,box | active button hover effects: `"glow"`, `"size"`, `"color"`, `"box"`; can use multiple separated by commas |
-| button_hover_size     | 115                 | relative size of a hovered button if "size" effect is active                                              |
-| button_held_size      | 100                 | relative size of a button when held/pressed. below 100 shrinks button when held down                      |
-| button_held_box_alpha | 18                  | alpha of the hover background box when a button is held down                                              |
-| button_glow_amount    | 5                   | glow intensity when `"glow"` hover effect is active                                                       |
-| slider_hover_size     | 100                 | relative size of a hovered slider handle (100 = no size change)                                           |
-| tooltip_hints         | yes                 | enable tooltips for most buttons. seek and volume tooltips are always enabled                             |
+| Option                | Value               | Description                                                                                       |
+| -------------------   | ------------------- | ------------------------------------------------------------------------------------------------- |
+| hover_effect          | size,glow,color,box | active button hover effects: `glow`, `size`, `color`, `box`; can use multiple separated by commas |
+| button_hover_size     | 115                 | relative size of a hovered button if "size" effect is active                                      |
+| button_held_size      | 100                 | relative size of a button when held/pressed. below 100 shrinks button when held down              |
+| button_held_box_alpha | 18                  | alpha of the hover background box when a button is held down                                      |
+| button_glow_amount    | 5                   | glow intensity when `"glow"` hover effect is active                                               |
+| slider_hover_size     | 100                 | relative size of a hovered slider handle (100 = no size change)                                   |
+| tooltip_hints         | yes                 | enable tooltips for most buttons. seek and volume tooltips are always enabled                     |
 
 ### Progress bar settings
 
-| Option                        | Value    | Description                                                             |
-| --------------------------    | -------- | ----------------------------------------------------------------------- |
-| seek_handle_size              | 0.8      | size ratio of the seekbar handle (range: 0 ~ 1)                         |
-| seek_handle_border_size       | 0.42     | border thickness as a fraction of the handle radius                     |
-| seek_handle_border_hover_size | 0.31     | border thickness when handle is hovered                                 |
-| seekbar_height                | medium   | seekbar height preset: `small`, `medium`, `large`, `xlarge`             |
-| seekrange                     | yes      | show seek range overlay                                                 |
-| seekrangealpha                | 150      | transparency of the seek range                                          |
-| livemarkers                   | yes      | update chapter markers on the seekbar when duration changes             |
-| seekbarkeyframes              | no       | use keyframes when dragging the seekbar                                 |
-| slider_rounded_corners        | yes      | rounded corners seekbar slider                                          |
-| nibbles_style                 | gap      | chapter nibble style: `gap`, `triangle`, `bar` or `single-bar`          |
-| nibbles_top                   | yes      | top chapter nibbles above seekbar                                       |
-| nibbles_bottom                | yes      | bottom chapter nibbles below seekbar                                    |
-| automatickeyframemode         | yes      | automatically set keyframes for the seekbar based on video length       |
-| automatickeyframelimit        | 600      | videos longer than this (in seconds) will have keyframes on the seekbar |
-| persistent_progress           | no       | always show a small progress line at the bottom of the screen           |
-| persistent_progress_height    | 17       | height of the persistent progress bar                                   |
-| persistent_buffer             | no       | show cached buffer status in the persistent progress line               |
+| Option                        | Value    | Description                                                                                 |
+| --------------------------    | -------- | ------------------------------------------------------------------------------------------- |
+| seek_handle_size              | 0.8      | size ratio of the seekbar handle (range: 0 ~ 1)                                             |
+| seek_handle_border_size       | 0.42     | border thickness as a fraction of the handle radius                                         |
+| seek_handle_border_hover_size | 0.31     | border thickness when handle is hovered (set equal to `seek_handle_border_size` to disable) |
+| seekbar_height                | medium   | seekbar height preset: `small`, `medium`, `large`, `xlarge`                                 |
+| seekrange                     | yes      | show seek range overlay                                                                     |
+| seekrangealpha                | 150      | transparency of the seek range                                                              |
+| livemarkers                   | yes      | update chapter markers on the seekbar when duration changes                                 |
+| seekbarkeyframes              | yes      | use keyframes when dragging the seekbar                                                     |
+| slider_rounded_corners        | yes      | rounded corners seekbar slider                                                              |
+| nibbles_style                 | gap      | chapter nibble style: `gap`, `triangle`, `bar` or `single-bar`                              |
+| nibbles_top                   | yes      | top chapter nibbles above seekbar                                                           |
+| nibbles_bottom                | yes      | bottom chapter nibbles below seekbar                                                        |
+| automatickeyframemode         | yes      | automatically set keyframes for the seekbar based on video length                           |
+| automatickeyframelimit        | 600      | videos longer than this (in seconds) will have keyframes on the seekbar                     |
+| persistent_progress           | no       | always show a small progress line at the bottom of the screen                               |
+| persistent_progress_height    | 17       | height of the persistent progress bar                                                       |
+| persistent_buffer             | no       | show cached buffer status in the persistent progress line                                   |
 
 ### Miscellaneous settings
 
