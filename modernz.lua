@@ -141,7 +141,7 @@ local user_opts = {
     seekbarfg_color = "#FF8232",           -- color of the seekbar progress
     seekbarbg_color = "#999999",           -- color of the remaining seekbar
     seek_handle_color = "#C96508",         -- color of the seekbar handle
-    seek_handle_border_color = "#FF8232",  -- inner border color drawn inside the seekbar handle (set to "" to disable)
+    seek_handle_border_color = "#FF8232",  -- inner border color drawn inside the seekbar handle (set to "disable" to disable)
     volumebar_match_seek_color = false,    -- match volume bar color with seekbar color (ignores side_buttons_color)
     time_color = "#FFFFFF",                -- color of the timestamps (below seekbar)
     chapter_title_color = "#FFFFFF",       -- color of the chapter title
@@ -4379,6 +4379,15 @@ local function validate_user_opts()
     validate_string_opt("keeponpause",  {"no", "bottombar", "both"}, "no")
     validate_string_opt("deadzone_hide", {"instant", "timeout"}, "instant")
 
+    local hbc = user_opts.seek_handle_border_color
+    if hbc == "disable" then
+        hbc = ""
+    elseif hbc ~= "" and hbc:find("^#%x%x%x%x%x%x$") == nil then
+        msg.warn("'" .. hbc .. "' is not a valid color for seek_handle_border_color, border disabled")
+        hbc = ""
+    end
+    user_opts.seek_handle_border_color = hbc
+
     local colors = {
         user_opts.osc_color, user_opts.seekbarfg_color, user_opts.seekbarbg_color, user_opts.title_color, user_opts.time_color,
         user_opts.side_buttons_color, user_opts.middle_buttons_color, user_opts.playpause_color, user_opts.window_title_color,
@@ -4387,10 +4396,6 @@ local function validate_user_opts()
         user_opts.windowcontrols_min_hover, user_opts.cache_info_color, user_opts.thumbnail_box_outline, user_opts.nibble_color,
         user_opts.nibble_current_color, user_opts.seek_handle_color, user_opts.ab_loop_color,
     }
-
-    if user_opts.seek_handle_border_color ~= "" then
-        colors[#colors + 1] = user_opts.seek_handle_border_color
-    end
 
     for _, color in pairs(colors) do
         if color:find("^#%x%x%x%x%x%x$") == nil then
