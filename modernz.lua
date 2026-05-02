@@ -1771,19 +1771,6 @@ local function render_elements(master_ass, osc_vis, wc_vis)
                 buttontext = element.content -- text objects
             end
 
-            local maxchars = element.layout.button.maxchars
-            if maxchars ~= nil and #buttontext > maxchars then
-                local max_ratio = 1.25  -- up to 25% more chars while shrinking
-                local limit = math.max(0, math.floor(maxchars * max_ratio) - 3)
-                if #buttontext > limit then
-                    while (#buttontext > limit) do
-                        buttontext = buttontext:gsub(".[\128-\191]*$", "")
-                    end
-                    buttontext = buttontext .. "..."
-                end
-                buttontext = string.format("{\\fscx%f}", (maxchars/#buttontext)*100) .. buttontext
-            end
-
             -- add hover effects
             local button_lo = element.layout.button
             local is_clickable = element.eventresponder and (element.eventresponder["mbtn_left_down"] ~= nil or element.eventresponder["mbtn_left_up"] ~= nil)
@@ -1998,7 +1985,6 @@ local function add_layout(name)
 
         if elements[name].type == "button" then
             elements[name].layout.button = {
-                maxchars = nil,
                 hoverstyle = osc_styles.element_hover,
             }
         elseif elements[name].type == "slider" then
