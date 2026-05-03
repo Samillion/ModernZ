@@ -56,6 +56,7 @@ local user_opts = {
     show_title = true,                     -- show title in the OSC
     title = "${media-title}",              -- title: "${media-title}" or "${filename}"
     title_font_size = 24,                  -- title font size
+    truncate_title = false,                -- truncate title with ellipsis if it overflows
     chapter_title_font_size = 16,          -- chapter title font size
 
     cache_info = false,                    -- show cached time information
@@ -551,7 +552,7 @@ local function set_osc_styles()
         window_control = "{\\1c&H" .. osc_color_convert(user_opts.window_controls_color) .. "&\\fs25\\fn" .. icons.iconfont .. "}",
         window_title = "{\\bord1\\1c&H" .. osc_color_convert(user_opts.window_title_color) .. "&\\3c&H0&\\fs".. user_opts.window_title_font_size .."\\q2\\fn" .. user_opts.font .. "}",
         title = "{\\bord1\\1c&H" .. osc_color_convert(user_opts.title_color) .. "&\\3c&H0&\\fs".. user_opts.title_font_size .."\\q2\\fn" .. user_opts.font .. "}",
-        chapter_title = "{\\bord1\\1c&H" .. osc_color_convert(user_opts.chapter_title_color) .. "&\\3c&H0&\\fs" .. user_opts.chapter_title_font_size .. "\\fn" .. user_opts.font .. "}",
+        chapter_title = "{\\bord1\\1c&H" .. osc_color_convert(user_opts.chapter_title_color) .. "&\\3c&H0&\\fs" .. user_opts.chapter_title_font_size .. "\\q2\\fn" .. user_opts.font .. "}",
         seekbar_bg = "{\\1c&H" .. osc_color_convert(user_opts.seekbarbg_color) .. "&}",
         seekbar_fg = "{\\blur1\\bord1\\1c&H" .. osc_color_convert(user_opts.seekbarfg_color) .. "&}",
         thumbnail = "{\\bord" .. user_opts.thumbnail_box_outline_size .. "\\1c&H" .. osc_color_convert(user_opts.thumbnail_box_color) .. "&\\3c&H" .. osc_color_convert(user_opts.thumbnail_box_outline) .. "&}",
@@ -648,6 +649,9 @@ local state = {
     downloaded_once = false,
     downloading = false,
     file_size_normalized = nil,
+    title_max_w = nil,
+    windowtitle_max_w = nil,
+    chapter_title_max_w = nil,
 }
 
 local logo_lines = {
@@ -2081,6 +2085,7 @@ local function window_controls()
         lo.group = "top"
         lo.alpha[3] = 0
         lo.style = string.format("%s{\\clip(%f,%f,%f,%f)}", osc_styles.window_title, titlebox_left, wc_geo.y - wc_geo.h, controlbox_left, wc_geo.y + wc_geo.h)
+        state.windowtitle_max_w = controlbox_left - math.max(20, titlebox_left + 4)
     end
 
     -- only add top areas and margin if one of the elements is enabled
@@ -2217,6 +2222,13 @@ layouts["default"] = function ()
 
     local offset = user_opts.jump_buttons and 60 or 0
     local outeroffset = (chapter_skip_buttons and 0 or 100) + (user_opts.jump_buttons and 0 or 100)
+    local narrow_win = osc_param.playresx < (
+        user_opts.portrait_window_trigger
+        - outeroffset
+        - (playlist_button and 0 or 100)
+        - (subtitle_track and 0 or 100)
+        - (audio_track and 0 or 100)
+    )
 
     local time_codes_width = get_time_codes_width()
     local chapter_title_y, title_y
@@ -2230,6 +2242,7 @@ layouts["default"] = function ()
 
     -- osc title
     local title_w = (no_chapter or not chapter_index or user_opts.chapter_above_title) and (osc_geo.w - 60 - time_codes_width) or (osc_geo.w - 50)
+    state.title_max_w = title_w
     if title_w < 0 then title_w = 0 end
     elements["title"].visible = not no_title
     geo = {x = 25, y = refY - title_y, an = 1, w = title_w, h = user_opts.title_font_size}
@@ -2242,12 +2255,14 @@ layouts["default"] = function ()
     -- chapter title
     if user_opts.show_chapter_title then
         elements["chapter_title"].visible = not no_chapter and chapter_index
-        geo = {x = 26, y = refY - chapter_title_y, an = 1, w = osc_geo.w - time_codes_width - 60, h = user_opts.chapter_title_font_size}
+        local chapter_title_w = narrow_win and (osc_geo.w - time_codes_width - 60) or (osc_geo.w - 60)
+        geo = {x = 26, y = refY - chapter_title_y, an = 1, w = chapter_title_w, h = user_opts.chapter_title_font_size}
         lo = add_layout("chapter_title")
         lo.geometry = geo
         lo.layer = 48
         lo.alpha[3] = 0
         lo.style = string.format("%s{\\clip(%f,%f,%f,%f)}", osc_styles.chapter_title, 0, 0, geo.x + geo.w, geo.y + geo.h)
+        state.chapter_title_max_w = geo.w
     end
 
     -- left side buttons
@@ -2305,13 +2320,6 @@ layouts["default"] = function ()
         - (audio_track and not user_opts.volume_control and 12 or 0) -- audio track with no elements
         - (not audio_track and 12 or 0) -- remove excess space
     local time_codes_y = user_opts.time_codes_offset + (user_opts.osc_height / 2)
-    local narrow_win = osc_param.playresx < (
-        user_opts.portrait_window_trigger
-        - outeroffset
-        - (playlist_button and 0 or 100)
-        - (subtitle_track and 0 or 100)
-        - (audio_track and 0 or 100)
-    )
     if narrow_win then
         -- try to vertically align time codes to the baseline of title/chapter
         if not user_opts.show_title and not user_opts.show_chapter_title then
@@ -2495,8 +2503,11 @@ layouts["compact"] = function ()
     end
 
     -- osc title
+    local title_w = osc_geo.w - 50
+    state.title_max_w = title_w
+    if title_w < 0 then title_w = 0 end
     elements["title"].visible = not no_title
-    geo = {x = 25, y = refY - title_y, an = 1, w = osc_geo.w - 50, h = user_opts.title_font_size}
+    geo = {x = 25, y = refY - title_y, an = 1, w = title_w, h = user_opts.title_font_size}
     lo = add_layout("title")
     lo.geometry = geo
     lo.layer = 48
@@ -2512,6 +2523,7 @@ layouts["compact"] = function ()
         lo.layer = 48
         lo.alpha[3] = 0
         lo.style = string.format("%s{\\clip(%f,%f,%f,%f)}", osc_styles.chapter_title, 0, 0, geo.x + geo.w, geo.y + geo.h)
+        state.chapter_title_max_w = geo.w
     end
 
     -- left side buttons
@@ -3128,13 +3140,43 @@ local function osc_init()
     ne.content = (state.window_maximized or state.fullscreen) and icons.window.unmaximize or icons.window.maximize
     ne.eventresponder["mbtn_left_up"] = function () mp.commandv("cycle", (state.fullscreen and "fullscreen" or "window-maximized")) end
 
+    local function truncate_title(title, max_w, style)
+        if not max_w or max_w <= 0 or estimate_text_width(title, style) <= max_w then return title end
+        local ell_w = estimate_text_width("…", style)
+        -- map each UTF-8 character to its last byte offset (avoids slicing mid-char)
+        local char_ends, pos = {}, 1
+        while pos <= #title do
+            local b = title:byte(pos)
+            local char_len = b >= 0xF0 and 4 or b >= 0xE0 and 3 or b >= 0xC0 and 2 or 1
+            char_ends[#char_ends + 1] = pos + char_len - 1
+            pos = pos + char_len
+        end
+        -- binary search over character count
+        local low, high, fit = 1, #char_ends, 0
+        while low <= high do
+            local mid = math.floor((low + high) / 2)
+            if estimate_text_width(title:sub(1, char_ends[mid]), style) <= max_w - ell_w then
+                fit = mid; low = mid + 1
+            else
+                high = mid - 1
+            end
+        end
+        return title:sub(1, fit > 0 and char_ends[fit] or 0) .. "…"
+    end
+
     -- Window Title
     ne = new_element("windowtitle", "button")
-    ne.content = function () return make_escaped_title(mp.get_property("title")) end
+    ne.content = function ()
+        local t = make_escaped_title(mp.get_property("title"))
+        return user_opts.truncate_title and truncate_title(t, state.windowtitle_max_w, osc_styles.window_title) or t
+    end
 
     -- OSC title
     ne = new_element("title", "button")
-    ne.content = function () return make_escaped_title(user_opts.title) end
+    ne.content = function ()
+        local t = make_escaped_title(user_opts.title)
+        return user_opts.truncate_title and truncate_title(t, state.title_max_w, osc_styles.title) or t
+    end
     bind_buttons("title")
 
     -- Chapter title
@@ -3142,13 +3184,12 @@ local function osc_init()
     ne.content = function()
         local chapter_index = state.chapter or -1
         if user_opts.chapter_fmt == "no" or chapter_index < 0 then return "" end
-
-        local chapters = state.chapter_list
-        local chapter_data = chapters[chapter_index + 1]
-        local chapter_title = chapter_data and chapter_data.title ~= "" and chapter_data.title or string.format("%s: %d/%d", locale.chapter, chapter_index + 1, #chapters)
-        chapter_title = mp.command_native({"escape-ass", chapter_title})
-
-        return string.format(user_opts.chapter_fmt, chapter_title)
+        local chapter_data = state.chapter_list[chapter_index + 1]
+        local chapter_title = mp.command_native({"escape-ass",
+            chapter_data and chapter_data.title ~= "" and chapter_data.title
+            or string.format("%s: %d/%d", locale.chapter, chapter_index + 1, #state.chapter_list)})
+        local t = string.format(user_opts.chapter_fmt, chapter_title)
+        return user_opts.truncate_title and truncate_title(t, state.chapter_title_max_w, osc_styles.chapter_title) or t
     end
     bind_buttons("chapter_title")
 
