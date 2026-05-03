@@ -1902,7 +1902,16 @@ local function check_path_url()
     -- normalize ytdl:// prefix: ytdl://https://... > https://..., ytdl://... > https://...
     path = path:gsub("^ytdl://https?://", "https://"):gsub("^ytdl://", "https://")
 
-    if path:match("^[%w]+://") then
+    local scheme = path:match("^([%w][%w+%-%.]*)://")
+    local online_schemes = {
+        http=true, https=true,
+        ftp=true, ftps=true,
+        rtmp=true, rtmps=true,
+        rtsp=true, rtsps=true,
+        mms=true, mmsh=true, mmst=true,
+    }
+
+    if scheme and online_schemes[scheme:lower()] then
         state.is_url = true
         state.url_path = path
         msg.info("URL detected.")
