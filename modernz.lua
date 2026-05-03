@@ -56,6 +56,7 @@ local user_opts = {
     show_title = true,                     -- show title in the OSC
     title = "${media-title}",              -- title: "${media-title}" or "${filename}"
     title_font_size = 24,                  -- title font size
+    truncate_title = false,                -- truncate title with ellipsis if it overflows
     chapter_title_font_size = 16,          -- chapter title font size
 
     cache_info = false,                    -- show cached time information
@@ -2496,7 +2497,7 @@ layouts["compact"] = function ()
     state.title_max_w = title_w
     if title_w < 0 then title_w = 0 end
     elements["title"].visible = not no_title
-    geo = {x = 25, y = refY - title_y, an = 1, w = osc_geo.w - 50, h = user_opts.title_font_size}
+    geo = {x = 25, y = refY - title_y, an = 1, w = title_w, h = user_opts.title_font_size}
     lo = add_layout("title")
     lo.geometry = geo
     lo.layer = 48
@@ -3131,28 +3132,40 @@ local function osc_init()
 
     local function truncate_title(title, max_w, style)
         if not max_w or max_w <= 0 or estimate_text_width(title, style) <= max_w then return title end
-        local low, high, fit = 1, #title, 0
+        local ell_w = estimate_text_width("…", style)
+        -- map each UTF-8 character to its last byte offset (avoids slicing mid-char)
+        local char_ends, pos = {}, 1
+        while pos <= #title do
+            local b = title:byte(pos)
+            local char_len = b >= 0xF0 and 4 or b >= 0xE0 and 3 or b >= 0xC0 and 2 or 1
+            char_ends[#char_ends + 1] = pos + char_len - 1
+            pos = pos + char_len
+        end
+        -- binary search over character count
+        local low, high, fit = 1, #char_ends, 0
         while low <= high do
             local mid = math.floor((low + high) / 2)
-            if estimate_text_width(title:sub(1, mid) .. "…", style) <= max_w then
+            if estimate_text_width(title:sub(1, char_ends[mid]), style) <= max_w - ell_w then
                 fit = mid; low = mid + 1
             else
                 high = mid - 1
             end
         end
-        return title:sub(1, fit) .. "…"
+        return title:sub(1, fit > 0 and char_ends[fit] or 0) .. "…"
     end
 
     -- Window Title
     ne = new_element("windowtitle", "button")
     ne.content = function ()
-        return truncate_title(make_escaped_title(mp.get_property("title")), state.windowtitle_max_w, osc_styles.window_title)
+        local t = make_escaped_title(mp.get_property("title"))
+        return user_opts.truncate_title and truncate_title(t, state.windowtitle_max_w, osc_styles.window_title) or t
     end
 
     -- OSC title
     ne = new_element("title", "button")
     ne.content = function ()
-        return truncate_title(make_escaped_title(user_opts.title), state.title_max_w, osc_styles.title)
+        local t = make_escaped_title(user_opts.title)
+        return user_opts.truncate_title and truncate_title(t, state.title_max_w, osc_styles.title) or t
     end
     bind_buttons("title")
 
@@ -3165,7 +3178,8 @@ local function osc_init()
         local chapter_title = mp.command_native({"escape-ass",
             chapter_data and chapter_data.title ~= "" and chapter_data.title
             or string.format("%s: %d/%d", locale.chapter, chapter_index + 1, #state.chapter_list)})
-        return truncate_title(string.format(user_opts.chapter_fmt, chapter_title), state.chapter_title_max_w, osc_styles.chapter_title)
+        local t = string.format(user_opts.chapter_fmt, chapter_title)
+        return user_opts.truncate_title and truncate_title(t, state.chapter_title_max_w, osc_styles.chapter_title) or t
     end
     bind_buttons("chapter_title")
 
