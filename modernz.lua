@@ -2493,7 +2493,7 @@ layouts["compact"] = function ()
     end
 
     -- osc title
-    local title_w = (no_chapter or not chapter_index or user_opts.chapter_above_title) and (osc_geo.w - 60 - time_codes_width) or (osc_geo.w - 50)
+    local title_w = osc_geo.w - 50
     state.title_max_w = title_w
     if title_w < 0 then title_w = 0 end
     elements["title"].visible = not no_title
