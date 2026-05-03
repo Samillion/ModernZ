@@ -287,6 +287,12 @@ Customize the button function based on mouse actions.
 |                               | speed_mbtn_right_command         | `osd-msg set speed 1`                        |
 |                               | speed_wheel_down_command         | `osd-msg add speed -0.25`                    |
 |                               | speed_wheel_up_command           | `osd-msg add speed 0.25`                     |
+| Default actions               | default_mbtn_mid_command         | `ignore`                                     |
+|                               | default_wheel_up_command         | `ignore`                                     |
+|                               | default_wheel_down_command       | `ignore`                                     |
+
+> [!NOTE]
+> Commands set as default actions are applied to elements that have no explicit command defined above.
 
 ### Auto Profile
 

@@ -302,6 +302,11 @@ local user_opts = {
     speed_mbtn_right_command = "osd-msg set speed 1",
     speed_wheel_down_command = "osd-msg add speed -0.25",
     speed_wheel_up_command = "osd-msg add speed 0.25",
+
+    -- default mouse actions (applied to elements that have no explicit command defined above)
+    default_mbtn_mid_command = "",
+    default_wheel_up_command = "",
+    default_wheel_down_command = "",
 }
 
 local osc_param = {                  -- calculated by osc_init()
@@ -2999,10 +3004,10 @@ local function bind_buttons(element_name, use_down)
     if command ~= nil and command ~= "" and command ~= "ignore" then
         elements[element_name].eventresponder["shift+mbtn_left_down"] = function() mp.command(command) end
     end
-    for _, button in ipairs({"wheel_up", "wheel_down"}) do
-        local command = user_opts[element_name .. "_" .. button .. "_command"]
+    for _, dir in ipairs({"wheel_up", "wheel_down"}) do
+        local command = user_opts[element_name .. "_" .. dir .. "_command"]
         if command ~= nil and command ~= "" and command ~= "ignore" then
-            elements[element_name].eventresponder[button .. "_press"] = function() mp.command(command) end
+            elements[element_name].eventresponder[dir .. "_press"] = function() mp.command(command) end
         end
     end
 end
@@ -3043,6 +3048,20 @@ local function build_cache_seek_ranges()
         }
     end
     return nranges
+end
+
+-- dynamically sets the "input" mouse area to only the hovered element
+local click_keys = {
+    "mbtn_left_up", "mbtn_left_down", "mbtn_left_press",
+    "mbtn_right_up", "mbtn_right_down", "mbtn_right_press",
+    "wheel_up_press", "wheel_down_press",
+}
+local function has_click_action(e)
+    if not e.eventresponder then return false end
+    for _, k in ipairs(click_keys) do
+        if e.eventresponder[k] then return true end
+    end
+    return false
 end
 
 local function osc_init()
@@ -3600,6 +3619,23 @@ local function osc_init()
 
     prepare_elements()
     update_margins()
+
+    -- apply default mid/wheel commands to every button/slider that has no responder
+    local default_actions = {
+        ["shift+mbtn_left_down"] = user_opts.default_mbtn_mid_command,
+        ["wheel_up_press"]       = user_opts.default_wheel_up_command,
+        ["wheel_down_press"]     = user_opts.default_wheel_down_command,
+    }
+    for _, element in pairs(elements) do
+        if (element.type == "button" or element.type == "slider") and element.eventresponder
+            and has_click_action(element) then
+            for key, command in pairs(default_actions) do
+                if not element.eventresponder[key] and command ~= nil and command ~= "" and command ~= "ignore" then
+                    element.eventresponder[key] = function() mp.command(command) end
+                end
+            end
+        end
+    end
 end
 
 local function show_wc()
@@ -3684,20 +3720,6 @@ end
 
 local function element_has_action(element, action)
     return element and element.eventresponder and element.eventresponder[action]
-end
-
--- dynamically sets the "input" mouse area to only the hovered element
-local click_keys = {
-    "mbtn_left_up", "mbtn_left_down", "mbtn_left_press",
-    "mbtn_right_up", "mbtn_right_down", "mbtn_right_press",
-    "wheel_up_press", "wheel_down_press",
-}
-local function has_click_action(e)
-    if not e.eventresponder then return false end
-    for _, k in ipairs(click_keys) do
-        if e.eventresponder[k] then return true end
-    end
-    return false
 end
 
 local function refresh_input_area()
