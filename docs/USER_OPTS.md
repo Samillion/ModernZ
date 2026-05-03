@@ -54,6 +54,7 @@ Create `modernz.conf` in your mpv script-opts directory:
 | show_title              | yes              | show title in the OSC                                                            |
 | title                   | `${media-title}` | title: `"${media-title}"` or `"${filename}"`                                     |
 | title_font_size         | 24               | font size of the title text                                                      |
+| truncate_title          | no               | truncate title with ellipsis if it overflows                                     |
 | chapter_title_font_size | 16               | chapter title font size                                                          |
 | show_chapter_title      | yes              | show chapter title                                                               |
 | chapter_above_title     | no               | show chapter above title                                                         |
