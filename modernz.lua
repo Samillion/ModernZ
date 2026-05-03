@@ -2213,6 +2213,13 @@ layouts["default"] = function ()
 
     local offset = user_opts.jump_buttons and 60 or 0
     local outeroffset = (chapter_skip_buttons and 0 or 100) + (user_opts.jump_buttons and 0 or 100)
+    local narrow_win = osc_param.playresx < (
+        user_opts.portrait_window_trigger
+        - outeroffset
+        - (playlist_button and 0 or 100)
+        - (subtitle_track and 0 or 100)
+        - (audio_track and 0 or 100)
+    )
 
     local time_codes_width = get_time_codes_width()
     local chapter_title_y, title_y
@@ -2239,7 +2246,8 @@ layouts["default"] = function ()
     -- chapter title
     if user_opts.show_chapter_title then
         elements["chapter_title"].visible = not no_chapter and chapter_index
-        geo = {x = 26, y = refY - chapter_title_y, an = 1, w = osc_geo.w - time_codes_width - 60, h = user_opts.chapter_title_font_size}
+        local chapter_title_w = narrow_win and (osc_geo.w - time_codes_width - 60) or (osc_geo.w - 60)
+        geo = {x = 26, y = refY - chapter_title_y, an = 1, w = chapter_title_w, h = user_opts.chapter_title_font_size}
         lo = add_layout("chapter_title")
         lo.geometry = geo
         lo.layer = 48
@@ -2303,13 +2311,6 @@ layouts["default"] = function ()
         - (audio_track and not user_opts.volume_control and 12 or 0) -- audio track with no elements
         - (not audio_track and 12 or 0) -- remove excess space
     local time_codes_y = user_opts.time_codes_offset + (user_opts.osc_height / 2)
-    local narrow_win = osc_param.playresx < (
-        user_opts.portrait_window_trigger
-        - outeroffset
-        - (playlist_button and 0 or 100)
-        - (subtitle_track and 0 or 100)
-        - (audio_track and 0 or 100)
-    )
     if narrow_win then
         -- try to vertically align time codes to the baseline of title/chapter
         if not user_opts.show_title and not user_opts.show_chapter_title then
