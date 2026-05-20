@@ -3731,7 +3731,6 @@ end
 local click_keys = {
     "mbtn_left_up", "mbtn_left_down", "mbtn_left_press",
     "mbtn_right_up", "mbtn_right_down", "mbtn_right_press",
-    "wheel_up_press", "wheel_down_press",
 }
 local function has_click_action(e)
     if not e.eventresponder then return false end
@@ -3741,9 +3740,21 @@ local function has_click_action(e)
     return false
 end
 
+local function has_wheel_action(e)
+    if not e.eventresponder then return false end
+    return e.eventresponder["wheel_up_press"] ~= nil or e.eventresponder["wheel_down_press"] ~= nil
+end
+
+local function has_mid_action(e)
+    if not e.eventresponder then return false end
+    return e.eventresponder["shift+mbtn_left_down"] ~= nil
+end
+
 local function refresh_input_area()
     if not state.osc_visible then
         set_virt_mouse_area(0, 0, 0, 0, "input")
+        set_virt_mouse_area(0, 0, 0, 0, "input_wheel")
+        set_virt_mouse_area(0, 0, 0, 0, "input_mid")
         return
     end
 
@@ -3751,30 +3762,40 @@ local function refresh_input_area()
     if state.active_element and elements[state.active_element] then
         local e = elements[state.active_element]
         set_virt_mouse_area(e.hitbox.x1, e.hitbox.y1, e.hitbox.x2, e.hitbox.y2, "input")
+        set_virt_mouse_area(e.hitbox.x1, e.hitbox.y1, e.hitbox.x2, e.hitbox.y2, "input_wheel")
+        set_virt_mouse_area(e.hitbox.x1, e.hitbox.y1, e.hitbox.x2, e.hitbox.y2, "input_mid")
         return
     end
 
     -- bail early if the cursor isn't inside the bottom bar zone at all
     if not mouse_in_area("input") then
         set_virt_mouse_area(0, 0, 0, 0, "input")
+        set_virt_mouse_area(0, 0, 0, 0, "input_wheel")
+        set_virt_mouse_area(0, 0, 0, 0, "input_mid")
         return
     end
 
-    -- find the topmost element with direct click handlers under the cursor;
+    -- find the topmost element under the cursor for each input type in one pass;
     -- layer order matches process_event's dispatch priority
-    local hovered = nil
+    local hovered_click, hovered_wheel, hovered_mid = nil, nil, nil
     for n = 1, #elements do
         local e = elements[n]
-        if e.hitbox and has_click_action(e) and mouse_hit(e) then
-            hovered = e
+        if e.hitbox and mouse_hit(e) then
+            if has_click_action(e) then hovered_click = e end
+            if has_wheel_action(e) then hovered_wheel = e end
+            if has_mid_action(e)   then hovered_mid   = e end
         end
     end
 
-    if hovered then
-        set_virt_mouse_area(hovered.hitbox.x1, hovered.hitbox.y1, hovered.hitbox.x2, hovered.hitbox.y2, "input")
-    else
-        set_virt_mouse_area(0, 0, 0, 0, "input")
-    end
+    set_virt_mouse_area(
+        hovered_click and hovered_click.hitbox.x1 or 0, hovered_click and hovered_click.hitbox.y1 or 0,
+        hovered_click and hovered_click.hitbox.x2 or 0, hovered_click and hovered_click.hitbox.y2 or 0, "input")
+    set_virt_mouse_area(
+        hovered_wheel and hovered_wheel.hitbox.x1 or 0, hovered_wheel and hovered_wheel.hitbox.y1 or 0,
+        hovered_wheel and hovered_wheel.hitbox.x2 or 0, hovered_wheel and hovered_wheel.hitbox.y2 or 0, "input_wheel")
+    set_virt_mouse_area(
+        hovered_mid and hovered_mid.hitbox.x1 or 0, hovered_mid and hovered_mid.hitbox.y1 or 0,
+        hovered_mid and hovered_mid.hitbox.x2 or 0, hovered_mid and hovered_mid.hitbox.y2 or 0, "input_mid")
 end
 
 local function process_event(source, what)
@@ -4239,16 +4260,23 @@ mp.set_key_bindings({
                             function() process_event("mbtn_right", "down")  end},
     {"shift+mbtn_right",    function() process_event("shift+mbtn_right", "up") end,
                             function() process_event("shift+mbtn_right", "down")  end},
-    -- alias to shift_mbtn_left for single-handed mouse use
-    {"mbtn_mid",            function() process_event("shift+mbtn_left", "up") end,
-                            function() process_event("shift+mbtn_left", "down")  end},
-    {"wheel_up",            function() process_event("wheel_up", "press") end},
-    {"wheel_down",          function() process_event("wheel_down", "press") end},
     {"mbtn_left_dbl",       "ignore"},
     {"shift+mbtn_left_dbl", "ignore"},
     {"mbtn_right_dbl",      "ignore"},
 }, "input", "force")
 mp.enable_key_bindings("input")
+
+mp.set_key_bindings({
+    {"wheel_up",   function() process_event("wheel_up", "press") end},
+    {"wheel_down", function() process_event("wheel_down", "press") end},
+}, "input_wheel", "force")
+mp.enable_key_bindings("input_wheel")
+
+mp.set_key_bindings({
+    {"mbtn_mid", function() process_event("shift+mbtn_left", "up") end,
+                 function() process_event("shift+mbtn_left", "down")  end},
+}, "input_mid", "force")
+mp.enable_key_bindings("input_mid")
 
 mp.set_key_bindings({
     {"mbtn_left",           function() process_event("mbtn_left", "up") end,
@@ -4504,5 +4532,7 @@ set_tick_delay()
 visibility_mode(user_opts.visibility, true)
 
 set_virt_mouse_area(0, 0, 0, 0, "input")
+set_virt_mouse_area(0, 0, 0, 0, "input_wheel")
+set_virt_mouse_area(0, 0, 0, 0, "input_mid")
 set_virt_mouse_area(0, 0, 0, 0, "window-controls")
 set_virt_mouse_area(0, 0, 0, 0, "window-controls-title")
