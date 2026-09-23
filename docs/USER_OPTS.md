@@ -77,6 +77,9 @@ Create `modernz.conf` in your mpv script-opts directory:
 | show_window_title          | no               | show window title in borderless/fullscreen mode                           |
 | window_title_font_size     | 26               | window title font size                                                    |
 | window_controls            | yes              | show window controls (close, minimize, maximize) in borderless/fullscreen |
+| window_close_button         | yes              | show close window control                                                 |
+| window_min_button           | yes              | show minimize window control                                              |
+| window_max_button           | yes              | show maximize window control                                              |
 | windowcontrols_independent | yes              | show window controls (top bar) and bottom bar independently on hover      |
 
 ### Subtitle and OSD display settings

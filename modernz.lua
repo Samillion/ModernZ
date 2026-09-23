@@ -80,6 +80,9 @@ local user_opts = {
     show_window_title = false,             -- show window title in borderless/fullscreen mode
     window_title_font_size = 26,           -- window title font size
     window_controls = true,                -- show window controls (close, minimize, maximize) in borderless/fullscreen
+    window_close_button = true,            -- show close window control
+    window_min_button = true,              -- show minimize window control
+    window_max_button = true,              -- show maximize window control
     windowcontrols_independent = true,     -- show window controls (top bar) and bottom bar independently on hover
 
     -- Subtitle and OSD display settings
@@ -2037,33 +2040,35 @@ local function window_controls()
 
     local lo
     local ontop_active = user_opts.ontop_button and window_controls_enabled() and user_opts.ontop_in_topbar and state.ontop
-    local controlbox_w = (user_opts.window_controls and window_control_box_width or 0)
+
+    local btns = {}
+    if user_opts.window_controls then
+        if user_opts.window_min_button then table.insert(btns, {name = "minimize", hover = user_opts.windowcontrols_min_hover}) end
+        if user_opts.window_max_button then table.insert(btns, {name = "maximize", hover = user_opts.windowcontrols_max_hover}) end
+        if user_opts.window_close_button then table.insert(btns, {name = "close", hover = user_opts.windowcontrols_close_hover}) end
+    end
+
+    local controlbox_w = #btns * 50
     local controlbox_left = wc_geo.w - controlbox_w
     local titlebox_left = ontop_active and 50 or wc_geo.x
     local button_y = wc_geo.y - (wc_geo.h / 2)
-    local first_geo  = {x = controlbox_left + 25,  y = button_y, an = 5, w = 50, h = wc_geo.h}
-    local second_geo = {x = controlbox_left + 75, y = button_y, an = 5, w = 49, h = wc_geo.h}
-    local third_geo  = {x = controlbox_left + 125, y = button_y, an = 5, w = 50, h = wc_geo.h}
 
     -- Window controls
-    if user_opts.window_controls then
+    if #btns > 0 then
         local size_hover = hover_effects.size and
             string.format("\\fscx%s\\fscy%s", user_opts.button_hover_size, user_opts.button_hover_size) or ""
         local function wc_hoverstyle(color)
             return "{\\c&H" .. osc_color_convert(color) .. "&" .. size_hover .. "}"
         end
 
-        local function wc_button(name, geom, hover_color)
-            lo = add_layout(name)
+        for i, btn in ipairs(btns) do
+            local geom = {x = controlbox_left + (i - 1) * 50 + 25, y = button_y, an = 5, w = 50, h = wc_geo.h}
+            lo = add_layout(btn.name)
             lo.geometry = geom
             lo.style = osc_styles.window_control
             lo.group = "top"
-            lo.button.hoverstyle = wc_hoverstyle(hover_color)
+            lo.button.hoverstyle = wc_hoverstyle(btn.hover)
         end
-
-        wc_button("close", third_geo, user_opts.windowcontrols_close_hover) -- Close: 🗙
-        wc_button("maximize", second_geo, user_opts.windowcontrols_max_hover) -- Maximize: 🗖/🗗
-        wc_button("minimize", first_geo, user_opts.windowcontrols_min_hover) -- Minimize: 🗕
     end
 
     -- ontop button in top bar when ontop is active
