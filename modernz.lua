@@ -124,6 +124,7 @@ local user_opts = {
     playpause_size = 28,                   -- icon size for the play/pause button
     midbuttons_size = 24,                  -- icon size for the middle buttons
     sidebuttons_size = 24,                 -- icon size for the side buttons
+    windowcontrols_size = 25,              -- icon size for the window controls (close, maximize, minimize)
 
     zoom_control = true,                   -- show zoom controls in image viewer mode
     zoom_in_max = 4,                       -- maximum zoom in value
@@ -532,6 +533,7 @@ local function set_osc_styles()
     local playpause_size = user_opts.playpause_size
     local midbuttons_size = user_opts.midbuttons_size
     local sidebuttons_size = user_opts.sidebuttons_size
+    local windowcontrols_size = user_opts.windowcontrols_size
 
     hover_effects.size  = contains(user_opts.hover_effect, "size")
     hover_effects.color = contains(user_opts.hover_effect, "color")
@@ -549,7 +551,7 @@ local function set_osc_styles()
     osc_styles = {
         osc_fade_bg = "{\\blur" .. user_opts.fade_blur_strength .. "\\bord" .. user_opts.osc_fade_strength .. "\\1c&H0&\\3c&H" .. osc_color_convert(user_opts.osc_color) .. "&}",
         window_fade_bg = "{\\blur" .. user_opts.window_fade_blur_strength .. "\\bord" .. user_opts.window_fade_strength .. "\\1c&H0&\\3c&H" .. osc_color_convert(user_opts.osc_color) .. "&}",
-        window_control = "{\\1c&H" .. osc_color_convert(user_opts.window_controls_color) .. "&\\fs25\\fn" .. icons.iconfont .. "}",
+        window_control = "{\\1c&H" .. osc_color_convert(user_opts.window_controls_color) .. "&\\fs" .. windowcontrols_size .. "\\fn" .. icons.iconfont .. "}",
         window_title = "{\\bord1\\1c&H" .. osc_color_convert(user_opts.window_title_color) .. "&\\3c&H0&\\fs".. user_opts.window_title_font_size .."\\q2\\fn" .. user_opts.font .. "}",
         title = "{\\bord1\\1c&H" .. osc_color_convert(user_opts.title_color) .. "&\\3c&H0&\\fs".. user_opts.title_font_size .."\\q2\\fn" .. user_opts.font .. "}",
         chapter_title = "{\\bord1\\1c&H" .. osc_color_convert(user_opts.chapter_title_color) .. "&\\3c&H0&\\fs" .. user_opts.chapter_title_font_size .. "\\q2\\fn" .. user_opts.font .. "}",

@@ -128,6 +128,7 @@ watch-later-options-remove=osd-margin-y
 | playpause_size             | 28            | icon size for the play/pause button                                                                                |
 | midbuttons_size            | 24            | icon size for the middle buttons                                                                                   |
 | sidebuttons_size           | 24            | icon size for the side buttons                                                                                     |
+| windowcontrols_size        | 25            | icon size for the window control buttons (minimize, maximize, close)                                               |
 | zoom_control               | yes           | show zoom controls in image viewer mode                                                                            |
 | zoom_in_max                | 4             | maximum zoom in value                                                                                              |
 | zoom_out_min               | -1            | minimum zoom out value                                                                                             |
