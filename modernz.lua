@@ -157,6 +157,19 @@ local user_opts = {
     nibble_current_color = "#FFFFFF",      -- color of the current chapter nibble on the seekbar
     ab_loop_color = "#2596be",             -- color of the A/B loop range on the seekbar
 
+    -- SponsorBlock
+    show_sponsorblock_segments = true,
+    sponsorblock_seek_range_alpha = 75,
+    sponsorblock_sponsor_color = "#00D400",
+    sponsorblock_intro_color = "#00FFFF",
+    sponsorblock_outro_color = "#0202ED",
+    sponsorblock_interaction_color = "#CC00FF",
+    sponsorblock_selfpromo_color = "#FFFF00",
+    sponsorblock_preview_color = "#008FD6",
+    sponsorblock_music_offtopic_color = "#FF9900",
+    sponsorblock_filler_color = "#7300FF",
+    sponsorblock_edge_tolerance = 3,        -- extend segments and chapters this close to the end (seconds)
+
     osc_fade_strength = 100,               -- strength of the OSC background fade (0 to disable)
     fade_blur_strength = 100,              -- blur strength for the OSC alpha fade. caution: high values can take a lot of CPU time to render
     fade_transparency_strength = 0,        -- use with "fade_blur_strength=0" to create a transparency box
@@ -628,6 +641,7 @@ local state = {
     keeponpause_active = false,             -- keeponpause bottombar active state
     duration = nil,                         -- current file duration
     chapter_list = {},                      -- sorted by time
+    sponsorblock_segments = {},             -- ranges in seconds
     chapter = -1,                           -- current chapter index
     visibility_modes = {},                  -- visibility_modes to cycle through
     eof_reached = false,
@@ -1434,6 +1448,51 @@ local function draw_seekbar_ranges(element, elem_ass, xp, rh, override_alpha, in
     end
 end
 
+-- Paint SponsorBlock on seekbar.
+local function draw_sponsorblock_ranges(element, elem_ass, inverse)
+    if not user_opts.show_sponsorblock_segments or
+        (element.name ~= "seekbar" and element.name ~= "persistent_seekbar") or
+        not state.duration or state.duration <= 0 then return end
+    local slider_lo = element.layout.slider
+    local geo = element.layout.geometry
+    local cuts = slider_lo.nibbles_style == "gap" and element.name == "seekbar"
+        and collect_gap_cuts(element) or {}
+    local radius = math.min(slider_lo.radius or 0, (geo.h - 2 * slider_lo.gap) / 2)
+    local function draw_range(left, right)
+        if right <= left then return end
+        local rl, rr = left == 0 and radius or 0, right == geo.w and radius or 0
+        if rl + rr > right - left then
+            local scale = (right - left) / (rl + rr)
+            rl, rr = rl * scale, rr * scale
+        end
+        elem_ass:round_rect_cw(left, slider_lo.gap, right, geo.h - slider_lo.gap, rl, rr)
+    end
+    for _, segment in ipairs(state.sponsorblock_segments) do
+        local first, last = segment.start_time, segment.end_time
+        local color = user_opts["sponsorblock_" .. segment.category .. "_color"]
+        if color and last > first and first < state.duration then
+            local extend_end = state.duration - last <= math.max(0, user_opts.sponsorblock_edge_tolerance)
+            local left = first <= 0 and 0 or get_slider_ele_pos_for(element, first / state.duration * 100)
+            local right = extend_end and geo.w or get_slider_ele_pos_for(element, last / state.duration * 100)
+            left, right = limit_range(0, geo.w, left), limit_range(0, geo.w, right)
+            elem_ass:draw_stop()
+            elem_ass:merge(element.style_ass)
+            ass_append_alpha(elem_ass, element.layout.alpha, user_opts.sponsorblock_seek_range_alpha, inverse)
+            elem_ass:append("{\\blur0\\bord0\\1c&H" .. osc_color_convert(color) .. "&}")
+            elem_ass:merge(element.static_ass)
+            local start = left
+            for _, cut in ipairs(cuts) do
+                local in_tail = extend_end and cut >= get_slider_ele_pos_for(element, last / state.duration * 100)
+                if not in_tail and cut + 1.5 > left and cut - 1.5 < right then
+                    draw_range(start, math.min(right, cut - 1.5))
+                    start = math.max(start, cut + 1.5)
+                end
+            end
+            draw_range(start, right)
+        end
+    end
+end
+
 -- show visual indicator in seek ranges for ab loop
 local function draw_ab_loop_range(element, elem_ass)
     if element.name ~= "seekbar" then return end
@@ -1649,6 +1708,7 @@ local function render_elements(master_ass, osc_vis, wc_vis)
                 local handle_x, handle_radius, is_active = get_seekbar_handle_pos(element) -- get handle position/radius
                 draw_seekbar_progress(element, elem_ass)
                 draw_seekbar_ranges(element, elem_ass, handle_x, handle_radius)
+                draw_sponsorblock_ranges(element, elem_ass)
                 draw_ab_loop_range(element, elem_ass)
                 draw_seekbar_handle(element, elem_ass, handle_x, handle_radius, anim_override, is_active) -- draw handle on top of progress
 
@@ -1864,6 +1924,7 @@ local function render_persistent_progress(master_ass)
         if user_opts.persistent_buffer then
             draw_seekbar_ranges(element, elem_ass, xp, 0, nil, true)
         end
+        draw_sponsorblock_ranges(element, elem_ass, true)
 
         elem_ass:draw_stop()
         master_ass:merge(elem_ass)
@@ -3731,6 +3792,7 @@ end
 local click_keys = {
     "mbtn_left_up", "mbtn_left_down", "mbtn_left_press",
     "mbtn_right_up", "mbtn_right_down", "mbtn_right_press",
+    "wheel_up_press", "wheel_down_press",
 }
 local function has_click_action(e)
     if not e.eventresponder then return false end
@@ -3740,21 +3802,9 @@ local function has_click_action(e)
     return false
 end
 
-local function has_wheel_action(e)
-    if not e.eventresponder then return false end
-    return e.eventresponder["wheel_up_press"] ~= nil or e.eventresponder["wheel_down_press"] ~= nil
-end
-
-local function has_mid_action(e)
-    if not e.eventresponder then return false end
-    return e.eventresponder["shift+mbtn_left_down"] ~= nil
-end
-
 local function refresh_input_area()
     if not state.osc_visible then
         set_virt_mouse_area(0, 0, 0, 0, "input")
-        set_virt_mouse_area(0, 0, 0, 0, "input_wheel")
-        set_virt_mouse_area(0, 0, 0, 0, "input_mid")
         return
     end
 
@@ -3762,40 +3812,30 @@ local function refresh_input_area()
     if state.active_element and elements[state.active_element] then
         local e = elements[state.active_element]
         set_virt_mouse_area(e.hitbox.x1, e.hitbox.y1, e.hitbox.x2, e.hitbox.y2, "input")
-        set_virt_mouse_area(e.hitbox.x1, e.hitbox.y1, e.hitbox.x2, e.hitbox.y2, "input_wheel")
-        set_virt_mouse_area(e.hitbox.x1, e.hitbox.y1, e.hitbox.x2, e.hitbox.y2, "input_mid")
         return
     end
 
     -- bail early if the cursor isn't inside the bottom bar zone at all
     if not mouse_in_area("input") then
         set_virt_mouse_area(0, 0, 0, 0, "input")
-        set_virt_mouse_area(0, 0, 0, 0, "input_wheel")
-        set_virt_mouse_area(0, 0, 0, 0, "input_mid")
         return
     end
 
-    -- find the topmost element under the cursor for each input type in one pass;
+    -- find the topmost element with direct click handlers under the cursor;
     -- layer order matches process_event's dispatch priority
-    local hovered_click, hovered_wheel, hovered_mid = nil, nil, nil
+    local hovered = nil
     for n = 1, #elements do
         local e = elements[n]
-        if e.hitbox and mouse_hit(e) then
-            if has_click_action(e) then hovered_click = e end
-            if has_wheel_action(e) then hovered_wheel = e end
-            if has_mid_action(e)   then hovered_mid   = e end
+        if e.hitbox and has_click_action(e) and mouse_hit(e) then
+            hovered = e
         end
     end
 
-    set_virt_mouse_area(
-        hovered_click and hovered_click.hitbox.x1 or 0, hovered_click and hovered_click.hitbox.y1 or 0,
-        hovered_click and hovered_click.hitbox.x2 or 0, hovered_click and hovered_click.hitbox.y2 or 0, "input")
-    set_virt_mouse_area(
-        hovered_wheel and hovered_wheel.hitbox.x1 or 0, hovered_wheel and hovered_wheel.hitbox.y1 or 0,
-        hovered_wheel and hovered_wheel.hitbox.x2 or 0, hovered_wheel and hovered_wheel.hitbox.y2 or 0, "input_wheel")
-    set_virt_mouse_area(
-        hovered_mid and hovered_mid.hitbox.x1 or 0, hovered_mid and hovered_mid.hitbox.y1 or 0,
-        hovered_mid and hovered_mid.hitbox.x2 or 0, hovered_mid and hovered_mid.hitbox.y2 or 0, "input_mid")
+    if hovered then
+        set_virt_mouse_area(hovered.hitbox.x1, hovered.hitbox.y1, hovered.hitbox.x2, hovered.hitbox.y2, "input")
+    else
+        set_virt_mouse_area(0, 0, 0, 0, "input")
+    end
 end
 
 local function process_event(source, what)
@@ -4168,6 +4208,17 @@ mp.register_event("start-file", function()
     request_init()
 end)
 mp.observe_property("track-list", "native", update_tracklist)
+mp.observe_property("user-data/sponsorblock/segments", "native", function(_, segments)
+    state.sponsorblock_segments = {}
+    for _, segment in ipairs(type(segments) == "table" and segments or {}) do
+        if type(segment) == "table" and type(segment.start_time) == "number" and
+            type(segment.end_time) == "number" and type(segment.category) == "string" and
+            segment.start_time >= 0 and segment.end_time > segment.start_time then
+            state.sponsorblock_segments[#state.sponsorblock_segments + 1] = segment
+        end
+    end
+    request_tick()
+end)
 observe_cached("playlist-count", request_init)
 observe_cached("playlist-pos-1", request_init)
 observe_cached("chapter-list", function ()
@@ -4260,23 +4311,16 @@ mp.set_key_bindings({
                             function() process_event("mbtn_right", "down")  end},
     {"shift+mbtn_right",    function() process_event("shift+mbtn_right", "up") end,
                             function() process_event("shift+mbtn_right", "down")  end},
+    -- alias to shift_mbtn_left for single-handed mouse use
+    {"mbtn_mid",            function() process_event("shift+mbtn_left", "up") end,
+                            function() process_event("shift+mbtn_left", "down")  end},
+    {"wheel_up",            function() process_event("wheel_up", "press") end},
+    {"wheel_down",          function() process_event("wheel_down", "press") end},
     {"mbtn_left_dbl",       "ignore"},
     {"shift+mbtn_left_dbl", "ignore"},
     {"mbtn_right_dbl",      "ignore"},
 }, "input", "force")
 mp.enable_key_bindings("input")
-
-mp.set_key_bindings({
-    {"wheel_up",   function() process_event("wheel_up", "press") end},
-    {"wheel_down", function() process_event("wheel_down", "press") end},
-}, "input_wheel", "force")
-mp.enable_key_bindings("input_wheel")
-
-mp.set_key_bindings({
-    {"mbtn_mid", function() process_event("shift+mbtn_left", "up") end,
-                 function() process_event("shift+mbtn_left", "down")  end},
-}, "input_mid", "force")
-mp.enable_key_bindings("input_mid")
 
 mp.set_key_bindings({
     {"mbtn_left",           function() process_event("mbtn_left", "up") end,
@@ -4508,6 +4552,9 @@ end
 opt.read_options(user_opts, "modernz", function(changed)
     if changed.language then load_locale_file() end
     validate_user_opts()
+    if changed.sponsorblock_edge_tolerance then
+        mp.set_property_native("user-data/modernz/sponsorblock-edge-tolerance", math.max(0, user_opts.sponsorblock_edge_tolerance))
+    end
     if changed.language then set_osc_locale() end
     set_icon_theme()
     set_osc_styles()
@@ -4524,6 +4571,7 @@ end)
 
 load_locale_file()
 validate_user_opts()
+mp.set_property_native("user-data/modernz/sponsorblock-edge-tolerance", math.max(0, user_opts.sponsorblock_edge_tolerance))
 set_osc_locale()
 set_icon_theme()
 set_osc_styles()
@@ -4532,7 +4580,5 @@ set_tick_delay()
 visibility_mode(user_opts.visibility, true)
 
 set_virt_mouse_area(0, 0, 0, 0, "input")
-set_virt_mouse_area(0, 0, 0, 0, "input_wheel")
-set_virt_mouse_area(0, 0, 0, 0, "input_mid")
 set_virt_mouse_area(0, 0, 0, 0, "window-controls")
 set_virt_mouse_area(0, 0, 0, 0, "window-controls-title")
